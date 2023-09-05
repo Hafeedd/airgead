@@ -2,6 +2,7 @@ import { BrowserRouter, Outlet, Route, Routes } from "react-router-dom";
 import './App.css';
 import { Layout } from "./components/layout/Layout";
 import ItemAdd from "./pages/itemAdd/ItemAdd";
+import CustomerAdd from "./pages/customer-add/CustomerAdd";
 
 function App() {
   return (
@@ -10,6 +11,7 @@ function App() {
         <Route path="/" element={<Layout/>}> 
           <Route element={<Outlet/>}>
             <Route index element={<ItemAdd/>}/>
+            <Route path="/customer" element={<CustomerAdd/>}/>
           </Route>
         </Route>
       </Routes>
