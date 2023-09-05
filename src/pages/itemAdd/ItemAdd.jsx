@@ -190,21 +190,22 @@ const ItemAdd = () =>{
                  </div>
                 <div className="pt-2 d-flex justify-content-between w-100 ">
                     <div className='d-flex row col-6 gap-4'>
-                        <div className='btn bg-black text-light col-5 text-start px-3 py-1'>Unit Conversion</div>
-                        <div className='btn bg-black text-light col-5 text-start px-3 py-1'>BarCode</div>
+                        <div className='btn bg-black text-light col-5 text-start px-3 py-0'>Unit Conversion</div>
+                        <div className='btn bg-black text-light col-5 text-start px-3 py-0'>BarCode</div>
                     </div>
                     <div className=''>
                         <div className='d-flex gap-4'>
-                            <div className="item_add_check  d-flex align-item-center">
+                            <div className="item_add_check form-check-input d-flex align-item-center">
                                 <input type='checkbox' name='Blocked' value='Blocked'/>
                                 <label for='Blocked'>Blocked</label>
                             </div>
-                            <div className="item_add_check  d-flex align-item-center">
+                            <div className="item_add_check form-check-input d-flex align-item-center">
                                 <input type='checkbox' name='Blocked' value='Blocked'/>
                                 <label for='Blocked'>Blocked</label>
                             </div>
-                            <div className="item_add_check  d-flex align-item-center">
-                                <input type='checkbox' className='checkbox' name='Blocked' value='Blocked'/>
+                            <div className="item_add_check form-check-input d-flex align-item-center">
+                                {/* <input type='checkbox' className='checkbox' name='Blocked' value='Blocked'/> */}
+                                
                                 <label for='Blocked'>Blocked</label>
                             </div>
                         </div>
