@@ -1,0 +1,63 @@
+.App {
+  text-align: center;
+}
+
+.col.col-1{
+  flex: 0 0 auto !important;
+  width: 6.25% !important;
+}
+
+.col-1.col-2{
+  flex: 0 0 auto !important;
+  width: 12.5% !important;
+}
+
+.col-2.col-3{
+  flex: 0 0 auto !important;
+  width: 20.8333333334% !important;
+}
+
+.col-3.col-4{
+  flex: 0 0 auto !important;
+  width: 29.16666666667% !important;
+}
+
+.col-4.col-5{
+  flex: 0 0 auto !important;
+  width: 37.5% !important;
+}
+
+.col-5.col-6{
+  flex: 0 0 auto !important;
+  width: 45.833333333334% !important;
+}
+
+.col-6.col-7{
+  flex: 0 0 auto !important;
+  width: 54.166666666667% !important;
+}
+
+.col-7.col-8{
+  flex: 0 0 auto !important;
+  width: 62.5% !important;
+}
+
+.col-8.col-9{
+  flex: 0 0 auto !important;
+  width: 70.833333333334% !important;
+}
+
+.col-9.col-10{
+  flex: 0 0 auto !important;
+  width: 79.1666666666667% !important;
+}
+
+.col-10.col-11{
+  flex: 0 0 auto !important;
+  width: 87.5% !important;
+}
+
+.col-11.col-12{
+  flex: 0 0 auto !important;
+  width: 95.8333333333334% !important;
+}

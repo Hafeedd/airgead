@@ -1,0 +1,34 @@
+.prev_btn{
+    font-size:13px;
+    font-weight: 600;
+    cursor:pointer;
+    display: flex;
+    align-items: center;
+    border: 0;
+    color: white;
+    width: 4rem;
+}
+
+.header{
+    height: 3.5rem;
+    top: 0;
+    position: sticky;
+    border-bottom-left-radius: 1rem;
+}
+
+.search_bar{
+    outline: none;
+    position: relative;
+    background: #4E4E4E;
+    width: 10rem;
+    padding-left: 1rem !important;
+    padding-bottom: 0.3rem !important;
+    color: white;
+}
+
+.seach_bar_cont{
+    display: flex;
+    align-items: center;
+    background-color: #4E4E4E;
+    padding: 0.1rem 0.4rem;
+}

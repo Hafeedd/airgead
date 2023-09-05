@@ -1,0 +1,118 @@
+.page_head{
+    position: sticky;
+    top: 4em;
+    background: #F5F5F5;
+    padding-left: 1rem;
+}
+
+.item_add{
+    background-color: #f0f2f4;
+}
+
+.page_head_items{
+    padding-top: 0.4rem;
+    font-size: 14px;
+    font-weight: 600;
+    display: flex;
+    gap: 1.5rem;
+}
+
+.page_head_item{
+    cursor: pointer;
+    padding-bottom: 0.3rem;
+}
+
+.page_head_item.active{
+    border-bottom: 0.2rem solid;
+}
+
+/* .item_seach_bar_cont{
+    display: flex;
+    align-items: center;
+    background-color: white;
+    padding: 0rem 0.9rem;
+    border: 1px solid #D8D8D8
+}
+
+.item_search_bar{
+    outline: none;
+    position: relative;
+    background: white;
+    width: 9rem;
+    padding-left: 1rem !important;
+    padding-bottom: 0.3rem !important;
+    color: #4E4E4E;
+} */
+
+.item_add_cont{
+    /* position: relative; */
+    width: inherit;
+    background-color: white;
+    border-radius: 0.2rem;
+    margin: 0 1.5rem 0 1.5rem ;
+    padding: 0.5rem 2.5rem 1rem 2.5rem;
+    font-weight: 600;
+}
+
+.item_input{
+    justify-content: space-between;
+    padding: 0.1rem 1rem;
+    /* max-width: 17rem; */
+    width: 100%;
+    text-transform:uppercase;
+    background:#f0f2f4;
+    color: black;
+    border: 1px solid #BEBEBE;
+    font-size: 12px;
+    border-radius: 0.3rem;
+    /* margin-right: 1.7rem !important; */
+    margin-left: 1.7rem ;
+}
+
+.item_add_first_row{
+    display: flex;
+    justify-content: space-between;
+}
+
+.item_inputs .names{
+    width:16rem;
+    /* margin-right: 1.7rem !important; */
+}
+
+.item_inputs{
+    align-items: center;
+    padding-right: 2rem !important;
+    justify-content: space-between;
+    
+}
+
+.item_inputs.right{
+    padding-right: 0rem !important;
+    justify-content: space-between;
+    padding-left: 1.7rem !important;
+}
+
+.item_add_form_part1{
+    font-weight: 500;
+    font-size: 11px;
+    display: block;
+    border-right: 1px solid #BEBEBE;
+}
+.item_add_form_part2{
+    font-weight: 500;
+    font-size: 11px;
+    display: block;
+}
+
+.item_add_check{
+    font-size: 12px;
+    font-weight: 600;
+    gap: 1rem;
+}
+
+.checkbox{
+    color: red;
+    background: red;
+    fill: red;
+    box-shadow: 0px 1px 4px 0px rgba(0, 0, 0, 0.15) inset;
+}
