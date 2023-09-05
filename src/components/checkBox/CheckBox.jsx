@@ -19,9 +19,7 @@ const HiddenCheckbox = styled.input.attrs({ type: 'checkbox' })`
   clippath: inset(50%);
   height: 1px;
   margin: -1px;
-  overflow: hidden;
-  padding: 0;
-  position: absolute;
+  
   white-space: nowrap;
   width: 1px;
 `
@@ -30,7 +28,7 @@ const StyledCheckbox = styled.div`
   display: inline-block;
   width: 16px;
   height: 16px;
-  background: ${props => (props.checked ? 'salmon' : 'papayawhip')}
+  background: ${props => (props.checked ? 'salmon' : 'black')}
   border-radius: 3px;
   transition: all 150ms;
 
