@@ -1,8 +1,9 @@
 import { BrowserRouter, Outlet, Route, Routes } from "react-router-dom";
 import './App.css';
 import { Layout } from "./components/layout/Layout";
-import ItemAdd from "./pages/itemAdd/ItemAdd";
-import CustomerAdd from "./pages/customer-add/CustomerAdd";
+import ItemAdd from "./pages/master/item/itemAdd/ItemAdd";
+import CustomerAdd from "./pages/master/customer/customer-add/CustomerAdd";
+import SupplierAdd from "./pages/master/supplier/supplier-add/SupplierAdd";
 
 function App() {
   return (
@@ -11,7 +12,8 @@ function App() {
         <Route path="/" element={<Layout/>}> 
           <Route element={<Outlet/>}>
             <Route index element={<ItemAdd/>}/>
-            <Route path="/customer" element={<CustomerAdd/>}/>
+            <Route path="/customer-add" element={<CustomerAdd/>}/>
+            <Route path="/supplier-add" element={<SupplierAdd/>}/>
           </Route>
         </Route>
       </Routes>

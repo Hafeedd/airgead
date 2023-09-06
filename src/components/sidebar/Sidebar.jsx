@@ -23,10 +23,10 @@ const Sidebar = () => {
                         <div className='SidebarItemText'>Accounts</div>
                     </span>
                     <span className='SidebarSpan d-flex ms-5 ps-3'>
-                        <div className='SidebarItemText' onClick={()=>navigate('/customer')}>Customer</div>
+                        <div className='SidebarItemText' onClick={()=>navigate('/customer-add')}>Customer</div>
                     </span>
                     <span className='SidebarSpan d-flex ms-5 ps-3'>
-                        <div className='SidebarItemText'>Supplier</div>
+                        <div className='SidebarItemText' onClick={()=>navigate('/supplier-add')}>Supplier</div>
                     </span>
                     <span className='SidebarSpan d-flex ms-5 ps-3'>
                         <div className='SidebarItemText'>Staff</div>

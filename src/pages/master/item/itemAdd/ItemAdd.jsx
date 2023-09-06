@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import './itemAdd.css'
-import search from "../../assets/icons/search.png"
+import search from "../../../../assets/icons/search.png"
 
 const ItemAdd = () =>{
     const [pageHeadItem,setPageHeadItem] = useState(1)
