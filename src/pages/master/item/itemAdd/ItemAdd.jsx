@@ -8,7 +8,7 @@ const ItemAdd = () =>{
 
     return(
         <div className='item_add'>
-            <div className="page_head">
+            <div className="page_head ps-4 mt-1 mb-3">
                 <div className='fw-600 fs-5'>Master Item</div>
                 <div className='page_head_items mb-3'>
                     <div onClick={()=>setPageHeadItem(1)} className={`page_head_item ${pageHeadItem === 1 && "active"}`}>Item List</div>
@@ -20,7 +20,7 @@ const ItemAdd = () =>{
             </div>
             <div className='item_add_cont'>
                  Add New Item
-                 <div className='item_add_form pt-1 d-flex'>
+                 <div className='item_add_form pt-1 d-flex mt-1'>
 
                 {/* item details --------------------------------------------------------------------------------------- */}
 

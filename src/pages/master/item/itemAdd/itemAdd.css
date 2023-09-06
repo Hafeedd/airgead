@@ -52,7 +52,7 @@
     margin-top: 15rem !important;
 }
 
-/* .item_seach_bar_cont{
+.item_seach_bar_cont{
     display: flex;
     align-items: center;
     background-color: white;
@@ -68,7 +68,7 @@
     padding-left: 1rem !important;
     padding-bottom: 0.3rem !important;
     color: #4E4E4E;
-} */
+}
 
 .item_add_cont{
     /* position: relative; */
