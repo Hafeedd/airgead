@@ -140,9 +140,6 @@ const SupplierAdd = () => {
                                     <option value="">OPTION5</option>
                                 </select>
                             </div>
-                            {/* <div className='mx-0 px-0 col-3'>
-                                <div className='btn btn-sm btn-dark px-4 w-100 rates-btn'>Set Rates</div>
-                            </div> */}
                         </div>
 
                     </div>
@@ -151,30 +148,6 @@ const SupplierAdd = () => {
 
                     <div className='item_add_form_part2 row mx-0 px-0 me-0 col-6 border-0'>
 
-                        {/* <div className="d-flex align-items-center row mx-0 ps-4 pe-3 my-2">
-                            <div className='mx-0 px-0 col-4'>
-                                Route
-                            </div>
-                            <div className='mx-0 px-0 col-8'>
-                                <input type='text' className='item_input names' />
-                            </div>
-                        </div>
-                        <div className="d-flex align-items-center row mx-0 ps-4 pe-3 my-2">
-                            <div className='mx-0 px-0 col-4'>
-                                City
-                            </div>
-                            <div className='mx-0 px-0 col-8'>
-                                <input type='text' className='item_input names' />
-                            </div>
-                        </div>
-                        <div className="d-flex align-items-center row mx-0 ps-4 pe-3 my-2">
-                            <div className='mx-0 px-0 col-4'>
-                                Town
-                            </div>
-                            <div className='mx-0 px-0 col-8'>
-                                <input type='text' className='item_input names' />
-                            </div>
-                        </div> */}
                         <div className="d-flex align-items-center row mx-0 ps-4 pe-3 my-2">
                             <div className='mx-0 px-0 col-4'>
                                 District
@@ -191,22 +164,6 @@ const SupplierAdd = () => {
                                 <input type='text' className='item_input names' />
                             </div>
                         </div>
-                        {/* <div className="d-flex align-items-center row mx-0 ps-4 pe-3 my-2">
-                            <div className='mx-0 px-0 col-4'>
-                                Rate Type
-                            </div>
-                            <div className='mx-0 px-0 col-8'>
-                                <input type='text' className='item_input names' />
-                            </div>
-                        </div>
-                        <div className="d-flex align-items-center row mx-0 ps-4 pe-3 my-2">
-                            <div className='mx-0 px-0 col-4'>
-                                Bill Type
-                            </div>
-                            <div className='mx-0 px-0 col-8'>
-                                <input type='text' className='item_input names' />
-                            </div>
-                        </div> */}
                         <div className="d-flex align-items-center row mx-0 ps-4 pe-3 my-2">
                             <div className='mx-0 px-0 col-4'>
                                 Remarks
