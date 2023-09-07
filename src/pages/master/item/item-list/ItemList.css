@@ -1,0 +1,72 @@
+.table-light.custom-table{
+    --bs-table-color: #000;
+    --bs-table-bg: #D9D9D9;
+    --bs-table-border-color: #BEBEBE;
+    --bs-table-striped-bg: #ecedee;
+    --bs-table-striped-color: #000;
+    --bs-table-active-bg: #dfe0e1;
+    --bs-table-active-color: #000;
+    --bs-table-hover-bg: #e5e6e7;
+    --bs-table-hover-color: #000;
+    color: var(--bs-table-color);
+    border-color: var(--bs-table-border-color);
+    border-radius: 0.3125rem 0.3125rem 0rem 0rem;
+}
+
+.custom-table th{
+    text-align: center;
+    height: 3.125rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #1A1A1A;
+    vertical-align: middle;
+}
+
+.custom-table td{
+    text-align: center;
+    font-size: 0.875rem;
+    height: 3.125rem;
+    font-weight: 500;
+    color: #4E4E4E;
+    background: #FFF;
+    vertical-align: middle;
+}
+
+.custom-table tr{
+    border: 1px solid #EEE;
+}
+
+.btn-dark.filter-btn{
+    height: 2.1875rem;
+    background: #000;
+    border-radius: 0.3125rem;
+    border: 1px solid #D8D8D8;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn-primary.add-btn{
+    height: 2.188rem;
+    color: #FFF;
+    font-size: 0.9rem;
+    font-weight: 600;
+    background: #4A00A8;
+    border-radius: 0.5rem;
+    width: 80%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.table-scroller{
+    min-height: 20rem;
+    max-height: 25rem;
+    overflow-y: scroll;
+    overflow-x: visible;
+}
+
+.button{
+    cursor: pointer;
+}
