@@ -47,13 +47,14 @@ const SearchDropDown = ({
     }, [])
 
     useEffect(() => {
+        console.log(selectedValue)
         if(options[id]?.length>0){
             // if(id=='transaction_unit')
             // setTempList([...options['unit'],])
             // else
         setTempList([...options[id],])
         if (selectedValue) {
-            if (selectedValue===''){
+            if (!selectedValue){
                 handleReset()
             }
             options[id].map((item)=>{
@@ -140,8 +141,8 @@ const SearchDropDown = ({
     }
     const handleReset = () => {
         dropdownRef.current.scrollTo({ top: 0, behavior: 'smooth' })
-        setSelected('')
-        setDataValue('')
+        setSelected(null)
+        setDataValue(data=>({...data,['id']:null}))
         setShowDropdown('')
         setShow(false)
         setSearch('')

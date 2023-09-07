@@ -165,13 +165,13 @@ input[type=number] {
     box-shadow: 0px 1px 4px 0px rgba(0, 0, 0, 0.15) inset;
 } */
 
-.clear_btn{
+.clear_btn, .clear_btn:hover{
     border-radius: 0.3125rem;
     border: 1px solid #2C2C2C;
     font-size: 12px;
     padding: 0.5rem 2rem;
 }
-.save_btn{
+.save_btn, .save_btn:hover{
     border-radius: 0.3125rem;
     border: 1px solid #2C2C2C;
     background: #2C2C2C;

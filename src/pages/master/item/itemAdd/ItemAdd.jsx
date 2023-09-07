@@ -205,14 +205,18 @@ const ItemAdd = () =>{
         key.map((data)=>setItemAdd(val=>({...val,[data]:null})))
         // const inputData = [...formRef?.current?.querySelectorAll('input')]
         // console.log(inputData)
-        // inputData?.map((data)=>data.set(''))
+        // inputData?.map((data)=>data._valueTracker.setValue(null))
+    }
+
+    const handleSelect = (e) => {
+       setItemAdd({...itemadd,['rent_type']:e.target.value})
     }
 
     return(
         <div className='item_add'>
             <div className="page_head ps-4 mt-1 mb-3">
                 <div className='fw-600 fs-5'>Master Item</div>
-                <div className='page_head_items mb-3'>
+                <div className='page_head_items mb-1'>
                     <div onClick={()=>setPageHeadItem(1)} className={`page_head_item ${pageHeadItem === 1 && "active"}`}>Item List</div>
                     <div onClick={()=>setPageHeadItem(2)} className={`page_head_item ${pageHeadItem === 2 && "active"}`}>Change Item Code</div>
                     <div onClick={()=>setPageHeadItem(3)} className={`page_head_item ${pageHeadItem === 3 && "active"}`}>Raw Meterial Settins</div>
@@ -426,10 +430,11 @@ const ItemAdd = () =>{
                         name='role' onChange={handleChange}/>
                         </div>
                         <div className='item_inputs right d-flex px-0 col-6 '>Rent Type
-                        <select type='select' className='item_input col-6 col-7'
-                        name='rent_type'>
-                        <option value='HOUR'>hour</option>
-                        <option value='MONTH'>Month</option>
+                        <select type='select' className='item_input col-6 col-7 py-1'
+                        name='rent_type' onChange={handleSelect}>
+                        <option value=''>SELECT</option>
+                        <option value='HOUR'>HOUR</option>
+                        <option value='MONTH'>MONTH</option>
                         </select>
                         </div>
                         </div>
