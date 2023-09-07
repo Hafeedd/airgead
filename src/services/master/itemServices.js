@@ -149,7 +149,14 @@ const useItemServices = () =>{
         return response.data
     }
 
+    // itme adding
+    const postItemAdd = async (data) =>{
+        const response = await axiosPrivate.post('master/item/created/',data)
+        return response.data
+    }
+
     return{
+        postItemAdd,
         postBarcode,
         postUnit,
         postRack,

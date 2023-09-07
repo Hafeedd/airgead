@@ -26,15 +26,17 @@ const SearchDropDown = ({
     const dropdownRef = useRef(null)
 
     useEffect(() => {
-        if(typeof options[id] == 'object'){
+        if(typeof options[id] != 'object'){
             // console.log("options[id]")
-
+            // if(id=='transaction_unit')
+            // setTempList([...options['unit'],])
+            // else
         setTempList([...options[id],])
         if (selectedValue) {
             options[id].map((item)=>{
                 if (item.value==selectedValue){
-                    setSelected(item.label)
-                    setSearch(item.label)
+                    setSelected(item?.label)
+                    setSearch(item?.label)
                 }
             })
         }
@@ -45,13 +47,19 @@ const SearchDropDown = ({
     }, [])
 
     useEffect(() => {
-        if(options[id]?.length){
+        if(options[id]?.length>0){
+            // if(id=='transaction_unit')
+            // setTempList([...options['unit'],])
+            // else
         setTempList([...options[id],])
         if (selectedValue) {
+            if (selectedValue===''){
+                handleReset()
+            }
             options[id].map((item)=>{
                 if (item.value==selectedValue){
-                    setSelected(item.label)
-                    setSearch(item.label)
+                    setSelected(item?.label)
+                    setSearch(item?.label)
                 }
             })
         }
@@ -63,12 +71,15 @@ const SearchDropDown = ({
 
     useEffect(() => {
         if(options[id]?.length){
+            if(id == 'transaction_unit')
+        setTempList([...options['unit'],])
+        else
         setTempList([...options[id],])
         if (selectedValue) {
             options[id].map((item)=>{
                 if (item.value==selectedValue){
-                    setSelected(item.label)
-                    setSearch(item.label)
+                    setSelected(item?.label)
+                    setSearch(item?.label)
                 }
             })
         }
@@ -102,7 +113,7 @@ const SearchDropDown = ({
     const handleSearch = (e) => {
         setSearch(e.target.value)
         setShow(true)
-        var filteredList = options[id]?.filter(item => item.label.toLowerCase().search(e.target.value.toLowerCase()) > -1)
+        var filteredList = options[id]?.filter(item => item?.label?.toLowerCase().search(e.target.value.toLowerCase()) > -1)
         setTempList(filteredList)
     }
 
@@ -117,11 +128,15 @@ const SearchDropDown = ({
 
     const handleSelect = (item) => {
         dropdownRef.current.scrollTo({ top: 0, behavior: 'smooth' })
-        setSelected(item.label)
-        setSearch(item.label)
+        setSelected(item?.label)
+        setSearch(item?.label)
         setShowDropdown('')
         setShow(false)
-        setDataValue((data)=>({...data, [data.id]:item.value}))
+        if(id==='transaction_unit')
+        setDataValue((data)=>({...data, [id]:item.label}))
+        else
+        setDataValue((data)=>({...data, [id]:item.value}))
+        
     }
     const handleReset = () => {
         dropdownRef.current.scrollTo({ top: 0, behavior: 'smooth' })
@@ -136,7 +151,7 @@ const SearchDropDown = ({
             className={`search_container ${containerClass}`}
         >
             {/* <Form.Label
-                className='label-text-content'
+                classnName='label-text-content'
             >
                 {label && label}
                 {required && ' *'}
@@ -167,7 +182,7 @@ const SearchDropDown = ({
                             {tempList &&
                                 tempList.map((item, index) => (
                                     <div className={`dropdown-option-data `} key={index} onClick={() => handleSelect(item)}>
-                                        <div className="text">{item.label}</div>
+                                        <div className="text">{item?.label}</div>
                                     </div>
                                 )) 
                             }  

@@ -1,17 +1,20 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import './itemAdd.css'
 import search from "../../../../assets/icons/search.png"
 import SearchDropDown from '../../../../components/searchDropDown/SearchDropDown'
 import useItemServices from '../../../../services/master/itemServices'
 import Swal from 'sweetalert2'
-import { List } from '@mui/material'
+// import { List } from '@mui/material'
 
 const ItemAdd = () =>{
     const [pageHeadItem,setPageHeadItem] = useState(1)
     const [showDropdown, setShowDropdown] = useState('')
+    const formRef = useRef(null)
+    const typesOptions = [{label:"PRODUCT",value:"PRODUCT"},{label:"RAW MATERIAL",value:"RAW MATERIAL"},{label:"SERVICE",value:"SERVICE"}]
     const [listItem,setListItem] = useState({
         second_name:[],
-        type:[],
+        types:typesOptions,
+        rent_type:[{label:"HOUR",value:"HOUR"},{label:"MONTH",value:"MONTH"}],
         category:[],
         sub_category:[],
         company:[],
@@ -19,58 +22,61 @@ const ItemAdd = () =>{
         color:[],
         group:[],
         tax_group:[],
-        godown_rack:[],
-        stock_unit:[],
+        rack:[],
+        unit:[],
         transaction_unit:[],
     })
     const [itemadd,setItemAdd] = useState({
-        code:'',
-        hsn:'',
-        name:'',
-        second_name:'',
-        type:'',
-        category:'',
-        sub_category:'',
-        company:'',
-        size:'',
-        color:'',
-        group:'',
-        tax_group:'',
-        godown_rack:'',
-        stock_unit:'',
-        transaction_unit:'',
-        mrp_rate:'',
-        retail_rate:'',
-        wholesale_rate:'',
-        super_wholesale_rate:'',
-        quotation_rate:'',
-        rent:'',
-        rent_type:'',
-        purchase_rate:'',
-        cost:'',
-        margin:'',
-        tax_gst:'',
-        cess_1:'',
-        cess_2:'',
-        purchase_discount:'',
-        sale_discount:'',
-        unload_charge:'',
-        load_charge:'',
-        point:'',
-        commission:'',
-        damage:'',
-        damge_cost:'',
+        code:null,
+        hsn:null,
+        name:null,
+        second_name:null,
+        types:null,
+        category:null,
+        sub_category:null,
+        company:null,
+        size:null,
+        color:null,
+        group:null,
+        tax_group:null,
+        rack:null,
+        unit:null,
+        transaction_unit:null,
+        mrp_rate:null,
+        retail_rate:null,
+        wholesale_rate:null,
+        super_wholesale_rate:null,
+        quotation_rate:null,
+        rent:null,
+        rent_type:null,
+        purchase_rate:null,
+        cost:null,
+        margin:null,
+        tax_gst:null,
+        cess_1:null,
+        cess_2:null,
+        purchase_discount:null,
+        sale_discount:null,
+        unload_charge:null,
+        load_charge:null,
+        point:null,
+        commission:null,
+        damage:null,
+        qty_in_bc:null,
+        open_stock:null,
+        role:null,
+        damge_cost:null,
         blocked:false,
         tax_inclusive:false,
         manuel_qty_in_bc:false,
         rent_item:false,
         gate_pass:false,
-        barcode:'',
+        barcode:null,
     })
 
     useEffect(()=>{
         getData();
-    },[ItemAdd, ])
+    },[ ])
 
     const {
         postBarcode,postUnit,
@@ -84,21 +90,23 @@ const ItemAdd = () =>{
         getGroup,getColor,
         getSize,getCompany,
         getSubCategory,getCategory,
-        getType,getSecondName,} = useItemServices()
+        getType,getSecondName,
+        postItemAdd} = useItemServices()
 
         const getData = async () => {
             let list = {}
             const miniFunct = (data,name) =>{
                 list[name] = []
                 data.map((x)=>{
-                    list[name].push({value:x[name],label:x[name]})
+                    list[name].push({value:x['id'],label:x[name]})
                 })
             }
+            try{
             let res
             res = await getSecondName()
             if(res.success) miniFunct(res.data,'second_name')
-            res = await getType()
-            if(res.success) miniFunct(res.data,'type')
+            // res = await getType()
+            // if(res.success) miniFunct(res.data,'types')
             res = await getCategory()
             if(res.success) miniFunct(res.data,'category')
             res = await getSubCategory()
@@ -114,14 +122,16 @@ const ItemAdd = () =>{
             res = await getTaxGroup()
             if(res.success) miniFunct(res.data,'tax_group')
             res = await getRack()
-            if(res.success) miniFunct(res.data,'godown_rack')
+            if(res.success) miniFunct(res.data,'rack')
             res = await getUnit()
-            if(res.success) miniFunct(res.data,'stock_unit')
+            if(res.success) miniFunct(res.data,'unit')
             res = await getBarcode()
             if(res.success) miniFunct(res.data,'transaction_unit')
 
             setListItem(list)
-            console.log(list)
+            }catch(err){
+                
+            }
         }
 
     const addOption = async (e,data,state) =>{
@@ -133,7 +143,7 @@ const ItemAdd = () =>{
             switch(state){
                 case 'second_name': 
                     res = await postSecondName(submitData);break;
-                case 'type':
+                case 'types':
                     res = await postType(submitData);break;
                 case 'category':
                     res = await postCategory(submitData);break;
@@ -149,9 +159,9 @@ const ItemAdd = () =>{
                     res = await postGroup(submitData);break;
                 case 'tax_group':
                     res = await postTaxGroup(submitData);break;
-                case 'godown_rack':
+                case 'rack':
                     res = await postRack(submitData);break;
-                case 'stock_unit':
+                case 'unit':
                     res = await postUnit(submitData);break;
                 case 'transaction_unit':
                     res = await postBarcode(submitData);break;
@@ -159,9 +169,39 @@ const ItemAdd = () =>{
             if(res.success){
                 Swal.fire('Option Added Successfylly','','success')
             }
+            getData()
     }catch(err){
             Swal.fire('Failed to add option','','error')
     }
+    }
+
+    const handleChange = (e) =>{
+        if(e.target.value==''){
+            setItemAdd(data=>({...data,[e.target.name]:null}))
+        }else
+        setItemAdd(data=>({...data,[e.target.name]:e.target.value}))
+    }
+    
+    const handleSubmit = async (e)=>{
+        e.preventDefault()
+        console.log(itemadd.rent)
+        try{
+            let res = await postItemAdd(itemadd)
+            if(res.success)
+                Swal.fire('Item Added Successfully','','success')
+            else
+                Swal.fire(res.message,'','error')
+        }catch(err){
+            Swal.fire('Failed to add item pls try again','','error')
+        }
+    }
+
+    const handleReset = () =>{
+        let key = Object.keys(itemadd)
+        key.map((data)=>setItemAdd(val=>({...val,[data]:null})))
+        // const inputData = [...formRef?.current?.querySelectorAll('input')]
+        // console.log(inputData)
+        // inputData?.map((data)=>data.set(''))
     }
 
     return(
@@ -176,7 +216,7 @@ const ItemAdd = () =>{
                     <div onClick={()=>setPageHeadItem(5)} className={`page_head_item ${pageHeadItem === 5 && "active"}`}>Merge Items</div>
                 </div>
             </div>
-            <div className='item_add_cont'>
+            <form onSubmit={handleSubmit} ref={formRef} className='item_add_cont'>
                  Add New Item
                  <div className='item_add_form pt-1 d-flex'>
 
@@ -185,24 +225,33 @@ const ItemAdd = () =>{
                     <div className='item_add_form_part1 row mx-0 px-0 col-6 '>
                         
                         <div className="item_add_first_row px-0 row mx-0 ">
-                        <div className='item_inputs d-flex mx-0 px-0 col-6'>Code
-                        <input type='text' className='item_input '/>
+                        <div className='item_inputs d-flex mx-0 px-0 col-6'>Code*
+                        <input required type='number' className='item_input'
+                         value={itemadd.code} name='code' onChange={handleChange}/>
                         </div>
-                        <div className='item_inputs d-flex px-0 col-6 align-itmes-end'>HSN
-                        <input type='text' className='item_input'/>
+                        <div className='item_inputs d-flex px-0 col-6 align-itmes-end'>HSN*
+                        <input required type='number' className='item_input'
+                         value={itemadd.hsn} name='hsn' onChange={handleChange}/>
                         </div>
                         </div>
 
-                        <div className='item_inputs d-flex justify-content-between px-0 mx-0 col-12 pt-2'>Name
-                        <input type='text' className='item_input names'/>
+                        <div className='item_inputs d-flex justify-content-between px-0 mx-0 col-12 pt-2'>Name*
+                        <input type='text' required className='item_input names'
+                         value={itemadd.name} name='name' onChange={handleChange}/>
                         </div>
                         <div className='item_inputs d-flex justify-content-between px-0 mx-0 col-12 pt-2'>Second Name
                         <SearchDropDown id="second_name" addNew={true} setNew={addOption} options={listItem}
                          {... { showDropdown, setShowDropdown }} setDataValue={setItemAdd} selectedValue={setItemAdd.name}/>
                         </div>
                         <div className='item_inputs d-flex justify-content-between px-0 mx-0 col-12 pt-2'>Type
-                        <SearchDropDown id="type" addNew={true} setNew={addOption} options={listItem}
+                        <SearchDropDown id="types" setNew={addOption} options={listItem}
                          {... { showDropdown, setShowDropdown }} setDataValue={setItemAdd} selectedValue={setItemAdd.name}/>
+                            {/* <select type='select' className='item_input col-6 col-7'
+                                name='rent_type'>
+                                <option value='PRODUCT'>PRODUCT</option>
+                                <option value='RAW MATERIAL'>RAW MATERIAL</option>
+                                <option value='SERVICE'>SERVICE</option>
+                            </select> */}
                         </div>
                         <div className='item_inputs d-flex justify-content-between px-0 mx-0 col-12 pt-2'>Category
                         <SearchDropDown id="category" addNew={true} setNew={addOption} options={listItem}
@@ -212,8 +261,8 @@ const ItemAdd = () =>{
                         <SearchDropDown id="sub_category" addNew={true} setNew={addOption} options={listItem}
                          {... { showDropdown, setShowDropdown }} setDataValue={setItemAdd} selectedValue={setItemAdd.name}/>
                         </div>
-                        <div className='item_inputs d-flex justify-content-between px-0 mx-0 col-12 pt-2'>Company
-                        <SearchDropDown id="company" addNew={true} setNew={addOption} options={listItem}
+                        <div className='item_inputs d-flex justify-content-between px-0 mx-0 col-12 pt-2'>Company*
+                        <SearchDropDown required id="company" addNew={true} setNew={addOption} options={listItem}
                          {... { showDropdown, setShowDropdown }} setDataValue={setItemAdd} selectedValue={setItemAdd.name}/>
                         </div>
 
@@ -240,15 +289,15 @@ const ItemAdd = () =>{
                         </div>
 
                         <div className='item_inputs d-flex justify-content-between px-0 mx-0 col-12 pt-2'>Godown/Rack
-                        <SearchDropDown id="godown_rack" addNew={true} setNew={addOption} options={listItem}
+                        <SearchDropDown id="rack" addNew={true} setNew={addOption} options={listItem}
                          {... { showDropdown, setShowDropdown }} setDataValue={setItemAdd} selectedValue={setItemAdd.name}/>
                         </div>
-                        <div className='item_inputs d-flex justify-content-between px-0 mx-0 col-12 pt-2'>Stock Unit
-                        <SearchDropDown id="stock_unit" addNew={true} setNew={addOption} options={listItem}
+                        <div className='item_inputs d-flex justify-content-between px-0 mx-0 col-12 pt-2'>Stock Unit*
+                        <SearchDropDown required id="unit" addNew={true} setNew={addOption} options={listItem}
                          {... { showDropdown, setShowDropdown }} setDataValue={setItemAdd} selectedValue={setItemAdd.name}/>
                         </div>
-                        <div className='item_inputs d-flex justify-content-between px-0 mx-0 col-12 pt-2'>Transaction Unit
-                        <SearchDropDown id="transaction_unit" addNew={true} setNew={addOption} options={listItem}
+                        <div className='item_inputs d-flex justify-content-between px-0 mx-0 col-12 pt-2'>Transaction Unit*
+                        <SearchDropDown required id="transaction_unit" addNew={true} setNew={addOption} options={listItem}
                          {... { showDropdown, setShowDropdown }} setDataValue={setItemAdd} selectedValue={setItemAdd.name}/>
                         </div>
                     </div>
@@ -258,99 +307,126 @@ const ItemAdd = () =>{
                     <div className='item_add_form_part2 row mx-0 px-0 me-0 col-6 border-0'>
 
                     <div className="item_add_first_row d-flex justify-content-between px-0 row mx-0 pt-2">
-                        <div className='item_inputs right d-flex mx-0 px-0 col-6'>MRP
-                        <input type='text' className='item_input col-6 col-7'/>
+                        <div className='item_inputs right d-flex mx-0 px-0 col-6'>MRP*
+                        <input required type='number' className='item_input col-6 col-7'
+                        name='mrp_rate' onChange={handleChange}/>
                         </div>
-                        <div className='item_inputs right d-flex px-0 col-6 '>Ret. Rate
-                        <input type='text' className='item_input col-6 col-7'/>
+                        <div className='item_inputs right d-flex px-0 col-6 '>Ret. Rate*
+                        <input required type='number' className='item_input col-6 col-7'
+                        name='retail_rate' onChange={handleChange}/>
                         </div>
                         </div>
                     <div className="item_add_first_row px-0 row mx-0 pt-2">
-                        <div className='item_inputs right d-flex mx-0 px-0 col-6'>WS
-                        <input type='text' className='item_input col-6 col-7'/>
+                        <div className='item_inputs right d-flex mx-0 px-0 col-6'>WS*
+                        <input required type='number' className='item_input col-6 col-7'
+                        name='wholesale_rate' onChange={handleChange}/>
                         </div>
-                        <div className='item_inputs right d-flex px-0 col-6 '>SWS. Rate
-                        <input type='text' className='item_input col-6 col-7'/>
+                        <div className='item_inputs right d-flex px-0 col-6 '>SWS. Rate*
+                        <input required type='number' className='item_input col-6 col-7'
+                        name='super_wholesale_rate' onChange={handleChange}/>
                         </div>
                         </div>
                     <div className="item_add_first_row px-0 row mx-0 pt-2">
                         <div className='item_inputs right d-flex mx-0 px-0 col-6'>QTN
-                        <input type='text' className='item_input col-6 col-7'/>
+                        <input type='number' className='item_input col-6 col-7'
+                        name='quotation_rate' onChange={handleChange}/>
                         </div>
                         <div className='item_inputs right d-flex px-0 col-6 '>Rent
-                        <input type='text' className='item_input col-6 col-7'/>
+                        <input type='number' className='item_input col-6 col-7'
+                        name='rent' onChange={handleChange}/>
                         </div>
                         </div>
                     <div className="item_add_first_row px-0 row mx-0 pt-2">
-                        <div className='item_inputs right d-flex mx-0 px-0 col-6'>P.Rate
-                        <input type='text' className='item_input col-6 col-7'/>
+                        <div className='item_inputs right d-flex mx-0 px-0 col-6'>P.Rate*
+                        <input required type='number' className='item_input col-6 col-7'
+                        name='purchase_rate' onChange={handleChange}/>
                         </div>
-                        <div className='item_inputs right d-flex px-0 col-6 '>Cost
-                        <input type='text' className='item_input col-6 col-7'/>
+                        <div className='item_inputs right d-flex px-0 col-6 '>Cost*
+                        <input required type='number' className='item_input col-6 col-7'
+                        name='cost' onChange={handleChange}/>
                         </div>
                         </div>
                     <div className="item_add_first_row px-0 row mx-0 pt-2">
-                        <div className='item_inputs right d-flex mx-0 px-0 col-6'>Margin %
-                        <input type='text' className='item_input col-6 col-7'/>
+                        <div className='item_inputs right d-flex mx-0 px-0 col-6'>Margin %*
+                        <input required type='number' className='item_input col-6 col-7'
+                        name='margin' onChange={handleChange}/>
                         </div>
-                        <div className='item_inputs right d-flex px-0 col-6 '>Tax/ GST 
-                        <input type='text' className='item_input col-6 col-7'/>
+                        <div className='item_inputs right d-flex px-0 col-6 '>Tax/ GST*
+                        <input required type='number' className='item_input col-6 col-7'
+                        name='tax_gst' onChange={handleChange}/>
                         </div>
                         </div>
                     <div className="item_add_first_row px-0 row mx-0 pt-2">
                         <div className='item_inputs right d-flex mx-0 px-0 col-6'>Cess1
-                        <input type='text' className='item_input col-6 col-7'/>
+                        <input type='number' className='item_input col-6 col-7'
+                        name='cess_1' onChange={handleChange}/>
                         </div>
                         <div className='item_inputs right d-flex px-0 col-6 '>Cess2
-                        <input type='text' className='item_input col-6 col-7'/>
+                        <input type='number' className='item_input col-6 col-7'
+                        name='cess_2' onChange={handleChange}/>
                         </div>
                         </div>
                     <div className="item_add_first_row px-0 row mx-0 pt-2">
                         <div className='item_inputs right d-flex mx-0 px-0 col-6'>P.Disc
-                        <input type='text' className='item_input col-6 col-7'/>
+                        <input type='number' className='item_input col-6 col-7'
+                        name='purchase_discount' onChange={handleChange}/>
                         </div>
                         <div className='item_inputs right d-flex px-0 col-6 '>S.Disc
-                        <input type='text' className='item_input col-6 col-7'/>
+                        <input type='number' className='item_input col-6 col-7'
+                        name='sale_discount' onChange={handleChange}/>
                         </div>
                         </div>
                     <div className="item_add_first_row px-0 row mx-0 pt-2">
                         <div className='item_inputs right d-flex mx-0 px-0 col-6'>UnLd. Charge
-                        <input type='text' className='item_input col-6 col-7'/>
+                        <input type='number' className='item_input col-6 col-7'
+                        name='unload_charge' onChange={handleChange}/>
                         </div>
                         <div className='item_inputs right d-flex px-0 col-6 '>Point
-                        <input type='text' className='item_input col-6 col-7'/>
+                        <input type='number' className='item_input col-6 col-7'
+                        name='point' onChange={handleChange}/>
                         </div>
                         </div>
                     <div className="item_add_first_row px-0 row mx-0 pt-2">
                         <div className='item_inputs right d-flex mx-0 px-0 col-6'>Ld. Charge
-                        <input type='text' className='item_input col-6 col-7'/>
+                        <input type='number' className='item_input col-6 col-7'
+                        name='load_charge' onChange={handleChange}/>
                         </div>
                         <div className='item_inputs right d-flex px-0 col-6 '>Cmsn %
-                        <input type='text' className='item_input col-6 col-7'/>
+                        <input type='number' className='item_input col-6 col-7'
+                        name='commission' onChange={handleChange}/>
                         </div>
                         </div>
                     <div className="item_add_first_row px-0 row mx-0 pt-2">
                         <div className='item_inputs right d-flex mx-0 px-0 col-6'>Qty in Box
-                        <input type='text' className='item_input col-6 col-7'/>
+                        <input type='number' className='item_input col-6 col-7'
+                        name='qty_in_bc' onChange={handleChange}/>
                         </div>
-                        <div className='item_inputs right d-flex px-0 col-6 '>Op. Stock
-                        <input type='text' className='item_input col-6 col-7'/>
+                        <div className='item_inputs right d-flex px-0 col-6 '>Op. Stock*
+                        <input required type='number' className='item_input col-6 col-7'
+                        name='open_stock' onChange={handleChange}/>
                         </div>
                         </div>
                     <div className="item_add_first_row px-0 row mx-0 pt-2">
                         <div className='item_inputs right d-flex mx-0 px-0 col-6'>Dmge
-                        <input type='text' className='item_input col-6 col-7'/>
+                        <input type='number' className='item_input col-6 col-7'
+                        name='damage' onChange={handleChange}/>
                         </div>
                         <div className='item_inputs right d-flex px-0 col-6 '>Dmg. Cost
-                        <input type='text' className='item_input col-6 col-7'/>
+                        <input type='number' className='item_input col-6 col-7'
+                        name='damge_cost' onChange={handleChange}/>
                         </div>
                         </div>
                     <div className="item_add_first_row px-0 row mx-0 pt-2">
                         <div className='item_inputs right d-flex mx-0 px-0 col-6'>Role
-                        <input type='text' className='item_input col-6 col-7'/>
+                        <input type='number' className='item_input col-6 col-7'
+                        name='role' onChange={handleChange}/>
                         </div>
-                        <div className='item_inputs right d-flex px-0 col-6 '>Mcv
-                        <input type='text' className='item_input col-6 col-7'/>
+                        <div className='item_inputs right d-flex px-0 col-6 '>Rent Type
+                        <select type='select' className='item_input col-6 col-7'
+                        name='rent_type'>
+                        <option value='HOUR'>hour</option>
+                        <option value='MONTH'>Month</option>
+                        </select>
                         </div>
                         </div>
 
@@ -362,42 +438,44 @@ const ItemAdd = () =>{
                         <div className='btn bg-black text-light col-5 text-start px-3 py-1'>Unit Conversion</div>
                         <div className='btn bg-black text-light col-5 text-start px-3 py-1'>BarCode</div>
                     </div>
-                    <div className=''>
-                        <div className='checkbox_container d-flex'>
+                    <div className='checkbox col-6'>
+                        <div className='checkbox_container'>
                             <div className="item_add_check  d-flex align-item-center">
                                 <input type='checkbox' name='Blocked' value='Blocked'/>
-                                <label for='Blocked'>Blocked</label>
+                                <label>Blocked</label>
                             </div>
                             <div className="item_add_check  d-flex align-item-center">
                                 <input type='checkbox' name='Blocked' value='Blocked'/>
-                                <label for='Blocked'>Blocked</label>
-                            </div>
-                            <div className="item_add_check  d-flex align-item-center">
-                                <input type='checkbox' className='checkbox' name='Blocked' value='Blocked'/>
-                                <label for='Blocked'>Blocked</label>
+                                <label>Manual Qty in Box</label>
                             </div>
                         </div>
-                        <div className='checkbox_container d-flex'>
+                        <div className='checkbox_container'>
                             <div className="item_add_check  d-flex align-item-center">
-                                <input type='checkbox' name='Blocked' value='Blocked'/>
-                                <label for='Blocked'>Blocked</label>
+                                <input type='checkbox' className='checkbox' name='Blocked' value='Blocked'/>
+                                <label>Gate Pass</label>
                             </div>
                             <div className="item_add_check  d-flex align-item-center">
                                 <input type='checkbox' name='Blocked' value='Blocked'/>
-                                <label for='Blocked'>Blocked</label>
+                                <label>Tax Inclusive</label>
+                            </div>
+                        </div>
+                        <div className='checkbox_container'>
+                            <div className="item_add_check  d-flex align-item-center">
+                                <input type='checkbox' name='Blocked' value='Blocked'/>
+                                <label>Rent Item</label>
                             </div>
                             <div className="item_add_check  d-flex align-item-center">
                                 <input type='checkbox' className='checkbox' name='Blocked' value='Blocked'/>
-                                <label for='Blocked'>Blocked</label>
+                                <label>Repeat</label>
                             </div>
                         </div>
                     </div>
                 </div>
                     <div className='d-flex gap-2 justify-content-end pt-2'>
-                        <div className='clear_btn btn'>Clear</div>
-                        <div className='save_btn btn'>Save</div>
+                        <button type='reset' onClick={handleReset} className='clear_btn btn'>Clear</button>
+                        <button type='submit' className='save_btn btn'>Submit</button>
                     </div>
-            </div>
+            </form>
         </div>
     )
 }
