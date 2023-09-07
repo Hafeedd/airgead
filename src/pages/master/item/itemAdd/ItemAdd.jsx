@@ -17,7 +17,7 @@ const ItemAdd = () =>{
         rent_type:[{label:"HOUR",value:"HOUR"},{label:"MONTH",value:"MONTH"}],
         category:[],
         sub_category:[],
-        company:[],
+        fk_company:[],
         size:[],
         color:[],
         group:[],
@@ -34,7 +34,7 @@ const ItemAdd = () =>{
         types:null,
         category:null,
         sub_category:null,
-        company:null,
+        fk_company:null,
         size:null,
         color:null,
         group:null,
@@ -98,6 +98,9 @@ const ItemAdd = () =>{
             const miniFunct = (data,name) =>{
                 list[name] = []
                 data.map((x)=>{
+                    if(name=='fk_company'){
+                        list[name].push({value:x['id'],label:x['company']})
+                    }else
                     list[name].push({value:x['id'],label:x[name]})
                 })
             }
@@ -112,7 +115,7 @@ const ItemAdd = () =>{
             res = await getSubCategory()
             if(res.success) miniFunct(res.data,'sub_category')
             res = await getCompany()
-            if(res.success) miniFunct(res.data,'company')
+            if(res.success) miniFunct(res.data,'fk_company')
             res = await getSize()
             if(res.success) miniFunct(res.data,'size')
             res = await getColor()
@@ -149,7 +152,7 @@ const ItemAdd = () =>{
                     res = await postCategory(submitData);break;
                 case 'sub_category':
                     res = await postSubCategory(submitData);break;
-                case 'company':
+                case 'fk_company':
                     res = await postCompany(submitData);break;
                 case 'size':
                     res = await postSize(submitData);break;
@@ -181,16 +184,17 @@ const ItemAdd = () =>{
         }else
         setItemAdd(data=>({...data,[e.target.name]:e.target.value}))
     }
-    
+
     const handleSubmit = async (e)=>{
         e.preventDefault()
-        console.log(itemadd.rent)
+        console.log(itemadd)
         try{
-            let res = await postItemAdd(itemadd)
-            if(res.success)
+            let res
+            res = await postItemAdd(itemadd)
+            if(res?.success)
                 Swal.fire('Item Added Successfully','','success')
             else
-                Swal.fire(res.message,'','error')
+                Swal.fire(res?.message,'','error')
         }catch(err){
             Swal.fire('Failed to add item pls try again','','error')
         }
@@ -262,7 +266,7 @@ const ItemAdd = () =>{
                          {... { showDropdown, setShowDropdown }} setDataValue={setItemAdd} selectedValue={setItemAdd.name}/>
                         </div>
                         <div className='item_inputs d-flex justify-content-between px-0 mx-0 col-12 pt-2'>Company*
-                        <SearchDropDown required id="company" addNew={true} setNew={addOption} options={listItem}
+                        <SearchDropDown required id="fk_company" addNew={true} setNew={addOption} options={listItem}
                          {... { showDropdown, setShowDropdown }} setDataValue={setItemAdd} selectedValue={setItemAdd.name}/>
                         </div>
 

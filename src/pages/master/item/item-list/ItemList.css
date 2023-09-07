@@ -61,7 +61,12 @@
 }
 
 .table-scroller{
-    max-height: 30rem;
+    min-height: 20rem;
+    max-height: 25rem;
     overflow-y: scroll;
     overflow-x: visible;
+}
+
+.button{
+    cursor: pointer;
 }

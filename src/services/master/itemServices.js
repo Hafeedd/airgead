@@ -149,9 +149,21 @@ const useItemServices = () =>{
         return response.data
     }
 
-    // itme adding
+    // item adding
     const postItemAdd = async (data) =>{
         const response = await axiosPrivate.post('master/item/created/',data)
+        return response.data
+    }
+
+    // item list
+    const getItemList = async (data) =>{
+        const response = await axiosPrivate.get('master/item/created/')
+        return response.data
+    }
+
+    // item delete
+    const deleteItemList = async (id) =>{
+        const response = await axiosPrivate.delete('master/item/updated/'+id+'/')
         return response.data
     }
 
@@ -181,6 +193,8 @@ const useItemServices = () =>{
         getCategory,
         getType,
         getSecondName,
+        getItemList,
+        deleteItemList
     }
     
 }

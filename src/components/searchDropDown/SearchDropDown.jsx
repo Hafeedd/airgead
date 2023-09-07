@@ -28,8 +28,8 @@ const SearchDropDown = ({
     useEffect(() => {
         if(typeof options[id] != 'object'){
             // console.log("options[id]")
-            // if(id=='transaction_unit')
-            // setTempList([...options['unit'],])
+            // if(id=='fk_company')
+            // setTempList([...options['company'],])
             // else
         setTempList([...options[id],])
         if (selectedValue) {
