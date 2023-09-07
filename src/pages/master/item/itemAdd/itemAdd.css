@@ -3,6 +3,7 @@
     top: 3.5rem;
     background: #F5F5F5;
     padding-left: 1rem;
+    z-index: 4;
 }
 
 .item_add{
@@ -149,7 +150,8 @@
 .clear_btn{
     border-radius: 0.3125rem;
     border: 1px solid #2C2C2C;
-    padding: 0.1rem 2rem;
+    font-size: 12px;
+    padding: 0.5rem 2rem;
 }
 .save_btn{
     border-radius: 0.3125rem;
@@ -157,5 +159,5 @@
     background: #2C2C2C;
     color: white;
     font-size: 12px;
-    padding: 0.1rem 2rem;
+    padding: 0.5rem 2rem;
 }

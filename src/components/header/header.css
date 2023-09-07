@@ -10,6 +10,7 @@
 }
 
 .header{
+    z-index: 4;
     height: 3.5rem;
     top: 0;
     position: sticky;

@@ -1,10 +1,168 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import './itemAdd.css'
 import search from "../../../../assets/icons/search.png"
+import SearchDropDown from '../../../../components/searchDropDown/SearchDropDown'
+import useItemServices from '../../../../services/master/itemServices'
+import Swal from 'sweetalert2'
+import { List } from '@mui/material'
 
 const ItemAdd = () =>{
     const [pageHeadItem,setPageHeadItem] = useState(1)
+    const [showDropdown, setShowDropdown] = useState('')
+    const [listItem,setListItem] = useState({
+        second_name:[],
+        type:[],
+        category:[],
+        sub_category:[],
+        company:[],
+        size:[],
+        color:[],
+        group:[],
+        tax_group:[],
+        godown_rack:[],
+        stock_unit:[],
+        transaction_unit:[],
+    })
+    const [itemadd,setItemAdd] = useState({
+        code:'',
+        hsn:'',
+        name:'',
+        second_name:'',
+        type:'',
+        category:'',
+        sub_category:'',
+        company:'',
+        size:'',
+        color:'',
+        group:'',
+        tax_group:'',
+        godown_rack:'',
+        stock_unit:'',
+        transaction_unit:'',
+        mrp_rate:'',
+        retail_rate:'',
+        wholesale_rate:'',
+        super_wholesale_rate:'',
+        quotation_rate:'',
+        rent:'',
+        rent_type:'',
+        purchase_rate:'',
+        cost:'',
+        margin:'',
+        tax_gst:'',
+        cess_1:'',
+        cess_2:'',
+        purchase_discount:'',
+        sale_discount:'',
+        unload_charge:'',
+        load_charge:'',
+        point:'',
+        commission:'',
+        damage:'',
+        damge_cost:'',
+        blocked:false,
+        tax_inclusive:false,
+        manuel_qty_in_bc:false,
+        rent_item:false,
+        gate_pass:false,
+        barcode:'',
+    })
 
+    useEffect(()=>{
+        getData();
+    },[ItemAdd, ])
+
+    const {
+        postBarcode,postUnit,
+        postRack,postTaxGroup,
+        postGroup,postColor,
+        postSize,postCompany,
+        postSubCategory,postCategory,
+        postType,postSecondName,
+        getBarcode,getUnit,
+        getRack,getTaxGroup,
+        getGroup,getColor,
+        getSize,getCompany,
+        getSubCategory,getCategory,
+        getType,getSecondName,} = useItemServices()
+
+        const getData = async () => {
+            let list = {}
+            const miniFunct = (data,name) =>{
+                list[name] = []
+                data.map((x)=>{
+                    list[name].push({value:x[name],label:x[name]})
+                })
+            }
+            let res
+            res = await getSecondName()
+            if(res.success) miniFunct(res.data,'second_name')
+            res = await getType()
+            if(res.success) miniFunct(res.data,'type')
+            res = await getCategory()
+            if(res.success) miniFunct(res.data,'category')
+            res = await getSubCategory()
+            if(res.success) miniFunct(res.data,'sub_category')
+            res = await getCompany()
+            if(res.success) miniFunct(res.data,'company')
+            res = await getSize()
+            if(res.success) miniFunct(res.data,'size')
+            res = await getColor()
+            if(res.success) miniFunct(res.data,'color')
+            res = await getGroup()
+            if(res.success) miniFunct(res.data,'group')
+            res = await getTaxGroup()
+            if(res.success) miniFunct(res.data,'tax_group')
+            res = await getRack()
+            if(res.success) miniFunct(res.data,'godown_rack')
+            res = await getUnit()
+            if(res.success) miniFunct(res.data,'stock_unit')
+            res = await getBarcode()
+            if(res.success) miniFunct(res.data,'transaction_unit')
+
+            setListItem(list)
+            console.log(list)
+        }
+
+    const addOption = async (e,data,state) =>{
+        e.preventDefault()
+        let value = data.value
+        let res
+        try{
+            let submitData = {[state]:value}
+            switch(state){
+                case 'second_name': 
+                    res = await postSecondName(submitData);break;
+                case 'type':
+                    res = await postType(submitData);break;
+                case 'category':
+                    res = await postCategory(submitData);break;
+                case 'sub_category':
+                    res = await postSubCategory(submitData);break;
+                case 'company':
+                    res = await postCompany(submitData);break;
+                case 'size':
+                    res = await postSize(submitData);break;
+                case 'color':
+                    res = await postColor(submitData);break;
+                case 'group':
+                    res = await postGroup(submitData);break;
+                case 'tax_group':
+                    res = await postTaxGroup(submitData);break;
+                case 'godown_rack':
+                    res = await postRack(submitData);break;
+                case 'stock_unit':
+                    res = await postUnit(submitData);break;
+                case 'transaction_unit':
+                    res = await postBarcode(submitData);break;
+            }
+            if(res.success){
+                Swal.fire('Option Added Successfylly','','success')
+            }
+    }catch(err){
+            Swal.fire('Failed to add option','','error')
+    }
+    }
 
     return(
         <div className='item_add'>
@@ -39,49 +197,60 @@ const ItemAdd = () =>{
                         <input type='text' className='item_input names'/>
                         </div>
                         <div className='item_inputs d-flex justify-content-between px-0 mx-0 col-12 pt-2'>Second Name
-                        <input type='text' className='item_input names'/>
+                        <SearchDropDown id="second_name" addNew={true} setNew={addOption} options={listItem}
+                         {... { showDropdown, setShowDropdown }} setDataValue={setItemAdd} selectedValue={setItemAdd.name}/>
                         </div>
                         <div className='item_inputs d-flex justify-content-between px-0 mx-0 col-12 pt-2'>Type
-                        <input type='text' className='item_input names'/>
+                        <SearchDropDown id="type" addNew={true} setNew={addOption} options={listItem}
+                         {... { showDropdown, setShowDropdown }} setDataValue={setItemAdd} selectedValue={setItemAdd.name}/>
                         </div>
                         <div className='item_inputs d-flex justify-content-between px-0 mx-0 col-12 pt-2'>Category
-                        <input type='text' className='item_input names'/>
+                        <SearchDropDown id="category" addNew={true} setNew={addOption} options={listItem}
+                         {... { showDropdown, setShowDropdown }} setDataValue={setItemAdd} selectedValue={setItemAdd.name}/>
                         </div>
                         <div className='item_inputs d-flex justify-content-between px-0 mx-0 col-12 pt-2'>Sub Category
-                        <input type='text' className='item_input names'/>
+                        <SearchDropDown id="sub_category" addNew={true} setNew={addOption} options={listItem}
+                         {... { showDropdown, setShowDropdown }} setDataValue={setItemAdd} selectedValue={setItemAdd.name}/>
                         </div>
                         <div className='item_inputs d-flex justify-content-between px-0 mx-0 col-12 pt-2'>Company
-                        <input type='text' className='item_input names'/>
+                        <SearchDropDown id="company" addNew={true} setNew={addOption} options={listItem}
+                         {... { showDropdown, setShowDropdown }} setDataValue={setItemAdd} selectedValue={setItemAdd.name}/>
                         </div>
 
                         <div className="item_add_first_row px-0 row mx-0 pt-2">
                         <div className='item_inputs d-flex mx-0 px-0 col-6'>Size
-                        <input type='text' className='item_input col-7 col-8'/>
+                        <SearchDropDown id="size" addNew={true} setNew={addOption} options={listItem} containerClass="small"
+                         {... { showDropdown, setShowDropdown }} setDataValue={setItemAdd} selectedValue={setItemAdd.name}/>
                         </div>
                         <div className='item_inputs d-flex px-0 col-6 align-itmes-end'>Color
-                        <input type='text' className='item_input col-7 col-8'/>
+                        <SearchDropDown id="color" addNew={true} setNew={addOption} options={listItem} containerClass="small"
+                         {... { showDropdown, setShowDropdown }} setDataValue={setItemAdd} selectedValue={setItemAdd.name}/>
                         </div>
                         </div>
                         
                         <div className="item_add_first_row px-0 row mx-0 pt-2">
                         <div className='item_inputs d-flex mx-0 px-0 col-6'>Group
-                        <input type='text' className='item_input col-7 col-8'/>
+                        <SearchDropDown id="group" addNew={true} setNew={addOption} options={listItem} containerClass="small"
+                         {... { showDropdown, setShowDropdown }} setDataValue={setItemAdd} selectedValue={setItemAdd.name}/>
                         </div>
                         <div className='item_inputs d-flex px-0 col-6 align-itmes-end'>Tax Group
-                        <input type='text' className='item_input col-7 col-8'/>
+                        <SearchDropDown id="tax_group" addNew={true} setNew={addOption} options={listItem} containerClass="small"
+                         {... { showDropdown, setShowDropdown }} setDataValue={setItemAdd} selectedValue={setItemAdd.name}/>
                         </div>
                         </div>
 
                         <div className='item_inputs d-flex justify-content-between px-0 mx-0 col-12 pt-2'>Godown/Rack
-                        <input type='text' className='item_input names'/>
+                        <SearchDropDown id="godown_rack" addNew={true} setNew={addOption} options={listItem}
+                         {... { showDropdown, setShowDropdown }} setDataValue={setItemAdd} selectedValue={setItemAdd.name}/>
                         </div>
                         <div className='item_inputs d-flex justify-content-between px-0 mx-0 col-12 pt-2'>Stock Unit
-                        <input type='text' className='item_input names'/>
+                        <SearchDropDown id="stock_unit" addNew={true} setNew={addOption} options={listItem}
+                         {... { showDropdown, setShowDropdown }} setDataValue={setItemAdd} selectedValue={setItemAdd.name}/>
                         </div>
                         <div className='item_inputs d-flex justify-content-between px-0 mx-0 col-12 pt-2'>Transaction Unit
-                        <input type='text' className='item_input names'/>
+                        <SearchDropDown id="transaction_unit" addNew={true} setNew={addOption} options={listItem}
+                         {... { showDropdown, setShowDropdown }} setDataValue={setItemAdd} selectedValue={setItemAdd.name}/>
                         </div>
-
                     </div>
 
                 {/* item rate ----------------------------------------------------------------------------------------------------------- */}
