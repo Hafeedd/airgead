@@ -4,98 +4,98 @@ import { axiosPrivate } from "../../api/axios"
 const useCustomerServices = () => {
 
 // POST Services--------------------------------------------------------------
-    // group
+    // Route
     const postRoute = async(data) =>{
         const response = await axiosPrivate.post('master/route/created/',data)
         return response.data
     }
 
-    // group
+    // City
     const postCity = async(data) =>{
         const response = await axiosPrivate.post('master/city/created/',data)
         return response.data
     } 
 
-    // group
+    // Town
     const postTown = async(data) =>{
         const response = await axiosPrivate.post('master/town/created/',data)
         return response.data
     }
 
-    // group
+    // District
     const postDistrict = async(data) =>{
         const response = await axiosPrivate.post('master/district/created/',data)
         return response.data
     }
 
-    // group
+    // rateType
     const postRateType = async(data) =>{
         const response = await axiosPrivate.post('master/rate_type/created/',data)
         return response.data
     }
 
-    // group
+    // types
     const postTypes = async(data) =>{
         const response = await axiosPrivate.post('master/types/created/',data)
         return response.data
     }
 
-    // group
+    // supplier
     const postSupplier = async(data) =>{
         const response = await axiosPrivate.post('master/supplier/created/',data)
         return response.data
     }
 
-    // group
+    // customer
     const postCustomer = async(data) =>{
         const response = await axiosPrivate.post('master/city/created/',data)
         return response.data
     }
 
 // GET Services------------------------------------------------------------------
-    // group
+    // route
     const getRoute = async(data) =>{
         const response = await axiosPrivate.get('master/route/created/',data)
         return response.data
     }
 
-    // group
+    // city
     const getCity = async(data) =>{
         const response = await axiosPrivate.get('master/city/created/',data)
         return response.data
     } 
 
-    // group
+    // town
     const getTown = async(data) =>{
         const response = await axiosPrivate.get('master/town/created/',data)
         return response.data
     }
 
-    // group
+    // district
     const getDistrict = async(data) =>{
         const response = await axiosPrivate.get('master/district/created/',data)
         return response.data
     }
 
-    // group
+    // rateType
     const getRateType = async(data) =>{
         const response = await axiosPrivate.get('master/rate_type/created/',data)
         return response.data
     }
 
-    // group
+    // types
     const getTypes = async(data) =>{
         const response = await axiosPrivate.get('master/types/created/',data)
         return response.data
     }
 
-    // group
+    // supplier
     const getSupplier = async(data) =>{
         const response = await axiosPrivate.get('master/supplier/created/',data)
         return response.data
     }
 
-    // group
+    // customer
     const getCustomer = async(data) =>{
         const response = await axiosPrivate.get('master/city/created/',data)
         return response.data
@@ -103,99 +103,99 @@ const useCustomerServices = () => {
 
 // put Services----------------------------------------------------------------------
 
-    // group
+    // rote
     const putRoute = async(id,data) =>{
         const response = await axiosPrivate.put(`master/route/updated/${id}/`,data)
         return response.data
     }
 
-    // group
+    // city
     const putCity = async(id,data) =>{
         const response = await axiosPrivate.put(`master/city/updated/${id}/`,data)
         return response.data
     }
     
-    // group
+    // town
     const putTown = async(id,data) =>{
         const response = await axiosPrivate.put(`master/town/updated/${id}/`,data)
         return response.data
     }
     
-    // group
+    // district
     const putDistrict = async(id,data) =>{
         const response = await axiosPrivate.put(`master/district/updated/${id}/`,data)
         return response.data
     }
     
-    // group
+    // rateType
     const putRateType = async(id,data) =>{
         const response = await axiosPrivate.put(`master/rate_type/updated/${id}/`,data)
         return response.data
     }
     
-    // group
+    // types
     const putTypes = async(id,data) =>{
         const response = await axiosPrivate.put(`master/rate_type/updated/${id}/`,data)
         return response.data
     }
     
-    // group
+    // supplier
     const putSupplier = async(id,data) =>{
         const response = await axiosPrivate.put(`master/supplier/updated/${id}/`,data)
         return response.data
     }
     
-    // group
+    // customer
     const putCustomer = async(id,data) =>{
         const response = await axiosPrivate.put(`master/customer/updated/${id}/`,data)
         return response.data
     }
-// delte Services----------------------------------------------------------------------
+// delete Services----------------------------------------------------------------------
 
 
-    // group
+    // route
     const deleteRoute = async(id) =>{
         const response = await axiosPrivate.delete(`master/route/updated/${id}/`)
         return response.data
     }
 
-    // group
+    // city
     const deleteCity = async(id) =>{
         const response = await axiosPrivate.delete(`master/city/updated/${id}/`)
         return response.data
     }
     
-    // group
+    // town
     const deleteTown = async(id) =>{
         const response = await axiosPrivate.delete(`master/town/updated/${id}/`)
         return response.data
     }
     
-    // group
+    // district
     const deleteDistrict = async(id) =>{
         const response = await axiosPrivate.delete(`master/district/updated/${id}/`)
         return response.data
     }
     
-    // group
+    // rateType
     const deleteRateType = async(id) =>{
         const response = await axiosPrivate.delete(`master/rate_type/updated/${id}/`)
         return response.data
     }
     
-    // group
+    // types
     const deleteTypes = async(id) =>{
         const response = await axiosPrivate.delete(`master/rate_type/updated/${id}/`)
         return response.data
     }
     
-    // group
+    // supplier
     const deleteSupplier = async(id) =>{
         const response = await axiosPrivate.delete(`master/supplier/updated/${id}/`)
         return response.data
     }
     
-    // group
+    // customer
     const deleteCustomer = async(id) =>{
         const response = await axiosPrivate.delete(`master/customer/updated/${id}/`)
         return response.data
@@ -213,6 +213,7 @@ const useCustomerServices = () => {
     postTypes,
     postSupplier,
     postCustomer,
+
     // get
     getRoute,
     getCity,
@@ -222,6 +223,7 @@ const useCustomerServices = () => {
     getTypes,
     getSupplier,
     getCustomer,
+
     // put
     putRoute,
     putCity,
@@ -231,6 +233,7 @@ const useCustomerServices = () => {
     putTypes,
     putSupplier,
     putCustomer,
+
     // delete
     deleteRoute,
     deleteCity,
