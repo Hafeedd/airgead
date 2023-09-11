@@ -11,7 +11,7 @@
     min-height: 1.5rem;
     max-height: 1.5rem;
     width: 100%;
-    transition: all 0.5s, z-index 0s 0.5s;
+    transition: all 0.0s, z-index 0s 0.5s;
     border-radius: 0.3125rem;
     border: 1px solid #D0D0D0;
     padding: 0rem 0.75rem 0rem 0.75rem;
@@ -143,4 +143,7 @@
 }
 .search_container.small{
     width: 8.5rem ;
+}
+.search_container.large{
+    width: 20.5rem ;
 }

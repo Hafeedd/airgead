@@ -232,3 +232,8 @@ input[type=number] {
     background: #727272;
     border: none;
 }
+
+.credit::placeholder{
+    text-align: right;
+    font-size: 8px;
+}

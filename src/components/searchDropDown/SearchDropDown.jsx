@@ -16,7 +16,6 @@ const SearchDropDown = ({
     addNew,
     setNew
 }) => {
-    
     const [show, setShow] = useState(showDropdown === id ? true : false)
     const [selected, setSelected] = useState('')
     const [tempList, setTempList] = useState(options[id])
