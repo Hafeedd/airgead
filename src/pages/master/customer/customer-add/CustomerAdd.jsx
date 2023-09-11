@@ -290,7 +290,7 @@ const CustomerAdd = () => {
                                 <div className='btn btn-sm btn-outline-dark w-100'>Clear</div>
                             </div>
                             <div className='mx-0 px-1 col-4'>
-                                <div className='btn btn-sm btn-dark w-100'>Save</div>
+                                <div onClick={handleSubmit} className='btn btn-sm btn-dark w-100'>Save</div>
                             </div>
                         </div>
 
