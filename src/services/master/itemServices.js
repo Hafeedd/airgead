@@ -10,43 +10,43 @@ const useItemServices = () =>{
         return response.data
     }
 
-    // second name
+    //  type
     const postType = async(data) =>{
         const response = await axiosPrivate.post('master/types/created/',data)
         return response.data
     }
 
-    // second name
+    // category
     const postCategory = async(data) =>{
         const response = await axiosPrivate.post('master/category/created/',data)
         return response.data
     }
 
-    // second name
+    // subCategory
     const postSubCategory = async(data) =>{
         const response = await axiosPrivate.post('master/sub_category/created/',data)
         return response.data
     }
 
-    // second name
+    // Company
     const postCompany = async(data) =>{
         const response = await axiosPrivate.post('master/company/created/',data)
         return response.data
     }
 
-    // second name
+    // size
     const postSize = async(data) =>{
         const response = await axiosPrivate.post('master/size/created/',data)
         return response.data
     }
 
-    // second name
+    // color
     const postColor = async(data) =>{
         const response = await axiosPrivate.post('master/color/created/',data)
         return response.data
     }
 
-    // second name
+    // group
     const postGroup = async(data) =>{
         const response = await axiosPrivate.post('master/group/created/',data)
         return response.data
