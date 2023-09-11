@@ -1,26 +1,10 @@
 import { useState } from 'react'
 import './itemAdd.css'
-import useItemServices from '../../../../services/master/itemServices'
-import Swal from 'sweetalert2'
 import { ItemAddForm } from './components/AddForm'
 // import { List } from '@mui/material'
 
 const ItemAdd = () =>{
     const [pageHeadItem,setPageHeadItem] = useState(1)
-    const {
-        // postBarcode,postUnit,
-        // postRack,postTaxGroup,
-        // postGroup,postColor,
-        // postSize,postCompany,
-        // postSubCategory,postCategory,
-        // postType,postSecondName,
-        // getBarcode,getUnit,
-        // getRack,getTaxGroup,
-        // getGroup,getColor,
-        // getSize,getCompany,
-        // getSubCategory,getCategory,
-        // getType,getSecondName,
-        postItemAdd} = useItemServices()
 
     return(
         <div className='item_add'>

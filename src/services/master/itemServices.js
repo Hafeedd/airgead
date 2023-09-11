@@ -154,6 +154,12 @@ const useItemServices = () =>{
         const response = await axiosPrivate.post('master/item/created/',data)
         return response.data
     }
+ 
+    // item delete
+    const deleteItem = async (id) =>{
+        const response = await axiosPrivate.delete('master/item/updated/'+id+"/")
+        return response.data
+    }
 
     // item list
     const getItemList = async (data) =>{
@@ -175,11 +181,10 @@ const useItemServices = () =>{
         return response.data
     }
     // unit conversion 
-    const getUnitConvertion = async (id,data) =>{
-        const response = await axiosPrivate.post('master/unit_conversion/created/'+id+'/',data)
-        return response.data
-    }
-
+    // const getUnitConvertion = async (id,data) =>{
+    //     const response = await axiosPrivate.post('master/unit_conversion/created/'+id+'/',data)
+    //     return response.data
+    // }
 
     return{
         postUnitConvertion,
@@ -209,7 +214,8 @@ const useItemServices = () =>{
         getType,
         getSecondName,
         getItemList,
-        deleteItemList
+        deleteItemList,
+        deleteItem,
     }
     
 }
