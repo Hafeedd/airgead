@@ -1,7 +1,7 @@
 import './sidebar.css'
-import userBlue from '../../assets/icons/userBlue.png'
-import arrowBlue from '../../assets/icons/arrowBlue.png'
-import reports from '../../assets/icons/reports.png'
+import Transaction from '../../assets/icons/transaction.svg'
+import Reports from '../../assets/icons/reports.svg'
+import User from '../../assets/icons/user.svg'
 import { useState } from 'react'
 import { useNavigate } from 'react-router'
 
@@ -12,12 +12,13 @@ const Sidebar = () => {
 
     const navigate = useNavigate()
     return(
-        <div className="sidebar pt-4">
-            <div className="CompanyLogo rounded-5 py-3 mb-5">
+        <div className="sidebar pt-2">
+            <div className="CompanyLogo rounded-5 py-2 mb-5">
                 
             </div>
             <div className='SidebarItems mt-0 mt-5'>
-                <div onClick={()=>setMasterActive(!masterActive)} className={`SidebarItem mb-1 ${masterActive && "active"}`}><img src={userBlue} width={"21px"}/>Master</div>
+                <div onClick={()=>setMasterActive(!masterActive)} className={`SidebarItem mb-1 ${masterActive && "active"}`}>
+                    <img src={User} className='sidebar_icon' width={"25px"}/>Master</div>
                 <div className={`sidebar_span_cont ${!masterActive && "d-none"}`}>
                     <span className='SidebarSpan d-flex ms-5 ps-3'>
                         <div className='SidebarItemText'>Accounts</div>
@@ -35,7 +36,7 @@ const Sidebar = () => {
                         <div className='SidebarItemText'>Vehichle</div>
                     </span>
                     <span className='SidebarSpan d-flex ms-5 ps-3'>
-                        <div className='SidebarItemText'>Items</div>
+                        <div className='SidebarItemText' onClick={()=>navigate('/item-list')}>Items</div>
                     </span>
                     <span className='SidebarSpan d-flex ms-5 ps-3'>
                         <div className='SidebarItemText'>Route</div>
@@ -60,7 +61,8 @@ const Sidebar = () => {
                     </span>
                 </div>
              
-                <div onClick={()=>setReportsActive(!ReportsActive)} className={`SidebarItem mb-1 ${ReportsActive && "active"}`}><img src={arrowBlue} width={"20px"}/>Transactions</div>
+                <div onClick={()=>setReportsActive(!ReportsActive)} className={`SidebarItem mt-3 mb-1 ${ReportsActive && "active"}`}>
+                    <img className='sidebar_icon' src={Transaction} width={"20px"}/>Transactions</div>
                 <div className={`sidebar_span_cont ${!ReportsActive && "d-none"}`}>
                     <span className='SidebarSpan d-flex ms-5 ps-3'>
                         <div className='SidebarItemText'>Accounts</div>
@@ -103,7 +105,8 @@ const Sidebar = () => {
                     </span>
                 </div>
                 
-                <div onClick={()=>setArrowActive(!ArrowActive)} className={`SidebarItem  mb-3 ${ArrowActive && "active"}`}><img className='me-1' src={reports} width={"18px"}/>Reports</div>
+                <div onClick={()=>setArrowActive(!ArrowActive)} className={`SidebarItem mt-3 mb-3 ${ArrowActive && "active"}`}>
+                    <img src={Reports} width={"18px"}/>Reports</div>
                 <div className={`sidebar_span_cont ${!ArrowActive && "d-none"}`}>
                     <span className='SidebarSpan d-flex ms-5 ps-3'>
                         <div className='SidebarItemText'>Accounts</div>

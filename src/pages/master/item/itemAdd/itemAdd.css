@@ -154,17 +154,6 @@ input[type=number] {
     justify-content: space-between;
 }
 
-
-/* .checkbox_container{
-    gap: 9rem;
-} */
-/* .checkbox{
-    color: red;
-    background: red;
-    fill: red;
-    box-shadow: 0px 1px 4px 0px rgba(0, 0, 0, 0.15) inset;
-} */
-
 .clear_btn, .clear_btn:hover{
     border-radius: 0.3125rem;
     border: 1px solid #2C2C2C;
@@ -178,4 +167,68 @@ input[type=number] {
     color: white;
     font-size: 12px;
     padding: 0.5rem 2rem;
+}
+
+.unit_modal{
+    display: flex;
+    /* width: 40rem !important; */
+    align-items: start;
+    justify-content: start;
+}
+
+.unit_modal_body{
+    background: #464646;
+    border-radius: 5px; 
+    height: 12rem;
+}
+
+.table_cont{
+    font-size: 12px;
+}
+
+.custom-table-2 th{
+    width: 8rem;
+    /* border: 1px solid white; */
+    text-align: start;
+    height: 2.125rem;
+    font-size: 0.775rem;
+    font-weight: 500;
+    color: white;
+    vertical-align: middle;
+}
+
+.custom-table-2 td{
+    width: 8rem;
+    text-align: start;
+    font-size: 0.875rem;
+    height: 2.125rem;
+    font-weight: 500;
+    color: white;
+    border: 1.3px solid #464646;
+    background: #727272;
+    vertical-align: middle;
+}
+
+.custom-table-2 td input{
+    background: #727272;
+    outline: none;
+    border: none;
+}
+
+.custom-table-2 tr{
+    border: none
+}
+
+.add_unit_btn, .add_unit_btn:hover{
+    background: #4a00a8;
+    color: white;
+}
+
+.btn-td{
+    width: 5.5rem !important;
+}
+
+.unit_select{
+    background: #727272;
+    border: none;
 }

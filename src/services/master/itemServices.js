@@ -1,4 +1,4 @@
-import { axiosPrivate } from "../../api/axios";
+import axios, { axiosPrivate } from "../../api/axios";
 
 const useItemServices = () =>{
 
@@ -167,7 +167,22 @@ const useItemServices = () =>{
         return response.data
     }
 
+    //unit convertion
+
+    // unit adding
+    const postUnitConvertion = async (id,data) =>{
+        const response = await axiosPrivate.post('master/unit_conversion/created/'+id+'/',data)
+        return response.data
+    }
+    // unit conversion 
+    const getUnitConvertion = async (id,data) =>{
+        const response = await axiosPrivate.post('master/unit_conversion/created/'+id+'/',data)
+        return response.data
+    }
+
+
     return{
+        postUnitConvertion,
         postItemAdd,
         postBarcode,
         postUnit,

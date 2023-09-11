@@ -4,8 +4,6 @@ import { FiChevronDown } from 'react-icons/fi'
 import './searchDropDown.css'
 
 const SearchDropDown = ({
-    // label,
-    // required,
     containerClass,
     placeholder,
     type,
@@ -18,23 +16,19 @@ const SearchDropDown = ({
     addNew,
     setNew
 }) => {
-    // console.log(options[id])
+    
     const [show, setShow] = useState(showDropdown === id ? true : false)
     const [selected, setSelected] = useState('')
-    const [tempList, setTempList] = useState(!options[id])
+    const [tempList, setTempList] = useState(options[id])
     const [search, setSearch] = useState('')
     const dropdownRef = useRef(null)
 
     useEffect(() => {
         if(typeof options[id] != 'object'){
-            // console.log("options[id]")
-            // if(id=='fk_company')
-            // setTempList([...options['company'],])
-            // else
-        setTempList([...options[id],])
-        if (selectedValue) {
-            options[id].map((item)=>{
-                if (item.value==selectedValue){
+            setTempList([...options[id],])
+            if (selectedValue[id]) {
+                options[id].map((item)=>{
+                if (item.value==selectedValue[id]){
                     setSelected(item?.label)
                     setSearch(item?.label)
                 }
@@ -44,50 +38,44 @@ const SearchDropDown = ({
             setSelected('')
             setSearch('')
         }}
-    }, [])
-
+    },[])
+    
     useEffect(() => {
-        console.log(selectedValue)
+        if(id == 'types')
         if(options[id]?.length>0){
-            // if(id=='transaction_unit')
-            // setTempList([...options['unit'],])
-            // else
-        setTempList([...options[id],])
-        if (selectedValue) {
-            if (!selectedValue){
-                handleReset()
-            }
+            setTempList([...options[id],])
+        // if(id === 'types')
+        if (selectedValue[id]) {
             options[id].map((item)=>{
-                if (item.value==selectedValue){
+                if (item.value==selectedValue[id]){
                     setSelected(item?.label)
                     setSearch(item?.label)
                 }
             })
         }
         else{
-            setSelected('')
-            setSearch('')
+            handleReset()
         }}
     }, [selectedValue])
 
     useEffect(() => {
         if(options[id]?.length){
             if(id == 'transaction_unit')
-        setTempList([...options['unit'],])
+            setTempList([...options['unit'],])
         else
         setTempList([...options[id],])
-        if (selectedValue) {
-            options[id].map((item)=>{
-                if (item.value==selectedValue){
-                    setSelected(item?.label)
-                    setSearch(item?.label)
-                }
-            })
-        }
-        else{
-            setSelected('')
-            setSearch('')
-        }}
+    if (selectedValue[id]) {
+        options[id].map((item)=>{
+            if (item.value==selectedValue[id]){
+                setSelected(item?.label)
+                setSearch(item?.label)
+            }
+        })
+    }
+    else{
+        setSelected('')
+        setSearch('')
+    }}
     }, [options])
 
     useEffect(() => {
@@ -110,7 +98,6 @@ const SearchDropDown = ({
         }
     }
 
-
     const handleSearch = (e) => {
         setSearch(e.target.value)
         setShow(true)
@@ -124,6 +111,7 @@ const SearchDropDown = ({
         setSelected(search)
         setNew(e,data,id)
         setShow(false)
+        setDataValue((data)=>({...data, [id]:search}))
         setShowDropdown('')
     }
 
@@ -137,16 +125,16 @@ const SearchDropDown = ({
         setDataValue((data)=>({...data, [id]:item.label}))
         else
         setDataValue((data)=>({...data, [id]:item.value}))
-        
     }
+
     const handleReset = () => {
         dropdownRef.current.scrollTo({ top: 0, behavior: 'smooth' })
         setSelected(null)
-        setDataValue(data=>({...data,['id']:null}))
         setShowDropdown('')
         setShow(false)
         setSearch('')
     }
+
     return (
         <Form.Group
             className={`search_container ${containerClass}`}
