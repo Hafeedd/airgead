@@ -17,7 +17,7 @@ export const ItemAddForm = ({edit}) =>{
         qty:null,
     })
     const [barcode, setBarcode] = useState({
-        code:null,
+        b_code:null,
         expiry:null,
     })
     const [listItem,setListItem] = useState({
@@ -223,7 +223,7 @@ export const ItemAddForm = ({edit}) =>{
                     Swal.fire(res3?.message,'','error')
                 if(!res3?.success||!res2?.success)
                     await deleteItem(res?.data?.id)
-                
+
                 Swal.fire('Item Added Successfully','','success')
             }
             else
@@ -234,7 +234,7 @@ export const ItemAddForm = ({edit}) =>{
     }
 
     const handleChange = (e) =>{
-        if(e.target.name === 'code' || e.target.name === 'expiry')
+        if(e.target.name === 'b_code' || e.target.name === 'expiry')
             setBarcode(data=>({...data,[e.target.name]:e.target.value}))
         if(e.target.name === 'qty')
             setUnitConv(data=>({...data,[e.target.name]:e.target.value}))
@@ -548,7 +548,7 @@ export const ItemAddForm = ({edit}) =>{
                                     </thead>
                                     <tbody className='rounded-3'>
                                         <tr>
-                                            <td><input onChange={handleChange} name='code' value={barcode.code} type='text' className='w-100 text-light'/></td>
+                                            <td><input onChange={handleChange} name={barcodeShow?'b_code':'qty'} value={barcodeShow?barcode.code:unitConv.qty} type='text' className='w-100 text-light'/></td>
                                             {/* <td><input onChange={handleChange} name='unit' value={unitConv.unit} type='text' className='w-100'/></td> */}
                                             <td>
                                                 {!barcodeShow?<select type='select' onChange={handleChange} className='unit_select text-light w-100' name='unit_conv'>
@@ -559,7 +559,7 @@ export const ItemAddForm = ({edit}) =>{
                                                 <input onChange={handleChange} name='mrp_rate' value={itemadd.mrp_rate} type='number' className='w-100 text-light'/>}
                                             </td>
                                             <td><input onChange={handleChange} name='retail_rate' value={itemadd.retail_rate} type='number' className='w-100 text-light'/></td>
-                                            <td><input onChange={handleChange} name='expiry' value={barcode.expiry} type={barcodeShow?'date':'number'} className='w-100 text-light'/></td>
+                                            <td><input onChange={handleChange} name={barcodeShow?'expiry':'mrp_rate'} value={barcodeShow?barcode.expiry:itemadd.mrp_rate} type={barcodeShow?'date':'number'} className='w-100 text-light'/></td>
                                             <th className='col col-1 cursor text-center'>
                                                 <img src={deleteBtn} alt="deletebtn"/>
                                             </th>
