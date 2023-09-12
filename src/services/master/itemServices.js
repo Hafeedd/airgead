@@ -71,8 +71,8 @@ const useItemServices = () =>{
     }
 
     // second name
-    const postBarcode = async(data) =>{
-        const response = await axiosPrivate.post('master/barcode/created/',data)
+    const postBarcode = async(id,data) =>{
+        const response = await axiosPrivate.post('master/barcode/created/'+id+'/',data)
         return response.data
     }
     // api for listing options
