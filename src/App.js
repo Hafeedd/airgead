@@ -5,6 +5,7 @@ import ItemAdd from "./pages/master/item/itemAdd/ItemAdd";
 import CustomerAdd from "./pages/master/customer/customer-add/CustomerAdd";
 import SupplierAdd from "./pages/master/supplier/supplier-add/SupplierAdd";
 import ItemList from "./pages/master/item/item-list/ItemList";
+import CustomerList from "./pages/master/customer/customer-list/CustomerList";
 
 function App() {
   return (
@@ -14,7 +15,7 @@ function App() {
           <Route element={<Outlet/>}>
             <Route index element={<ItemAdd/>}/>
             <Route path="/item-list" element={<ItemList/>}/>
-            <Route path="/customer-list" element={<ItemList/>}/>
+            <Route path="/customer-list" element={<CustomerList/>}/>
             <Route path="/customer-add" element={<CustomerAdd/>}/>
             <Route path="/supplier-add" element={<SupplierAdd/>}/>
           </Route>

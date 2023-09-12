@@ -1,172 +1,169 @@
-import React, { useState } from 'react'
-import CustomerAddForm from './components/CustomerAddForm'
+import React, { useEffect, useState } from 'react'
+import Swal from 'sweetalert2'
+import useCustomerServices from '../../../../../services/master/customerServices'
+import SearchDropDown from '../../../../../components/searchDropDown/SearchDropDown'
 
 
-const CustomerAdd = () => {
-    const [pageHeadItem, setPageHeadItem] = useState(1)
-    // const [showDropdown, setShowDropdown ] = useState(1)
-    // const [listItem, setLisItem] = useState({
-    //     district:[],
-    //     route:[],
-    //     city:[],
-    //     town:[],
-    //     types:[],
-    //     rate_types:[],
-    //     bill_type:[],
-    // })
+const CustomerAddForm = ({edit}) => {
 
-    // console.log(listItem)
+    const [showDropdown, setShowDropdown ] = useState('')
+    const [listItem, setLisItem] = useState({
+        district:[],
+        route:[],
+        city:[],
+        town:[],
+        types:[],
+        rate_types:[],
+        bill_type:[],
+    })
 
-    // const [customerAdd, setCustomerAdd] = useState({
-    //     code:null,
-    //     name:null,
-    //     address:null,
-    //     post:null,
-    //     pin:null,
-    //     pin_distance:null,
-    //     contact_person:null,
-    //     email:null,
-    //     mobile:null,
-    //     gst_in:null,
-    //     disc:null,
-    //     remark:null,
-    //     opening_balance:null,
-    //     payment_type:null,
-    //     district:null,
-    //     route:null,
-    //     city:null,
-    //     town:null,
-    //     types:null,
-    //     rate_types:null,
-    //     bill_type:null,
-    //     credit_limit_in_amt:null,
-    //     credit_limit_in_days:null,
-    // })
+    console.log(listItem)
 
-    // const {
-    //     postRoute,
-    //     postCity,
-    //     postTown,
-    //     postDistrict,
-    //     postRateType,
-    //     postTypes,
-    //     postCustomer,
-    //     getRoute,
-    //     getCity,
-    //     getTown,
-    //     getDistrict,
-    //     getRateType,
-    //     getTypes,
-    // } = useCustomerServices()
+    const [customerAdd, setCustomerAdd] = useState({
+        code:null,
+        name:null,
+        address:null,
+        post:null,
+        pin:null,
+        pin_distance:null,
+        contact_person:null,
+        email:null,
+        mobile:null,
+        gst_in:null,
+        disc:null,
+        remark:null,
+        opening_balance:null,
+        payment_type:null,
+        district:null,
+        route:null,
+        city:null,
+        town:null,
+        types:null,
+        rate_types:null,
+        bill_type:null,
+        credit_limit_in_amt:null,
+        credit_limit_in_days:null,
+    })
 
-    // useEffect(()=>{
-    //     getData()
-    // },[])
+    const {
+        postRoute,
+        postCity,
+        postTown,
+        postDistrict,
+        postRateType,
+        postTypes,
+        postCustomer,
+        getRoute,
+        getCity,
+        getTown,
+        getDistrict,
+        getRateType,
+        getTypes,
+    } = useCustomerServices()
 
-    // const getData =async () =>{
-    //     let list = {}
-    //     const miniFunct = (data,name) =>{
-    //         // if(name.match(/^/))
-    //         // name = name.split("").slice(3,).join("")
-    //         list[name] = []
-    //         data.map((x)=>{
-    //             list[name].push({value:x['id'],label:x[name]})
-    //         })
-    //     }
-    //     try{
-    //     let res
-    //     res = await getDistrict()
-    //     if(res.success) miniFunct(res.data,'district')
-    //     res = await getRoute()
-    //     if(res.success) miniFunct(res.data,'route')
-    //     res = await getCity()
-    //     if(res.success) miniFunct(res.data,'city')
-    //     res = await getTown()
-    //     if(res.success) miniFunct(res.data,'town')
-    //     res = await getTypes()
-    //     if(res.success) miniFunct(res.data,'types')
-    //     res = await getRateType()
-    //     if(res.success) miniFunct(res.data,'rate_types')
-    //     // res = await getbilltypes()
-    //     // if(res.success) miniFunct(res.data,'bill_type')
+    useEffect(()=>{
+        getData()
+    },[])
 
-    //     setLisItem(list)
-    //     }catch(err){
-    //         // console.log(err)
-    //     }
-    // }
+    const getData =async () =>{
+        let list = {}
+        const miniFunct = (data,name) =>{
+            // if(name.match(/^/))
+            // name = name.split("").slice(3,).join("")
+            list[name] = []
+            data.map((x)=>{
+                list[name].push({value:x['id'],label:x[name]})
+            })
+        }
+        try{
+        let res
+        res = await getDistrict()
+        if(res.success) miniFunct(res.data,'district')
+        res = await getRoute()
+        if(res.success) miniFunct(res.data,'route')
+        res = await getCity()
+        if(res.success) miniFunct(res.data,'city')
+        res = await getTown()
+        if(res.success) miniFunct(res.data,'town')
+        res = await getTypes()
+        if(res.success) miniFunct(res.data,'types')
+        res = await getRateType()
+        if(res.success) miniFunct(res.data,'rate_types')
+        // res = await getbilltypes()
+        // if(res.success) miniFunct(res.data,'bill_type')
 
-    // const addNewOption = async (e,data,state) =>{
-    //     e.preventDefault()
-    //     // if(state.match(/^/)){
-    //     //     let x = state.split("")
-    //     //     x.splice(0,3)
-    //     //     state = x.join("")}
-    //         console.log(state)
-    //     let value = data.value
-    //     let res
-    //     try{
-    //         let submitData = {[state]:value}
-    //         switch(state){
-    //             case 'route':
-    //                 res = await postRoute(submitData);break;
-    //             case 'city':
-    //                 res = await postCity(submitData);break;
-    //             case 'town':
-    //                 res = await postTown(submitData);break;
-    //             case 'district':
-    //                 res = await postDistrict(submitData);break;
-    //             case 'types':
-    //                 res = await postTypes(submitData);break;
-    //             case 'rate_types':
-    //                 res = await postRateType(submitData);break;
-    //             case 'bill_type':
-    //                 // res = await postBill(submitData);break;
-    //         }
-    //         if(res.success){
-    //             Swal.fire('Options created successfully','','success')
-    //             getData()
-    //         }else{
-    //             Swal.fire('Failed to created options','','error')
-    //         }
-    //     }catch(err){
+        setLisItem(list)
+        }catch(err){
+            // console.log(err)
+        }
+    }
 
-    //     }
-    // }
+    const addNewOption = async (e,data,state) =>{
+        e.preventDefault()
+        // if(state.match(/^/)){
+        //     let x = state.split("")
+        //     x.splice(0,3)
+        //     state = x.join("")}
+            console.log(state)
+        let value = data.value
+        let res
+        try{
+            let submitData = {[state]:value}
+            switch(state){
+                case 'route':
+                    res = await postRoute(submitData);break;
+                case 'city':
+                    res = await postCity(submitData);break;
+                case 'town':
+                    res = await postTown(submitData);break;
+                case 'district':
+                    res = await postDistrict(submitData);break;
+                case 'types':
+                    res = await postTypes(submitData);break;
+                case 'rate_types':
+                    res = await postRateType(submitData);break;
+                case 'bill_type':
+                    // res = await postBill(submitData);break;
+            }
+            if(res.success){
+                Swal.fire('Options created successfully','','success')
+                getData()
+            }else{
+                Swal.fire('Failed to created options','','error')
+            }
+        }catch(err){
 
-    // const handleSubmit = async (e) =>{
-    //     e.preventDefault()
-    //     try{
-    //         console.log(customerAdd)
-    //     }catch(err){
+        }
+    }
 
-    //     }
-    // }
+    const handleSubmit = async (e) =>{
+        e.preventDefault()
+        try{
+            console.log(customerAdd)
+        }catch(err){
 
-    // const handleChange = (e) =>{
-    //     if(e.target.value === '') 
-    //         setCustomerAdd(data => ( {...data,[e.target.name] : null} ))
-    //     else 
-    //         setCustomerAdd(data => ( {...data,[e.target.name] : e.target.value} ))
-    // }
+        }
+    }
 
-    // let options = {}
-    // options.route = [{label:"new",value:1},{label:"hellow",value:2},{label:"hi",value:3}]
+    const handleChange = (e) =>{
+        if(e.target.value === '') 
+            setCustomerAdd(data => ( {...data,[e.target.name] : null} ))
+        else 
+            setCustomerAdd(data => ( {...data,[e.target.name] : e.target.value} ))
+    }
 
-    return (
-        <div className='item_add'>
-            <div className="page_head ps-4 mt-1 mb-3">
-                <div className='fw-600 fs-5'>Master Customer</div>
-                <div className='page_head_items mb-3'>
-                    <div onClick={() => setPageHeadItem(1)} className={`page_head_item ${pageHeadItem === 1 && "active"}`}>Add Customer</div>
-                </div>
-            </div>
-            <CustomerAddForm/>
-            {/* <div className='item_add_cont'>
+    let options = {}
+    options.route = [{label:"new",value:1},{label:"hellow",value:2},{label:"hi",value:3}]
+
+
+
+  return (
+    <div>
+        <div className='item_add_cont'>
                 Add New Customer
                 <form onSubmit={handleSubmit} className='item_add_form pt-1 d-flex mt-1'>
 
-                     item details --------------------------------------------------------------------------------------- 
+                    {/* item details --------------------------------------------------------------------------------------- */}
 
                     <div className='item_add_form_part1 col-6 row mx-0 px-0'>
 
@@ -261,7 +258,7 @@ const CustomerAdd = () => {
                             <div className='mx-0 px-0 col-6 col-7'>
                                 <input onChange={handleChange} name=""type='text' className='item_input names' />
                             </div>
-                        </div> 
+                        </div> */}
                         <div className="d-flex align-items-center ps-0 row mx-0 pe-5 my-2">
                             <div className="col-5 col-6 row mx-0 px-0">
                                 <div className='mx-0 px-0 col-5'>
@@ -306,7 +303,7 @@ const CustomerAdd = () => {
 
                     </div>
 
-                    item rate -----------------------------------------------------------------------------------------------------------
+                    {/* item rate ----------------------------------------------------------------------------------------------------------- */}
 
                     <div className='item_add_form_part2 row mx-0 px-0 me-0 col-6 border-0'>
 
@@ -404,9 +401,9 @@ const CustomerAdd = () => {
                     </div>
 
                 </form>
-            </div> */}
-        </div>
-    )
+            </div>
+    </div>
+  )
 }
 
-export default CustomerAdd
+export default CustomerAddForm
