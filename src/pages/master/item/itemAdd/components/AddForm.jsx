@@ -12,13 +12,19 @@ export const ItemAddForm = ({edit}) =>{
     const typesOptions = [{label:"PRODUCT",value:"PRODUCT"},{label:"RAW MATERIAL",value:"RAW MATERIAL"},{label:"SERVICE",value:"SERVICE"}]
     const [unitConvShow, setUnitConvShow] = useState(false)
     const [barcodeShow, setBarcodeShow] = useState(false)
+    const [barcodeTempList, setBarcodeTempList] = useState([])
+    const [unitConvTempList, setUnitConvTempList] = useState([])
     const [unitConv, setUnitConv] = useState({
-        unit:null,
-        qty:null,
+        U_unit:null,
+        U_qty:null,
+        U_rate:null,
+        U_mrp:null
     })
     const [barcode, setBarcode] = useState({
-        b_code:null,
-        expiry:null,
+        B_code:null,
+        B_expiry:null,
+        B_rate:null,
+        B_mrp:null
     })
     const [listItem,setListItem] = useState({
         second_name:[],
@@ -152,14 +158,32 @@ export const ItemAddForm = ({edit}) =>{
         if(res.success) miniFunct(res.data,'rack')
         res = await getUnit()
         if(res.success) miniFunct(res.data,'unit')
-        res = await getBarcode()
-        if(res.success) miniFunct(res.data,'transaction_unit')
+        // res = await getBarcode()
+        // if(res.success) miniFunct(res.data,'transaction_unit')
         list.types=typesOptions
         setListItem(list)
         }catch(err){
             // console.log(err)
         }
     }
+
+    const addToList = () =>{
+        if(barcodeShow && barcode.B_code && barcode.B_mrp && barcode.B_rate){
+            let g = barcodeTempList
+            g.push(barcode)
+            setBarcodeTempList(g)
+        }
+        // handleBarcodeReset()
+        let x = Object.keys(barcode)
+        let g = {}
+        console.log(x)
+        x.map(data=> g = {...g,[data]:''})
+        setBarcode(g)
+    }
+
+    console.log(barcode)
+    // const handleBarcodeReset = () =>{
+    // }
 
     const addOption = async (e,data,state) =>{
         e.preventDefault()
@@ -209,11 +233,11 @@ export const ItemAddForm = ({edit}) =>{
             res = await postItemAdd(itemadd)
             if(res?.success){
                 if(barcode){
-                    const data = {code:barcode.code,mrp:itemadd.mrp_rate,retail_rate:itemadd.retail_rate}
+                    const data = {code:barcode.B_code,mrp:barcode.B_mrp,retail_rate:barcode.B_rate}
                     res3 = await postBarcode(res.data.id,data)
                 }
                 if(unitConv){
-                    const data = {qty:unitConv.qty,unit:unitConv.unit,rate:itemadd.retail_rate,mrp:itemadd.mrp_rate}
+                    const data = {qty:unitConv.U_qty,unit:unitConv.U_unit,rate:unitConv.U_rate,mrp:unitConv.U_mrp}
                     res2 = await postUnitConvertion(res.data.id,data)
                 }
                 
@@ -234,9 +258,9 @@ export const ItemAddForm = ({edit}) =>{
     }
 
     const handleChange = (e) =>{
-        if(e.target.name === 'b_code' || e.target.name === 'expiry')
+        if(e.target.name.match(/^B_/))
             setBarcode(data=>({...data,[e.target.name]:e.target.value}))
-        if(e.target.name === 'qty')
+        if(e.target.name.match(/^U_/))
             setUnitConv(data=>({...data,[e.target.name]:e.target.value}))
         else if(e.target.name === 'unit_conv')
             setUnitConv(data=>({...data,['unit']:e.target.value}))
@@ -245,7 +269,6 @@ export const ItemAddForm = ({edit}) =>{
         }else
         setItemAdd(data=>({...data,[e.target.name]:e.target.value}))
     }
-    console.log(barcode)
 
     const handleCheck = (e) =>{
         setItemAdd(data=>({...data,[e.target.name]:!data[e.target.name]}))
@@ -345,7 +368,7 @@ export const ItemAddForm = ({edit}) =>{
                         {... { showDropdown, setShowDropdown }} setDataValue={setItemAdd} selectedValue={itemadd}/>
                     </div>
                     <div className='item_inputs d-flex justify-content-between px-0 mx-0 col-12 pt-2'>Transaction Unit*
-                    <SearchDropDown required id="transaction_unit" addNew={true} setNew={addOption} options={listItem}
+                    <SearchDropDown required id="transaction_unit"  setNew={addOption} options={listItem}
                         {... { showDropdown, setShowDropdown }} setDataValue={setItemAdd} selectedValue={itemadd}/>
                     </div>
                 </div>
@@ -536,8 +559,8 @@ export const ItemAddForm = ({edit}) =>{
                         <div className='text-light pb-2'>
                            { barcodeShow?"Barcode":"Unit Conversion"}
                             <div className='unit_modal_body mt-2 px-3 pb-2'>
-                                <table className='custom-table-2 names ms-2'>
-                                    <thead>
+                                <table className='custom-table-2 names ms-2 position-relative'>
+                                    <thead className='tabel-head'>
                                         <tr>
                                             <th>{barcodeShow?"C.Barcode":"Qty"}</th>
                                             <th>{barcodeShow?"MRP":"Unit"}</th>
@@ -546,27 +569,37 @@ export const ItemAddForm = ({edit}) =>{
                                             <th></th>
                                         </tr>
                                     </thead>
-                                    <tbody className='rounded-3'>
-                                        <tr>
-                                            <td><input onChange={handleChange} name={barcodeShow?'b_code':'qty'} value={barcodeShow?barcode.code:unitConv.qty} type='text' className='w-100 text-light'/></td>
+                                    <tbody className='rounded-3 '>
+                                        <tr className='table-head-input'>
+                                            <td><input onChange={handleChange} name={barcodeShow?'B_code':'U_qty'} value={barcodeShow?barcode.B_code:unitConv.U_qty} type='text' className='w-100 text-light'/></td>
                                             {/* <td><input onChange={handleChange} name='unit' value={unitConv.unit} type='text' className='w-100'/></td> */}
                                             <td>
-                                                {!barcodeShow?<select type='select' onChange={handleChange} className='unit_select text-light w-100' name='unit_conv'>
+                                                {!barcodeShow?<select type='select' onChange={handleChange} value={unitConv.U_unit} className='unit_select text-light w-100' name='U_unit'>
                                                     <option value={null}>Select</option>
                                                     {listItem?.unit?.length>0&&
                                                     listItem.unit.map(data=><option value={data.label}>{data.label}</option>)}
                                                 </select>:
-                                                <input onChange={handleChange} name='mrp_rate' value={itemadd.mrp_rate} type='number' className='w-100 text-light'/>}
+                                                <input onChange={handleChange} name='B_mrp' value={barcode.B_mrp} type='number' className='w-100 text-light'/>}
                                             </td>
-                                            <td><input onChange={handleChange} name='retail_rate' value={itemadd.retail_rate} type='number' className='w-100 text-light'/></td>
-                                            <td><input onChange={handleChange} name={barcodeShow?'expiry':'mrp_rate'} value={barcodeShow?barcode.expiry:itemadd.mrp_rate} type={barcodeShow?'date':'number'} className='w-100 text-light'/></td>
+                                            <td><input onChange={handleChange} name={barcode?'B_rate':'U_rate'} value={barcodeShow?barcode.B_rate:unitConv.U_rate} type='number' className='w-100 text-light'/></td>
+                                            <td><input onChange={handleChange} name={barcodeShow?'B_expiry':'U_mrp'}value={barcodeShow?barcode.B_expiry:unitConv.U_mrp} type={barcodeShow?'date':'number'} className='w-100 text-light'/></td>
                                             <th className='col col-1 cursor text-center'>
                                                 <img src={deleteBtn} alt="deletebtn"/>
                                             </th>
                                             <th className='btn-td'>
-                                                <div onClick={handleUnitHide} className='add_unit_btn btn'>Add Unit</div>
+                                                <div onClick={addToList} className='add_unit_btn btn'>{barcodeShow?"+ Add":"Add Unit"}</div>
                                             </th>
                                         </tr>
+                                        {(barcodeShow&&barcodeTempList.length>0)&&
+                                        barcodeTempList.map(data=>(
+                                        <tr>
+                                            <td><input value={data.B_code} type='text' className='w-100 text-light'/></td>
+                                            <td>
+                                                <input value={data.B_mrp} type='number' className='w-100 text-light'/>
+                                            </td>
+                                            <td><input value={data.B_rate} type='number' className='w-100 text-light'/></td>
+                                            <td><input value={data.B_expiry} type={'date'} className='w-100 text-light'/></td>
+                                        </tr>))}
                                     </tbody>
                                 </table>
                             </div>

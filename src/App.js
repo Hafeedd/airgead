@@ -14,6 +14,7 @@ function App() {
           <Route element={<Outlet/>}>
             <Route index element={<ItemAdd/>}/>
             <Route path="/item-list" element={<ItemList/>}/>
+            <Route path="/customer-list" element={<ItemList/>}/>
             <Route path="/customer-add" element={<CustomerAdd/>}/>
             <Route path="/supplier-add" element={<SupplierAdd/>}/>
           </Route>

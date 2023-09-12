@@ -180,10 +180,21 @@ input[type=number] {
     background: #464646;
     border-radius: 5px; 
     height: 12rem;
+    overflow: hidden;
+    overflow-y: scroll;
 }
 
 .table_cont{
     font-size: 12px;
+}
+
+.table-head{
+    position: fixed;
+    top: 0;
+}
+.table-head-input{
+    /* position: fixed; */
+    top:0;
 }
 
 .custom-table-2 th{

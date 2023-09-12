@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react'
 import { Form } from 'react-bootstrap'
 import { FiChevronDown } from 'react-icons/fi'
 import './searchDropDown.css'
+import { ListItem } from '@mui/material'
 
 const SearchDropDown = ({
     containerClass,
@@ -152,7 +153,7 @@ const SearchDropDown = ({
                         onBlur={handleDropdown}
                     >
                         <Form.Control
-                            type={type || 'text'}
+                            type='text'
                             className='dropdown-search-box'
                             onChange={handleSearch}
                             value={search}
