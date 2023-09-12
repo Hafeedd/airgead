@@ -44,6 +44,10 @@ const CustomerAdd = () => {
 
     }
 
+    const handleSubmit = ()=>{
+        
+    }
+
     let options = {}
     options.fk_route = [{label:"new",value:1},{label:"hellow",value:2},{label:"hi",value:3}]
 
