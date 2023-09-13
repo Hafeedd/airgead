@@ -1,8 +1,9 @@
-import search from "../../assets/icons/search.png"
-import deleteBtn from "../../assets/icons/delete.svg"
 
-const Table = (props) => {
-    const {list,handleEdit,handleDelete,toEdit,listHead} = props
+import deleteBtn from "../../../../../assets/icons/delete.svg"
+import search from "../../../../../assets/icons/search.png"
+
+const CustomerTable = (props) => {
+    const {list,handleEdit,handleDelete,toEdit} = props
 
     const editBtn = (
         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
@@ -32,21 +33,18 @@ const Table = (props) => {
         </div>
     </div>
     <div className='item_add_cont p-0 table-scroller' style={{borderRadius: "0.3125rem 0.3125rem 0rem 0rem"}}>
-        <table className='table table-light custom-table'>
+        <table className='table table-light custom-table' >
             <thead>
                 <tr>
-                    <th style={{borderTopLeftRadius: "0.3125rem"}}>No</th>
-                    {list?.length>0?list.map(x=>(<th>{x}</th>)):
-                    listHead?.map(x=>(<th>{x}</th>))}
-                    {/* <th>Code</th>
-                    <th className='text-start'>Item Name</th>
-                    <th>Contractor</th>
-                    <th>HSN</th>
-                    <th>S.Rate</th>
-                    <th>P.Rate</th>
-                    <th>Tax/GST</th>
-                    <th>Rate</th> */}
-                    <th></th>
+                    {/* <th style={{borderTopLeftRadius: "0.3125rem"}}>No</th> */}
+                    <th>Code</th>
+                    <th>Name</th>
+                    <th className="mx-2">Mob</th>
+                    <th >Contract Person</th>
+                    <th>Op.Balance</th>
+                    <th>Credit Limite</th>
+                    <th>Remark</th> 
+                    
                     <th style={{borderTopRightRadius: "0.3125rem"}}></th>
                 </tr>
             </thead>
@@ -54,20 +52,20 @@ const Table = (props) => {
                 {list?.length>0 ?
                 list?.map((data,i)=>{
                 return(<tr>
-                    <td>{i+1}</td>
+                    {/* <td>{i+1}</td> */}
                     <td>{data.code}</td>
-                    <td className='text-start'>{data.name}</td>
+                    <td>{data.name}</td>
                     <td>{data.mobile}</td>
-                    <td>{data.hsn}</td>
-                    <td>{data.retail_rate}</td>
-                    <td>{data.purchase_rate}</td>
-                    <td>{data.tax_gst}</td>
-                    <td>{data.mrp_rate}</td>
-                    <td>
+                    <td>{data.contact_person}</td>
+                    <td>{data.opening_balance}</td>
+                    <td>{data.credit_limit_in_amt}</td>
+                    <td>{data.remark}</td>
+                    {/* <td>
                         <div className='button' onClick={(e)=>handleDelete(data.id,e)}>
                             <img src={deleteBtn}  alt='deletebtn'/>
                         </div>
-                    </td>
+                    </td> */}
+                    
                     <td>
                         <div className='button' onClick={e=>handleEdit(data)}>
                             {editBtn}
@@ -84,4 +82,4 @@ const Table = (props) => {
   )
 }
 
-export default Table;
+export default CustomerTable;

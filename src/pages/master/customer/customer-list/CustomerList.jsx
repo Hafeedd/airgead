@@ -1,17 +1,17 @@
 import React, { useEffect, useState } from 'react'
 import '../../item/item-list/ItemList.css'
-import { useLocation, useNavigate} from 'react-router'
+import { useNavigate} from 'react-router'
 import Swal from 'sweetalert2'
-import Table from '../../../../components/listTable.js/Table'
 import CustomerAddForm from '../customer-add/components/CustomerAddForm'
 import useCustomerServices from '../../../../services/master/customerServices'
+import CustomerTable from '../customer-add/components/CustomerTable'
 
 const CustomerList = () => {
     const [pageHeadCustomer,setPageHeadCustomer] = useState(1)
     const [toEdit, setToEdit] = useState(false)
-    const [listCustomer,setListCustomer] = useState()
+    const [listCustomer,setListCustomer] = useState([])
     const navigate = useNavigate()
-    const {getCustomerList,deleteCustomerList} = useCustomerServices()
+    const {getCustomer,deleteCustomerList} = useCustomerServices()
     const listHead = ['Code', 'Name', 'Mob', 'Contract Person', 'Op.Balance', 'Credit Limite', 'Remark']
 
     useEffect(()=>{
@@ -32,7 +32,7 @@ const CustomerList = () => {
 
     const getData = async () =>{
         try{
-            const res = await getCustomerList()
+            const res = await getCustomer()
             if(res?.success){
                 setListCustomer(res?.data)
             }
@@ -41,7 +41,7 @@ const CustomerList = () => {
         }
     }
 
-    const location = useLocation().pathname
+    // const location = useLocation().pathname
 
     const handleEdit = (data) => {
         setToEdit(data)
@@ -63,7 +63,7 @@ const CustomerList = () => {
                         </div>
                     </div>
                 </div>
-                {<Table list={listCustomer} {...{handleEdit,handleDelete,toEdit,listHead}}/>}
+                {<CustomerTable list={listCustomer} {...{handleEdit,handleDelete,toEdit,listHead}}/>}
                 
                 
                 {toEdit&&<div className={`${!toEdit && "d-none"}`}>
