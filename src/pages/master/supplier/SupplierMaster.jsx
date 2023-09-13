@@ -1,18 +1,18 @@
 import React, { useEffect, useState } from 'react'
+import SupplierAdd from './components/SupplierAdd'
+import SupplierList from './components/SupplierList'
+import { useNavigate } from 'react-router'
 import useItemServices from '../../../services/master/itemServices'
-import './ItemMaster.css'
-import { useNavigate} from 'react-router'
 import Swal from 'sweetalert2'
-import ItemList from './components/ItemList'
-import { ItemAddForm } from './components/AddForm'
+import useCustomerServices from '../../../services/master/customerServices'
 
-const ItemMaster = () => {
+const SupplierMaster = () => {
     const [pageHeadItem,setPageHeadItem] = useState(1)
     const [toEdit, setToEdit] = useState(false)
     const [listItem,setListItem] = useState()
     const [showAddItem, setShowAddItem] = useState(false)
     const navigate = useNavigate()
-    const {getItemList,deleteItemList} = useItemServices()
+    const {getSupplier,deleteSupplier} = useCustomerServices()
 
     useEffect(()=>{
         getData()
@@ -21,7 +21,7 @@ const ItemMaster = () => {
     const handleDelete = async (id,e) =>{
         e.preventDefault()
         try{
-            let res = await deleteItemList(id)
+            let res = await deleteSupplier(id)
             if(res.success) Swal.fire('Item deleted Successfully','','success')
             else Swal.fire(res.message,'','error')
         getData()
@@ -32,15 +32,14 @@ const ItemMaster = () => {
 
     const getData = async () =>{
         try{
-            const res = await getItemList()
+            const res = await getSupplier()
             if(res.success){
-                let tempList = res.data
-                const listhead = ['code','name','fk_company.company','hsn','retail_rate','purchase_rate','tax_gst','mrp_rate']
-                const newList = handleList(tempList,listhead)
-                setListItem(newList)
+                // const listhead = ['code','name','fk_company.company','hsn','retail_rate','purchase_rate','tax_gst','mrp_rate']
+                // const newList = handleList(tempList,listhead)
+                setListItem(res.data)
             }
         }catch(err){
-
+            console.log(err)
         }
     }
 
@@ -62,15 +61,11 @@ const ItemMaster = () => {
     return(
         <div className='item_add'>
                 <div className="itemList_header row mx-0">
-                    <div className="page_head ps-4 d-flex justify-content-between">
+                    <div className="page_head my-1 ps-4 d-flex justify-content-between">
                         <div>
-                        <div className='fw-600 fs-5'>Master Item</div>
+                        <div className='fw-600 fs-5'>Master Supplier</div>
                         <div className='page_head_items mb-3'>
-                            <div onClick={()=>{setShowAddItem(false);setToEdit(false)}} className={`page_head_item ${pageHeadItem === 1 && "active"}`}>Item List</div>
-                            <div onClick={()=>setPageHeadItem(2)} className={`page_head_item ${pageHeadItem === 2 && "active"}`}>Change Item Code</div>
-                            <div onClick={()=>setPageHeadItem(3)} className={`page_head_item ${pageHeadItem === 3 && "active"}`}>Raw Meterial Settins</div>
-                            <div onClick={()=>setPageHeadItem(4)} className={`page_head_item ${pageHeadItem === 4 && "active"}`}>Update Details</div>
-                            <div onClick={()=>setPageHeadItem(5)} className={`page_head_item ${pageHeadItem === 5 && "active"}`}>Merge Items</div>
+                            <div onClick={()=>{setShowAddItem(false);setToEdit(false)}} className={`page_head_item ${pageHeadItem === 1 && "active"}`}>Supplier List</div>
                         </div>
                         </div>
                         <div className="col-1 col-2 d-flex px-1 align-items-center">
@@ -81,11 +76,11 @@ const ItemMaster = () => {
                 
                 {
                     toEdit||showAddItem?
-                    <ItemAddForm edit={toEdit}/>:
-                    <ItemList list={listItem} {...{handleEdit,handleDelete,toEdit}}/>
+                    <SupplierAdd edit={toEdit}/>:
+                    <SupplierList list={listItem} {...{handleEdit,handleDelete,toEdit}}/>
                 }
         </div>
     )
 }
 
-export default ItemMaster
+export default SupplierMaster
