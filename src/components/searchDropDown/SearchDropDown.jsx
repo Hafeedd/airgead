@@ -7,7 +7,7 @@ import { ListItem } from '@mui/material'
 const SearchDropDown = ({
     containerClass,
     placeholder,
-    type,
+    // type,
     setShowDropdown,
     showDropdown,
     id,
@@ -24,8 +24,12 @@ const SearchDropDown = ({
     const dropdownRef = useRef(null)
 
     useEffect(() => {
+        if(options[id])
         if(typeof options[id] != 'object'){
-            setTempList([...options[id],])
+            if(id == 'transaction_unit'){
+                setTempList([...options['unit'],])}
+            else
+                setTempList([...options[id],])
             if (selectedValue[id]) {
                 options[id].map((item)=>{
                 if (item.value==selectedValue[id]){
@@ -39,14 +43,12 @@ const SearchDropDown = ({
             setSearch('')
         }}
     },[])
-    
+
     useEffect(() => {
-        if(id == 'types')
         if(options[id]?.length>0){
             setTempList([...options[id],])
-        // if(id === 'types')
         if (selectedValue[id]) {
-            options[id].map((item)=>{
+            options[id]?.map((item)=>{
                 if (item.value==selectedValue[id]){
                     setSelected(item?.label)
                     setSearch(item?.label)
@@ -59,13 +61,13 @@ const SearchDropDown = ({
     }, [selectedValue])
 
     useEffect(() => {
-        if(options[id]?.length){
-            if(id == 'transaction_unit')
-            setTempList([...options['unit'],])
-        else
-        setTempList([...options[id],])
-    if (selectedValue[id]) {
-        options[id].map((item)=>{
+        if(options[id]?.length || id == 'transaction_unit'){
+            if(id == 'transaction_unit'){
+                setTempList([...options['unit'],])}
+            else
+                setTempList([...options[id],])
+    if (selectedValue[id]){
+        options[id]?.map((item)=>{
             if (item.value==selectedValue[id]){
                 setSelected(item?.label)
                 setSearch(item?.label)

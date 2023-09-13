@@ -1,10 +1,9 @@
 import { useEffect, useRef, useState } from 'react'
 import Swal from 'sweetalert2'
-import useItemServices from '../../../../../services/master/itemServices'
-import deleteBtn from "../../../../../assets/icons/delete-white.svg"
-import SearchDropDown from '../../../../../components/searchDropDown/SearchDropDown'
+import deleteBtn from "../../../../assets/icons/delete-white.svg"
 import { Modal } from 'react-bootstrap'
-import { ListItem } from '@mui/material'
+import SearchDropDown from '../../../../components/searchDropDown/SearchDropDown'
+import useItemServices from '../../../../services/master/itemServices'
 
 export const ItemAddForm = ({edit}) =>{
 
@@ -12,7 +11,7 @@ export const ItemAddForm = ({edit}) =>{
     const typesOptions = [{label:"PRODUCT",value:"PRODUCT"},{label:"RAW MATERIAL",value:"RAW MATERIAL"},{label:"SERVICE",value:"SERVICE"}]
     const [unitConvShow, setUnitConvShow] = useState(false)
     const [barcodeShow, setBarcodeShow] = useState(false)
-    const [barcodeTempList, setBarcodeTempList] = useState([])
+    // const [barcodeTempList, setBarcodeTempList] = useS?tate([])
     const [unitConvTempList, setUnitConvTempList] = useState([])
     const [unitConv, setUnitConv] = useState({
         U_unit:null,
@@ -94,12 +93,13 @@ export const ItemAddForm = ({edit}) =>{
     useEffect(()=>{
         getData();
     },[])
+
     useEffect(()=>{
         let keys = Object.keys(itemadd)
         if(edit){
             keys.map((key)=>{
                 if(key==='types') setItemAdd(data=>({...data,['types']:edit.type}))
-                else if(key.match(/second_name|category|sub_category|company|size|color|group|tax_group/)){
+                else if(key.match(/^second_name|^category|^sub_category|^company|^size|^color|^group|^tax_group|^unit/)){
                 let a = "fk_"+key
                 if(edit[a]){
                     setItemAdd(data=>({...data,[key]:edit[a]}))}
@@ -109,15 +109,13 @@ export const ItemAddForm = ({edit}) =>{
         }
     },[edit, ])
 
-    // console.log(itemadd)
-
     const {
         postBarcode,postUnit,
         postRack,postTaxGroup,
         postGroup,postColor,
         postSize,postCompany,
         postSubCategory,postCategory,
-        postSecondName,
+        postSecondName,putItemAdd,
         getBarcode,getUnit,
         getRack,getTaxGroup,
         getGroup,getColor,
@@ -168,22 +166,19 @@ export const ItemAddForm = ({edit}) =>{
     }
 
     const addToList = () =>{
-        if(barcodeShow && barcode.B_code && barcode.B_mrp && barcode.B_rate){
-            let g = barcodeTempList
-            g.push(barcode)
-            setBarcodeTempList(g)
+        if(unitConvShow && unitConv.U_unit && unitConv.U_mrp && unitConv.U_rate){
+            let g = unitConvTempList
+            g.push(unitConv)
+            setUnitConvTempList(g)
+            let x = Object.keys(unitConv)
+            let r = {}
+            x.map(data=> r = {...r,[data]:''})
+            setUnitConv(r)
         }
-        // handleBarcodeReset()
-        let x = Object.keys(barcode)
-        let g = {}
-        console.log(x)
-        x.map(data=> g = {...g,[data]:''})
-        setBarcode(g)
+        else if(barcodeShow){
+            setBarcodeShow(false)
+        }
     }
-
-    console.log(barcode)
-    // const handleBarcodeReset = () =>{
-    // }
 
     const addOption = async (e,data,state) =>{
         e.preventDefault()
@@ -193,29 +188,40 @@ export const ItemAddForm = ({edit}) =>{
             let submitData = {[state]:value}
             switch(state){
                 case 'second_name': 
-                    res = await postSecondName(submitData);break;
+                    res = await postSecondName(submitData);
+                    setItemAdd(data=>({...data,[state]:res.data.id}));break;
                 // case 'types':
                 //     res = await postType(submitData);break;
                 case 'category':
-                    res = await postCategory(submitData);break;
+                    res = await postCategory(submitData);
+                    setItemAdd(data=>({...data,[state]:res.data.id}));break;
                 case 'sub_category':
-                    res = await postSubCategory(submitData);break;
+                    res = await postSubCategory(submitData);
+                    setItemAdd(data=>({...data,[state]:res.data.id}));break;
                 case 'company':
-                    res = await postCompany(submitData);break;
+                    res = await postCompany(submitData);
+                    setItemAdd(data=>({...data,[state]:res.data.id}));break;
                 case 'size':
-                    res = await postSize(submitData);break;
+                    res = await postSize(submitData);
+                    setItemAdd(data=>({...data,[state]:res.data.id}));break;
                 case 'color':
-                    res = await postColor(submitData);break;
+                    res = await postColor(submitData);
+                    setItemAdd(data=>({...data,[state]:res.data.id}));break;
                 case 'group':
-                    res = await postGroup(submitData);break;
+                    res = await postGroup(submitData);
+                    setItemAdd(data=>({...data,[state]:res.data.id}));break;
                 case 'tax_group':
-                    res = await postTaxGroup(submitData);break;
+                    res = await postTaxGroup(submitData);
+                    setItemAdd(data=>({...data,[state]:res.data.id}));break;
                 case 'rack':
-                    res = await postRack(submitData);break;
+                    res = await postRack(submitData);
+                    setItemAdd(data=>({...data,[state]:res.data.id}));break;
                 case 'unit':
-                    res = await postUnit(submitData);break;
+                    res = await postUnit(submitData);
+                    setItemAdd(data=>({...data,[state]:res.data.id}));break;
                 case 'transaction_unit':
-                    res = await postBarcode(submitData);break;
+                    res = await postBarcode(submitData);
+                    setItemAdd(data=>({...data,[state]:res.data.id}));break;
             }
             if(res.success){
                 Swal.fire('Option Added Successfylly','','success')
@@ -229,24 +235,33 @@ export const ItemAddForm = ({edit}) =>{
     const handleSubmit = async (e)=>{
         e.preventDefault()
         try{
-            let res, res2, res3
-            res = await postItemAdd(itemadd)
+            let submitData = itemadd
+            let res, res2 = 1, res3 = 1
+            const names = ['second_name','category','sub_category','company','size','color','group','tax_group','godown_rack','unit','purchase']
+            let data = handleChangeFk(names,submitData)
+            if(edit){
+                res = await putItemAdd(edit?.id,data)
+            }else{
+                res = await postItemAdd(data)
+            }
             if(res?.success){
-                if(barcode){
+                if(barcode.B_mrp&&barcode.B_code&&barcode.B_rate){
                     const data = {code:barcode.B_code,mrp:barcode.B_mrp,retail_rate:barcode.B_rate}
                     res3 = await postBarcode(res.data.id,data)
                 }
-                if(unitConv){
-                    const data = {qty:unitConv.U_qty,unit:unitConv.U_unit,rate:unitConv.U_rate,mrp:unitConv.U_mrp}
-                    res2 = await postUnitConvertion(res.data.id,data)
+                if(unitConvTempList.length>0){
+                    unitConvTempList.map(async x=>{
+                        const data = {qty:x.U_qty,unit:x.U_unit,rate:x.U_rate,mrp:x.U_mrp}
+                        res2 = await postUnitConvertion(res.data.id,data)
+                    })
                 }
                 
                 if(!res2?.success)
                     Swal.fire(res2?.message,'','error')
                 if(!res3?.success)
                     Swal.fire(res3?.message,'','error')
-                if(!res3?.success||!res2?.success)
-                    await deleteItem(res?.data?.id)
+                if(res3!==1||res2!==1){
+                    await deleteItem(res?.data?.id)}
 
                 Swal.fire('Item Added Successfully','','success')
             }
@@ -257,14 +272,26 @@ export const ItemAddForm = ({edit}) =>{
         }
     }
 
+    const handleChangeFk = (name,submitData)=>{
+        name.map(x=>{
+            submitData['fk_'+x] = submitData[x]
+            delete submitData[x]
+        })
+        console.log(submitData)
+        return submitData
+    }
+
+
     const handleChange = (e) =>{
+        if(typeof e.target.value === 'string' && !e.target.name.match(/^U_|^B_/))
+            e.target.value = e.target.value.toUpperCase()
         if(e.target.name.match(/^B_/))
             setBarcode(data=>({...data,[e.target.name]:e.target.value}))
-        if(e.target.name.match(/^U_/))
-            setUnitConv(data=>({...data,[e.target.name]:e.target.value}))
+        if(e.target.name.match(/^U_/)){
+            setUnitConv(data=>({...data,[e.target.name]:e.target.value}))}
         else if(e.target.name === 'unit_conv')
             setUnitConv(data=>({...data,['unit']:e.target.value}))
-        else if(e.target.value ===''){
+        else if(e.target.value === ''){
             setItemAdd(data=>({...data,[e.target.name]:null}))
         }else
         setItemAdd(data=>({...data,[e.target.name]:e.target.value}))
@@ -574,14 +601,14 @@ export const ItemAddForm = ({edit}) =>{
                                             <td><input onChange={handleChange} name={barcodeShow?'B_code':'U_qty'} value={barcodeShow?barcode.B_code:unitConv.U_qty} type='text' className='w-100 text-light'/></td>
                                             {/* <td><input onChange={handleChange} name='unit' value={unitConv.unit} type='text' className='w-100'/></td> */}
                                             <td>
-                                                {!barcodeShow?<select type='select' onChange={handleChange} value={unitConv.U_unit} className='unit_select text-light w-100' name='U_unit'>
+                                                {!barcodeShow?<select type='select' onChange={handleChange} value={unitConv?.U_unit} className='unit_select py-2 text-light w-100' name='U_unit'>
                                                     <option value={null}>Select</option>
                                                     {listItem?.unit?.length>0&&
                                                     listItem.unit.map(data=><option value={data.label}>{data.label}</option>)}
                                                 </select>:
                                                 <input onChange={handleChange} name='B_mrp' value={barcode.B_mrp} type='number' className='w-100 text-light'/>}
                                             </td>
-                                            <td><input onChange={handleChange} name={barcode?'B_rate':'U_rate'} value={barcodeShow?barcode.B_rate:unitConv.U_rate} type='number' className='w-100 text-light'/></td>
+                                            <td><input onChange={handleChange} name={barcodeShow?'B_rate':'U_rate'} value={barcodeShow?barcode.B_rate:unitConv.U_rate} type='number' className='w-100 text-light'/></td>
                                             <td><input onChange={handleChange} name={barcodeShow?'B_expiry':'U_mrp'}value={barcodeShow?barcode.B_expiry:unitConv.U_mrp} type={barcodeShow?'date':'number'} className='w-100 text-light'/></td>
                                             <th className='col col-1 cursor text-center'>
                                                 <img src={deleteBtn} alt="deletebtn"/>
@@ -590,15 +617,15 @@ export const ItemAddForm = ({edit}) =>{
                                                 <div onClick={addToList} className='add_unit_btn btn'>{barcodeShow?"+ Add":"Add Unit"}</div>
                                             </th>
                                         </tr>
-                                        {(barcodeShow&&barcodeTempList.length>0)&&
-                                        barcodeTempList.map(data=>(
+                                        {(unitConvShow&&unitConvTempList.length>0)&&
+                                        unitConvTempList.map(data=>(
                                         <tr>
-                                            <td><input value={data.B_code} type='text' className='w-100 text-light'/></td>
+                                            <td><input value={data.U_qty} type='text' className='w-100 text-light'/></td>
                                             <td>
-                                                <input value={data.B_mrp} type='number' className='w-100 text-light'/>
+                                                <input value={data.U_unit} type='text' className='w-100 text-light'/>
                                             </td>
-                                            <td><input value={data.B_rate} type='number' className='w-100 text-light'/></td>
-                                            <td><input value={data.B_expiry} type={'date'} className='w-100 text-light'/></td>
+                                            <td><input value={data.U_rate} type='number' className='w-100 text-light'/></td>
+                                            <td><input value={data.U_mrp} type='number' className='w-100 text-light'/></td>
                                         </tr>))}
                                     </tbody>
                                 </table>

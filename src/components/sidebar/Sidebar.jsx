@@ -24,10 +24,10 @@ const Sidebar = () => {
                         <div className='SidebarItemText'>Accounts</div>
                     </span>
                     <span className='SidebarSpan d-flex ms-5 ps-3'>
-                        <div className='SidebarItemText' onClick={()=>navigate('/customer-add')}>Customer</div>
+                        <div className='SidebarItemText' onClick={()=>navigate('/customer-master')}>Customer</div>
                     </span>
                     <span className='SidebarSpan d-flex ms-5 ps-3'>
-                        <div className='SidebarItemText' onClick={()=>navigate('/supplier-add')}>Supplier</div>
+                        <div className='SidebarItemText' onClick={()=>navigate('/supplier-master')}>Supplier</div>
                     </span>
                     <span className='SidebarSpan d-flex ms-5 ps-3'>
                         <div className='SidebarItemText'>Staff</div>
@@ -36,7 +36,7 @@ const Sidebar = () => {
                         <div className='SidebarItemText'>Vehichle</div>
                     </span>
                     <span className='SidebarSpan d-flex ms-5 ps-3'>
-                        <div className='SidebarItemText' onClick={()=>navigate('/item-list')}>Items</div>
+                        <div className='SidebarItemText' onClick={()=>navigate('/')}>Items</div>
                     </span>
                     <span className='SidebarSpan d-flex ms-5 ps-3'>
                         <div className='SidebarItemText'>Route</div>

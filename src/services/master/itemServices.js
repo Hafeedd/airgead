@@ -154,6 +154,12 @@ const useItemServices = () =>{
         const response = await axiosPrivate.post('master/item/created/',data)
         return response.data
     }
+    
+    // item adding
+    const putItemAdd = async (id,data) =>{
+        const response = await axiosPrivate.put('master/item/updated/'+id+'/',data)
+        return response.data
+    }
  
     // item delete
     const deleteItem = async (id) =>{
@@ -187,6 +193,7 @@ const useItemServices = () =>{
     // }
 
     return{
+        // post
         postUnitConvertion,
         postItemAdd,
         postBarcode,
@@ -201,6 +208,8 @@ const useItemServices = () =>{
         postCategory,
         postType,
         postSecondName,
+
+        // get
         getBarcode,
         getUnit,
         getRack,
@@ -214,6 +223,9 @@ const useItemServices = () =>{
         getType,
         getSecondName,
         getItemList,
+        
+        // put
+        putItemAdd,
         deleteItemList,
         deleteItem,
     }

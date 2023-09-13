@@ -1,18 +1,17 @@
 import React, { useEffect, useState } from 'react'
-import '../../item/item-list/ItemList.css'
+import '../item/item-list/ItemList.css'
 import { useNavigate} from 'react-router'
 import Swal from 'sweetalert2'
-import CustomerAddForm from '../customer-add/components/CustomerAddForm'
-import useCustomerServices from '../../../../services/master/customerServices'
-import CustomerTable from '../customer-add/components/CustomerTable'
+import CustomerTable from './components/CustomerTable'
+import CustomerAddForm from './CustomerAddForm'
+import useCustomerServices from '../../../services/master/customerServices'
 
 const CustomerList = () => {
     const [pageHeadCustomer,setPageHeadCustomer] = useState(1)
     const [toEdit, setToEdit] = useState(false)
     const [listCustomer,setListCustomer] = useState([])
-    const navigate = useNavigate()
+    const [showCustomerAdd,setShowCustomerAdd] = useState(false)
     const {getCustomer,deleteCustomerList} = useCustomerServices()
-    const listHead = ['Code', 'Name', 'Mob', 'Contract Person', 'Op.Balance', 'Credit Limite', 'Remark']
 
     useEffect(()=>{
         getData()
@@ -41,10 +40,13 @@ const CustomerList = () => {
         }
     }
 
-    // const location = useLocation().pathname
-
     const handleEdit = (data) => {
         setToEdit(data)
+    }
+
+    const handleClose = () =>{
+        setToEdit(false);
+        setShowCustomerAdd(false)
     }
 
     return(
@@ -54,21 +56,19 @@ const CustomerList = () => {
                         <div>
                         <div className='fw-600 fs-5'>Master List</div>
                         <div className='page_head_items mb-3'>
-                            <div onClick={()=>setPageHeadCustomer(1)} className={`page_head_Customer ${pageHeadCustomer === 1 && "active"}`}>Customer List</div>
+                            <div onClick={()=>{setPageHeadCustomer(1);handleClose()}} className={`page_head_customer ${pageHeadCustomer === 1 && "active"}`}>Customer List</div>
                            
                         </div>
                         </div>
                         <div className="d-flex px-0 align-items-center customer-add-btn">
-                            <div onClick={()=>navigate("/")} className="btn btn-primary add-btn px-0">+ &nbsp; Add Customer</div>
+                            <div onClick={()=>setShowCustomerAdd(true)} className="btn btn-primary add-btn px-0">+ &nbsp; Add Customer</div>
                         </div>
                     </div>
-                </div>
-                {<CustomerTable list={listCustomer} {...{handleEdit,handleDelete,toEdit,listHead}}/>}
-                
-                
-                {toEdit&&<div className={`${!toEdit && "d-none"}`}>
-                <CustomerAddForm edit={toEdit}/>
-            </div>}
+                </div> 
+                {toEdit||showCustomerAdd?
+                <CustomerAddForm refresh={getData} edit={toEdit}/>:
+                    <CustomerTable list={listCustomer} {...{handleEdit,handleDelete,toEdit}}/>
+                }
         </div>
     )
 }

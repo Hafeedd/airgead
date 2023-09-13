@@ -1,16 +1,16 @@
 import React, { useEffect, useState } from 'react'
-import useItemServices from '../../../../services/master/itemServices'
-import './ItemList.css'
-import { useLocation, useNavigate} from 'react-router'
+import useItemServices from '../../../services/master/itemServices'
+import './ItemMaster.css'
+import { useNavigate} from 'react-router'
 import Swal from 'sweetalert2'
-import { ItemAddForm } from '../itemAdd/components/AddForm'
-import Table from '../../../../components/listTable.js/Table'
+import ItemList from './components/ItemList'
+import { ItemAddForm } from './components/AddForm'
 
-const ItemList = () => {
+const ItemMaster = () => {
     const [pageHeadItem,setPageHeadItem] = useState(1)
     const [toEdit, setToEdit] = useState(false)
     const [listItem,setListItem] = useState()
-    const navigate = useNavigate()
+    const [showAddItem, setShowAddItem] = useState(false)
     const {getItemList,deleteItemList} = useItemServices()
 
     useEffect(()=>{
@@ -40,8 +40,6 @@ const ItemList = () => {
         }
     }
 
-    const location = useLocation().pathname
-
     const handleEdit = (data) => {
         setToEdit(data)
     }
@@ -61,17 +59,17 @@ const ItemList = () => {
                         </div>
                         </div>
                         <div className="col-1 col-2 d-flex px-1 align-items-center">
-                            <div onClick={()=>navigate("/")} className="btn btn-primary add-btn px-0">+ &nbsp; Add Item</div>
+                            <div onClick={()=>setShowAddItem(true)} className="btn btn-primary add-btn px-0">+ &nbsp; Add Item</div>
                         </div>
                     </div>
-                </div>
-                {<Table list={listItem} {...{handleEdit,handleDelete,toEdit}}/>}
-                
-                {toEdit&&<div className={`${!toEdit && "d-none"}`}>
-                <ItemAddForm edit={toEdit}/>
-            </div>}
+                </div>  
+                {
+                    toEdit||showAddItem?
+                    <ItemAddForm edit={toEdit}/>:
+                    <ItemList list={listItem} {...{handleEdit,handleDelete,toEdit}}/>
+                }
         </div>
     )
 }
 
-export default ItemList
+export default ItemMaster

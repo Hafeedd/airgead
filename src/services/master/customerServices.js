@@ -45,59 +45,71 @@ const useCustomerServices = () => {
         const response = await axiosPrivate.post('master/supplier/created/',data)
         return response.data
     }
+   
+    // supplier
+    const postBillType = async(data) =>{
+        const response = await axiosPrivate.post('master/bill_types/created/',data)
+        return response.data
+    }
 
     // customer
     const postCustomer = async(data) =>{
-        const response = await axiosPrivate.post('master/city/created/',data)
+        const response = await axiosPrivate.post('master/customer/created/',data)
         return response.data
     }
 
 // GET Services------------------------------------------------------------------
     // route
-    const getRoute = async(data) =>{
-        const response = await axiosPrivate.get('master/route/created/',data)
+    const getRoute = async() =>{
+        const response = await axiosPrivate.get('master/route/created/')
         return response.data
     }
 
     // city
-    const getCity = async(data) =>{
-        const response = await axiosPrivate.get('master/city/created/',data)
+    const getCity = async() =>{
+        const response = await axiosPrivate.get('master/city/created/')
         return response.data
     } 
 
     // town
-    const getTown = async(data) =>{
-        const response = await axiosPrivate.get('master/town/created/',data)
+    const getTown = async() =>{
+        const response = await axiosPrivate.get('master/town/created/')
         return response.data
     }
 
     // district
-    const getDistrict = async(data) =>{
-        const response = await axiosPrivate.get('master/district/created/',data)
+    const getDistrict = async() =>{
+        const response = await axiosPrivate.get('master/district/created/')
+        return response.data
+    }
+
+    // district
+    const getBillType = async() =>{
+        const response = await axiosPrivate.get('master/bill_types/created/')
         return response.data
     }
 
     // rateType
-    const getRateType = async(data) =>{
-        const response = await axiosPrivate.get('master/rate_type/created/',data)
+    const getRateType = async() =>{
+        const response = await axiosPrivate.get('master/rate_type/created/')
         return response.data
     }
 
     // types
-    const getTypes = async(data) =>{
-        const response = await axiosPrivate.get('master/types/created/',data)
+    const getTypes = async() =>{
+        const response = await axiosPrivate.get('master/types/created/')
         return response.data
     }
 
     // supplier
-    const getSupplier = async(data) =>{
-        const response = await axiosPrivate.get('master/supplier/created/',data)
+    const getSupplier = async() =>{
+        const response = await axiosPrivate.get('master/supplier/created/')
         return response.data
     }
 
     // customer
-    const getCustomer = async(data) =>{
-        const response = await axiosPrivate.get('master/city/created/',data)
+    const getCustomer = async() =>{
+        const response = await axiosPrivate.get('master/customer/created/')
         return response.data
     }
 
@@ -205,6 +217,7 @@ const useCustomerServices = () => {
 
   return{
     // post
+    postBillType,
     postRoute,
     postCity,
     postTown,
@@ -215,6 +228,7 @@ const useCustomerServices = () => {
     postCustomer,
 
     // get
+    getBillType,
     getRoute,
     getCity,
     getTown,
