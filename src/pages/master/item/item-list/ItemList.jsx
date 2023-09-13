@@ -7,11 +7,23 @@ import { ItemAddForm } from '../itemAdd/components/AddForm'
 import Table from '../../../../components/listTable.js/Table'
 
 const ItemList = () => {
+    const options = [{code:"1001",name:"laptop",hsn:"1",item_image:null,type:'PRODUCT',transaction_unit:'KG',
+    mrp_rate:1000,retail_rate:990,wholesale_rate:900,super_wholesale_rate:850,quotation_rate:875,
+    rent:1000,rent_type:"DAY",purchase_rate:500,cost:600,margin:'100',tax_gst:18,cess_1:2,cess_2:null,
+    purchase_discount:6,sale_discount:5,unload_charge:25,load_charge:25,point:1,commission:10,
+    qty_in_box:null,open_stock:null,role:null,damage:70,damage_cost:102,reorder_level:null,
+    blocked:false,tax_inclusive:false,manuel_qty_in_bc:false,rent_item:false,gate_pass: false,
+    fk_second_name:{id:1,second_name:'demo second name'},fk_category:{id:1,category:'demo category'},
+    fk_sub_category:null,fk_company:{id:1,company:"demo company"},fk_size:{id:1,size:'XL size'},
+    fk_color:{id:1,color:'Black'},fk_group:{id:1,group:'dem group'},fk_tax_group:{id:1,tax_group:'VAT'},
+    fk_stock_unit:{id:1,unit:'KG'},fk_barcode:{id:1,code:10001,mrp:500}}]
     const [pageHeadItem,setPageHeadItem] = useState(1)
     const [toEdit, setToEdit] = useState(false)
     const [listItem,setListItem] = useState()
     const navigate = useNavigate()
     const {getItemList,deleteItemList} = useItemServices()
+    const listHead = ['Code','Item Name','Contractor','HSN','S.Rate','P.Rate','Tax/GST','Rate']
+    
 
     useEffect(()=>{
         getData()
@@ -33,14 +45,26 @@ const ItemList = () => {
         try{
             const res = await getItemList()
             if(res.success){
-                setListItem(res.data)
+                let tempList = res.data
+                const listhead = ['code','name','fk_company.company','hsn','retail_rate','purchase_rate','tax_gst','mrp_rate']
+                const newList = handleList(tempList,listhead)
+                setListItem(newList)
             }
         }catch(err){
 
         }
     }
 
-    const location = useLocation().pathname
+    const handleList = (data,listItem) =>{
+        let r = []
+        if(data.length>0){
+            listItem.map(x=>{
+                r.push(data[x])
+            }
+            )
+        }
+            return r
+    }
 
     const handleEdit = (data) => {
         setToEdit(data)
@@ -65,7 +89,7 @@ const ItemList = () => {
                         </div>
                     </div>
                 </div>
-                {<Table list={listItem} {...{handleEdit,handleDelete,toEdit}}/>}
+                {<Table list={listItem} {...{handleEdit,handleDelete,toEdit,listHead}}/>}
                 
                 {toEdit&&<div className={`${!toEdit && "d-none"}`}>
                 <ItemAddForm edit={toEdit}/>
