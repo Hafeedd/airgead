@@ -36,7 +36,7 @@ const Sidebar = () => {
                         <div className='SidebarItemText'>Vehichle</div>
                     </span>
                     <span className='SidebarSpan d-flex ms-5 ps-3'>
-                        <div className='SidebarItemText' onClick={()=>navigate('/item-master')}>Items</div>
+                        <div className='SidebarItemText' onClick={()=>navigate('/')}>Items</div>
                     </span>
                     <span className='SidebarSpan d-flex ms-5 ps-3'>
                         <div className='SidebarItemText'>Route</div>

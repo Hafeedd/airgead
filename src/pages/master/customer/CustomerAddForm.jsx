@@ -1,9 +1,9 @@
-import SearchDropDown from "../../../../components/searchDropDown/SearchDropDown"
 import React, { useEffect, useState } from 'react'
 import Swal from 'sweetalert2'
-import useCustomerServices from "../../../../services/master/customerServices"
+import useCustomerServices from '../../../services/master/customerServices'
+import SearchDropDown from '../../../components/searchDropDown/SearchDropDown'
 
-const CustomerAddForm = (props) =>{
+const CustomerAddForm = ({edit,refresh}) =>{
 
     const [showDropdown, setShowDropdown ] = useState(1)
     const [listItem, setLisItem] = useState({
@@ -58,11 +58,29 @@ const CustomerAddForm = (props) =>{
         getDistrict,
         getRateType,
         getTypes,
+        putCustomer,
     } = useCustomerServices()
 
     useEffect(()=>{
         getData()
     },[])
+
+    useEffect(()=>{
+        let keys = Object.keys(customerAdd)
+        if(edit){
+            // console.log(keys)
+            keys.map((key)=>{
+                // if(key==='rate_types') 
+                if(key.match(/^district|^route|^city|^town|^types|^bill_types/)){
+                let a = "fk_"+key
+                if(edit[a]){
+                    setCustomerAdd(data=>({...data,[key]:edit[a]}))}
+            }
+            else
+            setCustomerAdd(data=>({...data,[key]:edit[key]}))
+           })
+        }
+    },[edit, ])
 
     const getData =async () =>{
         let list = {}
@@ -90,7 +108,6 @@ const CustomerAddForm = (props) =>{
         if(res.success) miniFunct(res.data,'rate_types')
         res = await getBillType()
         if(res.success) miniFunct(res.data,'bill_types')
-            console.log(list)
         setLisItem(list)
         }catch(err){
             // console.log(err)
@@ -133,7 +150,6 @@ const CustomerAddForm = (props) =>{
                 Swal.fire('Failed to created options','','error')
             }
         }catch(err){
-
         }
     }
 
@@ -143,11 +159,16 @@ const CustomerAddForm = (props) =>{
             let submitData = customerAdd
             const names = ['district','route','city','town','bill_types','types']
             let data = handleChangeFk(names,submitData)
-            // let res
-            let res = await postCustomer(data)
+            let res 
+            if(edit){
+                res = await putCustomer(edit.id,data)
+            }else{
+                res = await postCustomer(data)
+            }
             if(res.success){
                 Swal.fire(res.message,'','success')
                 handleReset()
+                refresh()
             }else{
                 Swal.fire(res.message,'','error')
             }

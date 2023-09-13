@@ -11,7 +11,6 @@ const ItemMaster = () => {
     const [toEdit, setToEdit] = useState(false)
     const [listItem,setListItem] = useState()
     const [showAddItem, setShowAddItem] = useState(false)
-    const navigate = useNavigate()
     const {getItemList,deleteItemList} = useItemServices()
 
     useEffect(()=>{
@@ -34,25 +33,11 @@ const ItemMaster = () => {
         try{
             const res = await getItemList()
             if(res.success){
-                let tempList = res.data
-                const listhead = ['code','name','fk_company.company','hsn','retail_rate','purchase_rate','tax_gst','mrp_rate']
-                const newList = handleList(tempList,listhead)
-                setListItem(newList)
+                setListItem(res.data)
             }
         }catch(err){
 
         }
-    }
-
-    const handleList = (data,listItem) =>{
-        let r = []
-        if(data.length>0){
-            listItem.map(x=>{
-                r.push(data[x])
-            }
-            )
-        }
-            return r
     }
 
     const handleEdit = (data) => {
@@ -77,12 +62,12 @@ const ItemMaster = () => {
                             <div onClick={()=>setShowAddItem(true)} className="btn btn-primary add-btn px-0">+ &nbsp; Add Item</div>
                         </div>
                     </div>
-                </div>
-                {<ItemList list={listItem} {...{handleEdit,handleDelete,toEdit}}/>}
-                
-                {toEdit||showAddItem&&<div className={`${!toEdit && "d-none"}`}>
-                <ItemAddForm edit={toEdit}/>
-            </div>}
+                </div>  
+                {
+                    toEdit||showAddItem?
+                    <ItemAddForm edit={toEdit}/>:
+                    <ItemList list={listItem} {...{handleEdit,handleDelete,toEdit}}/>
+                }
         </div>
     )
 }

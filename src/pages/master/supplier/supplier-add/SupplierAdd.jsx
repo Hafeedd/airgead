@@ -146,7 +146,7 @@ const SupplierAdd = () => {
                                 Code
                             </div>
                             <div className='mx-0 px-0 col-6 col-7'>
-                                <input onChange={handleChange} name='code' type='text' className='item_input names' />
+                                <input onChange={handleChange} name='code' value={supplierAdd.code} type='text' className='item_input names' />
                             </div>
                         </div>
                         <div className="d-flex align-items-center ps-0 row mx-0 pe-5 my-2">
@@ -154,7 +154,7 @@ const SupplierAdd = () => {
                                 Name
                             </div>
                             <div className='mx-0 px-0 col-6 col-7'>
-                                <input onChange={handleChange} name='name' type='text' className='item_input names' />
+                                <input onChange={handleChange} name='name' value={supplierAdd.name} type='text' className='item_input names' />
                             </div>
                         </div>
                         <div className="d-flex align-items-center ps-0 row mx-0 pe-5 my-2">
@@ -162,7 +162,7 @@ const SupplierAdd = () => {
                                 Address
                             </div>
                             <div className='mx-0 px-0 col-6 col-7'>
-                                <textarea onChange={handleChange} name='address' rows={4} className='item_input names' />
+                                <textarea onChange={handleChange} name='address' value={supplierAdd.address} rows={4} className='item_input names' />
                             </div>
                         </div>
                         <div className="d-flex align-items-center ps-0 row mx-0 pe-5 my-2">
@@ -171,7 +171,7 @@ const SupplierAdd = () => {
                                     Post
                                 </div>
                                 <div className='mx-0 px-0 col-7'>
-                                    <input onChange={handleChange} name='post' type='text' className='item_input names' />
+                                    <input onChange={handleChange} name='post' value={supplierAdd.post} type='text' className='item_input names' />
                                 </div>
                             </div>
                             <div className="col-6 col-7 row ps-5 mx-0 px-0">
@@ -179,7 +179,7 @@ const SupplierAdd = () => {
                                     Pin
                                 </div>
                                 <div className='mx-0 px-0 col-7'>
-                                    <input onChange={handleChange} name='pin' type='text' className='item_input names' />
+                                    <input onChange={handleChange} name='pin' value={supplierAdd.pin} type='text' className='item_input names' />
                                 </div>
                             </div>
                         </div>
@@ -189,7 +189,7 @@ const SupplierAdd = () => {
                                     Contact Person
                                 </div>
                                 <div className='mx-0 px-0 col-7'>
-                                    <input onChange={handleChange} name='contact_person' type='text' className='item_input names' />
+                                    <input onChange={handleChange} name='contact_person' value={supplierAdd.contact_person} type='text' className='item_input names' />
                                 </div>
                             </div>
                             <div className="col-6 col-7 row ps-5 mx-0 px-0">
@@ -197,7 +197,7 @@ const SupplierAdd = () => {
                                     PIN Distance
                                 </div>
                                 <div className='mx-0 px-0 col-7'>
-                                    <input onChange={handleChange} name='pin_distance' type='text' className='item_input names' />
+                                    <input onChange={handleChange} name='pin_distance' value={supplierAdd.pin_distance} type='text' className='item_input names' />
                                 </div>
                             </div>
                         </div>
@@ -206,7 +206,7 @@ const SupplierAdd = () => {
                                 Email
                             </div>
                             <div className='mx-0 px-0 col-6 col-7'>
-                                <input onChange={handleChange} name='email' type='text' className='item_input names' />
+                                <input onChange={handleChange} name='email' value={supplierAdd.email} type='text' className='item_input names' />
                             </div>
                         </div>
                         <div className="d-flex align-items-center ps-0 row mx-0 pe-5 my-2">
@@ -214,7 +214,7 @@ const SupplierAdd = () => {
                                 Mob
                             </div>
                             <div className='mx-0 px-0 col-6 col-7'>
-                                <input onChange={handleChange} name='mobile' type='text' className='item_input names' />
+                                <input onChange={handleChange} name='mobile' value={supplierAdd.mobile} type='text' className='item_input names' />
                             </div>
                         </div>
                         <div className="d-flex align-items-center ps-0 row mx-0 pe-5 my-2">
@@ -222,7 +222,7 @@ const SupplierAdd = () => {
                                 GSTin
                             </div>
                             <div className='mx-0 px-0 col-6 col-7'>
-                                <input onChange={handleChange} name='gst_in' type='text' className='item_input names' />
+                                <input onChange={handleChange} name='gst_in' value={supplierAdd.gst_in} type='text' className='item_input names' />
                             </div>
                         </div>
                         <div className="d-flex align-items-center ps-0 row mx-0 pe-5 my-2">
@@ -230,7 +230,7 @@ const SupplierAdd = () => {
                                 GSTin
                             </div>
                             <div className='mx-0 px-0 col-6 col-7'>
-                                <input onChange={handleChange} name='gst_in' type='text' className='item_input names' />
+                                <input onChange={handleChange} name='gst_in' value={supplierAdd.gst_in} type='text' className='item_input names' />
                             </div>
                         </div>
                         <div className="d-flex align-items-center ps-0 row mx-0 pe-5 my-2">
@@ -239,7 +239,7 @@ const SupplierAdd = () => {
                                     Disc %
                                 </div>
                                 <div className='mx-0 px-0 col-7'>
-                                    <input onChange={handleChange} name='disc' type='text' className='item_input names' />
+                                    <input onChange={handleChange} name='disc' value={supplierAdd.disc} type='text' className='item_input names' />
                                 </div>
                             </div>
                             <div className="col-6 col-7 row ps-5 mx-0 px-0">
@@ -247,14 +247,14 @@ const SupplierAdd = () => {
                                     Op Balance
                                 </div>
                                 <div className='mx-0 px-0 col-7'>
-                                    <input onChange={handleChange} name='opening_balance' type='text' className='item_input names' />
+                                    <input onChange={handleChange} name='opening_balance' value={supplierAdd.opening_balance} type='text' className='item_input names' />
                                 </div>
                             </div>
                         </div>
                         <div className="d-flex align-items-center ps-0 row mx-0 pe-4 my-2">
                             <div className='mx-0 px-0 col-9' />
                             <div className='mx-0 col-3 px-0'>
-                                <select onChange={handleChange} name='payment_type' className='customer-select'>
+                                <select onChange={handleChange} name='payment_type' value={supplierAdd.payment_type} className='customer-select'>
                                     <option value="TO_GIVE">To Give</option>
                                     <option value="TO_RECEIVE">To Receive</option>
                                 </select>
@@ -293,7 +293,7 @@ const SupplierAdd = () => {
                                 Remarks
                             </div>
                             <div className='ps-2 ms-4 px-0 col-8'>
-                                <textarea onChange={handleChange} name='remark' rows={3} className='item_input names' />
+                                <textarea onChange={handleChange} name='remark' value={supplierAdd.remark} rows={3} className='item_input names' />
                             </div>
                         </div>
                         <div className="d-flex align-items-center row mx-0 ps-4 pe-3 my-2">

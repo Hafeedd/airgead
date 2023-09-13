@@ -97,12 +97,12 @@
     gap: 1.5rem;
 }
 
-.page_head_item{
+.page_head_item ,.page_head_customer{
     cursor: pointer;
     padding-bottom: 0.3rem;
 }
 
-.page_head_item.active{
+.page_head_item.active ,.page_head_customer.active{
     border-bottom: 0.2rem solid;
 }
 

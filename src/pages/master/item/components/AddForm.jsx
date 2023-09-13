@@ -93,12 +93,13 @@ export const ItemAddForm = ({edit}) =>{
     useEffect(()=>{
         getData();
     },[])
+
     useEffect(()=>{
         let keys = Object.keys(itemadd)
         if(edit){
             keys.map((key)=>{
                 if(key==='types') setItemAdd(data=>({...data,['types']:edit.type}))
-                else if(key.match(/second_name|category|sub_category|company|size|color|group|tax_group/)){
+                else if(key.match(/^second_name|^category|^sub_category|^company|^size|^color|^group|^tax_group|^unit/)){
                 let a = "fk_"+key
                 if(edit[a]){
                     setItemAdd(data=>({...data,[key]:edit[a]}))}
@@ -108,15 +109,13 @@ export const ItemAddForm = ({edit}) =>{
         }
     },[edit, ])
 
-    console.log(itemadd)
-
     const {
         postBarcode,postUnit,
         postRack,postTaxGroup,
         postGroup,postColor,
         postSize,postCompany,
         postSubCategory,postCategory,
-        postSecondName,
+        postSecondName,putItemAdd,
         getBarcode,getUnit,
         getRack,getTaxGroup,
         getGroup,getColor,
@@ -189,7 +188,8 @@ export const ItemAddForm = ({edit}) =>{
             let submitData = {[state]:value}
             switch(state){
                 case 'second_name': 
-                    res = await postSecondName(submitData);setItemAdd(data=>({...data,[state]:res.data.id}));break;
+                    res = await postSecondName(submitData);
+                    setItemAdd(data=>({...data,[state]:res.data.id}));break;
                 // case 'types':
                 //     res = await postType(submitData);break;
                 case 'category':
@@ -235,8 +235,15 @@ export const ItemAddForm = ({edit}) =>{
     const handleSubmit = async (e)=>{
         e.preventDefault()
         try{
-            let res, res2, res3
-            res = await postItemAdd(itemadd)
+            let submitData = itemadd
+            let res, res2 = 1, res3 = 1
+            const names = ['second_name','category','sub_category','company','size','color','group','tax_group','godown_rack','unit','purchase']
+            let data = handleChangeFk(names,submitData)
+            if(edit){
+                res = await putItemAdd(edit?.id,data)
+            }else{
+                res = await postItemAdd(data)
+            }
             if(res?.success){
                 if(barcode.B_mrp&&barcode.B_code&&barcode.B_rate){
                     const data = {code:barcode.B_code,mrp:barcode.B_mrp,retail_rate:barcode.B_rate}
@@ -253,8 +260,8 @@ export const ItemAddForm = ({edit}) =>{
                     Swal.fire(res2?.message,'','error')
                 if(!res3?.success)
                     Swal.fire(res3?.message,'','error')
-                if(!res3?.success||!res2?.success)
-                    await deleteItem(res?.data?.id)
+                if(res3!==1||res2!==1){
+                    await deleteItem(res?.data?.id)}
 
                 Swal.fire('Item Added Successfully','','success')
             }
@@ -264,6 +271,16 @@ export const ItemAddForm = ({edit}) =>{
             Swal.fire('Failed to add item pls try again','','error')
         }
     }
+
+    const handleChangeFk = (name,submitData)=>{
+        name.map(x=>{
+            submitData['fk_'+x] = submitData[x]
+            delete submitData[x]
+        })
+        console.log(submitData)
+        return submitData
+    }
+
 
     const handleChange = (e) =>{
         if(typeof e.target.value === 'string' && !e.target.name.match(/^U_|^B_/))
