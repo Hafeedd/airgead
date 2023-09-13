@@ -1,8 +1,8 @@
-import search from "../../assets/icons/search.png"
-import deleteBtn from "../../assets/icons/delete.svg"
+import search from "../../../../assets/icons/search.png"
+import deleteBtn from "../../../../assets/icons/delete.svg"
 
-const Table = (props) => {
-    const {list,listHead,handleEdit,handleDelete,toEdit} = props
+const ItemList = (props) => {
+    const {list,handleEdit,handleDelete,toEdit} = props
 
     const editBtn = (
         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
@@ -34,15 +34,14 @@ const Table = (props) => {
             <thead>
                 <tr>
                     <th style={{borderTopLeftRadius: "0.3125rem"}}>No</th>
-                    {listHead&&listHead?.map(x=>(<th>{x}</th>))}
-                    {/* <th>Code</th>
+                    <th>Code</th>
                     <th className='text-start'>Item Name</th>
                     <th>Contractor</th>
                     <th>HSN</th>
                     <th>S.Rate</th>
                     <th>P.Rate</th>
                     <th>Tax/GST</th>
-                    <th>Rate</th> */}
+                    <th>Rate</th>
                     <th></th>
                     <th style={{borderTopRightRadius: "0.3125rem"}}></th>
                 </tr>
@@ -51,11 +50,7 @@ const Table = (props) => {
                 {list?.length>0 ?
                 list.map((data,i)=>{
                 return(<tr>
-                    
                     <td>{i+1}</td>
-                    {data.map(x=>(<td>{data.x}</td>))}
-
-                    {/* <td>{i+1}</td>
                     <td>{data.code}</td>
                     <td>{data.name}</td>
                     <td>{data.fk_company?.company}</td>
@@ -63,7 +58,7 @@ const Table = (props) => {
                     <td>{data.retail_rate}</td>
                     <td>{data.purchase_rate}</td>
                     <td>{data.tax_gst}</td>
-                    <td>{data.mrp_rate}</td> */}
+                    <td>{data.mrp_rate}</td>
                     <td>
                         <div className='button' onClick={(e)=>handleDelete(data.id,e)}>
                             <img src={deleteBtn}  alt='deletebtn'/>
@@ -85,4 +80,4 @@ const Table = (props) => {
   )
 }
 
-export default Table;
+export default ItemList;

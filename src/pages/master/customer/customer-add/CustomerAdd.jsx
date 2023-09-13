@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import CustomerAddForm from '../components/Cusotmer-addForm'
-import Table from '../../../../components/listTable.js/Table'
+import Table from '../../item/components/ItemList'
 import useCustomerServices from '../../../../services/master/customerServices'
 
 const CustomerAdd = () => {
