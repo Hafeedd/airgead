@@ -5,7 +5,7 @@ import { Modal } from 'react-bootstrap'
 import SearchDropDown from '../../../../components/searchDropDown/SearchDropDown'
 import useItemServices from '../../../../services/master/itemServices'
 
-export const ItemAddForm = ({edit}) =>{
+export const ItemAddForm = ({edit,refresh}) =>{
 
     const [showDropdown, setShowDropdown] = useState('')
     const typesOptions = [{label:"PRODUCT",value:"PRODUCT"},{label:"RAW MATERIAL",value:"RAW MATERIAL"},{label:"SERVICE",value:"SERVICE"}]
@@ -38,7 +38,6 @@ export const ItemAddForm = ({edit}) =>{
         tax_group:[],
         rack:[],
         unit:[],
-        transaction_unit:[],
     })
     const [itemadd,setItemAdd] = useState({
         code:null,
@@ -88,8 +87,6 @@ export const ItemAddForm = ({edit}) =>{
         barcode:null,
     })
 
-    // console.log(itemadd)
-
     const formRef = useRef(null)
 
     useEffect(()=>{
@@ -97,19 +94,19 @@ export const ItemAddForm = ({edit}) =>{
     },[])
 
     useEffect(()=>{
-        console.log(itemadd)
         let keys = Object.keys(itemadd)
         if(edit){
             keys.map((key)=>{
                 if(key==='types') setItemAdd(data=>({...data,['types']:edit.type}))
-                else if(key.match(/^types|^second_name|^category|^sub_category|^company|^size|^color|^group|^tax_group|^unit|^transaction_unit|^rack/)){
+                else if(key.match(/^types|^second_name|^category|^sub_category|^company|^size|^color|^group|^tax_group|^unit|^rack/)){
                 let a = "fk_"+key
                 if(edit[a]){
-                    console.log(a)
+                    // console.log(key)
                     setItemAdd(data=>({...data,[key]:edit[a]}))}
             }
             else setItemAdd(data=>({...data,[key]:edit[key]}))
-           })
+        })
+        // console.log("##############")
         }else{
             handleReset()
         }
@@ -268,10 +265,12 @@ export const ItemAddForm = ({edit}) =>{
                     Swal.fire(res2?.message,'','error')
                 if(!res3?.success)
                     Swal.fire(res3?.message,'','error')
-                if(res3!==1||res2!==1){
+                if((res3!==1 && !res3?.success)||(res2!==1 && !res2?.success)){
                     await deleteItem(res?.data?.id)}
 
                 Swal.fire('Item Added Successfully','','success')
+                refresh()
+                handleReset()
             }
             else
             Swal.fire(res?.message,'','error')
@@ -312,6 +311,7 @@ export const ItemAddForm = ({edit}) =>{
     const handleReset = () =>{
         let key = Object.keys(itemadd)
         key.map((data)=>{
+            if(!data.match(/^blocked|^tax_inclusive|^manuel_qty_in_bc|^rent_item|^gate_pass/))
                 setItemAdd(val=>({...val,[data]:null}))
             })
     }
@@ -320,6 +320,8 @@ export const ItemAddForm = ({edit}) =>{
         setUnitConvShow(false)
         setBarcodeShow(false)
     }
+
+    console.log(itemadd)
 
     return(
         <form onSubmit={handleSubmit} ref={formRef} className='item_add_cont'>
@@ -333,17 +335,17 @@ export const ItemAddForm = ({edit}) =>{
                     <div className="item_add_first_row px-0 row mx-0 ">
                     <div className='item_inputs d-flex mx-0 px-0 col-6'>Code*
                     <input required type='number' className='item_input'
-                        value={itemadd.code} name='code' onChange={handleChange}/>
+                        value={itemadd.code?itemadd.code:''} name='code' onChange={handleChange}/>
                     </div>
                     <div className='item_inputs d-flex px-0 col-6 align-itmes-end'>HSN*
                     <input required type='number' className='item_input'
-                        value={itemadd.hsn} name='hsn' onChange={handleChange}/>
+                        value={itemadd.hsn?itemadd.hsn:''} name='hsn' onChange={handleChange}/>
                     </div>
                     </div>
 
                     <div className='item_inputs d-flex justify-content-between px-0 mx-0 col-12 pt-2'>Name*
                     <input type='text' required className='item_input names'
-                        value={itemadd.name} name='name' onChange={handleChange}/>
+                        value={itemadd.name?itemadd.name:''} name='name' onChange={handleChange}/>
                     </div>
                     <div className='item_inputs d-flex justify-content-between px-0 mx-0 col-12 pt-2'>Second Name
                     <SearchDropDown id="second_name" addNew={true} setNew={addOption} options={listItem}
@@ -414,117 +416,117 @@ export const ItemAddForm = ({edit}) =>{
 
                 <div className="item_add_first_row d-flex justify-content-between px-0 row mx-0 pt-2">
                     <div className='item_inputs right d-flex mx-0 px-0 col-6'>MRP*
-                    <input value={itemadd.mrp_rate} required type='number' className='item_input col-6 col-7'
+                    <input value={itemadd.mrp_rate?itemadd.mrp_rate:''} required type='number' className='item_input col-6 col-7'
                     name='mrp_rate' onChange={handleChange}/>
                     </div>
                     <div className='item_inputs right d-flex px-0 col-6 '>Ret. Rate*
-                    <input value={itemadd.retail_rate} required type='number' className='item_input col-6 col-7'
+                    <input value={itemadd.retail_rate?itemadd.retail_rate:''} required type='number' className='item_input col-6 col-7'
                     name='retail_rate' onChange={handleChange}/>
                     </div>
                     </div>
                 <div className="item_add_first_row px-0 row mx-0 pt-2">
                     <div className='item_inputs right d-flex mx-0 px-0 col-6'>WS*
-                    <input value={itemadd.wholesale_rate} required type='number' className='item_input col-6 col-7'
+                    <input value={itemadd.wholesale_rate?itemadd.wholesale_rate:''} required type='number' className='item_input col-6 col-7'
                     name='wholesale_rate' onChange={handleChange}/>
                     </div>
                     <div className='item_inputs right d-flex px-0 col-6 '>SWS. Rate*
-                    <input value={itemadd.super_wholesale_rate} required type='number' className='item_input col-6 col-7'
+                    <input value={itemadd.super_wholesale_rate?itemadd.super_wholesale_rate:''} required type='number' className='item_input col-6 col-7'
                     name='super_wholesale_rate' onChange={handleChange}/>
                     </div>
                     </div>
                 <div className="item_add_first_row px-0 row mx-0 pt-2">
                     <div className='item_inputs right d-flex mx-0 px-0 col-6'>QTN
-                    <input value={itemadd.quotation_rate} type='number' className='item_input col-6 col-7'
+                    <input value={itemadd.quotation_rate?itemadd.quotation_rate:''} type='number' className='item_input col-6 col-7'
                     name='quotation_rate' onChange={handleChange}/>
                     </div>
                     <div className='item_inputs right d-flex px-0 col-6 '>Rent
-                    <input value={itemadd.rent} type='number' className='item_input col-6 col-7'
+                    <input value={itemadd.rent?itemadd.rent:''} type='number' className='item_input col-6 col-7'
                     name='rent' onChange={handleChange}/>
                     </div>
                     </div>
                 <div className="item_add_first_row px-0 row mx-0 pt-2">
                     <div className='item_inputs right d-flex mx-0 px-0 col-6'>P.Rate*
-                    <input value={itemadd.purchase_rate} required type='number' className='item_input col-6 col-7'
+                    <input value={itemadd.purchase_rate?itemadd.purchase_rate:''} required type='number' className='item_input col-6 col-7'
                     name='purchase_rate' onChange={handleChange}/>
                     </div>
                     <div className='item_inputs right d-flex px-0 col-6 '>Cost*
-                    <input value={itemadd.cost} required type='number' className='item_input col-6 col-7'
+                    <input value={itemadd.cost?itemadd.cost:''} required type='number' className='item_input col-6 col-7'
                     name='cost' onChange={handleChange}/>
                     </div>
                     </div>
                 <div className="item_add_first_row px-0 row mx-0 pt-2">
                     <div className='item_inputs right d-flex mx-0 px-0 col-6'>Margin %*
-                    <input value={itemadd.margin} required type='number' className='item_input col-6 col-7'
+                    <input value={itemadd.margin?itemadd.margin:''} required type='number' className='item_input col-6 col-7'
                     name='margin' onChange={handleChange}/>
                     </div>
                     <div className='item_inputs right d-flex px-0 col-6 '>Tax/ GST*
-                    <input value={itemadd.tax_gst} required type='number' className='item_input col-6 col-7'
+                    <input value={itemadd.tax_gst?itemadd.tax_gst:''} required type='number' className='item_input col-6 col-7'
                     name='tax_gst' onChange={handleChange}/>
                     </div>
                     </div>
                 <div className="item_add_first_row px-0 row mx-0 pt-2">
                     <div className='item_inputs right d-flex mx-0 px-0 col-6'>Cess1
-                    <input value={itemadd.cess_1} type='number' className='item_input col-6 col-7'
+                    <input value={itemadd.cess_1?itemadd.cess_1:''} type='number' className='item_input col-6 col-7'
                     name='cess_1' onChange={handleChange}/>
                     </div>
                     <div className='item_inputs right d-flex px-0 col-6 '>Cess2
-                    <input value={itemadd.cess_2} type='number' className='item_input col-6 col-7'
+                    <input value={itemadd.cess_2?itemadd.cess_2:''} type='number' className='item_input col-6 col-7'
                     name='cess_2' onChange={handleChange}/>
                     </div>
                     </div>
                 <div className="item_add_first_row px-0 row mx-0 pt-2">
                     <div className='item_inputs right d-flex mx-0 px-0 col-6'>P.Disc
-                    <input value={itemadd.purchase_discount} type='number' className='item_input col-6 col-7'
+                    <input value={itemadd.purchase_discount?itemadd.purchase_discount:''} type='number' className='item_input col-6 col-7'
                     name='purchase_discount' onChange={handleChange}/>
                     </div>
                     <div className='item_inputs right d-flex px-0 col-6 '>S.Disc
-                    <input value={itemadd.sale_discount} type='number' className='item_input col-6 col-7'
+                    <input value={itemadd.sale_discount?itemadd.sale_discount:''} type='number' className='item_input col-6 col-7'
                     name='sale_discount' onChange={handleChange}/>
                     </div>
                     </div>
                 <div className="item_add_first_row px-0 row mx-0 pt-2">
                     <div className='item_inputs right d-flex mx-0 px-0 col-6'>UnLd. Charge
-                    <input value={itemadd.unload_charge} type='number' className='item_input col-6 col-7'
+                    <input value={itemadd.unload_charge?itemadd.unload_charge:''} type='number' className='item_input col-6 col-7'
                     name='unload_charge' onChange={handleChange}/>
                     </div>
                     <div className='item_inputs right d-flex px-0 col-6 '>Point
-                    <input value={itemadd.point} type='number' className='item_input col-6 col-7'
+                    <input value={itemadd.point?itemadd.point:''} type='number' className='item_input col-6 col-7'
                     name='point' onChange={handleChange}/>
                     </div>
                     </div>
                 <div className="item_add_first_row px-0 row mx-0 pt-2">
                     <div className='item_inputs right d-flex mx-0 px-0 col-6'>Ld. Charge
-                    <input value={itemadd.load_charge} type='number' className='item_input col-6 col-7'
+                    <input value={itemadd.load_charge?itemadd.load_charge:''} type='number' className='item_input col-6 col-7'
                     name='load_charge' onChange={handleChange}/>
                     </div>
                     <div className='item_inputs right d-flex px-0 col-6 '>Cmsn %
-                    <input value={itemadd.commission} type='number' className='item_input col-6 col-7'
+                    <input value={itemadd.commission?itemadd.commission:''} type='number' className='item_input col-6 col-7'
                     name='commission' onChange={handleChange}/>
                     </div>
                     </div>
                 <div className="item_add_first_row px-0 row mx-0 pt-2">
                     <div className='item_inputs right d-flex mx-0 px-0 col-6'>Qty in Box
-                    <input value={itemadd.qty_in_bc} type='number' className='item_input col-6 col-7'
+                    <input value={itemadd.qty_in_bc?itemadd.qty_in_bc:''} type='number' className='item_input col-6 col-7'
                     name='qty_in_bc' onChange={handleChange}/>
                     </div>
                     <div className='item_inputs right d-flex px-0 col-6 '>Op. Stock*
-                    <input value={itemadd.open_stock} required type='number' className='item_input col-6 col-7'
+                    <input value={itemadd.open_stock?itemadd.open_stock:''} required type='number' className='item_input col-6 col-7'
                     name='open_stock' onChange={handleChange}/>
                     </div>
                     </div>
                 <div className="item_add_first_row px-0 row mx-0 pt-2">
                     <div className='item_inputs right d-flex mx-0 px-0 col-6'>Dmge
-                    <input value={itemadd.damage} type='number' className='item_input col-6 col-7'
+                    <input value={itemadd.damage?itemadd.damage:''} type='number' className='item_input col-6 col-7'
                     name='damage' onChange={handleChange}/>
                     </div>
                     <div className='item_inputs right d-flex px-0 col-6 '>Dmg. Cost
-                    <input value={itemadd.damge_cost} type='number' className='item_input col-6 col-7'
+                    <input value={itemadd.damge_cost?itemadd.damge_cost:''} type='number' className='item_input col-6 col-7'
                     name='damge_cost' onChange={handleChange}/>
                     </div>
                     </div>
                 <div className="item_add_first_row px-0 row mx-0 pt-2">
                     <div className='item_inputs right d-flex mx-0 px-0 col-6'>Role
-                    <input value={itemadd.role} type='number' className='item_input col-6 col-7'
+                    <input value={itemadd.role?itemadd.role:''} type='number' className='item_input col-6 col-7'
                     name='role' onChange={handleChange}/>
                     </div>
                     <div className='item_inputs right d-flex px-0 col-6 '>Rent Type
@@ -548,31 +550,31 @@ export const ItemAddForm = ({edit}) =>{
                 <div className='checkbox col-6'>
                     <div className='checkbox_container'>
                         <div className="item_add_check  d-flex align-item-center">
-                            <input onChange={handleCheck} type='checkbox' checked={itemadd.blocked} name='blocked' value={itemadd.blocked}/>
+                            <input onChange={handleCheck} type='checkbox' checked={itemadd.blocked} name='blocked' value={itemadd.blocked?itemadd.blocked:''}/>
                             <label>Blocked</label>
                         </div>
                         <div className="item_add_check  d-flex align-item-center">
-                            <input onChange={handleCheck} type='checkbox' checked={itemadd.manuel_qty_in_bc} name='manuel_qty_in_bc' value={itemadd.manuel_qty_in_bc}/>
+                            <input onChange={handleCheck} type='checkbox' checked={itemadd.manuel_qty_in_bc} name='manuel_qty_in_bc' value={itemadd.manuel_qty_in_bc?itemadd.manuel_qty_in_bc:''}/>
                             <label>Manual Qty in Box</label>
                         </div>
                     </div>
                     <div className='checkbox_container'>
                         <div className="item_add_check  d-flex align-item-center">
-                            <input onChange={handleCheck} type='checkbox' checked={itemadd.gate_pass} name='gate_pass' value={itemadd.gate_pass}/>
+                            <input onChange={handleCheck} type='checkbox' checked={itemadd.gate_pass} name='gate_pass' value={itemadd.gate_pass?itemadd.gate_pass:''}/>
                             <label>Gate Pass</label>
                         </div>
                         <div className="item_add_check  d-flex align-item-center">
-                            <input onChange={handleCheck} type='checkbox' checked={itemadd.tax_inclusive} name='tax_inclusive' value={itemadd.tax_inclusive}/>
+                            <input onChange={handleCheck} type='checkbox' checked={itemadd.tax_inclusive} name='tax_inclusive' value={itemadd.tax_inclusive?itemadd.tax_inclusive:''}/>
                             <label>Tax Inclusive</label>
                         </div>
                     </div>
                     <div className='checkbox_container'>
                         <div className="item_add_check  d-flex align-item-center">
-                            <input onChange={handleCheck} type='checkbox' checked={itemadd.rent_item} name='rent_item' value={itemadd.rent_item}/>
+                            <input onChange={handleCheck} type='checkbox' checked={itemadd.rent_item} name='rent_item' value={itemadd.rent_item?itemadd.rent_item:''}/>
                             <label>Rent Item</label>
                         </div>
                         <div className="item_add_check  d-flex align-item-center">
-                            <input onChange={handleCheck} type='checkbox' checked={itemadd.blocked} name='blocked' value={itemadd.blocked}/>
+                            <input onChange={handleCheck} type='checkbox' checked={itemadd.blocked} name='blocked' value={itemadd.blocked?itemadd.blocked:''}/>
                             <label>Repeat</label>
                         </div>
                     </div>

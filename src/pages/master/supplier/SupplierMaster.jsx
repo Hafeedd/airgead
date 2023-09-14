@@ -84,7 +84,7 @@ const SupplierMaster = () => {
                 
                 {
                     /* toEdit||showAddItem */ location.pathname === "/supplier-add"?
-                    <SupplierAdd edit={toEdit}/>:
+                    <SupplierAdd refresh={getData} edit={toEdit}/>:
                     <SupplierList list={listItem} {...{handleEdit,handleDelete,toEdit}}/>
                 }
         </div>

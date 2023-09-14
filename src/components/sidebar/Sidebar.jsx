@@ -29,16 +29,16 @@ const Sidebar = () => {
                     <span className='SidebarSpan d-flex ms-5 ps-3'>
                         <div className='SidebarItemText' onClick={()=>navigate('/supplier-master')}>Supplier</div>
                     </span>
-                    <span className='SidebarSpan d-flex ms-5 ps-3'>
+                    {/* <span className='SidebarSpan d-flex ms-5 ps-3'>
                         <div className='SidebarItemText'>Staff</div>
                     </span>
                     <span className='SidebarSpan d-flex ms-5 ps-3'>
                         <div className='SidebarItemText'>Vehichle</div>
-                    </span>
+                    </span> */}
                     <span className='SidebarSpan d-flex ms-5 ps-3'>
                         <div className='SidebarItemText' onClick={()=>navigate('/')}>Items</div>
                     </span>
-                    <span className='SidebarSpan d-flex ms-5 ps-3'>
+                    {/* <span className='SidebarSpan d-flex ms-5 ps-3'>
                         <div className='SidebarItemText'>Route</div>
                     </span>
                     <span className='SidebarSpan d-flex ms-5 ps-3'>
@@ -58,7 +58,7 @@ const Sidebar = () => {
                     </span>
                     <span className='SidebarSpan d-flex ms-5 ps-3'>
                         <div className='SidebarItemText'>User</div>
-                    </span>
+                    </span> */}
                 </div>
              
                 <div onClick={()=>setReportsActive(!ReportsActive)} className={`SidebarItem mt-3 mb-1 ${ReportsActive && "active"}`}>

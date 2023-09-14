@@ -191,7 +191,7 @@ const CustomerAddForm = ({edit,refresh}) =>{
     const handleReset = () =>{
         let key = Object.keys(customerAdd)
         key.map((data)=>{
-                setCustomerAdd(val=>({...val,[data]:''}))
+                setCustomerAdd(val=>({...val,[data]:null}))
             })
     }
 
@@ -218,7 +218,7 @@ const CustomerAddForm = ({edit,refresh}) =>{
                             Code
                         </div>
                         <div className='mx-0 px-0 col-6 col-7'>
-                            <input onChange={handleChange} name="code" value={customerAdd.code} type='text' className='item_input names' />
+                            <input onChange={handleChange} name="code" value={customerAdd.code?customerAdd.code:''} type='text' className='item_input names' />
                         </div>
                     </div>
                     <div className="d-flex align-items-center ps-0 row mx-0 pe-5 my-2">
@@ -226,7 +226,7 @@ const CustomerAddForm = ({edit,refresh}) =>{
                             Name
                         </div>
                         <div className='mx-0 px-0 col-6 col-7'>
-                            <input onChange={handleChange} name="name" value={customerAdd.name} type='text' className='item_input names' />
+                            <input onChange={handleChange} name="name" value={customerAdd.name?customerAdd.name:''} type='text' className='item_input names' />
                         </div>
                     </div>
                     <div className="d-flex align-items-center ps-0 row mx-0 pe-5 my-2">
@@ -234,7 +234,7 @@ const CustomerAddForm = ({edit,refresh}) =>{
                             Address
                         </div>
                         <div className='mx-0 px-0 col-6 col-7'>
-                            <textarea onChange={handleChange} name='address' value={customerAdd.address}  rows={4} className='item_input names' />
+                            <textarea onChange={handleChange} name='address' value={customerAdd.address?customerAdd.address:''}  rows={4} className='item_input names' />
                         </div>
                     </div>
                     <div className="d-flex align-items-center ps-0 row mx-0 pe-5 my-2">
@@ -243,7 +243,7 @@ const CustomerAddForm = ({edit,refresh}) =>{
                                 Post
                             </div>
                             <div className='mx-0 px-0 col-7'>
-                                <input onChange={handleChange} name="post" value={customerAdd.post} type='text' className='item_input names' />
+                                <input onChange={handleChange} name="post" value={customerAdd.post?customerAdd.post:''} type='text' className='item_input names' />
                             </div>
                         </div>
                         <div className="col-6 col-7 row ps-5 mx-0 px-0">
@@ -251,7 +251,7 @@ const CustomerAddForm = ({edit,refresh}) =>{
                                 Pin
                             </div>
                             <div className='mx-0 px-0 col-7'>
-                                <input onChange={handleChange} name="pin" value={customerAdd.pin} type='text' className='item_input names' />
+                                <input onChange={handleChange} name="pin" value={customerAdd.pin?customerAdd.pin:''} type='text' className='item_input names' />
                             </div>
                         </div>
                     </div>
@@ -261,7 +261,7 @@ const CustomerAddForm = ({edit,refresh}) =>{
                                 Contact Person
                             </div>
                             <div className='mx-0 px-0 col-7'>
-                                <input onChange={handleChange} name="contact_person" value={customerAdd.contact_person} type='text' className='item_input names' />
+                                <input onChange={handleChange} name="contact_person" value={customerAdd.contact_person?customerAdd.contact_person:''} type='text' className='item_input names' />
                             </div>
                         </div>
                         <div className="col-6 col-7 row ps-5 mx-0 px-0">
@@ -269,7 +269,7 @@ const CustomerAddForm = ({edit,refresh}) =>{
                                 PIN Distance
                             </div>
                             <div className='mx-0 px-0 col-7'>
-                                <input onChange={handleChange} name="pin_distance" value={customerAdd.pin_distance} type='text' className='item_input names' />
+                                <input onChange={handleChange} name="pin_distance" value={customerAdd.pin_distance?customerAdd.pin_distance:''} type='text' className='item_input names' />
                             </div>
                         </div>
                     </div>
@@ -278,7 +278,7 @@ const CustomerAddForm = ({edit,refresh}) =>{
                             Email
                         </div>
                         <div className='mx-0 px-0 col-6 col-7'>
-                            <input onChange={handleChange} name="email" value={customerAdd.email} type='text' className='item_input names' />
+                            <input onChange={handleChange} name="email" value={customerAdd.email?customerAdd.email:''} type='text' className='item_input names' />
                         </div>
                     </div>
                     <div className="d-flex align-items-center ps-0 row mx-0 pe-5 my-2">
@@ -286,32 +286,24 @@ const CustomerAddForm = ({edit,refresh}) =>{
                             Mob
                         </div>
                         <div className='mx-0 px-0 col-6 col-7'>
-                            <input onChange={handleChange} name="mobile" value={customerAdd.mobile} type='text' className='item_input names' />
+                            <input onChange={handleChange} name="mobile" value={customerAdd.mobile?customerAdd.mobile:''} type='text' className='item_input names' />
                         </div>
                     </div>
                     <div className="d-flex align-items-center ps-0 row mx-0 pe-5 my-2">
                         <div className='mx-0 px-0 col-5 col-6'>
-                            GSTin
+                            GSTin/VAT Reg No
                         </div>
                         <div className='mx-0 px-0 col-6 col-7'>
-                            <input onChange={handleChange} name="gst_in" value={customerAdd.gst_in} type='text' className='item_input names' />
+                            <input onChange={handleChange} name="gst_in" value={customerAdd.gst_in?customerAdd.gst_in:''} type='text' className='item_input names' />
                         </div>
                     </div>
                     {/* <div className="d-flex align-items-center ps-0 row mx-0 pe-5 my-2">
-                        <div className='mx-0 px-0 col-5 col-6'>
-                            GSTin
-                        </div>
-                        <div className='mx-0 px-0 col-6 col-7'>
-                            <input onChange={handleChange} name=""type= value={customerAdd.type} 'text' className='item_input names' />
-                        </div>
-                    </div> */}
-                    <div className="d-flex align-items-center ps-0 row mx-0 pe-5 my-2">
                         <div className="col-5 col-6 row mx-0 px-0">
                             <div className='mx-0 px-0 col-5'>
                                 Disc %
                             </div>
                             <div className='mx-0 px-0 col-7'>
-                                <input onChange={handleChange} name="disc" value={customerAdd.disc} type='text' className='item_input names' />
+                                <input onChange={handleChange} name="disc" value={customerAdd.disc?customerAdd.disc:''} type='text' className='item_input names' />
                             </div>
                         </div>
                         <div className="col-6 col-7 row ps-5 mx-0 px-0">
@@ -319,33 +311,55 @@ const CustomerAddForm = ({edit,refresh}) =>{
                                 Op Balance
                             </div>
                             <div className='mx-0 px-0 col-7'>
-                                <input onChange={handleChange} name="opening_balance" value={customerAdd.opening_balance} type='text' className='item_input names' />
+                                <input onChange={handleChange} name="opening_balance" value={customerAdd.opening_balance?customerAdd.opening_balance:''} type='text' className='item_input names' />
+                            </div>
+                        </div>
+                    </div> */}
+                    <div className="d-flex align-items-center ps-0 row mx-0 pe-4 my-2">
+                        <div className='px-0 col-6 col-5'>
+                            Credit Limit
+                        </div>
+                        <div className='row mx-0 px-0 justify-content-between col-6 col-7 ps-3 '>
+                            <div className='col-5 col-6 px-0'>
+                                <input onChange={handleChange} name="creadit_limit_in_amt" value={customerAdd.creadit_limit_in_amt?customerAdd.creadit_limit_in_amt:''}  type='text' placeholder='In Amnt' className='ms-0 item_input names credit' />
+                            </div>
+                            <div className='col-5 col-6 px-0 ms-3'>
+                                <input onChange={handleChange} name="creadit_limit_in_days" value={customerAdd.creadit_limit_in_days?customerAdd.creadit_limit_in_days:''}  type='text' placeholder='In Days' className='ms-0 item_input names credit' />
                             </div>
                         </div>
                     </div>
-                    <div className="d-flex align-items-center ps-0 row mx-0 pe-4 my-2">
-                        <div className='mx-0 px-0 col-5'>
-                            Credit Limit
+                    <div className="d-flex align-items-center ps-0 row mx-0 pe-5 my-2">
+                        <div className='mx-0 px-0 col-5 col-6'>
+                        Op Balance
                         </div>
-                        <div className='mx-0 px-0 col-3 col-4 pe-2'>
-                            <input onChange={handleChange} name="creadit_limit_in_amt" value={customerAdd.creadit_limit_in_amt}  type='text' placeholder='In Amnt' className='item_input names credit' />
-                        </div>
-                        <div className='mx-0 col-3 col-4 pe-4 ps-0'>
-                            <input onChange={handleChange} name="creadit_limit_in_days" value={customerAdd.creadit_limit_in_days}  type='text' placeholder='In Days' className='item_input names credit' />
-                        </div>
+                            <div className='mx-0 px-0 col-6 col-7'>
+                                <div className='item_input row justify-content-between  rounded-2 ms-4 p-0'>
+                                    <div className='col-6 col-7 mx-0 ps-0 me-0'>
+                                        <input onChange={handleChange} name="opening_balance" value={customerAdd.opening_balance?customerAdd.opening_balance:''} type='text' className='item_input ms-0 border-0 names' />
+                                    </div>
+                                    <div className='col-6 col-5 mx-0 px-0'>
+                                        <select onChange={handleChange} name='payment_type' value={customerAdd.payment_type}  placeholder='To Recieve' className='customer-select ms-0 pe-0'>
+                                            <option value="TO_GIVE">To Give</option>
+                                            <option value="TO_RECEIVE">To Receive</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
                     </div>
-                    <div className="d-flex align-items-center ps-0 row mx-0 pe-4 my-2">
-                        <div className='mx-0 px-0 col-6' />
-                        <div className='mx-0 col-3 ps-2 pe-2'>
-                            <select onChange={handleChange} name='payment_type' value={customerAdd.payment_type}  placeholder='To Recieve' className='customer-select'>
-                                <option value="TO_GIVE">To Give</option>
-                                <option value="TO_RECEIVE">To Receive</option>
-                            </select>
+                        <div className="d-flex align-items-center ps-0 row mx-0 pe-4 my-2">
+                            <div className='px-0 col-6 col-5'>
+                                Disc %
+                            </div>
+                            <div className='row mx-0 px-0 justify-content-between col-6 col-7 ps-3 '>
+                                <div className='col-5 col-6 px-0'>
+                                    <input onChange={handleChange} name="disc" value={customerAdd.disc?customerAdd.disc:''} type='text' className='ms-0 item_input names' />
+                                    
+                                </div>
+                                <div className='col-5 col-6 px-0 ms-3'>
+                                    <div className='btn btn-sm btn-dark w-100 py-0 mx-0 rates-btn'>Set Rates</div>
+                                </div>
+                            </div>
                         </div>
-                        <div className='mx-0 px-0 col-3'>
-                            <div className='btn btn-sm btn-dark px-4 w-100 rates-btn'>Set Rates</div>
-                        </div>
-                    </div>
 
                 </div>
 
@@ -421,16 +435,16 @@ const CustomerAddForm = ({edit,refresh}) =>{
                             Remarks
                         </div>
                         <div className='ps-2 ms-4 px-0 col-8'>
-                            <textarea onChange={handleChange} name='remark' value={customerAdd.remark}  rows={3} className='item_input names' />
+                            <textarea onChange={handleChange} name='remark' value={customerAdd.remark?customerAdd.remark:''}  rows={3} className='item_input names' />
                         </div>
                     </div>
                     <div className="d-flex align-items-center row mx-0 ps-4 pe-3 my-2">
                         <div className='mx-0 px-0 col-4 d-flex align-items-center'>
-                            <input onChange={handleChange} name="repeat" value={customerAdd.repeat}  type='checkbox' />
+                            <input onChange={handleChange} name="repeat" value={customerAdd.repeat?customerAdd.repeat:''}  type='checkbox' />
                             <label className='px-2'>Repeat</label>
                         </div>
                         <div className='mx-0 px-0 ps-4 col-8 d-flex align-items-center'>
-                            <input onChange={handleChange} name="blocked" value={customerAdd.blocked}  type='checkbox'/>
+                            <input onChange={handleChange} name="blocked" value={customerAdd.blocked?customerAdd.blocked:''}  type='checkbox'/>
                             <label className='px-2'>Blocked</label>
                         </div>
                     </div>

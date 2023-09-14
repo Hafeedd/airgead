@@ -69,7 +69,7 @@ const ItemMaster = () => {
                 </div>  
                 {
                     /* toEdit||showAddItem */ location.pathname === '/add'?
-                    <ItemAddForm edit={toEdit}/>:
+                    <ItemAddForm refresh={getData} edit={toEdit}/>:
                     <ItemList list={listItem} {...{handleEdit,handleDelete,toEdit}}/>
                 }
         </div>

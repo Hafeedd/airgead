@@ -4,7 +4,7 @@ import useItemServices from '../../../../services/master/itemServices'
 import SearchDropDown from '../../../../components/searchDropDown/SearchDropDown'
 import Swal from 'sweetalert2'
 
-const SupplierAdd = ({edit}) => {
+const SupplierAdd = ({edit,refresh}) => {
     const [showDropdown, setShowDropdown] = useState(false)
     const [listItem, setListItem] = useState({
         company:[],
@@ -136,6 +136,7 @@ const SupplierAdd = ({edit}) => {
             if(res?.success){
                 Swal.fire('Supplier Added Successfully','','success')
                 handleReset()
+                refresh()
             }else{
                 Swal.fire(res?.message,'','error')
             }
@@ -172,7 +173,7 @@ const SupplierAdd = ({edit}) => {
                                 Code
                             </div>
                             <div className='mx-0 px-0 col-6 col-7'>
-                                <input onChange={handleChange} name='code' value={supplierAdd.code} type='text' className='item_input names' />
+                                <input onChange={handleChange} name='code' value={supplierAdd.code?supplierAdd.code:''} type='text' className='item_input names' />
                             </div>
                         </div>
                         <div className="d-flex align-items-center ps-0 row mx-0 pe-5 my-2">
@@ -180,7 +181,7 @@ const SupplierAdd = ({edit}) => {
                                 Name
                             </div>
                             <div className='mx-0 px-0 col-6 col-7'>
-                                <input onChange={handleChange} name='name' value={supplierAdd.name} type='text' className='item_input names' />
+                                <input onChange={handleChange} name='name' value={supplierAdd.name?supplierAdd.name:''} type='text' className='item_input names' />
                             </div>
                         </div>
                         <div className="d-flex align-items-center ps-0 row mx-0 pe-5 my-2">
@@ -188,7 +189,7 @@ const SupplierAdd = ({edit}) => {
                                 Address
                             </div>
                             <div className='mx-0 px-0 col-6 col-7'>
-                                <textarea onChange={handleChange} name='address' value={supplierAdd.address} rows={4} className='item_input names' />
+                                <textarea onChange={handleChange} name='address' value={supplierAdd.address?supplierAdd.address:''} rows={4} className='item_input names' />
                             </div>
                         </div>
                         <div className="d-flex align-items-center ps-0 row mx-0 pe-5 my-2">
@@ -197,7 +198,7 @@ const SupplierAdd = ({edit}) => {
                                     Post
                                 </div>
                                 <div className='mx-0 px-0 col-7'>
-                                    <input onChange={handleChange} name='post' value={supplierAdd.post} type='text' className='item_input names' />
+                                    <input onChange={handleChange} name='post' value={supplierAdd.post?supplierAdd.post:''} type='text' className='item_input names' />
                                 </div>
                             </div>
                             <div className="col-6 col-7 row ps-5 mx-0 px-0">
@@ -205,7 +206,7 @@ const SupplierAdd = ({edit}) => {
                                     Pin
                                 </div>
                                 <div className='mx-0 px-0 col-7'>
-                                    <input onChange={handleChange} name='pin' value={supplierAdd.pin} type='text' className='item_input names' />
+                                    <input onChange={handleChange} name='pin' value={supplierAdd.pin?supplierAdd.pin:''} type='text' className='item_input names' />
                                 </div>
                             </div>
                         </div>
@@ -215,7 +216,7 @@ const SupplierAdd = ({edit}) => {
                                     Contact Person
                                 </div>
                                 <div className='mx-0 px-0 col-7'>
-                                    <input onChange={handleChange} name='contact_person' value={supplierAdd.contact_person} type='text' className='item_input names' />
+                                    <input onChange={handleChange} name='contact_person' value={supplierAdd.contact_person?supplierAdd.contact_person:''} type='text' className='item_input names' />
                                 </div>
                             </div>
                             <div className="col-6 col-7 row ps-5 mx-0 px-0">
@@ -223,7 +224,7 @@ const SupplierAdd = ({edit}) => {
                                     PIN Distance
                                 </div>
                                 <div className='mx-0 px-0 col-7'>
-                                    <input onChange={handleChange} name='pin_distance' value={supplierAdd.pin_distance} type='text' className='item_input names' />
+                                    <input onChange={handleChange} name='pin_distance' value={supplierAdd.pin_distance?supplierAdd.pin_distance:''} type='text' className='item_input names' />
                                 </div>
                             </div>
                         </div>
@@ -232,7 +233,7 @@ const SupplierAdd = ({edit}) => {
                                 Email
                             </div>
                             <div className='mx-0 px-0 col-6 col-7'>
-                                <input onChange={handleChange} name='email' value={supplierAdd.email} type='text' className='item_input names' />
+                                <input onChange={handleChange} name='email' value={supplierAdd.email?supplierAdd.email:''} type='text' className='item_input names' />
                             </div>
                         </div>
                         <div className="d-flex align-items-center ps-0 row mx-0 pe-5 my-2">
@@ -240,7 +241,7 @@ const SupplierAdd = ({edit}) => {
                                 Mob
                             </div>
                             <div className='mx-0 px-0 col-6 col-7'>
-                                <input onChange={handleChange} name='mobile' value={supplierAdd.mobile} type='text' className='item_input names' />
+                                <input onChange={handleChange} name='mobile' value={supplierAdd.mobile?supplierAdd.mobile:''} type='text' className='item_input names' />
                             </div>
                         </div>
                         <div className="d-flex align-items-center ps-0 row mx-0 pe-5 my-2">
@@ -248,7 +249,7 @@ const SupplierAdd = ({edit}) => {
                                 GSTin
                             </div>
                             <div className='mx-0 px-0 col-6 col-7'>
-                                <input onChange={handleChange} name='gst_in' value={supplierAdd.gst_in} type='text' className='item_input names' />
+                                <input onChange={handleChange} name='gst_in' value={supplierAdd.gst_in?supplierAdd.gst_in:''} type='text' className='item_input names' />
                             </div>
                         </div>
                         <div className="d-flex align-items-center ps-0 row mx-0 pe-5 my-2">
@@ -256,7 +257,7 @@ const SupplierAdd = ({edit}) => {
                                 GSTin
                             </div>
                             <div className='mx-0 px-0 col-6 col-7'>
-                                <input onChange={handleChange} name='gst_in' value={supplierAdd.gst_in} type='text' className='item_input names' />
+                                <input onChange={handleChange} name='gst_in' value={supplierAdd.gst_in?supplierAdd.gst_in:''} type='text' className='item_input names' />
                             </div>
                         </div>
                         <div className="d-flex align-items-center ps-0 row mx-0 pe-5 my-2">
@@ -265,7 +266,7 @@ const SupplierAdd = ({edit}) => {
                                     Disc %
                                 </div>
                                 <div className='mx-0 px-0 col-7'>
-                                    <input onChange={handleChange} name='disc' value={supplierAdd.disc} type='text' className='item_input names' />
+                                    <input onChange={handleChange} name='disc' value={supplierAdd.disc?supplierAdd.disc:''} type='text' className='item_input names' />
                                 </div>
                             </div>
                             <div className="col-6 col-7 row ps-5 mx-0 px-0">
@@ -273,14 +274,14 @@ const SupplierAdd = ({edit}) => {
                                     Op Balance
                                 </div>
                                 <div className='mx-0 px-0 col-7'>
-                                    <input onChange={handleChange} name='opening_balance' value={supplierAdd.opening_balance} type='text' className='item_input names' />
+                                    <input onChange={handleChange} name='opening_balance' value={supplierAdd.opening_balance?supplierAdd.opening_balance:''} type='text' className='item_input names' />
                                 </div>
                             </div>
                         </div>
                         <div className="d-flex align-items-center ps-0 row mx-0 pe-4 my-2">
                             <div className='mx-0 px-0 col-9' />
                             <div className='mx-0 col-3 px-0'>
-                                <select onChange={handleChange} name='payment_type' value={supplierAdd.payment_type} className='customer-select'>
+                                <select onChange={handleChange} name='payment_type' value={supplierAdd.payment_type?supplierAdd.payment_type:''} className='customer-select'>
                                     <option value="TO_GIVE">To Give</option>
                                     <option value="TO_RECEIVE">To Receive</option>
                                 </select>
@@ -319,7 +320,7 @@ const SupplierAdd = ({edit}) => {
                                 Remarks
                             </div>
                             <div className='px-0 ps-2 col-8'>
-                                <textarea onChange={handleChange} name='remark' value={supplierAdd.remark} rows={3} className='item_input names ms-0' />
+                                <textarea onChange={handleChange} name='remark' value={supplierAdd.remark?supplierAdd.remark:''} rows={3} className='item_input names ms-0' />
                             </div>
                         </div>
                         <div className="d-flex align-items-center row mx-0 ps-4 pe-3 my-2">
