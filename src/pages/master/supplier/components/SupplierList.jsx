@@ -1,8 +1,10 @@
-
+import React from 'react'
 import search from "../../../../assets/icons/search.png"
+import deleteBtn from "../../../../assets/icons/delete.svg"
+import { Form } from 'react-bootstrap'
 
-const CustomerTable = (props) => {
-    const {list,handleEdit,handleDelete,toEdit,navigate} = props
+const SupplierList = (props) => {
+    const {list,handleEdit,handleDelete,toEdit} = props
 
     const editBtn = (
         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
@@ -30,48 +32,48 @@ const CustomerTable = (props) => {
         </div>
     </div>
     <div className='item_add_cont p-0 table-scroller' style={{borderRadius: "0.3125rem 0.3125rem 0rem 0rem"}}>
-        <table className='table table-light custom-table' >
+        <table className='table table-light custom-table'>
             <thead>
                 <tr>
-                    {/* <th style={{borderTopLeftRadius: "0.3125rem"}}>No</th> */}
+                    <th style={{borderTopLeftRadius: "0.3125rem", width: "4rem"}}>No</th>
+                    <th className='text-start' style={{width:"12rem"}}>Supplier</th>
                     <th>Code</th>
-                    <th>Name</th>
-                    <th className="mx-2">Mob</th>
-                    <th >Contract Person</th>
-                    <th>Op.Balance</th>
-                    <th>Credit Limite</th>
-                    <th>Remark</th> 
-                    
+                    <th style={{width:"18rem"}}>Address</th>
+                    <th>Mob</th>
+                    <th className='text-start'>Remark</th>
                     <th style={{borderTopRightRadius: "0.3125rem"}}></th>
                 </tr>
             </thead>
             <tbody>
-                {list?.length>0 ?
-                list?.map((data,i)=>{
-                return(<tr>
-                    {/* <td>{i+1}</td> */}
-                    <td>{data.code}</td>
-                    <td>{data.name}</td>
-                    <td>{data.mobile}</td>
-                    <td>{data.contact_person}</td>
-                    <td>{data.opening_balance}</td>
-                    <td>{data.creadit_limit_in_amt}</td>
-                    <td>{data.remark}</td>
-                    {/* <td>
-                        <div className='button' onClick={(e)=>handleDelete(data.id,e)}>
-                            <img src={deleteBtn}  alt='deletebtn'/>
-                        </div>
-                    </td> */}
-                    
-                    <td>
-                        <div className='button' onClick={()=>handleEdit(data)}>
-                            {editBtn}
-                        </div>
-                    </td>
-                </tr>
-                )}):
-                <tr className='fs-5 text-center' colspan={5}>
-                    No Item Added Yet</tr>}
+                {
+                list?.length>0 ?
+                    list.map((data,i)=>{
+                    return(<tr>
+                        <td>{i+1}</td>
+                        <td className='text-start'>{data?.name}</td>
+                        <td>{data?.code}</td>
+                        <td>{data?.address}</td>
+                        <td>{data?.mobile}</td>
+                        <td>
+                            <Form.Control 
+                                as='textarea'
+                                value={data?.remark}
+                                disabled
+                                rows={1}
+                                className='resize-none text-center'
+                            />
+                        </td>
+                        <td>
+                            <div className='button' onClick={e=>handleEdit(data&&data)}>
+                                {editBtn}
+                            </div>
+                        </td>
+                    </tr>
+                    )}):
+                    <tr>
+                        <td className='fs-5 text-center' colspan={5}>No Item Added Yet</td>
+                    </tr>
+                }
             </tbody>
         </table>
     </div>
@@ -79,4 +81,4 @@ const CustomerTable = (props) => {
   )
 }
 
-export default CustomerTable;
+export default SupplierList

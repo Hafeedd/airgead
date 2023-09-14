@@ -79,6 +79,8 @@ const CustomerAddForm = ({edit,refresh}) =>{
             else
             setCustomerAdd(data=>({...data,[key]:edit[key]}))
            })
+        }else{
+            handleReset()
         }
     },[edit, ])
 
@@ -159,7 +161,7 @@ const CustomerAddForm = ({edit,refresh}) =>{
             let submitData = customerAdd
             const names = ['district','route','city','town','bill_types','types']
             let data = handleChangeFk(names,submitData)
-            let res 
+            let res
             if(edit){
                 res = await putCustomer(edit.id,data)
             }else{

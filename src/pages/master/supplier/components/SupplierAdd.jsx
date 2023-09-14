@@ -4,7 +4,7 @@ import useItemServices from '../../../../services/master/itemServices'
 import SearchDropDown from '../../../../components/searchDropDown/SearchDropDown'
 import Swal from 'sweetalert2'
 
-const SupplierAdd = () => {
+const SupplierAdd = ({edit}) => {
     const [showDropdown, setShowDropdown] = useState(false)
     const [listItem, setListItem] = useState({
         company:[],
@@ -30,13 +30,34 @@ const SupplierAdd = () => {
         remark:null,
     })
 
-    console.log(supplierAdd)
-    const {postDistrict,getDistrict,postSupplier} = useCustomerServices()
+    const {postDistrict,getDistrict,postSupplier,putSupplier} = useCustomerServices()
     const {postCompany,getCompany} = useItemServices()
 
     useEffect(()=>{
         getData()
+        if (!edit){
+            handleReset()
+        }
     },[])
+
+    useEffect(()=>{
+        let keys = Object.keys(supplierAdd)
+        if(edit){
+            keys.map((key)=>{
+                // if(key==='rate_types') 
+                if(key.match(/^district|^company/)){
+                let a = "fk_"+key
+                if(edit[a]){
+                    setSupplierAdd(data=>({...data,[key]:edit[a]}))}
+            }
+            else
+            setSupplierAdd(data=>({...data,[key]:edit[key]}))
+           })
+        }else
+        handleReset()
+    },[edit])
+
+    // console.log(supplierAdd)
 
     const getData = async () =>{
         let list = {}
@@ -106,7 +127,12 @@ const SupplierAdd = () => {
                     delete submitData[data]
                 }
             })
-            let res = await postSupplier(submitData)
+            let res
+            if(edit){
+                res = await putSupplier(edit.id,submitData)
+            }else{
+                res = await postSupplier(submitData)
+            }
             if(res?.success){
                 Swal.fire('Supplier Added Successfully','','success')
                 handleReset()
@@ -121,20 +147,20 @@ const SupplierAdd = () => {
     const handleReset = () =>{
         let key = Object.keys(supplierAdd)
         key.map((data)=>{
-                setSupplierAdd(val=>({...val,[data]:null}))
+                setSupplierAdd(val=>({...val,[data]:''}))
             })
     }
-
+    
     return (
         <div className='item_add'>
-            <div className="page_head ps-4 mt-1 mb-3">
+            {/* <div className="page_head ps-4 mt-1 mb-3">
                 <div className='fw-600 fs-5'>Master Supplier</div>
                 <div className='page_head_items mb-3'>
                     <div onClick={() => setPageHeadItem(1)} className={`page_head_item ${pageHeadItem === 1 && "active"}`}>Add Supplier</div>
                 </div>
-            </div>
+            </div> */}
             <div className='item_add_cont'>
-                Add New Supplier
+                {edit?"Edit Supplier":"Add New Supplier"}
                 <form onSubmit={handleSubmit} className='item_add_form pt-1 d-flex mt-1'>
 
                     {/* item details --------------------------------------------------------------------------------------- */}
@@ -267,33 +293,33 @@ const SupplierAdd = () => {
 
                     <div className='item_add_form_part2 row mx-0 px-0 me-0 col-6 border-0'>
 
-                        <div className="d-flex align-items-start justify-content-between mx-0 ps-4 pe-0 my-2">
-                            <div className='mx-0 px-0 '>
+                        <div className="d-flex align-items-center mx-0 ps-4 pe-3 row my-2">
+                            <div className='mx-0 px-0 col-4 me-0 '>
                                 District
                             </div>
-                            <div className='mx-0 px-0'>
+                            <div className='px-0 ps-2 col-8'>
                                 {/* <input type='text' className='item_input names' /> */}
-                            <SearchDropDown containerClass="large" id="district" addNew={true}  setNew={addNewOption} options={listItem}
+                            <SearchDropDown containerClass="large w-100" id="district" addNew={true}  setNew={addNewOption} options={listItem}
                             {... { showDropdown, setShowDropdown }} setDataValue={setSupplierAdd} selectedValue={supplierAdd}/>
                             </div>
                         </div>
-                        <div className="d-flex align-items-start justify-content-between mx-0 ps-4 pe-0 my-2">
-                            <div className='mx-0 px-0'>
+                        <div className="d-flex align-items-center mx-0 ps-4 pe-3 row my-2">
+                            <div className='mx-0 px-0 col-4 me-0'>
                                 Company
                             </div>
-                            <div className='mx-0 px-0'>
+                            <div className='px-0 ps-2 col-8'>
                                 {/* <input type='text' className='item_input names' /> */}
-                            <SearchDropDown containerClass="large" id="company" addNew={true}  setNew={addNewOption} options={listItem}
+                            <SearchDropDown containerClass="large w-100" id="company" addNew={true}  setNew={addNewOption} options={listItem}
                             {... { showDropdown, setShowDropdown }} setDataValue={setSupplierAdd} selectedValue={supplierAdd}/>
                             {/* </div> */}
                             </div>
                         </div>
                         <div className="d-flex align-items-center row mx-0 ps-4 pe-3 my-2">
-                            <div className='mx-0 px-0 col-3 me-2'>
+                            <div className='mx-0 px-0 col-4 me-0'>
                                 Remarks
                             </div>
-                            <div className='ps-2 ms-4 px-0 col-8'>
-                                <textarea onChange={handleChange} name='remark' value={supplierAdd.remark} rows={3} className='item_input names' />
+                            <div className='px-0 ps-2 col-8'>
+                                <textarea onChange={handleChange} name='remark' value={supplierAdd.remark} rows={3} className='item_input names ms-0' />
                             </div>
                         </div>
                         <div className="d-flex align-items-center row mx-0 ps-4 pe-3 my-2">
@@ -309,10 +335,10 @@ const SupplierAdd = () => {
                         <div className="bottom-btn-section-2 row px-0 ms-3 mx-0 my-2">
                             <div className='mx-0 px-0 col-4' />
                             <div className='mx-0 px-1 col-4'>
-                                <button type='reset' className='btn btn-sm btn-outline-dark w-100'>Clear</button>
+                                <button onClick={handleReset} type='reset' className='btn btn-sm btn-outline-dark w-100'>Clear</button>
                             </div>
                             <div className='mx-0 px-1 col-4'>
-                                <button type='submit' className='btn btn-sm btn-dark w-100'>Save</button>
+                                <button type='submit' className='btn btn-sm btn-dark w-100'>{edit?"Edit":"Save"}</button>
                             </div>
                         </div>
 

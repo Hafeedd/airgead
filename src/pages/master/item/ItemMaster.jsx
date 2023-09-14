@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import useItemServices from '../../../services/master/itemServices'
 import './ItemMaster.css'
-import { useNavigate} from 'react-router'
+import { useNavigate , useLocation } from 'react-router'
 import Swal from 'sweetalert2'
 import ItemList from './components/ItemList'
 import { ItemAddForm } from './components/AddForm'
@@ -12,10 +12,13 @@ const ItemMaster = () => {
     const [listItem,setListItem] = useState()
     const [showAddItem, setShowAddItem] = useState(false)
     const {getItemList,deleteItemList} = useItemServices()
+    const navigate = useNavigate()
 
     useEffect(()=>{
         getData()
     },[])
+
+    const location = useLocation()
 
     const handleDelete = async (id,e) =>{
         e.preventDefault()
@@ -41,6 +44,7 @@ const ItemMaster = () => {
     }
 
     const handleEdit = (data) => {
+        navigate("/add")
         setToEdit(data)
     }
 
@@ -51,20 +55,20 @@ const ItemMaster = () => {
                         <div>
                         <div className='fw-600 fs-5'>Master Item</div>
                         <div className='page_head_items mb-3'>
-                            <div onClick={()=>setPageHeadItem(1)} className={`page_head_item ${pageHeadItem === 1 && "active"}`}>Item List</div>
-                            <div onClick={()=>setPageHeadItem(2)} className={`page_head_item ${pageHeadItem === 2 && "active"}`}>Change Item Code</div>
+                            <div onClick={()=>{navigate('/')}} className={`page_head_item ${pageHeadItem === 1 && "active"}`}>Item List</div>
+                            {/* <div onClick={()=>setPageHeadItem(2)} className={`page_head_item ${pageHeadItem === 2 && "active"}`}>Change Item Code</div>
                             <div onClick={()=>setPageHeadItem(3)} className={`page_head_item ${pageHeadItem === 3 && "active"}`}>Raw Meterial Settins</div>
                             <div onClick={()=>setPageHeadItem(4)} className={`page_head_item ${pageHeadItem === 4 && "active"}`}>Update Details</div>
-                            <div onClick={()=>setPageHeadItem(5)} className={`page_head_item ${pageHeadItem === 5 && "active"}`}>Merge Items</div>
+                            <div onClick={()=>setPageHeadItem(5)} className={`page_head_item ${pageHeadItem === 5 && "active"}`}>Merge Items</div> */}
                         </div>
                         </div>
                         <div className="col-1 col-2 d-flex px-1 align-items-center">
-                            <div onClick={()=>setShowAddItem(true)} className="btn btn-primary add-btn px-0">+ &nbsp; Add Item</div>
+                            <div onClick={()=>{navigate("/add");setToEdit(false)}} className="btn btn-primary add-btn px-0">+ &nbsp; Add Item</div>
                         </div>
                     </div>
                 </div>  
                 {
-                    toEdit||showAddItem?
+                    /* toEdit||showAddItem */ location.pathname === '/add'?
                     <ItemAddForm edit={toEdit}/>:
                     <ItemList list={listItem} {...{handleEdit,handleDelete,toEdit}}/>
                 }

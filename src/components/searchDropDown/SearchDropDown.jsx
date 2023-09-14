@@ -45,10 +45,18 @@ const SearchDropDown = ({
     },[])
 
     useEffect(() => {
-        if(options[id]?.length>0){
-            setTempList([...options[id],])
+        if(options[id]?.length>0 || id == 'transaction_unit'){
+            if(id == 'transaction_unit')
+                setTempList([...options['unit'],])
+            else
+                setTempList([...options[id],])
+                let newId
+        if(id === 'transaction_unit')
+        newId = 'unit'
+        else 
+        newId = id
         if (selectedValue[id]) {
-            options[id]?.map((item)=>{
+            options[newId]?.map((item)=>{
                 if (item.value==selectedValue[id]){
                     setSelected(item?.label)
                     setSearch(item?.label)
@@ -124,7 +132,7 @@ const SearchDropDown = ({
         setShowDropdown('')
         setShow(false)
         if(id==='transaction_unit')
-        setDataValue((data)=>({...data, [id]:item.label}))
+        setDataValue((data)=>({...data, [id]:item.label.toUpperCase()}))
         else
         setDataValue((data)=>({...data, [id]:item.value}))
     }
