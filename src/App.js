@@ -5,6 +5,7 @@ import SupplierAdd from "./pages/master/supplier/components/SupplierAdd";
 import ItemMaster from "./pages/master/item/ItemMaster";
 import CustomerMaster from './pages/master/customer/CustomerMaster';
 import SupplierMaster from './pages/master/supplier/SupplierMaster';
+import PurchaseTransaction from './pages/transactions/purchase/PurchaseTransaction';
 
 function App() {
   return (
@@ -18,6 +19,7 @@ function App() {
             <Route path="/customer-add" element={<CustomerMaster/>}/>
             <Route path="/supplier-master" element={<SupplierMaster/>}/>
             <Route path="/supplier-add" element={<SupplierMaster/>}/>
+            <Route path="/purchase-transaction" element={<PurchaseTransaction/>}/>
           </Route>
         </Route>
       </Routes>
