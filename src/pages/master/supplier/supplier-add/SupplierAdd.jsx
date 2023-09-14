@@ -2,10 +2,13 @@ import React, { useEffect, useState } from 'react'
 import useCustomerServices from '../../../../services/master/customerServices'
 import useItemServices from '../../../../services/master/itemServices'
 import SearchDropDown from '../../../../components/searchDropDown/SearchDropDown'
+import deleteBtn from "../../../../assets/icons/delete-white.svg"
 import Swal from 'sweetalert2'
+import { Modal } from 'react-bootstrap'
 
 const SupplierAdd = () => {
     const [showDropdown, setShowDropdown] = useState(false)
+    const [supplierRateShow, setSupplierRateShow] = useState(false)
     const [listItem, setListItem] = useState({
         company:[],
         district:[]
@@ -123,6 +126,10 @@ const SupplierAdd = () => {
         key.map((data)=>{
                 setSupplierAdd(val=>({...val,[data]:null}))
             })
+    }
+
+    const handleRateHide = () =>{
+        setSupplierRateShow(false)
     }
 
     return (
@@ -317,6 +324,65 @@ const SupplierAdd = () => {
                         </div>
 
                     </div>
+                    <Modal
+                contentClassName="unit_modal px-3 bg-dark"
+                dialogClassName='d-flex justify-content-center'
+                show={supplierRateShow}
+                size='lg'
+                centered
+                onHide={handleRateHide}
+                >
+                    <Modal.Body>
+                        <div className='text-light pb-2'>
+                            Supplier Rate
+                            <div className='unit_modal_body mt-2 px-3 pb-2'>
+                                <table className='custom-table-2 names ms-2 position-relative'>
+                                    <thead className='tabel-head'>
+                                        <tr>
+                                            <th>''</th>
+                                            <th>''</th>
+                                            <th>''</th>
+                                            <th>''</th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody className='rounded-3 '>
+                                        <tr className='table-head-input'>
+                                            <td><input onChange={handleChange} name='' value='' type='text' className='w-100 text-light'/></td>
+                                        
+                                            <td>
+                                                <select type='select' onChange={handleChange} value='' className='unit_select py-2 text-light w-100' name=''>
+                                                    <option value={null}>Select</option>
+                                                    {listItem?.unit?.length>0&&
+                                                    listItem.unit.map(data=><option value={data.label}>{data.label}</option>)}
+                                                </select>:
+                                                <input onChange={handleChange} name='' value='' type='number' className='w-100 text-light'/>
+                                            </td>
+                                            <td><input onChange={handleChange} name='' value='' type='number' className='w-100 text-light'/></td>
+                                            <td><input onChange={handleChange} name='' value='' type='number' className='w-100 text-light'/></td>
+                                            <th className='col col-1 cursor text-center'>
+                                                <img src={deleteBtn} alt="deletebtn"/>
+                                            </th>
+                                            <th className='btn-td'>
+                                                <div onClick={''} className='add_unit_btn btn'></div>
+                                            </th>
+                                        </tr>
+                                        {(supplierRateShow)&&
+                                        supplierRateShow.map(data=>(
+                                        <tr>
+                                            <td><input value={data} type='text' className='w-100 text-light'/></td>
+                                            <td>
+                                                <input value={data} type='text' className='w-100 text-light'/>
+                                            </td>
+                                            <td><input value={data} type='number' className='w-100 text-light'/></td>
+                                            <td><input value={data} type='number' className='w-100 text-light'/></td>
+                                        </tr>))}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </Modal.Body>
+                </Modal>
 
                 </form>
             </div>
