@@ -39,25 +39,25 @@ const PurchaseTransaction = () => {
                         <div className="col-3 d-flex pe-0 align-items-center">
                             <div 
                                 onClick={() => setPageHeadItem(2)} 
-                                className="btn btn-secondary purchase-nav-btn px-3"
+                                className={`btn btn-secondary purchase-nav-btn px-3 ${pageHeadItem===2&&'select'}`}
                             >Printing details</div>
                         </div>
                         <div className="col-3 d-flex pe-0 align-items-center">
                             <div 
                                 // onClick={() => setPageHeadItem(4)} 
-                                className="btn btn-secondary purchase-nav-btn px-3"
+                                className={`btn btn-secondary purchase-nav-btn px-3 ${pageHeadItem===4&&'select'}`}
                             >E-Payment</div>
                         </div>
                         <div className="col-3 d-flex pe-0 align-items-center">
                             <div 
                                 onClick={() => setPageHeadItem(3)} 
-                                className="btn btn-secondary purchase-nav-btn px-3"
+                                className={`btn btn-secondary purchase-nav-btn px-3 ${pageHeadItem===3&&'select'}`}
                             >Delivery details</div>
                         </div>
                         <div className="col-3 d-flex px-0 align-items-center">
                             <div 
                                 onClick={() => setPageHeadItem(1)} 
-                                className="btn btn-secondary purchase-nav-btn px-3"
+                                className={`btn btn-secondary purchase-nav-btn px-3 ${pageHeadItem===1&&'select'}`}
                             >Invoice details</div>
                         </div>
                     </div>
