@@ -88,6 +88,8 @@ export const ItemAddForm = ({edit}) =>{
         barcode:null,
     })
 
+    // console.log(itemadd)
+
     const formRef = useRef(null)
 
     useEffect(()=>{
@@ -95,17 +97,21 @@ export const ItemAddForm = ({edit}) =>{
     },[])
 
     useEffect(()=>{
+        console.log(itemadd)
         let keys = Object.keys(itemadd)
         if(edit){
             keys.map((key)=>{
                 if(key==='types') setItemAdd(data=>({...data,['types']:edit.type}))
-                else if(key.match(/^second_name|^category|^sub_category|^company|^size|^color|^group|^tax_group|^unit/)){
+                else if(key.match(/^types|^second_name|^category|^sub_category|^company|^size|^color|^group|^tax_group|^unit|^transaction_unit|^rack/)){
                 let a = "fk_"+key
                 if(edit[a]){
+                    console.log(a)
                     setItemAdd(data=>({...data,[key]:edit[a]}))}
             }
             else setItemAdd(data=>({...data,[key]:edit[key]}))
            })
+        }else{
+            handleReset()
         }
     },[edit, ])
 
@@ -231,6 +237,8 @@ export const ItemAddForm = ({edit}) =>{
             Swal.fire('Failed to add option','','error')
     }
     }
+
+    // console.log(itemadd)
 
     const handleSubmit = async (e)=>{
         e.preventDefault()
