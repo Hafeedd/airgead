@@ -36,8 +36,8 @@ const CustomerTable = (props) => {
                     {/* <th style={{borderTopLeftRadius: "0.3125rem"}}>No</th> */}
                     <th>Code</th>
                     <th>Name</th>
-                    <th className="mx-2">Mob</th>
-                    <th >Contract Person</th>
+                    <th>Mob</th>
+                    <th>Contract Person</th>
                     <th>Op.Balance</th>
                     <th>Credit Limite</th>
                     <th>Remark</th> 

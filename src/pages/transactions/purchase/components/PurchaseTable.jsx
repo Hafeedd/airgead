@@ -1,6 +1,7 @@
 import React from 'react'
+import PurchaseTableItemList from './PurchaseTableItemList'
 
-const PurchaseTable = () => {
+const PurchaseTable = ({setPurchaseItemModal}) => {
     return (
         <>
             <div className='px-2'>
@@ -21,7 +22,11 @@ const PurchaseTable = () => {
                             <th>Cost</th>
                             <th>Margin%</th>
                             <th>S.Rate</th>
-                            <th >+</th>
+                            <th className='py-0 text-end'>
+                                <div className='btn btn-primary purchase-add-btn my-0' onClick={()=>setPurchaseItemModal(true)}>
+                                    +
+                                </div>
+                            </th>
                         </tr>
                     </thead>
                     <tbody className='purchase-table-body'>

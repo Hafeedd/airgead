@@ -115,6 +115,52 @@
     box-shadow: 0px 0px 6px 0px rgba(0, 0, 0, 0.25) inset;
 }
 
+td.clr{
+    color: #FC4040;
+    font-size: 1rem;
+    font-weight: 600;
+    
+}
+
 .btn-secondary.purchase-nav-btn.select{
     background: #737373;
+}
+
+.table.purchase-item-table th{
+    background: #191A19;   
+    color: #FFF;
+    height: 3.5rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+    border-right: 1px solid #FFF;
+    line-height: 2rem;
+    vertical-align: middle; 
+    text-align: center;
+}
+
+.table.purchase-item-table td{
+    height: 2.5rem;
+    vertical-align: middle; 
+    text-align: center;
+    font-size: 1rem;
+    font-weight: 600;
+}
+
+.table.purchase-item-table td.name{
+    font-size: 0.875rem;
+    text-align: start;
+    font-weight: 500;
+    color: #2C2C2C;
+}
+
+.purchase-item-body{
+    height: 1rem;
+    overflow: hidden;
+}
+
+.btn-primary.purchase-add-btn{
+    border-radius: 0.125rem;
+    background: #4A00A8;
+    font-size: 2rem;
+    font-weight: 900;
 }
