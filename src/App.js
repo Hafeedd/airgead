@@ -6,6 +6,7 @@ import ItemMaster from "./pages/master/item/ItemMaster";
 import CustomerMaster from './pages/master/customer/CustomerMaster';
 import SupplierMaster from './pages/master/supplier/SupplierMaster';
 import PurchaseTransaction from './pages/transactions/purchase/PurchaseTransaction';
+import StaffTransaction from './pages/transactions/staff/StaffTransaction';
 
 function App() {
   return (
@@ -20,6 +21,7 @@ function App() {
             <Route path="/supplier-master" element={<SupplierMaster/>}/>
             <Route path="/supplier-add" element={<SupplierMaster/>}/>
             <Route path="/purchase-transaction" element={<PurchaseTransaction/>}/>
+            <Route path="/staff-transaction" element={<StaffTransaction/>}/>
           </Route>
         </Route>
       </Routes>

@@ -14,7 +14,7 @@ const PurchaseTableItemList = () => {
         >
             <Modal.Body>
                 <div>
-                    <table className="px-2">
+                  <table className="table"> 
                         <thead>
                           <tr>
                             <th className='text-start'>Column Name</th>

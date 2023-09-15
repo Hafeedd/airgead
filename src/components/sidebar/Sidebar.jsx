@@ -70,6 +70,9 @@ const Sidebar = () => {
                     <span className='SidebarSpan d-flex ms-5 ps-3'>
                         <div className='SidebarItemText' onClick={()=>navigate('/purchase-transaction')}>Purchase</div>
                     </span>
+                    <span className='SidebarSpan d-flex ms-5 ps-3'>
+                        <div className='SidebarItemText' onClick={()=>navigate('/staff-transaction')}>Staff</div>
+                    </span>
                     {/* <span className='SidebarSpan d-flex ms-5 ps-3'>
                         <div className='SidebarItemText'>Supplier</div>
                     </span>
