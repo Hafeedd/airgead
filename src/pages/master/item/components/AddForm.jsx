@@ -97,7 +97,7 @@ export const ItemAddForm = ({edit}) =>{
     },[])
 
     useEffect(()=>{
-        console.log(itemadd)
+        // console.log(itemadd)
         let keys = Object.keys(itemadd)
         if(edit){
             keys.map((key)=>{
@@ -280,6 +280,8 @@ export const ItemAddForm = ({edit}) =>{
         }
     }
 
+    console.log(itemadd)
+
     const handleChangeFk = (name,submitData)=>{
         name.map(x=>{
             submitData['fk_'+x] = submitData[x]
@@ -332,7 +334,7 @@ export const ItemAddForm = ({edit}) =>{
                     
                     <div className="item_add_first_row px-0 row mx-0 ">
                     <div className='item_inputs d-flex mx-0 px-0 col-6'>Code*
-                    <input required type='number' className='item_input'
+                    <input required type='text' className='item_input'
                         value={itemadd.code} name='code' onChange={handleChange}/>
                     </div>
                     <div className='item_inputs d-flex px-0 col-6 align-itmes-end'>HSN*
@@ -367,8 +369,8 @@ export const ItemAddForm = ({edit}) =>{
                     <SearchDropDown id="sub_category" addNew={true} setNew={addOption} options={listItem}
                         {... { showDropdown, setShowDropdown }} setDataValue={setItemAdd} selectedValue={itemadd}/>
                     </div>
-                    <div className='item_inputs d-flex justify-content-between px-0 mx-0 col-12 pt-2'>Company*
-                    <SearchDropDown required id="company" addNew={true} setNew={addOption} options={listItem}
+                    <div className='item_inputs d-flex justify-content-between px-0 mx-0 col-12 pt-2'>Company
+                    <SearchDropDown id="company" addNew={true} setNew={addOption} options={listItem}
                         {... { showDropdown, setShowDropdown }} setDataValue={setItemAdd} selectedValue={itemadd}/>
                     </div>
 
@@ -402,8 +404,8 @@ export const ItemAddForm = ({edit}) =>{
                     <SearchDropDown required id="unit" addNew={true} setNew={addOption} options={listItem}
                         {... { showDropdown, setShowDropdown }} setDataValue={setItemAdd} selectedValue={itemadd}/>
                     </div>
-                    <div className='item_inputs d-flex justify-content-between px-0 mx-0 col-12 pt-2'>Transaction Unit*
-                    <SearchDropDown required id="transaction_unit"  setNew={addOption} options={listItem}
+                    <div className='item_inputs d-flex justify-content-between px-0 mx-0 col-12 pt-2'>Transaction Unit
+                    <SearchDropDown id="transaction_unit"  setNew={addOption} options={listItem}
                         {... { showDropdown, setShowDropdown }} setDataValue={setItemAdd} selectedValue={itemadd}/>
                     </div>
                 </div>
@@ -413,22 +415,22 @@ export const ItemAddForm = ({edit}) =>{
                 <div className='item_add_form_part2 row mx-0 px-0 me-0 col-6 border-0'>
 
                 <div className="item_add_first_row d-flex justify-content-between px-0 row mx-0 pt-2">
-                    <div className='item_inputs right d-flex mx-0 px-0 col-6'>MRP*
-                    <input value={itemadd.mrp_rate} required type='number' className='item_input col-6 col-7'
+                    <div className='item_inputs right d-flex mx-0 px-0 col-6'>MRP
+                    <input value={itemadd.mrp_rate} type='number' className='item_input col-6 col-7'
                     name='mrp_rate' onChange={handleChange}/>
                     </div>
-                    <div className='item_inputs right d-flex px-0 col-6 '>Ret. Rate*
-                    <input value={itemadd.retail_rate} required type='number' className='item_input col-6 col-7'
+                    <div className='item_inputs right d-flex px-0 col-6 '>Ret. Rate
+                    <input value={itemadd.retail_rate} type='number' className='item_input col-6 col-7'
                     name='retail_rate' onChange={handleChange}/>
                     </div>
                     </div>
                 <div className="item_add_first_row px-0 row mx-0 pt-2">
-                    <div className='item_inputs right d-flex mx-0 px-0 col-6'>WS*
-                    <input value={itemadd.wholesale_rate} required type='number' className='item_input col-6 col-7'
+                    <div className='item_inputs right d-flex mx-0 px-0 col-6'>WS
+                    <input value={itemadd.wholesale_rate}  type='number' className='item_input col-6 col-7'
                     name='wholesale_rate' onChange={handleChange}/>
                     </div>
-                    <div className='item_inputs right d-flex px-0 col-6 '>SWS. Rate*
-                    <input value={itemadd.super_wholesale_rate} required type='number' className='item_input col-6 col-7'
+                    <div className='item_inputs right d-flex px-0 col-6 '>SWS. Rate
+                    <input value={itemadd.super_wholesale_rate}  type='number' className='item_input col-6 col-7'
                     name='super_wholesale_rate' onChange={handleChange}/>
                     </div>
                     </div>
@@ -443,22 +445,22 @@ export const ItemAddForm = ({edit}) =>{
                     </div>
                     </div>
                 <div className="item_add_first_row px-0 row mx-0 pt-2">
-                    <div className='item_inputs right d-flex mx-0 px-0 col-6'>P.Rate*
-                    <input value={itemadd.purchase_rate} required type='number' className='item_input col-6 col-7'
+                    <div className='item_inputs right d-flex mx-0 px-0 col-6'>P.Rate
+                    <input value={itemadd.purchase_rate}  type='number' className='item_input col-6 col-7'
                     name='purchase_rate' onChange={handleChange}/>
                     </div>
-                    <div className='item_inputs right d-flex px-0 col-6 '>Cost*
-                    <input value={itemadd.cost} required type='number' className='item_input col-6 col-7'
+                    <div className='item_inputs right d-flex px-0 col-6 '>Cost
+                    <input value={itemadd.cost}  type='number' className='item_input col-6 col-7'
                     name='cost' onChange={handleChange}/>
                     </div>
                     </div>
                 <div className="item_add_first_row px-0 row mx-0 pt-2">
-                    <div className='item_inputs right d-flex mx-0 px-0 col-6'>Margin %*
-                    <input value={itemadd.margin} required type='number' className='item_input col-6 col-7'
+                    <div className='item_inputs right d-flex mx-0 px-0 col-6'>Margin %
+                    <input value={itemadd.margin}  type='number' className='item_input col-6 col-7'
                     name='margin' onChange={handleChange}/>
                     </div>
-                    <div className='item_inputs right d-flex px-0 col-6 '>Tax/ GST*
-                    <input value={itemadd.tax_gst} required type='number' className='item_input col-6 col-7'
+                    <div className='item_inputs right d-flex px-0 col-6 '>Tax/ GST
+                    <input value={itemadd.tax_gst}  type='number' className='item_input col-6 col-7'
                     name='tax_gst' onChange={handleChange}/>
                     </div>
                     </div>
@@ -507,8 +509,8 @@ export const ItemAddForm = ({edit}) =>{
                     <input value={itemadd.qty_in_bc} type='number' className='item_input col-6 col-7'
                     name='qty_in_bc' onChange={handleChange}/>
                     </div>
-                    <div className='item_inputs right d-flex px-0 col-6 '>Op. Stock*
-                    <input value={itemadd.open_stock} required type='number' className='item_input col-6 col-7'
+                    <div className='item_inputs right d-flex px-0 col-6 '>Op. Stock
+                    <input value={itemadd.open_stock}  type='number' className='item_input col-6 col-7'
                     name='open_stock' onChange={handleChange}/>
                     </div>
                     </div>

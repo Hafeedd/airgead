@@ -1,9 +1,9 @@
 import React, { useState } from 'react'
-import './StaffTransaction.css'
+import './StaffMaster.css'
 import { useNavigate } from 'react-router'
 
 
-const StaffTransaction = () => {
+const StaffMaster = () => {
     // const [pageHeadItem, setPageHeadItem] = useState(1)
     const navigate = useNavigate()
     return (
@@ -13,10 +13,10 @@ const StaffTransaction = () => {
                     <div className='col-6'>
                         <div className='fw-50 fs-6'>Add New Staff</div>
                         <div className='page_head_items mb-3'>
-                            <div onClick={() => { navigate('/staff-transaction') }} className={`page_head_item active`}>General</div>
-                            <div onClick={() => { navigate('/staff-transaction') }} className={`page_head_item`}>Educational</div>
-                            <div onClick={() => { navigate('/staff-transaction') }} className={`page_head_item`}>Professional</div>
-                            <div onClick={() => { navigate('/staff-transaction') }} className={`page_head_item`}>Detail Pay-Scale</div>
+                            <div onClick={() => { navigate('/staff-master') }} className={`page_head_item active`}>General</div>
+                            <div onClick={() => { navigate('/staff-master') }} className={`page_head_item`}>Educational</div>
+                            <div onClick={() => { navigate('/staff-master') }} className={`page_head_item`}>Professional</div>
+                            <div onClick={() => { navigate('/staff-master') }} className={`page_head_item`}>Detail Pay-Scale</div>
                         </div>
                     </div>
                 </div>
@@ -172,4 +172,4 @@ const StaffTransaction = () => {
     )
 }
 
-export default StaffTransaction
+export default StaffMaster
