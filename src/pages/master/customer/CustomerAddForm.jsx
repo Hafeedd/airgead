@@ -79,7 +79,7 @@ const CustomerAddForm = ({edit,refresh}) =>{
             }
             else
             setCustomerAdd(data=>({...data,[key]:edit[key]}))
-           })
+        })
         }else{
             handleReset()
         }
@@ -368,7 +368,7 @@ const CustomerAddForm = ({edit,refresh}) =>{
                         </div>
                         <div className='mx-0 px-0 '>
                         <SearchDropDown containerClass="large" id="route" addNew={true}  setNew={addNewOption} options={listItem}
-                        {... { showDropdown, setShowDropdown }} setDataValue={setCustomerAdd} selectedValue={customerAdd}/>||''
+                        {... { showDropdown, setShowDropdown }} setDataValue={setCustomerAdd} selectedValue={customerAdd||''}/>
                         </div>
                     </div>
                     <div className="d-flex align-items-start justify-content-between mx-0 ps-4 pe-0 my-2">
@@ -377,7 +377,7 @@ const CustomerAddForm = ({edit,refresh}) =>{
                         </div>
                         <div className='mx-0 px-0 '>
                         <SearchDropDown containerClass="large" id="city" addNew={true}  setNew={addNewOption} options={listItem}
-                        {... { showDropdown, setShowDropdown }} setDataValue={setCustomerAdd} selectedValue={customerAdd}/>||''
+                        {... { showDropdown, setShowDropdown }} setDataValue={setCustomerAdd} selectedValue={customerAdd||''}/>
                         </div>
                     </div>
                     <div className="d-flex align-items-start justify-content-between mx-0 ps-4 pe-0 my-2">
@@ -386,7 +386,7 @@ const CustomerAddForm = ({edit,refresh}) =>{
                         </div>
                         <div className='mx-0 px-0 '>
                             <SearchDropDown containerClass="large" id="town" addNew={true}  setNew={addNewOption} options={listItem}
-                        {... { showDropdown, setShowDropdown }} setDataValue={setCustomerAdd} selectedValue={customerAdd}/>||''
+                        {... { showDropdown, setShowDropdown }} setDataValue={setCustomerAdd} selectedValue={customerAdd||''}/>
                         </div>
                     </div>
                     <div className="d-flex align-items-start justify-content-between mx-0 ps-4 pe-0 my-2">
@@ -395,7 +395,7 @@ const CustomerAddForm = ({edit,refresh}) =>{
                         </div>
                         <div className='mx-0 px-0 '>
                             <SearchDropDown containerClass="large" id="district" addNew={true}  setNew={addNewOption} options={listItem}
-                        {... { showDropdown, setShowDropdown }} setDataValue={setCustomerAdd} selectedValue={customerAdd}/>||''
+                        {... { showDropdown, setShowDropdown }} setDataValue={setCustomerAdd} selectedValue={customerAdd||''}/>
                         </div>
                     </div>
                     <div className="d-flex align-items-start justify-content-between mx-0 ps-4 pe-0 my-2">
@@ -404,7 +404,7 @@ const CustomerAddForm = ({edit,refresh}) =>{
                         </div>
                         <div className='mx-0 px-0 '>
                             <SearchDropDown containerClass="large" id="types" addNew={true}  setNew={addNewOption} options={listItem}
-                        {... { showDropdown, setShowDropdown }} setDataValue={setCustomerAdd} selectedValue={customerAdd}/>||''
+                        {... { showDropdown, setShowDropdown }} setDataValue={setCustomerAdd} selectedValue={customerAdd||''}/>
                         </div>
                     </div>
                     <div className="d-flex align-items-start justify-content-between mx-0 ps-4 pe-0 my-2">
@@ -413,7 +413,7 @@ const CustomerAddForm = ({edit,refresh}) =>{
                         </div>
                         <div className='mx-0 px-0 '>
                             <SearchDropDown containerClass="large" id="rate_types" setNew={addNewOption} options={listItem}
-                        {... { showDropdown, setShowDropdown }} setDataValue={setCustomerAdd} selectedValue={customerAdd}/>||''
+                        {... { showDropdown, setShowDropdown }} setDataValue={setCustomerAdd} selectedValue={customerAdd||''}/>
                         </div>
                     </div>
                     <div className="d-flex align-items-start justify-content-between mx-0 ps-4 pe-0 my-2">
@@ -422,7 +422,7 @@ const CustomerAddForm = ({edit,refresh}) =>{
                         </div>
                         <div className='mx-0 px-0 '>
                             <SearchDropDown containerClass="large" id="bill_types" addNew={true}  setNew={addNewOption} options={listItem}
-                        {... { showDropdown, setShowDropdown }} setDataValue={setCustomerAdd} selectedValue={customerAdd}/>||''
+                        {... { showDropdown, setShowDropdown }} setDataValue={setCustomerAdd} selectedValue={customerAdd||''}/>
                         </div>
                     </div>
                     <div className="d-flex align-items-center row mx-0 ps-4 pe-3 my-2">
