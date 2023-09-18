@@ -244,49 +244,67 @@ const SupplierAdd = ({edit,refresh}) => {
                                 <input onChange={handleChange} name='mobile' value={supplierAdd.mobile?supplierAdd.mobile:''} type='text' className='item_input names' />
                             </div>
                         </div>
-                        <div className="d-flex align-items-center ps-0 row mx-0 pe-5 my-2">
+                        {/* <div className="d-flex align-items-center ps-0 row mx-0 pe-5 my-2">
                             <div className='mx-0 px-0 col-5 col-6'>
                                 GSTin
                             </div>
                             <div className='mx-0 px-0 col-6 col-7'>
                                 <input onChange={handleChange} name='gst_in' value={supplierAdd.gst_in?supplierAdd.gst_in:''} type='text' className='item_input names' />
                             </div>
-                        </div>
+                        </div> */}
                         <div className="d-flex align-items-center ps-0 row mx-0 pe-5 my-2">
                             <div className='mx-0 px-0 col-5 col-6'>
-                                GSTin
+                            GSTin/VAT Reg No
                             </div>
                             <div className='mx-0 px-0 col-6 col-7'>
                                 <input onChange={handleChange} name='gst_in' value={supplierAdd.gst_in?supplierAdd.gst_in:''} type='text' className='item_input names' />
                             </div>
                         </div>
-                        <div className="d-flex align-items-center ps-0 row mx-0 pe-5 my-2">
-                            <div className="col-5 col-6 row mx-0 px-0">
-                                <div className='mx-0 px-0 col-5'>
-                                    Disc %
+                            {/* ------------------------------ */}
+                            <div className="d-flex align-items-center ps-0 row mx-0 pe-5 my-2">
+                                <div className='mx-0 px-0 col-5 col-6'>
+                                Op Balance
                                 </div>
-                                <div className='mx-0 px-0 col-7'>
-                                    <input onChange={handleChange} name='disc' value={supplierAdd.disc?supplierAdd.disc:''} type='text' className='item_input names' />
-                                </div>
+                                    <div className='mx-0 px-0 col-6 col-7'>
+                                        <div className='item_input row justify-content-between  rounded-2 ms-4 p-0'>
+                                            <div className='col-6 col-7 mx-0 ps-0 me-0'>
+                                            <input onChange={handleChange} name='opening_balance' value={supplierAdd.opening_balance?supplierAdd.opening_balance:''} type='text' className='item_input ms-0 border-0 names' />
+                                            </div>
+                                            <div className='col-6 col-5 mx-0 px-0'>
+                                            <select onChange={handleChange} name='payment_type' value={supplierAdd.payment_type?supplierAdd.payment_type:''} className='customer-select ms-0 pe-0'>
+                                                <option value="TO_GIVE">To Give</option>
+                                                <option value="TO_RECEIVE">To Receive</option>
+                                            </select>
+                                            </div>
+                                        </div>
+                                    </div>
                             </div>
-                            <div className="col-6 col-7 row ps-5 mx-0 px-0">
+                            {/* ------------------------------ */}
+                            <div className="d-flex align-items-center ps-0 row mx-0 pe-5 my-2">
+                                <div className='mx-0 px-0 col-5 col-6'>
+                                        Disc %
+                                    </div>
+                                    <div className='mx-0 px-0 col-3 col-4'>
+                                        <input onChange={handleChange} name='disc' value={supplierAdd.disc?supplierAdd.disc:''} type='text' className='item_input names' />
+                                    </div>
+                            </div>
+                            {/* <div className="col-6 col-7 row ps-5 mx-0 px-0">
                                 <div className='mx-0 px-0 col-5'>
-                                    Op Balance
+                                    Op.Balance
                                 </div>
                                 <div className='mx-0 px-0 col-7'>
                                     <input onChange={handleChange} name='opening_balance' value={supplierAdd.opening_balance?supplierAdd.opening_balance:''} type='text' className='item_input names' />
                                 </div>
-                            </div>
-                        </div>
-                        <div className="d-flex align-items-center ps-0 row mx-0 pe-4 my-2">
+                            </div> */}
+                        {/* <div className="d-flex align-items-center ps-0 row mx-0 pe-4 my-2">
                             <div className='mx-0 px-0 col-9' />
                             <div className='mx-0 col-3 px-0'>
-                                <select onChange={handleChange} name='payment_type' value={supplierAdd.payment_type?supplierAdd.payment_type:''} className='customer-select'>
+                                <select onChange={handleChange} name='payment_type' value={supplierAdd.payment_type?supplierAdd.payment_type:''} className='customer-select ms-1 supplier'>
                                     <option value="TO_GIVE">To Give</option>
                                     <option value="TO_RECEIVE">To Receive</option>
                                 </select>
                             </div>
-                        </div>
+                        </div> */}
 
                     </div>
 

@@ -64,7 +64,7 @@
     max-height: 10rem;
     overflow-y: scroll;
     overflow-x: hidden;
-    padding: 0.225rem 0rem 0.225rem 0rem;
+    padding: 0.4rem 0rem 0.225rem 0rem;
 }
 
 .dropdown-option-data{
@@ -146,4 +146,8 @@
 }
 .search_container.large{
     width: 20.5rem ;
+}
+
+.dropdown-option-data.selected{
+    background: #838383;
 }

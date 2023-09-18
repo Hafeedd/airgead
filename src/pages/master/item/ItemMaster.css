@@ -117,6 +117,11 @@
     padding-left: 0.75rem;    
 }
 
+.customer-select.supplier{
+    height: 1.8rem;
+
+}
+
 .rates-btn{
     background-color: #000;
     color: #88ED7F;    
