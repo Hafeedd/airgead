@@ -21,6 +21,7 @@
 
 .form-control.purchase-input-text[type="number"]{
     -moz-appearance: none !important;
+    appearance: none !important;
 }
 
 .form-control.purchase-input-date{
@@ -52,7 +53,7 @@
     color: #FFF;
     font-weight: 600;
     vertical-align: middle;  
-    padding: 1rem !important; 
+    padding: 0rem 1rem; 
 }
 
 .purchase-table-body td{
@@ -72,6 +73,30 @@
     border: 1px solid #F0F4F3;
     border-bottom: none;
     color: #FFF;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+.purchase-table-green td.item2{
+    background: #4A00A8;
+    border: 1px solid #F0F4F3;
+    border-radius: 0.125rem;
+    box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.25);
+    border-bottom: none;
+    color: #FFF;
+    cursor: pointer;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+.purchase-table-green td.item3{
+    background: #707070;
+    border: 1px solid #F0F4F3;
+    border-radius: 0.125rem;
+    box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.25);
+    border-bottom: none;
+    color: #FFF;
+    cursor: pointer;
     font-size: 0.75rem;
     font-weight: 600;
 }
@@ -108,7 +133,7 @@
     font-weight: 600;
     background: #373737;
     border-radius: 0.5rem;
-    width: 80%;
+    width: 95%;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -124,6 +149,19 @@ td.clr{
 
 .btn-secondary.purchase-nav-btn.select{
     background: #737373;
+}
+
+.table.purchase-item-table{
+    border-radius: 0.3125rem;
+}
+
+.table.purchase-item-table th.start{
+    border-top-left-radius: 0.3125rem;
+}
+
+.table.purchase-item-table th.end{
+    border-top-right-radius: 0.3125rem;
+
 }
 
 .table.purchase-item-table th{
@@ -163,4 +201,15 @@ td.clr{
     background: #4A00A8;
     font-size: 2rem;
     font-weight: 900;
+}
+
+.btn-dark.purchase-edit-btn{
+    border-radius: 0.125rem;
+    background: #000;
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: #FFF;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
