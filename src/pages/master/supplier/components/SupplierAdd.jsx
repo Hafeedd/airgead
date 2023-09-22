@@ -31,7 +31,7 @@ const SupplierAdd = ({edit,refresh}) => {
     })
 
     const {postDistrict,getDistrict,postSupplier,putSupplier} = useCustomerServices()
-    const {postCompany,getCompany} = useItemServices()
+    const {postCompany,getCompany,getProperty,putProperty,postProperty} = useItemServices()
 
     useEffect(()=>{
         getData()
@@ -61,21 +61,23 @@ const SupplierAdd = ({edit,refresh}) => {
 
     const getData = async () =>{
         let list = {}
-        const miniFunct = (data,name) =>{
-            // if(name.match(/^fk_/))
-            // name = name.split("").slice(3,).join("")
-            list[name] = []
+        const miniFunct = (data) =>{
+            const keys = Object.keys(listItem)
             data.map((x)=>{
-                list[name].push({value:x['id'],label:x[name]})
-            })
+                if(keys.indexOf(x.property_type)>-1){
+                    list[x.property_type] = []
+                list[x?.property_type].push({value:x['id'],label:x['property_value']})}
+                })
         }
         try{
-        let res
-        res = await getCompany()
-        if(res.success) miniFunct(res.data,'company')
-        res = await getDistrict()
-        if(res.success) miniFunct(res.data,'district')
-
+        let res = await getProperty()
+            if(res.success)
+                miniFunct(res?.data)
+        // let res
+        // res = await getCompany()
+        // if(res.success) miniFunct(res.data,'company')
+        // res = await getDistrict()
+        // if(res.success) miniFunct(res.data,'district')
         setListItem(list)
         }catch(err){
             // console.log(err)
@@ -154,12 +156,6 @@ const SupplierAdd = ({edit,refresh}) => {
     
     return (
         <div className='item_add'>
-            {/* <div className="page_head ps-4 mt-1 mb-3">
-                <div className='fw-600 fs-5'>Master Supplier</div>
-                <div className='page_head_items mb-3'>
-                    <div onClick={() => setPageHeadItem(1)} className={`page_head_item ${pageHeadItem === 1 && "active"}`}>Add Supplier</div>
-                </div>
-            </div> */}
             <div className='item_add_cont'>
                 {edit?"Edit Supplier":"Add New Supplier"}
                 <form onSubmit={handleSubmit} className='item_add_form pt-1 d-flex mt-1'>
@@ -168,7 +164,7 @@ const SupplierAdd = ({edit,refresh}) => {
 
                     <div className='item_add_form_part1 col-6 row mx-0 px-0'>
 
-                        <div className="d-flex align-items-center ps-0 row mx-0 pe-5 my-2">
+                        <div className="d-flex align-items-center px-0 row mx-0 my-2">
                             <div className='mx-0 px-0 col-5 col-6'>
                                 Code
                             </div>
@@ -176,7 +172,7 @@ const SupplierAdd = ({edit,refresh}) => {
                                 <input onChange={handleChange} name='code' value={supplierAdd.code?supplierAdd.code:''} type='text' className='item_input names' />
                             </div>
                         </div>
-                        <div className="d-flex align-items-center ps-0 row mx-0 pe-5 my-2">
+                        <div className="d-flex align-items-center px-0 row mx-0 my-2">
                             <div className='mx-0 px-0 col-5 col-6'>
                                 Name
                             </div>
@@ -184,7 +180,7 @@ const SupplierAdd = ({edit,refresh}) => {
                                 <input onChange={handleChange} name='name' value={supplierAdd.name?supplierAdd.name:''} type='text' className='item_input names' />
                             </div>
                         </div>
-                        <div className="d-flex align-items-center ps-0 row mx-0 pe-5 my-2">
+                        <div className="d-flex align-items-center px-0 row mx-0 my-2">
                             <div className='mx-0 px-0 col-5 col-6'>
                                 Address
                             </div>
@@ -192,7 +188,7 @@ const SupplierAdd = ({edit,refresh}) => {
                                 <textarea onChange={handleChange} name='address' value={supplierAdd.address?supplierAdd.address:''} rows={4} className='item_input names' />
                             </div>
                         </div>
-                        <div className="d-flex align-items-center ps-0 row mx-0 pe-5 my-2">
+                        <div className="d-flex align-items-center px-0 row mx-0 my-2">
                             <div className="col-5 col-6 row mx-0 px-0">
                                 <div className='mx-0 px-0 col-5'>
                                     Post
@@ -201,7 +197,7 @@ const SupplierAdd = ({edit,refresh}) => {
                                     <input onChange={handleChange} name='post' value={supplierAdd.post?supplierAdd.post:''} type='text' className='item_input names' />
                                 </div>
                             </div>
-                            <div className="col-6 col-7 row ps-5 mx-0 px-0">
+                            <div className="col-6 col-7 row ps-4 mx-0 px-0">
                                 <div className='mx-0 px-0 col-5'>
                                     Pin
                                 </div>
@@ -210,7 +206,7 @@ const SupplierAdd = ({edit,refresh}) => {
                                 </div>
                             </div>
                         </div>
-                        <div className="d-flex align-items-center ps-0 row mx-0 pe-5 my-2">
+                        <div className="d-flex align-items-center px-0 row mx-0 my-2">
                             <div className="col-5 col-6 row mx-0 px-0">
                                 <div className='mx-0 px-0 col-5'>
                                     Contact Person
@@ -219,7 +215,7 @@ const SupplierAdd = ({edit,refresh}) => {
                                     <input onChange={handleChange} name='contact_person' value={supplierAdd.contact_person?supplierAdd.contact_person:''} type='text' className='item_input names' />
                                 </div>
                             </div>
-                            <div className="col-6 col-7 row ps-5 mx-0 px-0">
+                            <div className="col-6 col-7 row ps-4 mx-0 px-0">
                                 <div className='mx-0 px-0 col-5'>
                                     PIN Distance
                                 </div>
@@ -228,7 +224,7 @@ const SupplierAdd = ({edit,refresh}) => {
                                 </div>
                             </div>
                         </div>
-                        <div className="d-flex align-items-center ps-0 row mx-0 pe-5 my-2">
+                        <div className="d-flex align-items-center px-0 row mx-0 my-2">
                             <div className='mx-0 px-0 col-5 col-6'>
                                 Email
                             </div>
@@ -236,7 +232,7 @@ const SupplierAdd = ({edit,refresh}) => {
                                 <input onChange={handleChange} name='email' value={supplierAdd.email?supplierAdd.email:''} type='text' className='item_input names' />
                             </div>
                         </div>
-                        <div className="d-flex align-items-center ps-0 row mx-0 pe-5 my-2">
+                        <div className="d-flex align-items-center px-0 row mx-0 my-2">
                             <div className='mx-0 px-0 col-5 col-6'>
                                 Mob
                             </div>
@@ -244,15 +240,7 @@ const SupplierAdd = ({edit,refresh}) => {
                                 <input onChange={handleChange} name='mobile' value={supplierAdd.mobile?supplierAdd.mobile:''} type='text' className='item_input names' />
                             </div>
                         </div>
-                        {/* <div className="d-flex align-items-center ps-0 row mx-0 pe-5 my-2">
-                            <div className='mx-0 px-0 col-5 col-6'>
-                                GSTin
-                            </div>
-                            <div className='mx-0 px-0 col-6 col-7'>
-                                <input onChange={handleChange} name='gst_in' value={supplierAdd.gst_in?supplierAdd.gst_in:''} type='text' className='item_input names' />
-                            </div>
-                        </div> */}
-                        <div className="d-flex align-items-center ps-0 row mx-0 pe-5 my-2">
+                        <div className="d-flex align-items-center px-0 row mx-0 my-2">
                             <div className='mx-0 px-0 col-5 col-6'>
                             GSTin/VAT Reg No
                             </div>
@@ -261,16 +249,16 @@ const SupplierAdd = ({edit,refresh}) => {
                             </div>
                         </div>
                             {/* ------------------------------ */}
-                            <div className="d-flex align-items-center ps-0 row mx-0 pe-5 my-2">
+                            <div className="d-flex align-items-center px-0 row mx-0 my-2">
                                 <div className='mx-0 px-0 col-5 col-6'>
                                 Op Balance
                                 </div>
                                     <div className='mx-0 px-0 col-6 col-7'>
-                                        <div className='item_input row justify-content-between  rounded-2 ms-4 p-0'>
-                                            <div className='col-6 col-7 mx-0 ps-0 me-0'>
-                                            <input onChange={handleChange} name='opening_balance' value={supplierAdd.opening_balance?supplierAdd.opening_balance:''} type='text' className='item_input ms-0 border-0 names' />
+                                        <div className='item_input row rounded-2 p-0 mx-0 align-items-center'>
+                                            <div className='col-6 col-7 mx-0 px-0 me-0'>
+                                            <input onChange={handleChange} name='opening_balance' value={supplierAdd.opening_balance?supplierAdd.opening_balance:''} type='text' className='item_input names border-0' />
                                             </div>
-                                            <div className='col-6 col-5 mx-0 px-0'>
+                                            <div className='col-6 col-5 mx-0 px-0 pe-1 d-flex'>
                                             <select onChange={handleChange} name='payment_type' value={supplierAdd.payment_type?supplierAdd.payment_type:''} className='customer-select ms-0 pe-0'>
                                                 <option value="TO_GIVE">To Give</option>
                                                 <option value="TO_RECEIVE">To Receive</option>
@@ -280,7 +268,7 @@ const SupplierAdd = ({edit,refresh}) => {
                                     </div>
                             </div>
                             {/* ------------------------------ */}
-                            <div className="d-flex align-items-center ps-0 row mx-0 pe-5 my-2">
+                            <div className="d-flex align-items-center px-0 row mx-0 my-2">
                                 <div className='mx-0 px-0 col-5 col-6'>
                                         Disc %
                                     </div>
@@ -296,7 +284,7 @@ const SupplierAdd = ({edit,refresh}) => {
                                     <input onChange={handleChange} name='opening_balance' value={supplierAdd.opening_balance?supplierAdd.opening_balance:''} type='text' className='item_input names' />
                                 </div>
                             </div> */}
-                        {/* <div className="d-flex align-items-center ps-0 row mx-0 pe-4 my-2">
+                        {/* <div className="d-flex align-items-center px-0 row mx-0 pe-4 my-2">
                             <div className='mx-0 px-0 col-9' />
                             <div className='mx-0 col-3 px-0'>
                                 <select onChange={handleChange} name='payment_type' value={supplierAdd.payment_type?supplierAdd.payment_type:''} className='customer-select ms-1 supplier'>

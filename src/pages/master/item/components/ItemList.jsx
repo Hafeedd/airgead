@@ -36,12 +36,13 @@ const ItemList = (props) => {
                     <th style={{borderTopLeftRadius: "0.3125rem"}}>No</th>
                     <th>Code</th>
                     <th className='text-start'>Item Name</th>
-                    <th>Contractor</th>
                     <th>HSN</th>
-                    <th>S.Rate</th>
                     <th>P.Rate</th>
+                    <th>Cost</th>
+                    <th>S.Rate</th>
                     <th>Tax/GST</th>
-                    <th>Rate</th>
+                    <th>MRP</th>
+                    <th></th>
                     <th></th>
                     <th style={{borderTopRightRadius: "0.3125rem"}}></th>
                 </tr>
@@ -53,10 +54,10 @@ const ItemList = (props) => {
                     <td>{i+1}</td>
                     <td>{data.code}</td>
                     <td className="text-start">{data.name}</td>
-                    <td>{data.fk_company?.company}</td>
                     <td>{data.hsn}</td>
-                    <td>{data.retail_rate}</td>
                     <td>{data.purchase_rate}</td>
+                    <td>{data.cost}</td>
+                    <td>{data.retail_rate}</td>
                     <td>{data.tax_gst}</td>
                     <td>{data.mrp_rate}</td>
                     <td>

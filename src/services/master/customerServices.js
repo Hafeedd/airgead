@@ -212,6 +212,26 @@ const useCustomerServices = () => {
         const response = await axiosPrivate.delete(`master/customer/updated/${id}/`)
         return response.data
     }
+
+    // set_rates create get
+    const postSetRate = async(id,data) =>{
+        const response = await axiosPrivate.post(`master/set_rate/created/${id}/`,data)
+        return response.data
+    }
+    const getSetRate = async(id) =>{
+        const response = await axiosPrivate.get(`master/set_rate/created/${id}/`)
+        return response.data
+    }
+
+    // set_rates update delete 
+    const putSetRate = async(id,data) =>{
+        const response = await axiosPrivate.put(`master/set_rate/updated/${id}/`,data)
+        return response.data
+    }
+    const deleteSetRate = async(id) =>{
+        const response = await axiosPrivate.delete(`master/set_rate/updated/${id}/`)
+        return response.data
+    }
     
 
 
@@ -226,6 +246,7 @@ const useCustomerServices = () => {
     postTypes,
     postSupplier,
     postCustomer,
+    postSetRate,
 
     // get
     getBillType,
@@ -237,6 +258,7 @@ const useCustomerServices = () => {
     getTypes,
     getSupplier,
     getCustomer,
+    getSetRate,
 
     // put
     putRoute,
@@ -247,6 +269,7 @@ const useCustomerServices = () => {
     putTypes,
     putSupplier,
     putCustomer,
+    putSetRate,
 
     // delete
     deleteRoute,
@@ -257,6 +280,7 @@ const useCustomerServices = () => {
     deleteTypes,
     deleteSupplier,
     deleteCustomer,
+    deleteSetRate
 
   }
 }

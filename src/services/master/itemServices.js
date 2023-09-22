@@ -2,7 +2,33 @@ import axios, { axiosPrivate } from "../../api/axios";
 
 const useItemServices = () =>{
 
-    // api for adding new options
+    // api for adding new options and post req -----------------------------------------------
+
+    // item add
+        const postItemAdd = async (data) =>{
+        const response = await axiosPrivate.post('master/item/created/',data)
+        return response.data
+    }
+
+    // get properties
+    const getProperty = async() =>{
+        const response = await axiosPrivate.get('master/property_type/created/')
+        return response.data
+    }
+   
+    // post properties
+    const postProperty = async(data) =>{
+        const response = await axiosPrivate.post('master/property_type/created/',
+        {['property_value']:data.property_value},
+        {params:{['property_type']:data.property_type}})
+        return response.data
+    }
+   
+    // put properties
+    const putProperty = async(data,id) =>{
+        const response = await axiosPrivate.put('master/property_type/updated/'+id+'/',data)
+        return response.data
+    }
 
     // second name
     const postSecondName = async(data) =>{
@@ -52,124 +78,147 @@ const useItemServices = () =>{
         return response.data
     }
 
-    // second name
+    // tax group
     const postTaxGroup = async(data) =>{
         const response = await axiosPrivate.post('master/tax_group/created/',data)
         return response.data
     }
 
-    // second name
+    // rack
     const postRack = async(data) =>{
         const response = await axiosPrivate.post('master/rack/created/',data)
         return response.data
     }
 
-    // second name
+    // unit
     const postUnit = async(data) =>{
         const response = await axiosPrivate.post('master/unit/created/',data)
         return response.data
     }
 
-    // second name
+    // code
     const postBarcode = async(id,data) =>{
         const response = await axiosPrivate.post('master/barcode/created/'+id+'/',data)
         return response.data
     }
-    // api for listing options
+
+    // unit adding
+    const postUnitConvertion = async (id,data) =>{
+        const response = await axiosPrivate.post('master/unit_conversion/created/'+id+'/',data)
+        return response.data
+    }
+
+    // api for listing options and get request -----------------------------------------------------------
 
     // second name
-    const getSecondName = async(data) =>{
-        const response = await axiosPrivate.get('master/second_name/created/',data)
+    const getSecondName = async() =>{
+        const response = await axiosPrivate.get('master/second_name/created/')
         return response.data
     }
 
-    // second name
-    const getType = async(data) =>{
-        const response = await axiosPrivate.get('master/types/created/',data)
+    // type
+    const getType = async() =>{
+        const response = await axiosPrivate.get('master/types/created/')
         return response.data
     }
 
-    // second name
-    const getCategory = async(data) =>{
-        const response = await axiosPrivate.get('master/category/created/',data)
+    // category
+    const getCategory = async() =>{
+        const response = await axiosPrivate.get('master/category/created/')
         return response.data
     }
 
-    // second name
-    const getSubCategory = async(data) =>{
-        const response = await axiosPrivate.get('master/sub_category/created/',data)
+    // sub category
+    const getSubCategory = async() =>{
+        const response = await axiosPrivate.get('master/sub_category/created/')
         return response.data
     }
 
-    // second name
-    const getCompany = async(data) =>{
-        const response = await axiosPrivate.get('master/company/created/',data)
+    // company
+    const getCompany = async() =>{
+        const response = await axiosPrivate.get('master/company/created/')
         return response.data
     }
 
-    // second name
-    const getSize = async(data) =>{
-        const response = await axiosPrivate.get('master/size/created/',data)
+    // size
+    const getSize = async() =>{
+        const response = await axiosPrivate.get('master/size/created/')
         return response.data
     }
 
-    // second name
-    const getColor = async(data) =>{
-        const response = await axiosPrivate.get('master/color/created/',data)
+    // color
+    const getColor = async() =>{
+        const response = await axiosPrivate.get('master/color/created/')
         return response.data
     }
 
-    // second name
-    const getGroup = async(data) =>{
-        const response = await axiosPrivate.get('master/group/created/',data)
+    // group
+    const getGroup = async() =>{
+        const response = await axiosPrivate.get('master/group/created/')
         return response.data
     }
 
-    // second name
-    const getTaxGroup = async(data) =>{
-        const response = await axiosPrivate.get('master/tax_group/created/',data)
+    // tax group
+    const getTaxGroup = async() =>{
+        const response = await axiosPrivate.get('master/tax_group/created/')
         return response.data
     }
 
-    // second name
-    const getRack = async(data) =>{
-        const response = await axiosPrivate.get('master/rack/created/',data)
+    // rack
+    const getRack = async() =>{
+        const response = await axiosPrivate.get('master/rack/created/')
         return response.data
     }
 
-    // second name
-    const getUnit = async(data) =>{
-        const response = await axiosPrivate.get('master/unit/created/',data)
+    // unit
+    const getUnit = async() =>{
+        const response = await axiosPrivate.get('master/unit/created/')
         return response.data
     }
 
-    // second name
-    const getBarcode = async(data) =>{
-        const response = await axiosPrivate.get('master/barcode/created/',data)
-        return response.data
-    }
-
-    // item adding
-    const postItemAdd = async (data) =>{
-        const response = await axiosPrivate.post('master/item/created/',data)
-        return response.data
-    }
-    
-    // item adding
-    const putItemAdd = async (id,data) =>{
-        const response = await axiosPrivate.put('master/item/updated/'+id+'/',data)
-        return response.data
-    }
- 
-    // item delete
-    const deleteItem = async (id) =>{
-        const response = await axiosPrivate.delete('master/item/updated/'+id+"/")
+    // barcode
+    const getBarcode = async() =>{
+        const response = await axiosPrivate.get('master/barcode/created/')
         return response.data
     }
 
     // item list
-    const getItemList = async (data) =>{
+    const getItemList = async () =>{
         const response = await axiosPrivate.get('master/item/created/')
+        return response.data
+    }
+    
+    // item name only list
+    const getItemNameList = async () =>{
+        const response = await axiosPrivate.get('master/item_list/created/')
+        return response.data
+    }
+
+    //update options and put request ----------------------------------------------------------
+
+    // barcode
+    const putBarcode = async(id,data) =>{
+        const response = await axiosPrivate.put('master/barcode/updated/'+id+'/',data)
+        return response.data
+    }
+
+    // unit update
+    const putUnitConvertion = async (id,data) =>{
+        const response = await axiosPrivate.put('master/unit_conversion/updated/'+id+'/',data)
+        return response.data
+    }
+    
+    //item
+    const putItemAdd = async (id,data) =>{
+        const response = await axiosPrivate.put('master/item/updated/'+id+'/',data)
+        return response.data
+    }
+
+    //delete request
+ 
+    // item delete
+    const deleteItem = async (id) =>{
+        const response = await axiosPrivate.delete('master/item/updated/'+id+"/")
         return response.data
     }
 
@@ -179,21 +228,15 @@ const useItemServices = () =>{
         return response.data
     }
 
-    //unit convertion
-
-    // unit adding
-    const postUnitConvertion = async (id,data) =>{
-        const response = await axiosPrivate.post('master/unit_conversion/created/'+id+'/',data)
-        return response.data
-    }
-    // unit conversion 
-    // const getUnitConvertion = async (id,data) =>{
-    //     const response = await axiosPrivate.post('master/unit_conversion/created/'+id+'/',data)
-    //     return response.data
-    // }
+        // unit update
+        const deleteUnitConvertion = async (id) =>{
+            const response = await axiosPrivate.delete('master/unit_conversion/updated/'+id+'/')
+            return response.data
+        }
 
     return{
         // post
+        postProperty,
         postUnitConvertion,
         postItemAdd,
         postBarcode,
@@ -210,6 +253,8 @@ const useItemServices = () =>{
         postSecondName,
 
         // get
+        getProperty,
+        getItemNameList,
         getBarcode,
         getUnit,
         getRack,
@@ -225,7 +270,13 @@ const useItemServices = () =>{
         getItemList,
         
         // put
+        putProperty,
+        putBarcode,
+        putUnitConvertion,
         putItemAdd,
+
+        //delete
+        deleteUnitConvertion,
         deleteItemList,
         deleteItem,
     }

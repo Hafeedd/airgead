@@ -3,6 +3,7 @@ import useItemServices from '../../../services/master/itemServices'
 import './ItemMaster.css'
 import { useNavigate , useLocation } from 'react-router'
 import Swal from 'sweetalert2'
+import 'semantic-ui-css/semantic.min.css'
 import ItemList from './components/ItemList'
 import { ItemAddForm } from './components/AddForm'
 
@@ -10,7 +11,7 @@ const ItemMaster = () => {
     const [pageHeadItem,setPageHeadItem] = useState(1)
     const [toEdit, setToEdit] = useState(false)
     const [listItem,setListItem] = useState()
-    const [showAddItem, setShowAddItem] = useState(false)
+    // const [showAddItem, setShowAddItem] = useState(false)
     const {getItemList,deleteItemList} = useItemServices()
     const navigate = useNavigate()
 
@@ -18,9 +19,35 @@ const ItemMaster = () => {
         getData()
     },[])
 
+    useEffect(()=>{
+        if(toEdit){
+         listItem.map(x=>{
+             if(x.id === toEdit.id){
+                 setToEdit(x)
+             }
+         })
+        }
+     },[listItem])
+
     const location = useLocation()
 
-    const handleDelete = async (id,e) =>{
+    const handleDelete = (id,e)=>{
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "You won't be able to revert this!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, delete it!'
+          }).then((result) => {
+            if (result.isConfirmed) {
+                handleDeleteConfirm(id,e)
+            }
+          })
+    }
+
+    const handleDeleteConfirm = async (id,e) =>{
         e.preventDefault()
         try{
             let res = await deleteItemList(id)
@@ -62,9 +89,9 @@ const ItemMaster = () => {
                             <div onClick={()=>setPageHeadItem(5)} className={`page_head_item ${pageHeadItem === 5 && "active"}`}>Merge Items</div> */}
                         </div>
                         </div>
-                        <div className="col-1 col-2 d-flex px-1 align-items-center">
+                        {location.pathname !== '/add'&&<div className="col-1 col-2 d-flex px-1 align-items-center">
                             <div onClick={()=>{navigate("/add");setToEdit(false)}} className="btn btn-primary add-btn px-0">+ &nbsp; Add Item</div>
-                        </div>
+                        </div>}
                     </div>
                 </div>  
                 {

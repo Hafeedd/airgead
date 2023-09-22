@@ -5,21 +5,31 @@ import { Modal } from 'react-bootstrap'
 import SearchDropDown from '../../../../components/searchDropDown/SearchDropDown'
 import useItemServices from '../../../../services/master/itemServices'
 
+const editBtn = (
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+        <path d="M20.9521 3.04801C20.2811 2.37702 19.371 2.00006 18.4221 2.00006C17.4732 2.00006 16.5631 2.37702 15.8921 3.04801L3.94011 15C3.5339 15.4062 3.24832 15.9172 3.11511 16.476L2.02011 21.078C1.99046 21.2027 1.99324 21.3328 2.02819 21.4561C2.06313 21.5794 2.12907 21.6916 2.21972 21.7822C2.31037 21.8727 2.42271 21.9385 2.54601 21.9734C2.66932 22.0082 2.79949 22.0108 2.92411 21.981L7.52511 20.885C8.0843 20.752 8.5956 20.4664 9.00211 20.06L20.9521 8.11C21.6231 7.439 22.0001 6.52894 22.0001 5.58C22.0001 4.63107 21.6231 3.72101 20.9521 3.05V3.04801ZM16.9521 4.108C17.1452 3.91496 17.3743 3.76183 17.6266 3.65736C17.8788 3.55288 18.1491 3.49911 18.4221 3.49911C18.6951 3.49911 18.9654 3.55288 19.2177 3.65736C19.4699 3.76183 19.6991 3.91496 19.8921 4.108C20.0852 4.30105 20.2383 4.53022 20.3428 4.78245C20.4472 5.03467 20.501 5.305 20.501 5.57801C20.501 5.85101 20.4472 6.12134 20.3428 6.37356C20.2383 6.62579 20.0852 6.85496 19.8921 7.04801L19.0001 7.939L16.0601 5.00001L16.9521 4.10901V4.108ZM15.0001 6.06201L17.9401 9L7.94011 19C7.73011 19.21 7.46611 19.357 7.17711 19.426L3.76111 20.24L4.57411 16.824C4.64311 16.534 4.79111 16.27 5.00111 16.06L15.0001 6.06001V6.06201Z" fill="#4E4E4E" stroke="#4E4E4E" stroke-width="0.5"/>
+    </svg>)
+
 export const ItemAddForm = ({edit,refresh}) =>{
 
     const [showDropdown, setShowDropdown] = useState('')
     const typesOptions = [{label:"PRODUCT",value:"PRODUCT"},{label:"RAW MATERIAL",value:"RAW MATERIAL"},{label:"SERVICE",value:"SERVICE"}]
     const [unitConvShow, setUnitConvShow] = useState(false)
+    const [unitEdit, setUnitEdit] = useState(false)
+    const [loading, setLoading] = useState(false)
     const [barcodeShow, setBarcodeShow] = useState(false)
     const [unitConvTempList, setUnitConvTempList] = useState([])
     const [ref, setRef] = useState()
+    const formRef = useRef(null)
     const [unitConv, setUnitConv] = useState({
+        U_id:null,
         U_unit:null,
         U_qty:null,
         U_rate:null,
         U_mrp:null
     })
     const [barcode, setBarcode] = useState({
+        B_id:null,
         B_code:null,
         B_expiry:null,
         B_rate:null,
@@ -87,7 +97,23 @@ export const ItemAddForm = ({edit,refresh}) =>{
         barcode:null,
     })
 
-    const formRef = useRef(null)
+    const {
+        getProperty,postProperty,
+        putProperty,
+        postBarcode,postUnit,
+        postRack,postTaxGroup,
+        postGroup,postColor,
+        postSize,postCompany,
+        postSubCategory,postCategory,
+        postSecondName,putItemAdd,
+        /* getBarcode, */getUnit,
+        getRack,getTaxGroup,
+        getGroup,getColor,putBarcode,
+        getSize,getCompany,putUnitConvertion,
+        getSubCategory,getCategory,
+        getSecondName,deleteItem,deleteUnitConvertion,
+        postItemAdd,postUnitConvertion} = useItemServices()
+        
 
     useEffect(()=>{
         if(formRef.current) getRefValue(formRef,setRef)
@@ -118,12 +144,48 @@ export const ItemAddForm = ({edit,refresh}) =>{
     };
 
     useEffect(()=>{
+        setLoading(true)
         getData();
+        setTimeout(() => {
+            setLoading(false)
+        }, 100);
     },[])
 
     useEffect(()=>{
         let keys = Object.keys(itemadd)
+        let keysUnit = Object.keys(unitConv)
+        let keysBarc = Object.keys(barcode)
         if(edit){
+            if(edit.units.length>0){
+                let b = []
+                edit.units.map((data)=>{
+                    let c, a , r = {}
+                    keysUnit.map(key=>{
+                        c = key
+                        a = key.slice(key.indexOf('_')+1,)
+                        r[c] = data[a]
+                })
+                b.push(r)
+            })
+            setUnitConvTempList(b)
+            }
+            if(edit.barcode.length>0){
+                let b = []
+                edit.barcode.map((data)=>{
+                    let c, a , r = {}
+                    keysBarc.map(key=>{
+                        c = key
+                        if(c!=='B_rate'){
+                            a = key.slice(key.indexOf('_')+1,)
+                        }else{
+                            a = "retail_rate"
+                        }
+                        r[c] = data[a]
+                })
+                b.push(r)
+                })
+                setBarcode(...b)
+            }
             keys.map((key)=>{
                 if(key==='types') setItemAdd(data=>({...data,['types']:edit.type}))
                 else if(key.match(/^types|^second_name|^category|^sub_category|^company|^size|^color|^group|^tax_group|^unit|^rack/)){
@@ -138,66 +200,111 @@ export const ItemAddForm = ({edit,refresh}) =>{
         }else{
             handleReset()
         }
-    },[edit, ])
+    },[edit ])
 
-    const {
-        postBarcode,postUnit,
-        postRack,postTaxGroup,
-        postGroup,postColor,
-        postSize,postCompany,
-        postSubCategory,postCategory,
-        postSecondName,putItemAdd,
-        getBarcode,getUnit,
-        getRack,getTaxGroup,
-        getGroup,getColor,
-        getSize,getCompany,
-        getSubCategory,getCategory,
-        getSecondName,deleteItem,
-        postItemAdd,postUnitConvertion} = useItemServices()
+    // console.log(listItem)
 
     const getData = async () => {
         let list = {}
-        const miniFunct = (data,name) =>{
-            list[name] = []
+        const miniFunct = (data) =>{
+            const keys = Object.keys(listItem)
             data.map((x)=>{
-                list[name].push({value:x['id'],label:x[name]})
-            })
+                if(keys.indexOf(x.property_type)>-1){
+                    list[x.property_type] = []
+                list[x?.property_type].push({value:x['id'],label:x['property_value']})}
+                })
         }
         try{
-        let res
-        res = await getSecondName()
-        if(res.success) miniFunct(res.data,'second_name')
+        let res = await getProperty()
+            if(res.success)
+                miniFunct(res?.data)
+            
+        // res = await getSecondName()
+        // if(res.success) miniFunct(res.data,'second_name')
         // res = await getType()
         // if(res.success) miniFunct(res.data,'types')
-        res = await getCategory()
-        if(res.success) miniFunct(res.data,'category')
-        res = await getSubCategory()
-        if(res.success) miniFunct(res.data,'sub_category')
-        res = await getCompany()
-        if(res.success) miniFunct(res.data,'company')
-        res = await getSize()
-        if(res.success) miniFunct(res.data,'size')
-        res = await getColor()
-        if(res.success) miniFunct(res.data,'color')
-        res = await getGroup()
-        if(res.success) miniFunct(res.data,'group')
-        res = await getTaxGroup()
-        if(res.success) miniFunct(res.data,'tax_group')
-        res = await getRack()
-        if(res.success) miniFunct(res.data,'rack')
-        res = await getUnit()
-        if(res.success) miniFunct(res.data,'unit')
+        // res = await getCategory()
+        // if(res.success) miniFunct(res.data,'category')
+        // res = await getSubCategory()
+        // if(res.success) miniFunct(res.data,'sub_category')
+        // res = await getCompany()
+        // if(res.success) miniFunct(res.data,'company')
+        // res = await getSize()
+        // if(res.success) miniFunct(res.data,'size')
+        // res = await getColor()
+        // if(res.success) miniFunct(res.data,'color')
+        // res = await getGroup()
+        // if(res.success) miniFunct(res.data,'group')
+        // res = await getTaxGroup()
+        // if(res.success) miniFunct(res.data,'tax_group')
+        // res = await getRack()
+        // if(res.success) miniFunct(res.data,'rack')
+        // res = await getUnit()
+        // if(res.success) miniFunct(res.data,'unit')
         // res = await getBarcode()
         // if(res.success) miniFunct(res.data,'transaction_unit')
         list.types=typesOptions
+        console.log(list)
         setListItem(list)
         }catch(err){
             // console.log(err)
         }
     }
 
-    const addToList = () =>{
-        if(unitConvShow && unitConv.U_unit && unitConv.U_mrp && unitConv.U_rate){
+    const handleUnitClear = () =>{
+        let x = Object.keys(unitConv)
+        x.map(key=>{
+            setUnitConv(data=>({...data,[key]:null}))
+        })
+    }
+
+    const handleDeleteUnit = async (data) =>{
+        try{
+            console.log("dsfdfsdf")
+            let res = await deleteUnitConvertion(data?.U_id)
+            if(res.success){
+                refresh()
+            }else
+            if(!res.success)
+            Swal.fire(res.message,'','error')
+        }catch(err){
+            console.log(err)
+            // Swal.fire("Something went wrong pls try again",'',"error")
+        }
+    }
+
+    const addToList = async () =>{
+        let x = Object.values(unitConv)
+        if(unitEdit && x.length>3){
+            try{
+                const data = {qty:unitConv.U_qty,unit:unitConv.U_unit,rate:unitConv.U_rate,mrp:unitConv.U_mrp}
+                let res = await putUnitConvertion(unitEdit,data)
+                if(res.success){
+                    refresh()
+                    handleUnitClear()
+                    unitConvShow(false)
+                    setUnitEdit(false)
+                }else{
+                    
+                }
+            }catch (err){
+
+            }
+        }else if(edit && x.length>3){
+            try{
+                const data = {qty:unitConv.U_qty,unit:unitConv.U_unit,rate:unitConv.U_rate,mrp:unitConv.U_mrp}
+                let res = await postUnitConvertion(edit.id,data)
+                if(res.success){
+                    handleUnitClear()
+                    refresh()
+                }else{
+                    Swal.fire(res.message,'','error')
+                }
+            }catch(err){
+
+            }
+        }
+        else if(unitConvShow && unitConv.U_unit && unitConv.U_mrp && unitConv.U_rate){
             let g = unitConvTempList
             g.push(unitConv)
             setUnitConvTempList(g)
@@ -211,49 +318,21 @@ export const ItemAddForm = ({edit,refresh}) =>{
         }
     }
 
-    const addOption = async (e,data,state) =>{
+    const addOption = async (e,data,state,edit) =>{
         e.preventDefault()
         let value = data.value
-        let res
         try{
-            let submitData = {[state]:value}
-            switch(state){
-                case 'second_name': 
-                    res = await postSecondName(submitData);
-                    setItemAdd(data=>({...data,[state]:res.data.id}));break;
-                // case 'types':
-                //     res = await postType(submitData);break;
-                case 'category':
-                    res = await postCategory(submitData);
-                    setItemAdd(data=>({...data,[state]:res.data.id}));break;
-                case 'sub_category':
-                    res = await postSubCategory(submitData);
-                    setItemAdd(data=>({...data,[state]:res.data.id}));break;
-                case 'company':
-                    res = await postCompany(submitData);
-                    setItemAdd(data=>({...data,[state]:res.data.id}));break;
-                case 'size':
-                    res = await postSize(submitData);
-                    setItemAdd(data=>({...data,[state]:res.data.id}));break;
-                case 'color':
-                    res = await postColor(submitData);
-                    setItemAdd(data=>({...data,[state]:res.data.id}));break;
-                case 'group':
-                    res = await postGroup(submitData);
-                    setItemAdd(data=>({...data,[state]:res.data.id}));break;
-                case 'tax_group':
-                    res = await postTaxGroup(submitData);
-                    setItemAdd(data=>({...data,[state]:res.data.id}));break;
-                case 'rack':
-                    res = await postRack(submitData);
-                    setItemAdd(data=>({...data,[state]:res.data.id}));break;
-                case 'unit':
-                    res = await postUnit(submitData);
-                    setItemAdd(data=>({...data,[state]:res.data.id}));break;
-                case 'transaction_unit':
-                    res = await postBarcode(submitData);
-                    setItemAdd(data=>({...data,[state]:res.data.id}));break;
+            let res 
+            if(edit){
+                let submitData = {property_value:value}
+                res = await putProperty(submitData,edit)
+            }else{
+                let submitData = {property_value:value,property_type:state}
+                res = await postProperty(submitData)
             }
+            if(res.success)
+                setItemAdd(data=>({...data,[state]:res.data.id}))
+
             if(res.success){
                 Swal.fire('Option Added Successfylly','','success')
             }
@@ -263,12 +342,11 @@ export const ItemAddForm = ({edit,refresh}) =>{
     }
     }
 
-    // console.log(itemadd)
-
     const handleSubmit = async (e)=>{
         e.preventDefault()
         try{
             let submitData = itemadd
+            console.log("first")
             let res, res2 = 1, res3 = 1
             const names = ['second_name','category','sub_category','company','size','color','group','tax_group','godown_rack','unit','purchase']
             let data = handleChangeFk(names,submitData)
@@ -278,11 +356,15 @@ export const ItemAddForm = ({edit,refresh}) =>{
                 res = await postItemAdd(data)
             }
             if(res?.success){
-                if(barcode.B_mrp&&barcode.B_code&&barcode.B_rate){
-                    const data = {code:barcode.B_code,mrp:barcode.B_mrp,retail_rate:barcode.B_rate}
+                let barcodeCheck = Object.values(barcode)
+                if(barcodeCheck?.length>4 && !edit && res.data.id){
+                    const data = {code:barcode.B_code,mrp:barcode.B_mrp,retail_rate:barcode.B_rate,expiry:barcode.B_expiry}
                     res3 = await postBarcode(res.data.id,data)
+                }else if(res?.success && edit && barcode.B_id){
+                    const data = {code:barcode.B_code,mrp:barcode.B_mrp,retail_rate:barcode.B_rate,expiry:barcode.B_expiry}
+                    res3 = await putBarcode(barcode.B_id,data)
                 }
-                if(unitConvTempList.length>0){
+                if(unitConvTempList.length>0 && !edit){
                     unitConvTempList.map(async x=>{
                         const data = {qty:x.U_qty,unit:x.U_unit,rate:x.U_rate,mrp:x.U_mrp}
                         res2 = await postUnitConvertion(res.data.id,data)
@@ -308,6 +390,8 @@ export const ItemAddForm = ({edit,refresh}) =>{
             Swal.fire(a[0] +` ${err?.response?.data?.data[a[0]][0]}`,'','error')
         }
     }
+
+    // console.log(itemadd)
 
     const handleChangeFk = (name,submitData)=>{
         name.map(x=>{
@@ -351,36 +435,53 @@ export const ItemAddForm = ({edit,refresh}) =>{
         setBarcodeShow(false)
     }
 
+    const handleEditUnit = (e,data) =>{
+        setUnitConv(data)
+        setUnitEdit(data.U_id)
+    }
+
     return(
-        <form onSubmit={handleSubmit} ref={formRef} className='item_add_cont'>
+        <form onSubmit={handleSubmit} ref={formRef} className={`item_add_cont`}>
                 {edit?"Edit Items":"Add New Item"}
-                <div className='item_add_form pt-1 d-flex mt-1'>
+                <div className={`item_add_form pt-1 d-flex mt-1 ${loading && "d-none"}`}>
 
             {/* item details --------------------------------------------------------------------------------------- */}
 
                 <div className='item_add_form_part1 row mx-0 px-0 col-6 '>
                     
                     <div className="item_add_first_row px-0 row mx-0 ">
-                    <div className='item_inputs d-flex mx-0 px-0 col-6'>Code*
+
+                    <div className='item_inputs d-flex mx-0 px-0 col-6'>
+                        <div className="col-4 px-0">Code*</div>
+                        <div className="col-8 px-0">
                     <input onKeyDown={handleKeyDown} required type='number' className='item_input'
                         value={itemadd.code?itemadd.code:''} name='code' onChange={handleChange}/>
                     </div>
-                    <div className='item_inputs d-flex px-0 col-6 align-itmes-end'>HSN*
+                        </div>
+                    <div className='item_inputs d-flex px-0 col-6 align-itmes-end'>
+                        <div className='col-4 px-0 ps-3'>HSN*</div>
+                        <div className="col-8 px-0">
                     <input onKeyDown={handleKeyDown} required type='number' className='item_input'
                         value={itemadd.hsn?itemadd.hsn:''} name='hsn' onChange={handleChange}/>
+                        </div>
                     </div>
                     </div>
 
-                    <div className='item_inputs d-flex justify-content-between px-0 mx-0 col-12 pt-2'>Name*
-                    <input onKeyDown={handleKeyDown} type='text' required className='item_input names'
-                        value={itemadd.name?itemadd.name:''} name='name' onChange={handleChange}/>
+                    <div className='item_inputs row px-0 mx-0 pt-2'>
+                        <div className='col-6 px-0'>Name*</div>
+                        <div className="col-6 px-0">
+                            <input onKeyDown={handleKeyDown} type='text' required className='item_input ms-0 col-6'
+                            value={itemadd.name?itemadd.name:''} name='name' onChange={handleChange}/>
+                        </div>
                     </div>
-                    <div className='item_inputs d-flex justify-content-between px-0 mx-0 col-12 pt-2'>Second Name
+                    <div className='item_inputs d-flex pt-2 px-0'>
+                        <div className='col-6'>Second Name</div>
                     <SearchDropDown id="second_name" addNew={true} setNew={addOption} options={listItem}
                         {... { showDropdown, setShowDropdown, handleKeyDown }} setDataValue={setItemAdd} selectedValue={itemadd}/>
                     </div>
-                    <div className='item_inputs d-flex justify-content-between px-0 mx-0 col-12 pt-2'>Type
-                    <SearchDropDown id="types" setNew={addOption} options={listItem}
+                    <div className='item_inputs d-flex pt-2 px-0'>
+                        <div className='col-6'>Type</div>
+                    <SearchDropDown id="types" setNew={addOption} options={listItem} noAdd={true}
                         {... { showDropdown, setShowDropdown, handleKeyDown }} setDataValue={setItemAdd} selectedValue={itemadd}/>
                         {/* <select type='select' className='item_input col-6 col-7'
                             name='rent_type'>
@@ -389,52 +490,76 @@ export const ItemAddForm = ({edit,refresh}) =>{
                             <option value='SERVICE'>SERVICE</option>
                         </select> */}
                     </div>
-                    <div className='item_inputs d-flex justify-content-between px-0 mx-0 col-12 pt-2'>Category
-                    <SearchDropDown id="category" addNew={true} setNew={addOption} options={listItem}
-                        {... { showDropdown, setShowDropdown, handleKeyDown }} setDataValue={setItemAdd} selectedValue={itemadd}/>
+                    <div className='item_inputs d-flex pt-2 px-0'>
+                        <div className='col-6'>Category</div>
+                        <div className='col-6 px-0'>
+                        <SearchDropDown id="category" addNew={true} setNew={addOption} options={listItem}
+                            {... { showDropdown, setShowDropdown, handleKeyDown }} setDataValue={setItemAdd} selectedValue={itemadd}/>
+                        </div>
                     </div>
-                    <div className='item_inputs d-flex justify-content-between px-0 mx-0 col-12 pt-2'>Sub Category
-                    <SearchDropDown id="sub_category" addNew={true} setNew={addOption} options={listItem}
-                        {... { showDropdown, setShowDropdown, handleKeyDown }} setDataValue={setItemAdd} selectedValue={itemadd}/>
+                    <div className='item_inputs d-flex pt-2 px-0'>
+                        <div className='col-6'>Sub Category</div>
+                        <div className='col-6 px-0'>
+                        <SearchDropDown id="sub_category" addNew={true} setNew={addOption} options={listItem}
+                            {... { showDropdown, setShowDropdown, handleKeyDown }} setDataValue={setItemAdd} selectedValue={itemadd}/>
+                        </div>
                     </div>
-                    <div className='item_inputs d-flex justify-content-between px-0 mx-0 col-12 pt-2'>Company*
-                    <SearchDropDown id="company" addNew={true} setNew={addOption} options={listItem}
-                        {... { showDropdown, setShowDropdown, handleKeyDown }} setDataValue={setItemAdd} selectedValue={itemadd}/>
+                    <div className='item_inputs d-flex pt-2 px-0'>
+                        <div className='col-6'>Company*</div>
+                        <div className='col-6 px-0'>
+                        <SearchDropDown id="company" addNew={true} setNew={addOption} options={listItem}
+                            {... { showDropdown, setShowDropdown, handleKeyDown }} setDataValue={setItemAdd} selectedValue={itemadd}/>
+                        </div>
                     </div>
 
-                    <div className="item_add_first_row px-0 row mx-0 pt-2">
-                    <div className='item_inputs d-flex mx-0 px-0 col-6'>Size
-                    <SearchDropDown id="size" addNew={true} setNew={addOption} options={listItem} containerClass="small"
-                        {... { showDropdown, setShowDropdown, handleKeyDown }} setDataValue={setItemAdd} selectedValue={itemadd}/>
+                    <div className='item_inputs row mx-0 px-0 col-12 pt-2'>
+                        <div className="col-2 col-3 px-0">Size</div>
+                        <div className="col-3 col-4 px-0">
+                        <SearchDropDown id="size" addNew={true} setNew={addOption} options={listItem}
+                            {... { showDropdown, setShowDropdown, handleKeyDown }} setDataValue={setItemAdd} selectedValue={itemadd}/>
+                        </div>
+                        <div className="col-2 col-3 px-0 ps-3">Color</div>
+                        <div className="col-3 col-4 px-0">
+                        <SearchDropDown id="color" addNew={true} setNew={addOption} options={listItem}
+                            {... { showDropdown, setShowDropdown, handleKeyDown }} setDataValue={setItemAdd} selectedValue={itemadd}/>
+                        </div>
                     </div>
-                    <div className='item_inputs d-flex px-0 col-6 align-itmes-end'>Color
-                    <SearchDropDown id="color" addNew={true} setNew={addOption} options={listItem} containerClass="small"
-                        {... { showDropdown, setShowDropdown, handleKeyDown }} setDataValue={setItemAdd} selectedValue={itemadd}/>
-                    </div>
-                    </div>
+                    {/* </div> */}
                     
-                    <div className="item_add_first_row px-0 row mx-0 pt-2">
-                    <div className='item_inputs d-flex mx-0 px-0 col-6'>Group
-                    <SearchDropDown id="group" addNew={true} setNew={addOption} options={listItem} containerClass="small"
-                        {... { showDropdown, setShowDropdown, handleKeyDown }} setDataValue={setItemAdd} selectedValue={itemadd}/>
-                    </div>
-                    <div className='item_inputs d-flex px-0 col-6 align-itmes-end'>Tax Group
-                    <SearchDropDown id="tax_group" addNew={true} setNew={addOption} options={listItem} containerClass="small"
-                        {... { showDropdown, setShowDropdown, handleKeyDown }} setDataValue={setItemAdd} selectedValue={itemadd}/>
-                    </div>
+                    <div className='item_inputs row mx-0 px-0 col-12 pt-2'>
+                        <div className="col-2 col-3 px-0">Group</div> 
+                        <div className="col-3 col-4 px-0">
+                        <SearchDropDown id="group" addNew={true} setNew={addOption} options={listItem}
+                            {... { showDropdown, setShowDropdown, handleKeyDown }} setDataValue={setItemAdd} selectedValue={itemadd}/>
+                        </div>
+                        <div className='col-2 col-3 px-0 ps-3'>Tax Group</div>
+                        <div className='col-3 col-4 px-0'>
+                            
+                        <SearchDropDown id="tax_group" addNew={true} setNew={addOption} options={listItem}
+                            {... { showDropdown, setShowDropdown, handleKeyDown }} setDataValue={setItemAdd} selectedValue={itemadd}/>
+                        </div>
                     </div>
 
-                    <div className='item_inputs d-flex justify-content-between px-0 mx-0 col-12 pt-2'>Godown/Rack
-                    <SearchDropDown id="rack" addNew={true} setNew={addOption} options={listItem}
-                        {... { showDropdown, setShowDropdown, handleKeyDown }} setDataValue={setItemAdd} selectedValue={itemadd}/>
+                    <div className='item_inputs d-flex pt-2 px-0'>
+                        <div className='col-6'>Godown/Rack</div>
+                        <div className='col-6 px-0'>
+                        <SearchDropDown id="rack" addNew={true} setNew={addOption} options={listItem}
+                            {... { showDropdown, setShowDropdown, handleKeyDown }} setDataValue={setItemAdd} selectedValue={itemadd}/>
+                        </div>
                     </div>
-                    <div className='item_inputs d-flex justify-content-between px-0 mx-0 col-12 pt-2'>Stock Unit*
-                    <SearchDropDown required id="unit" addNew={true} setNew={addOption} options={listItem}
-                        {... { showDropdown, setShowDropdown, handleKeyDown }} setDataValue={setItemAdd} selectedValue={itemadd}/>
+                    <div className='item_inputs d-flex pt-2 px-0'>
+                        <div className='col-6'>Stock Unit*</div>
+                        <div className='col-6 px-0'>
+                        <SearchDropDown required id="unit" addNew={true} setNew={addOption} options={listItem}
+                            {... { showDropdown, setShowDropdown, handleKeyDown }} setDataValue={setItemAdd} selectedValue={itemadd}/>
+                        </div>
                     </div>
-                    <div className='item_inputs d-flex justify-content-between px-0 mx-0 col-12 pt-2'>Transaction Unit*
-                    <SearchDropDown required id="transaction_unit"  setNew={addOption} options={listItem}
-                        {... { showDropdown, setShowDropdown, handleKeyDown }} setDataValue={setItemAdd} selectedValue={itemadd}/>
+                    <div className='item_inputs d-flex pt-2 px-0'>
+                        <div className='col-6'>Transaction Unit*</div>
+                        <div className='col-6 px-0'>
+                        <SearchDropDown required id="transaction_unit" noAdd={true}  setNew={addOption} options={listItem}
+                            {... { showDropdown, setShowDropdown, handleKeyDown }} setDataValue={setItemAdd} selectedValue={itemadd}/>
+                        </div>
                     </div>
                 </div>
 
@@ -478,7 +603,7 @@ export const ItemAddForm = ({edit,refresh}) =>{
                     name='purchase_rate' onChange={handleChange}/>
                     </div>
                     <div className='item_inputs right d-flex px-0 col-6 '>Cost*
-                    <input onKeyDown={handleKeyDown} value={itemadd.cost?itemadd.cost:''} required type='number' className='item_input col-6 col-7'
+                    <input value={itemadd.cost} required type='number' className='item_input col-6 col-7'
                     name='cost' onChange={handleChange}/>
                     </div>
                     </div>
@@ -570,9 +695,9 @@ export const ItemAddForm = ({edit,refresh}) =>{
                 </div>
 
                 </div>
-            <div className="pt-2 d-flex justify-content-between w-100 ">
-                <div className='d-flex row col-6 gap-4'>
-                    <div onClick={()=>setUnitConvShow(true)} className='btn bg-black text-light col-5 text-start px-3 py-1'>Unit Conversion</div>
+            <div className="pt-3 d-flex justify-content-between w-100">
+                <div className='w-100'>
+                    <div onClick={()=>setUnitConvShow(true)} className='btn bg-black text-light col-5 text-start px-3 py-1 me-4 ms-0'>Unit Conversion</div>
                     <div onClick={()=>setBarcodeShow(true)} className='btn bg-black text-light col-5 text-start px-3 py-1'>BarCode</div>
                 </div>
                 <div className='checkbox col-6'>
@@ -636,34 +761,38 @@ export const ItemAddForm = ({edit,refresh}) =>{
                                     </thead>
                                     <tbody className='rounded-3 '>
                                         <tr className='table-head-input'>
-                                            <td><input onKeyDown={handleKeyDown} onChange={handleChange} name={barcodeShow?'B_code':'U_qty'} value={barcodeShow?barcode.B_code:unitConv.U_qty} type='text' className='w-100 text-light'/></td>
+                                            <td><input onKeyDown={handleKeyDown} onChange={handleChange} name={barcodeShow?'B_code':'U_qty'} value={barcodeShow?barcode.B_code:unitConv.U_qty||''} type='text' className='w-100 text-light'/></td>
                                             {/* <td><input onKeyDown={handleKeyDown} onChange={handleChange} name='unit' value={unitConv.unit} type='text' className='w-100'/></td> */}
                                             <td>
-                                                {!barcodeShow?<select type='select' onChange={handleChange} value={unitConv?.U_unit} className='unit_select py-2 text-light w-100' name='U_unit'>
+                                                {!barcodeShow?<select type='select' onChange={handleChange} value={unitConv?.U_unit||''} className='unit_select py-2 text-light w-100' name='U_unit'>
                                                     <option value={null}>Select</option>
                                                     {listItem?.unit?.length>0&&
                                                     listItem.unit.map((data,index)=><option key={index} value={data.label}>{data.label}</option>)}
                                                 </select>:
                                                 <input onKeyDown={handleKeyDown} onChange={handleChange} name='B_mrp' value={barcode.B_mrp} type='number' className='w-100 text-light'/>}
                                             </td>
-                                            <td><input onKeyDown={handleKeyDown} onChange={handleChange} name={barcodeShow?'B_rate':'U_rate'} value={barcodeShow?barcode.B_rate:unitConv.U_rate} type='number' className='w-100 text-light'/></td>
-                                            <td><input onKeyDown={handleKeyDown} onChange={handleChange} name={barcodeShow?'B_expiry':'U_mrp'}value={barcodeShow?barcode.B_expiry:unitConv.U_mrp} type={barcodeShow?'date':'number'} className='w-100 text-light'/></td>
+                                            <td><input onKeyDown={handleKeyDown} onChange={handleChange} name={barcodeShow?'B_rate':'U_rate'} value={barcodeShow?barcode.B_rate:unitConv.U_rate||''} type='number' className='w-100 text-light'/></td>
+                                            <td><input onKeyDown={handleKeyDown} onChange={handleChange} name={barcodeShow?'B_expiry':'U_mrp'}value={barcodeShow?barcode.B_expiry:unitConv.U_mrp||''} type={barcodeShow?'date':'number'} className='w-100 text-light'/></td>
                                             <th className='col col-1 cursor text-center'>
                                                 <img src={deleteBtn} alt="deletebtn"/>
                                             </th>
-                                            <th className='btn-td'>
-                                                <div onClick={addToList} className='add_unit_btn btn'>{barcodeShow?"+ Add":"Add Unit"}</div>
+                                            <th className='btn-td text-center'>
+                                                <div onClick={addToList} className='add_unit_btn btn'>{barcodeShow?"+ Add":unitEdit?"Edit Unit":"Add Unit"}</div>
                                             </th>
                                         </tr>
                                         {(unitConvShow&&unitConvTempList.length>0)&&
                                         unitConvTempList.map(data=>(
                                         <tr>
-                                            <td><input onKeyDown={handleKeyDown} value={data.U_qty} type='text' className='w-100 text-light'/></td>
+                                            <td><input value={data.U_qty} type='text' className='w-100 text-light'/></td>
                                             <td>
-                                                <input onKeyDown={handleKeyDown} value={data.U_unit} type='text' className='w-100 text-light'/>
+                                                <input value={data.U_unit} type='text' className='w-100 text-light'/>
                                             </td>
-                                            <td><input onKeyDown={handleKeyDown} value={data.U_rate} type='number' className='w-100 text-light'/></td>
-                                            <td><input onKeyDown={handleKeyDown} value={data.U_mrp} type='number' className='w-100 text-light'/></td>
+                                            <td><input value={data.U_rate} type='number' className='w-100 text-light'/></td>
+                                            <td><input value={data.U_mrp} type='number' className='w-100 text-light'/></td>
+                                            <td style={{background:"#464646"}}><div onClick={e=>handleDeleteUnit(data)} className='text-center'><img src={deleteBtn} alt='delete btn'/></div></td>
+                                            <td style={{background:"#464646"}} className='btn-td text-center'>
+                                                <div onClick={(e)=>handleEditUnit(e,data)} className='add_unit_btn btn'>{"Edit"}</div>
+                                            </td>
                                         </tr>))}
                                     </tbody>
                                 </table>

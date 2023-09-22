@@ -1,100 +1,103 @@
 import React, { useEffect, useRef, useState } from 'react'
-import { Form } from 'react-bootstrap'
-import { FiChevronDown } from 'react-icons/fi'
+import { Form, Modal } from 'react-bootstrap'
+import editBtn from '../../assets/icons/edit-black.svg'
+import { Dropdown } from 'primereact/dropdown';
+import 'primereact/resources/themes/lara-light-indigo/theme.css';
+import 'primereact/resources/primereact.css';                       // core css
+// import 'primeicons/primeicons.css';                                 // icons
+// import 'primeflex/primeflex.css';    
 import './searchDropDown.css'
 
 const SearchDropDown = ({
     containerClass,
-    placeholder,
-    // type,
     setShowDropdown,
     showDropdown,
+    noSearch,
     handleKeyDown,
+    noAdd,
     id,
     setDataValue,
     selectedValue,
     options,
-    addNew,
     setNew,
-    required
 }) => {
-    const [show, setShow] = useState(showDropdown === id ? true : false)
+    const [show, setShow] = useState(false)
+    const [editData, seteditData] = useState()
+    const [edit, setEdit] = useState(false)
     const [selected, setSelected] = useState('')
-    const [tempList, setTempList] = useState(options[id])
+    const [tempList, setTempList] = useState(options[id]?options[id]:null)
     const [search, setSearch] = useState('')
     const [dropRef, setDropRef] = useState()
     const [arrowDrop, setArrowDrop] = useState(false)
-    const dropdownRef = useRef(null)
-    const inputRef = useRef(null)
+    // const dropdownRef = useRef(null)
+    // const inputRef = useRef(null)
 
-    useEffect(()=>{
-        let optionEl = document?.getElementsByClassName("dropdown-box-container show")[0]?.getElementsByClassName('dropdown-option-data')
-        // console.log(optionEl)
-        // console.log(inputRef.current.value)
-        let optionKey , optionsArr = []
-        if(optionEl){
-            optionKey = Object.keys(optionEl)
-            optionKey.map(x=>optionsArr.push(optionEl[x]))
-        } 
-        let newOptionArr = []
-        if(optionsArr?.length>0){
-            optionsArr.map((x,i)=>{
-                if(!x.className.match(/add$|clear$/))
-                newOptionArr.push(x)
-                })
-            if(newOptionArr?.length>0){
-                // console.log(selected)
-                if(search !== ''){
-                    // console.log(newOptionArr)
-                    newOptionArr.map((x,i)=>{
-                        let lessThan = x.innerHTML.indexOf('>')
-                        let lowerThan = x.innerHTML.lastIndexOf('<')
-                        const find = x.innerHTML.slice(lessThan+1,lowerThan)
-                        // console.log(search,find,selected)
-                        if(find.toLocaleLowerCase() === selected.toLocaleLowerCase()){
-                            // console.log(x)
-                        x.className = "dropdown-option-data selected"}
-                        else{
-                            x.className = "dropdown-option-data"
-                        }
-                    })
-                }else{
-                newOptionArr.map((x,i)=>{
-                    if(i===0) x.className = "dropdown-option-data selected"
-                    else  x.className = "dropdown-option-data"
-                })}
-                // console.log(newOptionArr)
-            }
-            }
-        if(optionEl && typeof optionEl !== "object") optionEl.className = "dropdown-option-data selected"
-        const datas = document.getElementsByClassName("dropdown-box-container show")[0]?.getElementsByClassName("dropdown-option-data selected")[0]
-        // console.log(datas)
-        setDropRef(datas)
-    },[showDropdown])
+    // useEffect(()=>{
+    //     let optionEl = document?.getElementsByClassName("dropdown-box-container show")[0]?.getElementsByClassName('dropdown-option-data')
+    //     let optionKey , optionsArr = []
+    //     if(optionEl){
+    //         optionKey = Object.keys(optionEl)
+    //         optionKey.map(x=>optionsArr.push(optionEl[x]))
+    //     } 
+    //     let newOptionArr = []
+    //     if(optionsArr?.length>0){
+    //         optionsArr.map((x,i)=>{
+    //             if(!x.className.match(/add$|clear$/))
+    //             newOptionArr.push(x)
+    //             })
+    //         if(newOptionArr?.length>0){
+    //             // console.log(selected)
+    //             if(search !== ''){
+    //                 // console.log(newOptionArr)
+    //                 newOptionArr.map((x,i)=>{
+    //                     let lessThan = x.innerHTML.indexOf('>')
+    //                     let lowerThan = x.innerHTML.lastIndexOf('<')
+    //                     const find = x.innerHTML.slice(lessThan+1,lowerThan)
+    //                     // console.log(search,find,selected)
+    //                     if(find.toLocaleLowerCase() === selected.toLocaleLowerCase()){
+    //                         // console.log(x)
+    //                     x.className = "dropdown-option-data selected"}
+    //                     else{
+    //                         x.className = "dropdown-option-data"
+    //                     }
+    //                 })
+    //             }else{
+    //             newOptionArr.map((x,i)=>{
+    //                 if(i===0) x.className = "dropdown-option-data selected"
+    //                 else  x.className = "dropdown-option-data"
+    //             })}
+    //             // console.log(newOptionArr)
+    //         }
+    //         }
+    //     if(optionEl && typeof optionEl !== "object") optionEl.className = "dropdown-option-data selected"
+    //     const datas = document.getElementsByClassName("dropdown-box-container show")[0]?.getElementsByClassName("dropdown-option-data selected")[0]
+    //     // console.log(datas)
+    //     setDropRef(datas)
+    // },[showDropdown])
 
-    useEffect(() => {
-        if(options[id])
-        if(typeof options[id] != 'object'){
-            if(id == 'transaction_unit'){
-                setTempList([...options['unit'],])}
-            else
-                setTempList([...options[id],])
-            if (selectedValue[id]) {
-                options[id].map((item)=>{
-                if (item.value==selectedValue[id]){
-                    setSelected(item?.label)
-                    setSearch(item?.label)
-                }
-            })
-        }
-        else{
-            setSelected('')
-            setSearch('')
-        }}
-    },[])
+    // useEffect(() => {
+    //     if(options[id])
+    //     if(typeof options[id] != 'object'){
+    //         if(id == 'transaction_unit'){
+    //             setTempList([...options['unit'],])}
+    //         else
+    //             setTempList([...options[id],])
+    //         if (selectedValue[id]) {
+    //             options[id].map((item)=>{
+    //             if (item.value==selectedValue[id]){
+    //                 setSelected(item?.label)
+    //                 setSearch(item?.label)
+    //             }
+    //         })
+    //     }
+    //     else{
+    //         setSelected('')
+    //         setSearch('')
+    //     }}
+    // },[])
 
     useEffect(() => {
-        if(id  == 'transaction_unit'){
+        if(id  == 'transaction_unit' && options['unit']){
             setTempList([...options['unit'],])
             if(selectedValue[id]){
                 options['unit']?.map(item=>{
@@ -120,39 +123,36 @@ const SearchDropDown = ({
             handleReset()
         }}
     , [selectedValue,options])
-
-    if(id == 'transaction_unit'){
-        // console.log(search)
-    }
+ 
     
-    useEffect(() => {
-        if(options[id]?.length || id == 'transaction_unit'){
-            if(id == 'transaction_unit'){
-                setTempList([...options['unit'],])}
-            else
-                setTempList([...options[id],])
-    if (selectedValue[id]){
-        options[id]?.map((item)=>{
-            if (item.value==selectedValue[id]){
-                setSelected(item?.label)
-                setSearch(item?.label)
-            }
-        })
-    }
-    else{
-        setSelected('')
-        setSearch('')
-    }}
-    }, [options])
+    // useEffect(() => {
+    //     if(options[id]?.length || id == 'transaction_unit'){
+    //         if(id == 'transaction_unit'){
+    //             setTempList([...options['unit'],])}
+    //         else
+    //             setTempList([...options[id],])
+    // if (selectedValue[id]){
+    //     options[id]?.map((item)=>{
+    //         if (item.value==selectedValue[id]){
+    //             setSelected(item?.label)
+    //             setSearch(item?.label)
+    //         }
+    //     })
+    // }
+    // else{
+    //     setSelected('')
+    //     setSearch('')
+    // }}
+    // }, [options])
 
-    useEffect(() => {
-        if (showDropdown === id) {
-            setShow(true);
-        }
-        else {
-            setShow(false);
-        }
-    }, [showDropdown])
+    // useEffect(() => {
+    //     if (showDropdown === id) {
+    //         setShow(true);
+    //     }
+    //     else {
+    //         setShow(false);
+    //     }
+    // }, [showDropdown])
 
 
     const handleSearch = (e) => {
@@ -164,127 +164,119 @@ const SearchDropDown = ({
 
     const handleNewOption = (e) => {
         const data = { value: search, label: search }
-        dropdownRef.current.scrollTo({ top: 0, behavior: 'smooth' })
+        // dropdownRef.current.scrollTo({ top: 0, behavior: 'smooth' })
         setSelected(search)
-        setNew(e,data,id)
+        if(edit){
+            setNew(e,search,id,edit)
+        }else{
+            setNew(e,data,id)
+        }
         setShow(false)
         setDataValue((data)=>({...data, [id]:search}))
         setShowDropdown('')
     }
 
-    const handleSelect = (e,item) => {
-        dropdownRef.current.scrollTo({ top: 0, behavior: 'smooth' })
-        setSelected(item?.label)
-        setSearch(item?.label)
-        if(id==='transaction_unit')
-        setDataValue((data)=>({...data, [id]:item.label.toUpperCase()}))
-        else
-        setDataValue((data)=>({...data, [id]:item.value}))
-        handleDropdown(e,'1')
-}
+    // const handleSelect = (e,item) => {
+    //     console.log("first")
+    //         e.preventDefault()
+    //         dropdownRef.current.scrollTo({ top: 0, behavior: 'smooth' })
+    //         setSelected(item?.label)
+    //         setSearch(item?.label)
+    //         if(id==='transaction_unit')
+    //         setDataValue((data)=>({...data, [id]:item.label.toUpperCase()}))
+    //     else
+    //     setDataValue((data)=>({...data, [id]:item.value}))
+    //     handleDropdown(e,'1')
+// }
 
     const handleReset = () => {
-        dropdownRef.current.scrollTo({ top: 0, behavior: 'smooth' })
         setSelected(null)
         setShowDropdown('')
         setShow(false)
         setSearch('')
     }
 
-    const moveDown = (e) => {
-        if (dropRef?.nextSibling && e.key === "ArrowDown") {
-            if(e.target && dropRef)
-            dropRef.className = 'dropdown-option-data'
-                dropRef.nextSibling.className = 'dropdown-option-data selected'
-                setDropRef(dropRef?.nextSibling)
-        }else if(e.key === "ArrowUp" && dropRef?.previousSibling?.className !== "dropdown-option-data add"){
-            if(e.target && dropRef)
-                dropRef.className = 'dropdown-option-data'
-            dropRef.previousSibling.className = 'dropdown-option-data selected'
-            dropRef.previousSibling.focus()
-            setDropRef(dropRef.previousSibling)
-        }else if(e.key === "Enter"){
-            e.preventDefault()
-            handleKeyDown(e)
-        }
-      }
+    // const moveDown = (e) => {
+    //     if (dropRef?.nextSibling && e.key === "ArrowDown") {
+    //         if(e.target && dropRef)
+    //         dropRef.className = 'dropdown-option-data'
+    //             dropRef.nextSibling.className = 'dropdown-option-data selected'
+    //             setDropRef(dropRef?.nextSibling)
+    //     }else if(e.key === "ArrowUp" && dropRef?.previousSibling?.className !== "dropdown-option-data add"){
+    //         if(e.target && dropRef)
+    //             dropRef.className = 'dropdown-option-data'
+    //         dropRef.previousSibling.className = 'dropdown-option-data selected'
+    //         dropRef.previousSibling.focus()
+    //         setDropRef(dropRef.previousSibling)
+    //     }else if(e.key === "Enter"){
+    //         e.preventDefault()
+    //         console.log(e.target.nextElementSibling.childNodes)
+    //     }
+    //   }
 
-    const handleDropdown = (e,x) =>{
-        if(x==='1'){
-            console.log("first")
-            setShow(false)
-            setShowDropdown('')
-            setArrowDrop(true)
-            const field = e.target?.parentNode.parentNode.parentNode.parentNode.getElementsByClassName("dropdown-search-box")[0]
-            field.blur()
-            setTimeout(()=>{
-                setArrowDrop(false)
-            },300)
-        }else if(x==='2'){
-            if(!arrowDrop){
-                setShow(true)
-                setShowDropdown(id)
-            }
-        }else if(x==='3'){
-            const field = e.target?.parentNode.parentNode.parentNode.parentNode.getElementsByClassName("dropdown-search-box")[0]
-            field.focus()
-        }
+    const handleChange = (e) =>{
+        setDataValue(data=>({...data,[id]:e.value}))
+    }
+
+    const handleEdit = (data) =>{
+        console.log(data)
+        setSearch(data.label)
+        setEdit(data.id)
+    }
+
+    const handleClose = () =>{
+        setShow(false)
+        setSearch(null)
+        setEdit(false)
     }
 
     return (
         <Form.Group className={`search_container ${containerClass}`}>
-            <div className='d-flex align-items-start row mx-0'>
-                <div className='dropdown-position-control'>
-                    <div
-                        className={`dropdown-box-container ${show ? 'show' : ''}`}
-                        onBlur={e=>handleDropdown(e,'1')}
-                        onFocus={e=>handleDropdown(e,'2')}
-                    >
-                        <Form.Control
-                            // onClick={handleDropdown}
-                            required={required}
-                            type='text'
-                            ref={inputRef}
-                            className='dropdown-search-box'
-                            onChange={handleSearch}
-                            value={search}
-                            onKeyDown={moveDown}
-                            // disabled={selected ? true : false}
-                            placeholder={placeholder || 'Select'}
-                        />
-                        <div tabIndex="-1" className='dropdown-option-container' ref={dropdownRef}>
-                            {selected && <div className={`dropdown-option-data clear`} onClick={() => handleReset()}>
-                                <div className="text">Clear</div>
-                            </div>}
-                            {addNew&&<div className={`dropdown-option-data add`} onClick={(e) => handleNewOption(e)}>
-                                <div className="drop-text">{`${containerClass ? "New":"Add"}`}</div>
-                            </div>}
-                            {tempList?.length>0 && <div className={`dropdown-option-data selected`} onClick={(e) =>{handleSelect(e,tempList[0])}}>
-                                <div className="dropdown-text selected">{tempList[0]?.label}</div>
-                            </div>}
-                            {tempList?.length>0 &&
-                                tempList.map((item, index) => {
-                                {
-                                return index!=0&&(<div className={`dropdown-option-data `} key={index} onClick={(e) => handleSelect(e,item)}>
-                                    <div className="dropdown-text">{item?.label}</div>
-                                </div>)}
-                                })
-                            }
-                        </div>
-                    </div>
-                </div>
+            {/* <div className='align-items-start gap-2 d-flex w-100'> */}
+                    <Dropdown
+                    placeholder='select'
+                    filter={!noSearch}
+                    editable
+                    onChange={handleChange}
+                    onKeyDown={handleKeyDown}
+                    value={search}
+                    // onChange={handleChange}
+                    className='drop_input mx-0'
+                    options={tempList}
+                    />
+                    {!noAdd&&<div
+                        className='dropdown-btn my-0'
+                        onClick={()=>setShow(!show)}>
+                      <div className='pb-1'>+</div>
+                    </div>}
+            {/* </div> */}
+            <Modal
+            size='md'
+            centered
+            onHide={handleClose}
+            show={show}
+            contentClassName='search-dropdown'
+            >
+                <Modal.Body className='dropdown-body p-0 pb-2'>
+                        <div className='dropdown-header'>Add Design</div>
+                        <div className='px-4 pt-1 w-100'>
+                             <div className='position-relative align-items-center d-flex mt-2'>
+                                <input onChange={handleSearch} placeholder='Add category here' type='text'
+                                 className='item_input height ms-0 position-relative' value={search}/>
+                                <div onClick={handleNewOption} className='btn drop-add-btn py-0'>{edit?"Edit":"Add"}</div>
+                            </div>
+                            <div className='dropdown-add-items rounded-2 p-2 pb-1 mt-4'>
+                                {tempList?.length>0?
+                                tempList.map((item)=>(
 
-                <div className='dropdown-btn-container '>
-                    <div 
-                        className='dropdown-btn'
-                        onClick={e=>{
-                                if(!arrowDrop)
-                                handleDropdown(e,'3')}}
-                    >
-                        <FiChevronDown className={`arrow  ${show ? 'show' : ''} `} />
-                    </div>
-                </div>
-            </div>
+                                    <div className='dropdown-add-item ms-0 mb-2 p-1 px-2'>
+                                    {item.label}<img onClick={()=>handleEdit(item)} className='cursor' src={editBtn}/></div>                        
+                                        )
+                                ):<div className='dropdown-add-item ms-0 mb-2 p-1 px-2'>No Item Added yet</div>}
+                            </div>
+                        </div>
+                </Modal.Body>
+            </Modal>
         </Form.Group>
     )
 }

@@ -1,10 +1,11 @@
 import './App.css';
 import { BrowserRouter, Outlet, Route, Routes } from "react-router-dom";
 import { Layout } from "./components/layout/Layout";
-import SupplierAdd from "./pages/master/supplier/components/SupplierAdd";
 import ItemMaster from "./pages/master/item/ItemMaster";
 import CustomerMaster from './pages/master/customer/CustomerMaster';
 import SupplierMaster from './pages/master/supplier/SupplierMaster';
+import PurchaseTransaction from './pages/transactions/purchase/PurchaseTransaction';
+import StaffMaster from './pages/master/staff/StaffMaster';
 
 function App() {
   return (
@@ -18,6 +19,8 @@ function App() {
             <Route path="/customer-add" element={<CustomerMaster/>}/>
             <Route path="/supplier-master" element={<SupplierMaster/>}/>
             <Route path="/supplier-add" element={<SupplierMaster/>}/>
+            <Route path="/purchase-transaction" element={<PurchaseTransaction/>}/>
+            <Route path="/staff-master" element={<StaffMaster/>}/>
           </Route>
         </Route>
       </Routes>

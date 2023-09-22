@@ -29,12 +29,12 @@ const Sidebar = () => {
                     <span className='SidebarSpan d-flex ms-5 ps-3'>
                         <div className='SidebarItemText' onClick={()=>navigate('/supplier-master')}>Supplier</div>
                     </span>
-                    {/* <span className='SidebarSpan d-flex ms-5 ps-3'>
-                        <div className='SidebarItemText'>Staff</div>
+                    <span className='SidebarSpan d-flex ms-5 ps-3'>
+                        <div className='SidebarItemText' onClick={()=>navigate('/staff-master')}>Staff</div>
                     </span>
                     <span className='SidebarSpan d-flex ms-5 ps-3'>
                         <div className='SidebarItemText'>Vehichle</div>
-                    </span> */}
+                    </span> 
                     <span className='SidebarSpan d-flex ms-5 ps-3'>
                         <div className='SidebarItemText' onClick={()=>navigate('/')}>Items</div>
                     </span>
@@ -68,9 +68,9 @@ const Sidebar = () => {
                         <div className='SidebarItemText'>Accounts</div>
                     </span>
                     <span className='SidebarSpan d-flex ms-5 ps-3'>
-                        <div className='SidebarItemText'>Customer</div>
+                        <div className='SidebarItemText' onClick={()=>navigate('/purchase-transaction')}>Purchase</div>
                     </span>
-                    <span className='SidebarSpan d-flex ms-5 ps-3'>
+                    {/* <span className='SidebarSpan d-flex ms-5 ps-3'>
                         <div className='SidebarItemText'>Supplier</div>
                     </span>
                     <span className='SidebarSpan d-flex ms-5 ps-3'>
@@ -102,7 +102,7 @@ const Sidebar = () => {
                     </span>
                     <span className='SidebarSpan d-flex ms-5 ps-3'>
                         <div className='SidebarItemText'>User</div>
-                    </span>
+                    </span> */}
                 </div>
                 
                 <div onClick={()=>setArrowActive(!ArrowActive)} className={`SidebarItem mt-3 mb-3 ${ArrowActive && "active"}`}>

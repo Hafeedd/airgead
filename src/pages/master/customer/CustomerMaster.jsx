@@ -11,7 +11,7 @@ const CustomerList = () => {
     const [toEdit, setToEdit] = useState(false)
     const [listCustomer,setListCustomer] = useState([])
     const [showCustomerAdd,setShowCustomerAdd] = useState(false)
-    const {getCustomer,deleteCustomerList} = useCustomerServices()
+    const {getCustomer,deleteCustomer} = useCustomerServices()
 
     const location = useLocation()
     const navigate = useNavigate()
@@ -20,10 +20,40 @@ const CustomerList = () => {
         getData()
     },[])
 
-    const handleDelete = async (id,e) =>{
+    useEffect(()=>{
+       if(toEdit){
+        listCustomer.map(x=>{
+            if(x.id === toEdit.id){
+                setToEdit(x)
+            }
+        })
+       }
+    },[listCustomer])
+
+    const refreshToEdit = () =>{
+
+    }
+
+    const handleDelete = (id,e)=>{
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "You won't be able to revert this!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, delete it!'
+          }).then((result) => {
+            if (result.isConfirmed) {
+                handleDeleteConfirm(id,e)
+            }
+          })
+    }
+
+    const handleDeleteConfirm = async (id,e) =>{
         e.preventDefault()
         try{
-            let res = await deleteCustomerList(id)
+            let res = await deleteCustomer(id)    
             if(res.success) Swal.fire('Customer deleted Successfully','','success')
             else Swal.fire(res.message,'','error')
         getData()
@@ -52,8 +82,6 @@ const CustomerList = () => {
         setToEdit(false);
         setShowCustomerAdd(false)
     }
-
-    console.log(location)
 
     return(
         <div className='item_add'>
