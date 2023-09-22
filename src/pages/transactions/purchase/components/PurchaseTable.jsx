@@ -8,7 +8,7 @@ const PurchaseTable = ({setPurchaseItemModal}) => {
                 <table className='table table-secondary purchase-table mb-0'>
                     <thead className='purchase-table-header'>
                         <tr>
-                            <th className='text-start'>Item Name</th>
+                            <th className='text-start' colSpan={2}>Item Name</th>
                             <th>Qty</th>
                             <th>Ut</th>
                             <th>Rate</th>
@@ -22,7 +22,7 @@ const PurchaseTable = ({setPurchaseItemModal}) => {
                             <th>Cost</th>
                             <th>Margin%</th>
                             <th>S.Rate</th>
-                            <th className='py-0 text-end'>
+                            <th className='py-1 text-end'>
                                 <div className='btn btn-primary purchase-add-btn my-0' onClick={()=>setPurchaseItemModal(true)}>
                                     +
                                 </div>
@@ -31,7 +31,7 @@ const PurchaseTable = ({setPurchaseItemModal}) => {
                     </thead>
                     <tbody className='purchase-table-body'>
                         <tr>
-                            <td className='text-start ps-3'>Item Number 1</td>
+                            <td className='text-start ps-3' colSpan={2}>Item Number 1</td>
                             <td>01.0</td>
                             <td>0.0</td>
                             <td>102.</td>
@@ -48,7 +48,7 @@ const PurchaseTable = ({setPurchaseItemModal}) => {
                             <td></td>
                         </tr>
                         <tr>
-                            <td className='text-start ps-3'>Item Number 1</td>
+                            <td className='text-start ps-3' colSpan={2}>Item Number 1</td>
                             <td>01.0</td>
                             <td>0.0</td>
                             <td>102.</td>
@@ -65,7 +65,7 @@ const PurchaseTable = ({setPurchaseItemModal}) => {
                             <td></td>
                         </tr>
                         <tr>
-                            <td className='text-start ps-3'>Item Number 1</td>
+                            <td className='text-start ps-3' colSpan={2}>Item Number 1</td>
                             <td>01.0</td>
                             <td>0.0</td>
                             <td>102.</td>
@@ -81,9 +81,14 @@ const PurchaseTable = ({setPurchaseItemModal}) => {
                             <td>540</td>
                             <td></td>
                         </tr>
-                        <tr><td style={{ height: "2.5rem" }} colSpan={15}></td></tr>
+                        <tr><td style={{ height: "2.5rem" }} colSpan={16}></td></tr>
                         <tr className='purchase-table-green'>
-                            <td></td>
+                            <td className='item2'>
+                                {'<'} Previous
+                            </td>
+                            <td className='item3 px-3'>
+                                Next {'>'}
+                            </td>
                             <td className='item'>01.0</td>
                             <td></td>
                             <td></td>

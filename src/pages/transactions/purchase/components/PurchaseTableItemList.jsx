@@ -7,12 +7,12 @@ const PurchaseTableItemList = () => {
       <table className="table table-hover purchase-item-table ">
         <thead className=''>
           <tr className=''>
-            <th className='text-start ps-3'>Column Name</th>
+            <th className='text-start ps-3 start'>Column Name</th>
             <th>Visible</th>
             <th>Readonly</th>
             <th>Skipping</th>
             <th style={{borderRight:'0px'}}>Breakpoint</th>
-            <th style={{borderRight:'0px', width:'2rem'}}></th>
+            <th style={{borderRight:'0px', width:'2rem'}} className='end'></th>
           </tr>
         </thead>
         <tbody className='purchase-item-body'>
