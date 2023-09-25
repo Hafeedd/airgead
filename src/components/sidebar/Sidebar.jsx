@@ -21,7 +21,7 @@ const Sidebar = () => {
                     <img src={User} className='sidebar_icon' width={"25px"}/>Master</div>
                 <div className={`sidebar_span_cont ${!masterActive && "d-none"}`}>
                     <span className='SidebarSpan d-flex ms-5 ps-3'>
-                        <div className='SidebarItemText'>Accounts</div>
+                        <div className='SidebarItemText' onClick={()=>navigate('/account-master')}>Accounts</div>
                     </span>
                     <span className='SidebarSpan d-flex ms-5 ps-3'>
                         <div className='SidebarItemText' onClick={()=>navigate('/customer-master')}>Customer</div>
