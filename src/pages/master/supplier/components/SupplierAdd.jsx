@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import useCustomerServices from '../../../../services/master/customerServices'
 import useItemServices from '../../../../services/master/itemServices'
 import SearchDropDown from '../../../../components/searchDropDown/SearchDropDown'
@@ -6,6 +6,9 @@ import Swal from 'sweetalert2'
 
 const SupplierAdd = ({edit,refresh}) => {
     const [showDropdown, setShowDropdown] = useState(false)
+    const [code, setCode] = useState(null)
+    const [ref, setRef] = useState()
+    const formRef = useRef(null)
     const [listItem, setListItem] = useState({
         company:[],
         district:[]
@@ -31,7 +34,7 @@ const SupplierAdd = ({edit,refresh}) => {
     })
 
     const {postDistrict,getDistrict,postSupplier,putSupplier} = useCustomerServices()
-    const {postCompany,getCompany,getProperty,putProperty,postProperty} = useItemServices()
+    const {postCompany,getCompany,getProperty,putProperty,postProperty,getCode} = useItemServices()
 
     useEffect(()=>{
         getData()
@@ -57,7 +60,33 @@ const SupplierAdd = ({edit,refresh}) => {
         handleReset()
     },[edit])
 
-    // console.log(supplierAdd)
+    useEffect(()=>{
+        if(formRef.current) getRefValue(formRef,setRef)
+        }
+    ,[formRef])
+
+    const getRefValue = (ref,set) =>{
+        const data = [...ref.current.children]
+        const newList = [...data[0].querySelectorAll('input, select, textarea')]
+        newList[0].focus()
+            set(newList)
+    }
+
+    const handleKeyDown = (e) => {
+        console.log(ref)
+        if (e.key === "Enter") {
+            e.preventDefault();
+            if (e.target && ref.length>0) {
+                let a = ref.indexOf(e.target)
+                if(a===ref.length-1){
+                    ref[0].focus()
+                }else{
+                ref[a].blur()
+                ref[a+1].focus();
+            }
+            }
+        }
+    };
 
     const getData = async () =>{
         let list = {}
@@ -65,14 +94,22 @@ const SupplierAdd = ({edit,refresh}) => {
             const keys = Object.keys(listItem)
             data.map((x)=>{
                 if(keys.indexOf(x.property_type)>-1){
-                    list[x.property_type] = []
-                list[x?.property_type].push({value:x['id'],label:x['property_value']})}
+                        if(!list[x.property_type]?.length>0)
+                            list[x.property_type] = []
+                        list[x?.property_type].push({value:x['id'],label:x['property_value']})}
                 })
         }
         try{
         let res = await getProperty()
             if(res.success)
                 miniFunct(res?.data)
+        if(!edit){
+            let res2 = await getCode() 
+            if(res2?.success){
+                let cod = res2?.data?.filter(x=>x.sub_id === "SUP")
+                setCode(cod[0]?.next_value)
+            }
+        }
         // let res
         // res = await getCompany()
         // if(res.success) miniFunct(res.data,'company')
@@ -84,28 +121,27 @@ const SupplierAdd = ({edit,refresh}) => {
         }
     }
 
-    const addNewOption = async (e,data,state) =>{
+    const addNewOption = async (e,data,state,editId) =>{
         e.preventDefault()
         let value = data.value
-        let res
         try{
-            let submitData = {[state]:value}
-            switch(state){
-                case 'company':
-                    res = await postCompany(submitData);
-                    setSupplierAdd(data=>({...data,[state]:res.data.id}));break;
-                case 'district':
-                    res = await postDistrict(submitData);
-                    setSupplierAdd(data=>({...data,[state]:res.data.id}));break;
-            }
-            if(res.success){
-                Swal.fire('Options created successfully','','success')
-                getData()
+            let res 
+            if(editId){
+                let submitData = {property_value:data}
+                res = await putProperty(submitData,editId)
             }else{
-                Swal.fire('Failed to created options','','error')
+                let submitData = {property_value:value,property_type:state}
+                res = await postProperty(submitData)
             }
-        }catch(err){
+            if(res.success)
+                setSupplierAdd(data=>({...data,[state]:res.data.id}))
 
+            if(res.success){
+                Swal.fire('Option Added Successfylly','','success')
+            }
+            getData()
+        }catch(err){
+                Swal.fire('Failed to add option','','error')
         }
     }
 
@@ -155,7 +191,7 @@ const SupplierAdd = ({edit,refresh}) => {
     }
     
     return (
-        <div className='item_add'>
+        <div ref={formRef} className='item_add'>
             <div className='item_add_cont'>
                 {edit?"Edit Supplier":"Add New Supplier"}
                 <form onSubmit={handleSubmit} className='item_add_form pt-1 d-flex mt-1'>
@@ -169,7 +205,7 @@ const SupplierAdd = ({edit,refresh}) => {
                                 Code
                             </div>
                             <div className='mx-0 px-0 col-6 col-7'>
-                                <input onChange={handleChange} name='code' value={supplierAdd.code?supplierAdd.code:''} type='text' className='item_input names' />
+                                <input onKeyDown={handleKeyDown} onChange={handleChange} name='code' value={!edit?code?code:'':supplierAdd.code?supplierAdd.code:''} type='text' className='item_input names' />
                             </div>
                         </div>
                         <div className="d-flex align-items-center px-0 row mx-0 my-2">
@@ -177,7 +213,7 @@ const SupplierAdd = ({edit,refresh}) => {
                                 Name
                             </div>
                             <div className='mx-0 px-0 col-6 col-7'>
-                                <input onChange={handleChange} name='name' value={supplierAdd.name?supplierAdd.name:''} type='text' className='item_input names' />
+                                <input onKeyDown={handleKeyDown} onChange={handleChange} name='name' value={supplierAdd.name?supplierAdd.name:''} type='text' className='item_input names' />
                             </div>
                         </div>
                         <div className="d-flex align-items-center px-0 row mx-0 my-2">
@@ -185,7 +221,7 @@ const SupplierAdd = ({edit,refresh}) => {
                                 Address
                             </div>
                             <div className='mx-0 px-0 col-6 col-7'>
-                                <textarea onChange={handleChange} name='address' value={supplierAdd.address?supplierAdd.address:''} rows={4} className='item_input names' />
+                                <textarea onKeyDown={handleKeyDown} onChange={handleChange} name='address' value={supplierAdd.address?supplierAdd.address:''} rows={4} className='item_input names text-area  ms-0' />
                             </div>
                         </div>
                         <div className="d-flex align-items-center px-0 row mx-0 my-2">
@@ -194,7 +230,7 @@ const SupplierAdd = ({edit,refresh}) => {
                                     Post
                                 </div>
                                 <div className='mx-0 px-0 col-7'>
-                                    <input onChange={handleChange} name='post' value={supplierAdd.post?supplierAdd.post:''} type='text' className='item_input names' />
+                                    <input onKeyDown={handleKeyDown} onChange={handleChange} name='post' value={supplierAdd.post?supplierAdd.post:''} type='text' className='item_input names' />
                                 </div>
                             </div>
                             <div className="col-6 col-7 row ps-4 mx-0 px-0">
@@ -202,7 +238,7 @@ const SupplierAdd = ({edit,refresh}) => {
                                     Pin
                                 </div>
                                 <div className='mx-0 px-0 col-7'>
-                                    <input onChange={handleChange} name='pin' value={supplierAdd.pin?supplierAdd.pin:''} type='text' className='item_input names' />
+                                    <input onKeyDown={handleKeyDown} onChange={handleChange} name='pin' value={supplierAdd.pin?supplierAdd.pin:''} type='text' className='item_input names' />
                                 </div>
                             </div>
                         </div>
@@ -212,7 +248,7 @@ const SupplierAdd = ({edit,refresh}) => {
                                     Contact Person
                                 </div>
                                 <div className='mx-0 px-0 col-7'>
-                                    <input onChange={handleChange} name='contact_person' value={supplierAdd.contact_person?supplierAdd.contact_person:''} type='text' className='item_input names' />
+                                    <input onKeyDown={handleKeyDown} onChange={handleChange} name='contact_person' value={supplierAdd.contact_person?supplierAdd.contact_person:''} type='text' className='item_input names' />
                                 </div>
                             </div>
                             <div className="col-6 col-7 row ps-4 mx-0 px-0">
@@ -220,7 +256,7 @@ const SupplierAdd = ({edit,refresh}) => {
                                     PIN Distance
                                 </div>
                                 <div className='mx-0 px-0 col-7'>
-                                    <input onChange={handleChange} name='pin_distance' value={supplierAdd.pin_distance?supplierAdd.pin_distance:''} type='text' className='item_input names' />
+                                    <input onKeyDown={handleKeyDown} onChange={handleChange} name='pin_distance' value={supplierAdd.pin_distance?supplierAdd.pin_distance:''} type='text' className='item_input names' />
                                 </div>
                             </div>
                         </div>
@@ -229,7 +265,7 @@ const SupplierAdd = ({edit,refresh}) => {
                                 Email
                             </div>
                             <div className='mx-0 px-0 col-6 col-7'>
-                                <input onChange={handleChange} name='email' value={supplierAdd.email?supplierAdd.email:''} type='text' className='item_input names' />
+                                <input onKeyDown={handleKeyDown} onChange={handleChange} name='email' value={supplierAdd.email?supplierAdd.email:''} type='text' className='item_input names' />
                             </div>
                         </div>
                         <div className="d-flex align-items-center px-0 row mx-0 my-2">
@@ -237,7 +273,7 @@ const SupplierAdd = ({edit,refresh}) => {
                                 Mob
                             </div>
                             <div className='mx-0 px-0 col-6 col-7'>
-                                <input onChange={handleChange} name='mobile' value={supplierAdd.mobile?supplierAdd.mobile:''} type='text' className='item_input names' />
+                                <input onKeyDown={handleKeyDown} onChange={handleChange} name='mobile' value={supplierAdd.mobile?supplierAdd.mobile:''} type='text' className='item_input names' />
                             </div>
                         </div>
                         <div className="d-flex align-items-center px-0 row mx-0 my-2">
@@ -245,7 +281,7 @@ const SupplierAdd = ({edit,refresh}) => {
                             GSTin/VAT Reg No
                             </div>
                             <div className='mx-0 px-0 col-6 col-7'>
-                                <input onChange={handleChange} name='gst_in' value={supplierAdd.gst_in?supplierAdd.gst_in:''} type='text' className='item_input names' />
+                                <input onKeyDown={handleKeyDown} onChange={handleChange} name='gst_in' value={supplierAdd.gst_in?supplierAdd.gst_in:''} type='text' className='item_input names' />
                             </div>
                         </div>
                             {/* ------------------------------ */}
@@ -254,12 +290,12 @@ const SupplierAdd = ({edit,refresh}) => {
                                 Op Balance
                                 </div>
                                     <div className='mx-0 px-0 col-6 col-7'>
-                                        <div className='item_input row rounded-2 p-0 mx-0 align-items-center'>
+                                        <div className='item_input_with_drop row rounded-2 p-0 mx-0 align-items-center'>
                                             <div className='col-6 col-7 mx-0 px-0 me-0'>
-                                            <input onChange={handleChange} name='opening_balance' value={supplierAdd.opening_balance?supplierAdd.opening_balance:''} type='text' className='item_input names border-0' />
+                                            <input onKeyDown={handleKeyDown} onChange={handleChange} name='opening_balance' value={supplierAdd.opening_balance?supplierAdd.opening_balance:''} type='text' className='item_input names border-0' />
                                             </div>
-                                            <div className='col-6 col-5 mx-0 px-0 pe-1 d-flex'>
-                                            <select onChange={handleChange} name='payment_type' value={supplierAdd.payment_type?supplierAdd.payment_type:''} className='customer-select ms-0 pe-0'>
+                                            <div className='col-6 col-5 m-0 p-0 d-flex '>
+                                            <select onKeyDown={handleKeyDown} onChange={handleChange} name='payment_type' value={supplierAdd.payment_type?supplierAdd.payment_type:''} className='pay-type-select ms-0 pe-0'>
                                                 <option value="TO_GIVE">To Give</option>
                                                 <option value="TO_RECEIVE">To Receive</option>
                                             </select>
@@ -273,7 +309,7 @@ const SupplierAdd = ({edit,refresh}) => {
                                         Disc %
                                     </div>
                                     <div className='mx-0 px-0 col-3 col-4'>
-                                        <input onChange={handleChange} name='disc' value={supplierAdd.disc?supplierAdd.disc:''} type='text' className='item_input names' />
+                                        <input onKeyDown={handleKeyDown} onChange={handleChange} name='disc' value={supplierAdd.disc?supplierAdd.disc:''} type='text' className='item_input names' />
                                     </div>
                             </div>
                             {/* <div className="col-6 col-7 row ps-5 mx-0 px-0">
@@ -281,7 +317,7 @@ const SupplierAdd = ({edit,refresh}) => {
                                     Op.Balance
                                 </div>
                                 <div className='mx-0 px-0 col-7'>
-                                    <input onChange={handleChange} name='opening_balance' value={supplierAdd.opening_balance?supplierAdd.opening_balance:''} type='text' className='item_input names' />
+                                    <input onKeyDown={handleKeyDown} onChange={handleChange} name='opening_balance' value={supplierAdd.opening_balance?supplierAdd.opening_balance:''} type='text' className='item_input names' />
                                 </div>
                             </div> */}
                         {/* <div className="d-flex align-items-center px-0 row mx-0 pe-4 my-2">
@@ -305,9 +341,9 @@ const SupplierAdd = ({edit,refresh}) => {
                                 District
                             </div>
                             <div className='px-0 ps-2 col-8'>
-                                {/* <input type='text' className='item_input names' /> */}
+                                {/* <input onKeyDown={handleKeyDown} type='text' className='item_input names' /> */}
                             <SearchDropDown containerClass="large w-100" id="district" addNew={true}  setNew={addNewOption} options={listItem}
-                            {... { showDropdown, setShowDropdown }} setDataValue={setSupplierAdd} selectedValue={supplierAdd}/>
+                            {... { showDropdown, setShowDropdown, handleKeyDown}} setDataValue={setSupplierAdd} selectedValue={supplierAdd}/>
                             </div>
                         </div>
                         <div className="d-flex align-items-center mx-0 ps-4 pe-3 row my-2">
@@ -315,9 +351,9 @@ const SupplierAdd = ({edit,refresh}) => {
                                 Company
                             </div>
                             <div className='px-0 ps-2 col-8'>
-                                {/* <input type='text' className='item_input names' /> */}
+                                {/* <input onKeyDown={handleKeyDown} type='text' className='item_input names' /> */}
                             <SearchDropDown containerClass="large w-100" id="company" addNew={true}  setNew={addNewOption} options={listItem}
-                            {... { showDropdown, setShowDropdown }} setDataValue={setSupplierAdd} selectedValue={supplierAdd}/>
+                            {... { showDropdown, setShowDropdown, handleKeyDown}} setDataValue={setSupplierAdd} selectedValue={supplierAdd}/>
                             {/* </div> */}
                             </div>
                         </div>
@@ -326,17 +362,17 @@ const SupplierAdd = ({edit,refresh}) => {
                                 Remarks
                             </div>
                             <div className='px-0 ps-2 col-8'>
-                                <textarea onChange={handleChange} name='remark' value={supplierAdd.remark?supplierAdd.remark:''} rows={3} className='item_input names ms-0' />
+                                <textarea onKeyDown={handleKeyDown} onChange={handleChange} name='remark' value={supplierAdd.remark?supplierAdd.remark:''} rows={3} className='item_input names text-area  ms-0' />
                             </div>
                         </div>
                         <div className="d-flex align-items-center row mx-0 ps-4 pe-3 my-2">
                             <div className='mx-0 px-0 col-4 d-flex align-items-center'>
-                                <input type='checkbox' name='Repeat' value='Repeat' />
-                                <label for='Repeat' className='px-2'>Repeat</label>
+                                <input onKeyDown={handleKeyDown} type='checkbox' name='Repeat' value='Repeat' />
+                                <label className='px-2'>Repeat</label>
                             </div>
                             <div className='mx-0 px-0 ps-4 col-8 d-flex align-items-center'>
-                                <input type='checkbox' name='Blocked' value='Blocked' />
-                                <label for='Blocked' className='px-2'>Blocked</label>
+                                <input onKeyDown={handleKeyDown} type='checkbox' name='Blocked' value='Blocked' />
+                                <label className='px-2'>Blocked</label>
                             </div>
                         </div>
                         <div className="bottom-btn-section-2 row px-0 ms-3 mx-0 my-2">

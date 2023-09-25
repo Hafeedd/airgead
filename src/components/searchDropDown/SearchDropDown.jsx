@@ -1,11 +1,10 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { Form, Modal } from 'react-bootstrap'
 import editBtn from '../../assets/icons/edit-black.svg'
-import { Dropdown } from 'primereact/dropdown';
-import 'primereact/resources/themes/lara-light-indigo/theme.css';
-import 'primereact/resources/primereact.css';                       // core css
-// import 'primeicons/primeicons.css';                                 // icons
-// import 'primeflex/primeflex.css';    
+// import { Dropdown } from 'primereact/dropdown';
+// import 'primereact/resources/themes/lara-light-indigo/theme.css';
+// import 'primereact/resources/primereact.css';
+import { Dropdown } from 'semantic-ui-react'
 import './searchDropDown.css'
 
 const SearchDropDown = ({
@@ -13,6 +12,7 @@ const SearchDropDown = ({
     setShowDropdown,
     showDropdown,
     noSearch,
+    defaultSelected,
     handleKeyDown,
     noAdd,
     id,
@@ -97,25 +97,31 @@ const SearchDropDown = ({
     // },[])
 
     useEffect(() => {
-        if(id  == 'transaction_unit' && options['unit']){
-            setTempList([...options['unit'],])
-            if(selectedValue[id]){
-                options['unit']?.map(item=>{
-                    let a = selectedValue[id].toLowerCase()
-                    if(item.label==a){
-                    setSearch(item?.label)
-                    setSelected(item?.label)
-                }
-                })
-            }
-        }else
+        // if(id  == 'transaction_unit' && options['unit']){
+        //     setTempList([...options['unit'],])
+        //     if(selectedValue[id]){
+        //         options['unit']?.map(item=>{
+        //             let a
+        //             if(selectedValue[id] !== '' && typeof selectedValue[id] !== "number")
+        //                 a = selectedValue[id]?.toLowerCase()
+        //             if(item.label==a){
+        //             setSearch(item?.label)
+        //             setSelected(item?.label)
+        //         }
+        //         })
+        //     }
+        // }else
         if(options[id]?.length>0)
                 setTempList([...options[id],])
+                // console.log(selectedValue[id])
         if (selectedValue[id]) {
             options[id]?.map((item)=>{
-                if (item.value==selectedValue[id]){
-                    setSelected(item?.label)
-                    setSearch(item?.label)
+                let a = selectedValue[id]
+                if(typeof a !== 'number')
+                    a = a.toLowerCase()
+                if (item.value==a){
+                    setSelected(item?.text)
+                    setSearch(item?.text)
                 }
             })
         }
@@ -123,7 +129,6 @@ const SearchDropDown = ({
             handleReset()
         }}
     , [selectedValue,options])
- 
     
     // useEffect(() => {
     //     if(options[id]?.length || id == 'transaction_unit'){
@@ -156,9 +161,11 @@ const SearchDropDown = ({
 
 
     const handleSearch = (e) => {
+        if(e.target.value !== "")
+            e.target.value = e.target.value.toUpperCase()
         setSearch(e.target.value)
         setShow(true)
-        var filteredList = options[id]?.filter(item => item?.label?.toLowerCase().search(e.target.value.toLowerCase()) > -1)
+        var filteredList = options[id]?.filter(item => item?.text?.toLowerCase().search(e.target.value.toLowerCase()) > -1)
         setTempList(filteredList)
     }
 
@@ -214,14 +221,17 @@ const SearchDropDown = ({
     //     }
     //   }
 
-    const handleChange = (e) =>{
-        setDataValue(data=>({...data,[id]:e.value}))
+    const handleChange = (e,data) =>{
+        let value = data.value
+        if(value !== "" && typeof value !== "number")
+            value = value.toUpperCase()
+        setDataValue(data=>({...data,[id]:value}))
+        setSelected(value)
     }
 
     const handleEdit = (data) =>{
-        console.log(data)
         setSearch(data.label)
-        setEdit(data.id)
+        setEdit(data.value)
     }
 
     const handleClose = () =>{
@@ -235,13 +245,16 @@ const SearchDropDown = ({
             {/* <div className='align-items-start gap-2 d-flex w-100'> */}
                     <Dropdown
                     placeholder='select'
-                    filter={!noSearch}
-                    editable
                     onChange={handleChange}
                     onKeyDown={handleKeyDown}
-                    value={search}
-                    // onChange={handleChange}
-                    className='drop_input mx-0'
+                    value={selectedValue[id]||''}
+                    // value={defaultSelected&&options[id]?.length>0?
+                    //     options[id][0].value:selectedValue[id]||""}
+                    className='drop_input mx-0' 
+                    fluid
+                    search
+                    clearable
+                    selection
                     options={tempList}
                     />
                     {!noAdd&&<div
@@ -262,15 +275,15 @@ const SearchDropDown = ({
                         <div className='px-4 pt-1 w-100'>
                              <div className='position-relative align-items-center d-flex mt-2'>
                                 <input onChange={handleSearch} placeholder='Add category here' type='text'
-                                 className='item_input height ms-0 position-relative' value={search}/>
-                                <div onClick={handleNewOption} className='btn drop-add-btn py-0'>{edit?"Edit":"Add"}</div>
+                                 className='item_input height ms-0 position-relative' value={search||''}/>
+                                <div onClick={handleNewOption} className='btn drop-add-btn'>{edit!==false?"Edit":"Add"}</div>
                             </div>
                             <div className='dropdown-add-items rounded-2 p-2 pb-1 mt-4'>
                                 {tempList?.length>0?
-                                tempList.map((item)=>(
+                                tempList.map((item,i)=>(
 
-                                    <div className='dropdown-add-item ms-0 mb-2 p-1 px-2'>
-                                    {item.label}<img onClick={()=>handleEdit(item)} className='cursor' src={editBtn}/></div>                        
+                                    <div key={i} className='dropdown-add-item ms-0 mb-2 p-1 px-2'>
+                                    {item.text}<img onClick={()=>handleEdit(item)} className='cursor' src={editBtn}/></div>                        
                                         )
                                 ):<div className='dropdown-add-item ms-0 mb-2 p-1 px-2'>No Item Added yet</div>}
                             </div>

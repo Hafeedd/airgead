@@ -13,7 +13,9 @@ const editBtn = (
 export const ItemAddForm = ({edit,refresh}) =>{
 
     const [showDropdown, setShowDropdown] = useState('')
-    const typesOptions = [{label:"PRODUCT",value:"PRODUCT"},{label:"RAW MATERIAL",value:"RAW MATERIAL"},{label:"SERVICE",value:"SERVICE"}]
+    const typesOptions = [{text:"PRODUCT",value:"PRODUCT"},{text:"RAW MATERIAL",value:"RAW MATERIAL"},{text:"SERVICE",value:"SERVICE"}]
+    const rentOptions = [{text:"HOUR",value:"HOUR"},{text:"MONTH",value:"MONTH"}]
+    const [code, setCode] = useState(null)
     const [unitConvShow, setUnitConvShow] = useState(false)
     const [unitEdit, setUnitEdit] = useState(false)
     const [loading, setLoading] = useState(false)
@@ -38,7 +40,7 @@ export const ItemAddForm = ({edit,refresh}) =>{
     const [listItem,setListItem] = useState({
         second_name:[],
         types:typesOptions,
-        rent_type:[{label:"HOUR",value:"HOUR"},{label:"MONTH",value:"MONTH"}],
+        rent_type:[{text:"HOUR",value:"HOUR"},{text:"MONTH",value:"MONTH"}],
         category:[],
         sub_category:[],
         company:[],
@@ -48,7 +50,10 @@ export const ItemAddForm = ({edit,refresh}) =>{
         tax_group:[],
         rack:[],
         unit:[],
+        transaction_unit:[],
+        rent_type:[]
     })
+
     const [itemadd,setItemAdd] = useState({
         code:null,
         hsn:null,
@@ -96,10 +101,17 @@ export const ItemAddForm = ({edit,refresh}) =>{
         gate_pass:false,
         barcode:null,
     })
+    
+    useEffect(()=>{
+        if(listItem?.unit?.length>0 && listItem?.transaction_unit?.length>0 && !edit){
+            setItemAdd(item=>({...item,['unit']:listItem?.unit[0]?.value,
+            ['transaction_unit']:listItem?.transaction_unit[0]?.value}))
+        }
+    },[listItem])
 
     const {
         getProperty,postProperty,
-        putProperty,
+        putProperty,getCode,
         postBarcode,postUnit,
         postRack,postTaxGroup,
         postGroup,postColor,
@@ -122,12 +134,12 @@ export const ItemAddForm = ({edit,refresh}) =>{
 
     const getRefValue = (ref,set) =>{
     const data = [...ref.current.children]
-    const newList = [...data[0].querySelectorAll("input, select")]
+    const newList = [...data[0].querySelectorAll('input, select, textarea')]
     newList[0].focus()
         set(newList)
     }
 
-    const handleKeyDown = (e,callback) => {
+    const handleKeyDown = (e) => {
         if (e.key === "Enter") {
             e.preventDefault();
             if (e.target && ref.length>0) {
@@ -137,18 +149,13 @@ export const ItemAddForm = ({edit,refresh}) =>{
                 }else{
                 ref[a].blur()
                 ref[a+1].focus();
-
             }
             }
         }
     };
 
     useEffect(()=>{
-        setLoading(true)
         getData();
-        setTimeout(() => {
-            setLoading(false)
-        }, 100);
     },[])
 
     useEffect(()=>{
@@ -184,6 +191,7 @@ export const ItemAddForm = ({edit,refresh}) =>{
                 })
                 b.push(r)
                 })
+                console.log(b)
                 setBarcode(...b)
             }
             keys.map((key)=>{
@@ -200,7 +208,7 @@ export const ItemAddForm = ({edit,refresh}) =>{
         }else{
             handleReset()
         }
-    },[edit ])
+    },[edit])
 
     // console.log(listItem)
 
@@ -210,14 +218,28 @@ export const ItemAddForm = ({edit,refresh}) =>{
             const keys = Object.keys(listItem)
             data.map((x)=>{
                 if(keys.indexOf(x.property_type)>-1){
-                    list[x.property_type] = []
-                list[x?.property_type].push({value:x['id'],label:x['property_value']})}
+                    if(!list[x.property_type]?.length>0){
+                        list[x.property_type] = []
+                        if(x.property_type === 'unit'){
+                            list['transaction_unit'] = []
+                        }
+                    }
+                    if(x.property_type === 'unit')
+                        list['transaction_unit'].push({value:x['property_value'],text:x['property_value']})
+                    list[x?.property_type].push({value:x['id'],text:x['property_value']})}
                 })
         }
         try{
         let res = await getProperty()
-            if(res.success)
+            if(res?.success)
                 miniFunct(res?.data)
+        if(!edit){
+            let res2 = await getCode() 
+            if(res2?.success){
+                let cod = res2?.data?.filter(x=>x.sub_id === "ITM")
+                setCode(cod[0]?.next_value)
+            }
+        }
             
         // res = await getSecondName()
         // if(res.success) miniFunct(res.data,'second_name')
@@ -243,8 +265,9 @@ export const ItemAddForm = ({edit,refresh}) =>{
         // if(res.success) miniFunct(res.data,'unit')
         // res = await getBarcode()
         // if(res.success) miniFunct(res.data,'transaction_unit')
+        // console.log(list)
         list.types=typesOptions
-        console.log(list)
+        list.rent_type=rentOptions
         setListItem(list)
         }catch(err){
             // console.log(err)
@@ -290,7 +313,7 @@ export const ItemAddForm = ({edit,refresh}) =>{
             }catch (err){
 
             }
-        }else if(edit && x.length>3){
+        }else if(edit && x.length>3 && !barcodeShow){
             try{
                 const data = {qty:unitConv.U_qty,unit:unitConv.U_unit,rate:unitConv.U_rate,mrp:unitConv.U_mrp}
                 let res = await postUnitConvertion(edit.id,data)
@@ -316,16 +339,18 @@ export const ItemAddForm = ({edit,refresh}) =>{
         else if(barcodeShow){
             setBarcodeShow(false)
         }
+        setUnitConvShow(false)
     }
 
-    const addOption = async (e,data,state,edit) =>{
+    const addOption = async (e,data,state,editid) =>{
         e.preventDefault()
         let value = data.value
         try{
             let res 
-            if(edit){
-                let submitData = {property_value:value}
-                res = await putProperty(submitData,edit)
+            console.log(editid)
+            if(editid){
+                let submitData = {property_value:data}
+                res = await putProperty(submitData,editid)
             }else{
                 let submitData = {property_value:value,property_type:state}
                 res = await postProperty(submitData)
@@ -346,7 +371,6 @@ export const ItemAddForm = ({edit,refresh}) =>{
         e.preventDefault()
         try{
             let submitData = itemadd
-            console.log("first")
             let res, res2 = 1, res3 = 1
             const names = ['second_name','category','sub_category','company','size','color','group','tax_group','godown_rack','unit','purchase']
             let data = handleChangeFk(names,submitData)
@@ -357,7 +381,9 @@ export const ItemAddForm = ({edit,refresh}) =>{
             }
             if(res?.success){
                 let barcodeCheck = Object.values(barcode)
-                if(barcodeCheck?.length>4 && !edit && res.data.id){
+                console.log(barcodeCheck)
+                console.log(edit && barcode.B_id)
+                if(barcodeCheck?.length>3 && res.data.id && ((edit && !barcode.B_id) || !edit)){
                     const data = {code:barcode.B_code,mrp:barcode.B_mrp,retail_rate:barcode.B_rate,expiry:barcode.B_expiry}
                     res3 = await postBarcode(res.data.id,data)
                 }else if(res?.success && edit && barcode.B_id){
@@ -386,7 +412,6 @@ export const ItemAddForm = ({edit,refresh}) =>{
             Swal.fire(res?.data[0],'','error')
         }catch(err){
             let a = Object.keys(err?.response?.data.data)
-            console.log(a)
             Swal.fire(a[0] +` ${err?.response?.data?.data[a[0]][0]}`,'','error')
         }
     }
@@ -398,7 +423,7 @@ export const ItemAddForm = ({edit,refresh}) =>{
             submitData['fk_'+x] = submitData[x]
             delete submitData[x]
         })
-        console.log(submitData)
+        // console.log(submitData)
         return submitData
     }
 
@@ -443,7 +468,7 @@ export const ItemAddForm = ({edit,refresh}) =>{
     return(
         <form onSubmit={handleSubmit} ref={formRef} className={`item_add_cont`}>
                 {edit?"Edit Items":"Add New Item"}
-                <div className={`item_add_form pt-1 d-flex mt-1 ${loading && "d-none"}`}>
+                <div className={`item_add_form pt-1 d-flex mt-1`}>
 
             {/* item details --------------------------------------------------------------------------------------- */}
 
@@ -454,8 +479,8 @@ export const ItemAddForm = ({edit,refresh}) =>{
                     <div className='item_inputs d-flex mx-0 px-0 col-6'>
                         <div className="col-4 px-0">Code*</div>
                         <div className="col-8 px-0">
-                    <input onKeyDown={handleKeyDown} required type='number' className='item_input'
-                        value={itemadd.code?itemadd.code:''} name='code' onChange={handleChange}/>
+                    <input onKeyDown={handleKeyDown} required type='text' className='item_input'
+                        value={!edit?code?code:'':itemadd.code?itemadd.code:''} name='code' onChange={handleChange}/>
                     </div>
                         </div>
                     <div className='item_inputs d-flex px-0 col-6 align-itmes-end'>
@@ -550,14 +575,14 @@ export const ItemAddForm = ({edit,refresh}) =>{
                     <div className='item_inputs d-flex pt-2 px-0'>
                         <div className='col-6'>Stock Unit*</div>
                         <div className='col-6 px-0'>
-                        <SearchDropDown required id="unit" addNew={true} setNew={addOption} options={listItem}
+                        <SearchDropDown required id="unit" addNew={true} defaultSelected setNew={addOption} options={listItem}
                             {... { showDropdown, setShowDropdown, handleKeyDown }} setDataValue={setItemAdd} selectedValue={itemadd}/>
                         </div>
                     </div>
                     <div className='item_inputs d-flex pt-2 px-0'>
                         <div className='col-6'>Transaction Unit*</div>
                         <div className='col-6 px-0'>
-                        <SearchDropDown required id="transaction_unit" noAdd={true}  setNew={addOption} options={listItem}
+                        <SearchDropDown required id="transaction_unit" noAdd={true} defaultSelected setNew={addOption} options={listItem}
                             {... { showDropdown, setShowDropdown, handleKeyDown }} setDataValue={setItemAdd} selectedValue={itemadd}/>
                         </div>
                     </div>
@@ -568,22 +593,22 @@ export const ItemAddForm = ({edit,refresh}) =>{
                 <div className='item_add_form_part2 row mx-0 px-0 me-0 col-6 border-0'>
 
                 <div className="item_add_first_row d-flex justify-content-between px-0 row mx-0 pt-2">
-                    <div className='item_inputs right d-flex mx-0 px-0 col-6'>MRP*
-                    <input onKeyDown={handleKeyDown} value={itemadd.mrp_rate?itemadd.mrp_rate:''} required type='number' className='item_input col-6 col-7'
+                    <div className='item_inputs right d-flex mx-0 px-0 col-6'>MRP
+                    <input onKeyDown={handleKeyDown} value={itemadd.mrp_rate?itemadd.mrp_rate:''}  type='number' className='item_input col-6 col-7'
                     name='mrp_rate' onChange={handleChange}/>
                     </div>
-                    <div className='item_inputs right d-flex px-0 col-6 '>Ret. Rate*
-                    <input onKeyDown={handleKeyDown} value={itemadd.retail_rate?itemadd.retail_rate:''} required type='number' className='item_input col-6 col-7'
+                    <div className='item_inputs right d-flex px-0 col-6 '>Ret. Rate
+                    <input onKeyDown={handleKeyDown} value={itemadd.retail_rate?itemadd.retail_rate:''}  type='number' className='item_input col-6 col-7'
                     name='retail_rate' onChange={handleChange}/>
                     </div>
                     </div>
                 <div className="item_add_first_row px-0 row mx-0 pt-2">
-                    <div className='item_inputs right d-flex mx-0 px-0 col-6'>WS*
-                    <input onKeyDown={handleKeyDown} value={itemadd.wholesale_rate?itemadd.wholesale_rate:''} required type='number' className='item_input col-6 col-7'
+                    <div className='item_inputs right d-flex mx-0 px-0 col-6'>WS
+                    <input onKeyDown={handleKeyDown} value={itemadd.wholesale_rate?itemadd.wholesale_rate:''}  type='number' className='item_input col-6 col-7'
                     name='wholesale_rate' onChange={handleChange}/>
                     </div>
-                    <div className='item_inputs right d-flex px-0 col-6 '>SWS. Rate*
-                    <input onKeyDown={handleKeyDown} value={itemadd.super_wholesale_rate?itemadd.super_wholesale_rate:''} required type='number' className='item_input col-6 col-7'
+                    <div className='item_inputs right d-flex px-0 col-6 '>SWS. Rate
+                    <input onKeyDown={handleKeyDown} value={itemadd.super_wholesale_rate?itemadd.super_wholesale_rate:''}  type='number' className='item_input col-6 col-7'
                     name='super_wholesale_rate' onChange={handleChange}/>
                     </div>
                     </div>
@@ -598,22 +623,22 @@ export const ItemAddForm = ({edit,refresh}) =>{
                     </div>
                     </div>
                 <div className="item_add_first_row px-0 row mx-0 pt-2">
-                    <div className='item_inputs right d-flex mx-0 px-0 col-6'>P.Rate*
-                    <input onKeyDown={handleKeyDown} value={itemadd.purchase_rate?itemadd.purchase_rate:''} required type='number' className='item_input col-6 col-7'
+                    <div className='item_inputs right d-flex mx-0 px-0 col-6'>P.Rate
+                    <input onKeyDown={handleKeyDown} value={itemadd.purchase_rate?itemadd.purchase_rate:''}  type='number' className='item_input col-6 col-7'
                     name='purchase_rate' onChange={handleChange}/>
                     </div>
-                    <div className='item_inputs right d-flex px-0 col-6 '>Cost*
-                    <input value={itemadd.cost} required type='number' className='item_input col-6 col-7'
+                    <div className='item_inputs right d-flex px-0 col-6 '>Cost
+                    <input onKeyDown={handleKeyDown} value={itemadd.cost||''}  type='number' className='item_input col-6 col-7'
                     name='cost' onChange={handleChange}/>
                     </div>
                     </div>
                 <div className="item_add_first_row px-0 row mx-0 pt-2">
-                    <div className='item_inputs right d-flex mx-0 px-0 col-6'>Margin %*
-                    <input onKeyDown={handleKeyDown} value={itemadd.margin?itemadd.margin:''} required type='number' className='item_input col-6 col-7'
+                    <div className='item_inputs right d-flex mx-0 px-0 col-6'>Margin %
+                    <input onKeyDown={handleKeyDown} value={itemadd.margin?itemadd.margin:''}  type='number' className='item_input col-6 col-7'
                     name='margin' onChange={handleChange}/>
                     </div>
-                    <div className='item_inputs right d-flex px-0 col-6 '>Tax/ GST*
-                    <input onKeyDown={handleKeyDown} value={itemadd.tax_gst?itemadd.tax_gst:''} required type='number' className='item_input col-6 col-7'
+                    <div className='item_inputs right d-flex px-0 col-6 '>Tax/ GST
+                    <input onKeyDown={handleKeyDown} value={itemadd.tax_gst?itemadd.tax_gst:''}  type='number' className='item_input col-6 col-7'
                     name='tax_gst' onChange={handleChange}/>
                     </div>
                     </div>
@@ -662,8 +687,8 @@ export const ItemAddForm = ({edit,refresh}) =>{
                     <input onKeyDown={handleKeyDown} value={itemadd.qty_in_bc?itemadd.qty_in_bc:''} type='number' className='item_input col-6 col-7'
                     name='qty_in_bc' onChange={handleChange}/>
                     </div>
-                    <div className='item_inputs right d-flex px-0 col-6 '>Op. Stock*
-                    <input onKeyDown={handleKeyDown} value={itemadd.open_stock?itemadd.open_stock:''} required type='number' className='item_input col-6 col-7'
+                    <div className='item_inputs right d-flex px-0 col-6 '>Op. Stock
+                    <input onKeyDown={handleKeyDown} value={itemadd.open_stock?itemadd.open_stock:''}  type='number' className='item_input col-6 col-7'
                     name='open_stock' onChange={handleChange}/>
                     </div>
                     </div>
@@ -682,16 +707,21 @@ export const ItemAddForm = ({edit,refresh}) =>{
                     <input onKeyDown={handleKeyDown} value={itemadd.role?itemadd.role:''} type='number' className='item_input col-6 col-7'
                     name='role' onChange={handleChange}/>
                     </div>
-                    <div className='item_inputs right d-flex px-0 col-6 '>Rent Type
+                    {/* <div className='item_inputs right d-flex px-0 col-6 '>Rent Type
                     <select onKeyDown={handleKeyDown} select={itemadd.rent_type} type='select' className='item_input col-6 col-7 py-1'
                     name='rent_type' onChange={handleChange}>
                     <option value=''>SELECT</option>
                     <option value='HOUR'>HOUR</option>
                     <option value='MONTH'>MONTH</option>
                     </select>
+                    </div> */}
+                    <div className='item_inputs right d-flex mx-0 px-0 col-6'>Role
+                    <div className='col-6 col-7'>
+                        <SearchDropDown id="rent_type" addNew={true} setNew={addOption} options={listItem} noAdd={true}
+                            {... { showDropdown, setShowDropdown, handleKeyDown }} setDataValue={setItemAdd} selectedValue={itemadd}/>
+                            </div>
+                        </div>
                     </div>
-                    </div>
-
                 </div>
 
                 </div>
@@ -735,7 +765,7 @@ export const ItemAddForm = ({edit,refresh}) =>{
             </div>
                 <div className='d-flex gap-2 justify-content-end pt-2'>
                     <button type='reset' onClick={handleReset} className='clear_btn btn'>Clear</button>
-                    <button type='submit' className='save_btn btn'>Submit</button>
+                    <button type='submit' className='save_btn btn'>{edit?"Update":"Submit"}</button>
                 </div>
                 <Modal
                 contentClassName="unit_modal px-3 bg-dark"
@@ -767,7 +797,7 @@ export const ItemAddForm = ({edit,refresh}) =>{
                                                 {!barcodeShow?<select type='select' onChange={handleChange} value={unitConv?.U_unit||''} className='unit_select py-2 text-light w-100' name='U_unit'>
                                                     <option value={null}>Select</option>
                                                     {listItem?.unit?.length>0&&
-                                                    listItem.unit.map((data,index)=><option key={index} value={data.label}>{data.label}</option>)}
+                                                    listItem?.unit?.map((data,index)=><option key={index} value={data.text}>{data.text}</option>)}
                                                 </select>:
                                                 <input onKeyDown={handleKeyDown} onChange={handleChange} name='B_mrp' value={barcode.B_mrp} type='number' className='w-100 text-light'/>}
                                             </td>

@@ -108,6 +108,12 @@ const useItemServices = () =>{
         return response.data
     }
 
+    //code
+    const getCode = async () =>{
+        const response = await axiosPrivate.get('master/code/created/')
+        return response.data
+    }
+
     // api for listing options and get request -----------------------------------------------------------
 
     // second name
@@ -253,6 +259,7 @@ const useItemServices = () =>{
         postSecondName,
 
         // get
+        getCode,
         getProperty,
         getItemNameList,
         getBarcode,

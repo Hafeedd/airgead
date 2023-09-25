@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import Swal from 'sweetalert2'
 import deleteBtn from "../../../assets/icons/delete-white.svg"
 import useCustomerServices from '../../../services/master/customerServices'
@@ -10,10 +10,12 @@ const CustomerAddForm = ({edit,refresh}) =>{
 
     const [showDropdown, setShowDropdown ] = useState(1)
     const [showRates, setShowRates] = useState(false)
-    const [customer, setCustomer] = useState([])
+    const [code, setCode] = useState(null)
     const [ratesEdit, setRatesEdit] = useState(false)
     const [ratesTempList, setRatesTempList] = useState([])
     const [itemNameList, setItemNameList] = useState([])
+    const [ref, setRef] = useState()
+    const formRef = useRef(null)
     const [rates, setRates] = useState({
         R_item:null,
         R_wsRate:null,
@@ -27,7 +29,7 @@ const CustomerAddForm = ({edit,refresh}) =>{
         city:[],
         town:[],
         types:[],
-        rate_types:[{label:"MRP",value:"MRP"},{label:"RET_RATE",value:"RET_RATE"},{label:"WS_RATE",value:"WS_RATE"},{label:"SWS_RATE",value:"SWS_RATE"},{label:"QTN_RATE",value:"QTN_RATE"},{label:"RENT_RATE",value:"RENT_RATE"}],
+        rate_types:[{text:"MRP",value:"MRP"},{text:"RET_RATE",value:"RET_RATE"},{text:"WS_RATE",value:"WS_RATE"},{text:"SWS_RATE",value:"SWS_RATE"},{text:"QTN_RATE",value:"QTN_RATE"},{text:"RENT_RATE",value:"RENT_RATE"}],
         bill_types:[],
     })
 
@@ -82,7 +84,7 @@ const CustomerAddForm = ({edit,refresh}) =>{
         deleteCustomer,
     } = useCustomerServices()
 
-    const {getProperty,postProperty} = useItemServices()
+    const {getProperty,postProperty,getCode} = useItemServices()
 
     const {
         getItemNameList,
@@ -111,6 +113,33 @@ const CustomerAddForm = ({edit,refresh}) =>{
         }
     },[edit, ])
 
+    useEffect(()=>{
+        if(formRef.current) getRefValue(formRef,setRef)
+        }
+    ,[formRef])
+
+    const getRefValue = (ref,set) =>{
+        const data = [...ref.current.children]
+        const newList = [...data[0].querySelectorAll('input, select, textarea')]
+        newList[0].focus()
+            set(newList)
+    }
+
+    const handleKeyDown = (e) => {
+        if (e.key === "Enter") {
+            e.preventDefault();
+            if (e.target && ref.length>0) {
+                let a = ref.indexOf(e.target)
+                if(a===ref.length-1){
+                    ref[0].focus()
+                }else{
+                ref[a].blur()
+                ref[a+1].focus();
+            }
+            }
+        }
+    };
+
     const handleRatesClear = () =>{
         let x = Object.keys(rates)
         x.map(key=>{
@@ -119,10 +148,8 @@ const CustomerAddForm = ({edit,refresh}) =>{
     }
 
     const addToList = async () =>{
-        console.log(rates)
         let valuesOfRates = Object.values(rates)
         let valueCheck = valuesOfRates.filter(x=>x!==null&&x!=='')
-        // console.log(valueCheck)
         if(ratesEdit && valuesOfRates.length>3){
             try{
                 const data = {fk_item:rates.R_id,wholesale_rate:rates.R_wsRate,retail_rate:rates.R_rtRate,mrp:rates.R_mrp}
@@ -130,8 +157,6 @@ const CustomerAddForm = ({edit,refresh}) =>{
                 if(res.success){
                     refresh()
                     handleRatesClear()
-                    // unitConvShow(false)
-                    // setUnitEdit(false)
                 }else{
                     
                 }
@@ -155,7 +180,7 @@ const CustomerAddForm = ({edit,refresh}) =>{
         data.map(item=>{
             item['value'] = item.id
             delete item.id
-            item['label'] = item.name
+            item['text'] = item.name
             delete item.name
             tempList.push(item)
         })
@@ -169,15 +194,22 @@ const CustomerAddForm = ({edit,refresh}) =>{
             data.map((x)=>{
                 if(keys.indexOf(x.property_type)>-1){
                     list[x.property_type] = []
-                list[x?.property_type].push({value:x['id'],label:x['property_value']})}
+                list[x?.property_type].push({value:x['id'],text:x['property_value']})}
                 })
         }
         try{
             let res = await getProperty()
             if(res.success)
                 miniFunct(res?.data)
-        // res = await getItemNameList()
-        // if(res.success) setItemNameListState(res.data)
+        res = await getItemNameList()
+        if(res.success) setItemNameListState(res.data)
+        if(!edit){
+            let res2 = await getCode() 
+            if(res2?.success){
+                let cod = res2?.data?.filter(x=>x.sub_id === "CUST")
+                setCode(cod[0]?.next_value)
+            }
+        }
         // res = await getDistrict()
         // if(res.success) miniFunct(res.data,'district')
         // res = await getRoute()
@@ -192,7 +224,6 @@ const CustomerAddForm = ({edit,refresh}) =>{
         // if(res.success) miniFunct(res.data,'rate_types')
         // res = await getBillType()
         // if(res.success) miniFunct(res.data,'bill_types')
-        if(Object.keys(list).length !==0)
             setLisItem(list)
         }catch(err){
             // console.log(err)
@@ -205,19 +236,21 @@ const CustomerAddForm = ({edit,refresh}) =>{
         try{
             let submitData = {property_value:value,property_type:state}
             let res = await postProperty(submitData)
-            if(res.success)
+            if(res?.success){
                 setCustomerAdd(data=>({...data,[state]:res.data.id}))
-                if(res.success){
-                    Swal.fire('Option Added Successfylly','','success')
-                }
-                getData()
+                Swal.fire('Option Added Successfylly','','success')
+            }else{
+                Swal.fire(res?.message,'','error')
+            }
+            getData()
         }catch(err){
-                Swal.fire('Failed to add option','','error')
+                Swal.fire(err?.response?.data?.message,'','error')
         }
         }
 
     const handleSubmit = async (e) =>{
         e.preventDefault()
+        console.log(customerAdd)
         try{
             let submitData = customerAdd
             const names = ['district','route','city','town','bill_types','types']
@@ -228,7 +261,7 @@ const CustomerAddForm = ({edit,refresh}) =>{
             }else{
                 res = await postCustomer(data)
             }
-            if(res.success && !edit){
+            if(res.success && (!edit||(edit&& !rates.R_id))){
                 if(ratesTempList.length>0){
                     ratesTempList.map(async x=>{
                         const data = {fk_item:x.R_id,wholesale_rate:x.R_wsRate,retail_rate:x.R_rtRate,mrp:x.R_mrp}
@@ -244,10 +277,12 @@ const CustomerAddForm = ({edit,refresh}) =>{
                     await deleteCustomer(res?.data?.id)
                 }
             }else if(res?.success && !edit){
-                Swal.fire(res?.message,'','error')
+                const errkey = Object.keys(res.data)
+                Swal.fire(res?.data[errkey[0]],'','error')
             }
         }catch(err){
-            Swal.fire('Something went wrong pls try again','','error')
+            const errkey = Object.keys(err.response.data.data)
+            Swal.fire(err.response.data.data[errkey[0]][0],'','error')
         }
     }
 
@@ -276,17 +311,11 @@ const CustomerAddForm = ({edit,refresh}) =>{
                 else{
                         if(e.target.name === 'R_item' && e.target.value !== null){
                             itemNameList.forEach(obj=>{
-                                console.log(obj)
-                                console.log(e.target.value)
                                 if(obj.value==e.target.value){
-                                    setRates(data => ( {...data,  [e.target.name] : obj.label , ['R_id']:e.target.value} ))
+                                    setRates(data => ( {...data,  [e.target.name] : obj.text , ['R_id']:e.target.value} ))
                                 }
                             })
                         }
-                //     let a = JSON.parse(e.target.value)
-                //     setRates(data => ( {...data,[e.target.name] : a.label,['R_id']:a.value} ))
-                //     // setRates(data => ( {...data,  [e.target.name] :a[0]} ))
-                //     // setRates(data => ( {...data,  ['R_id'] : a[1]} ))
                     else{
                         setRates(data => ( {...data,  [e.target.name] : e.target.value} ))
                     }
@@ -300,9 +329,19 @@ const CustomerAddForm = ({edit,refresh}) =>{
         }
     }
 
+    const handleEditRates = (e,data) =>{
+        setRates(data)
+        setRatesEdit(data.U_id)
+    }
+
+    const handleRatesClose = () =>{
+        setShowRates(false)
+        handleRatesClear()
+    }
+
     return(
-        <form onSubmit={handleSubmit} className='item_add_cont'>
-            Add New Customer
+        <form ref={formRef} onSubmit={handleSubmit} className='item_add_cont'>
+            {edit?"Edit Customer":"Add New Customer"}
             <div className='item_add_form pt-1 d-flex mt-1'>
 
                 {/* item details --------------------------------------------------------------------------------------- */}
@@ -314,7 +353,7 @@ const CustomerAddForm = ({edit,refresh}) =>{
                             Code
                         </div>
                         <div className='mx-0 px-0 col-6 col-7'>
-                            <input onChange={handleChange} name="code" value={customerAdd.code||''} type='text' required className='item_input names' />
+                            <input onKeyDown={handleKeyDown} onChange={handleChange} name="code" value={!edit?code?code:customerAdd.code:''} type='text' required className='item_input names' />
                         </div>
                     </div>
                     <div className="d-flex align-items-center ps-0 row mx-0 my-2">
@@ -322,7 +361,7 @@ const CustomerAddForm = ({edit,refresh}) =>{
                             Name
                         </div>
                         <div className='mx-0 px-0 col-6 col-7'>
-                            <input onChange={handleChange} name="name" value={customerAdd.name||''} type='text' required className='item_input names' />
+                            <input onKeyDown={handleKeyDown} onChange={handleChange} name="name" value={customerAdd.name||''} type='text' required className='item_input names' />
                         </div>
                     </div>
                     <div className="d-flex align-items-center ps-0 row mx-0 my-2">
@@ -330,7 +369,7 @@ const CustomerAddForm = ({edit,refresh}) =>{
                             Address
                         </div>
                         <div className='mx-0 px-0 col-6 col-7'>
-                            <textarea onChange={handleChange} name='address' value={customerAdd.address||''}  rows={4} className='item_input names' />
+                            <textarea onKeyDown={handleKeyDown} onChange={handleChange} name='address' value={customerAdd.address||''}  rows={4} className='item_input text-area names' />
                         </div>
                     </div>
                     <div className="d-flex align-items-center ps-0 row mx-0 my-2">
@@ -339,7 +378,7 @@ const CustomerAddForm = ({edit,refresh}) =>{
                                 Post
                             </div>
                             <div className='mx-0 px-0 col-7'>
-                                <input onChange={handleChange} name="post" value={customerAdd.post||''} type='text' className='item_input names' />
+                                <input onKeyDown={handleKeyDown} onChange={handleChange} name="post" value={customerAdd.post||''} type='text' className='item_input names' />
                             </div>
                         </div>
                         <div className="col-6 col-7 row ps-5 mx-0 px-0">
@@ -347,7 +386,7 @@ const CustomerAddForm = ({edit,refresh}) =>{
                                 Pin
                             </div>
                             <div className='mx-0 px-0 col-7'>
-                                <input onChange={handleChange} name="pin" value={customerAdd.pin||''} type='text' className='item_input names' />
+                                <input onKeyDown={handleKeyDown} onChange={handleChange} name="pin" value={customerAdd.pin||''} type='text' className='item_input names' />
                             </div>
                         </div>
                     </div>
@@ -357,7 +396,7 @@ const CustomerAddForm = ({edit,refresh}) =>{
                                 Contact Person
                             </div>
                             <div className='mx-0 px-0 col-7'>
-                                <input onChange={handleChange} name="contact_person" value={customerAdd.contact_person||''} type='text' className='item_input names' />
+                                <input onKeyDown={handleKeyDown} onChange={handleChange} name="contact_person" value={customerAdd.contact_person||''} type='text' className='item_input names' />
                             </div>
                         </div>
                         <div className="col-6 col-7 row ps-5 mx-0 px-0">
@@ -365,7 +404,7 @@ const CustomerAddForm = ({edit,refresh}) =>{
                                 PIN Distance
                             </div>
                             <div className='mx-0 px-0 col-7'>
-                                <input onChange={handleChange} name="pin_distance" value={customerAdd.pin_distance||''} type='text' className='item_input names' />
+                                <input onKeyDown={handleKeyDown} onChange={handleChange} name="pin_distance" value={customerAdd.pin_distance||''} type='text' className='item_input names' />
                             </div>
                         </div>
                     </div>
@@ -374,7 +413,7 @@ const CustomerAddForm = ({edit,refresh}) =>{
                             Email
                         </div>
                         <div className='mx-0 px-0 col-6 col-7'>
-                            <input onChange={handleChange} name="email" value={customerAdd.email||''} type='text' className='text-lowercase item_input names' />
+                            <input onKeyDown={handleKeyDown} onChange={handleChange} name="email" value={customerAdd.email||''} type='text' className='text-lowercase item_input names' />
                         </div>
                     </div>
                     <div className="d-flex align-items-center ps-0 row mx-0 my-2">
@@ -382,7 +421,7 @@ const CustomerAddForm = ({edit,refresh}) =>{
                             Mob
                         </div>
                         <div className='mx-0 px-0 col-6 col-7'>
-                            <input onChange={handleChange} name="mobile" value={customerAdd.mobile||''} type='number' className='item_input names' />
+                            <input onKeyDown={handleKeyDown} onChange={handleChange} name="mobile" value={customerAdd.mobile||''} type='number' className='item_input names' />
                         </div>
                     </div>
                     <div className="d-flex align-items-center ps-0 row mx-0 my-2">
@@ -390,7 +429,7 @@ const CustomerAddForm = ({edit,refresh}) =>{
                             Alt Mob
                         </div>
                         <div className='mx-0 px-0 col-6 col-7'>
-                            <input onChange={handleChange} name="alt_mobile" value={customerAdd.alt_mobile||''} type='number' className='item_input names' />
+                            <input onKeyDown={handleKeyDown} onChange={handleChange} name="alt_mobile" value={customerAdd.alt_mobile||''} type='number' className='item_input names' />
                         </div>
                     </div>
                     <div className="d-flex align-items-center ps-0 row mx-0 my-2">
@@ -398,7 +437,7 @@ const CustomerAddForm = ({edit,refresh}) =>{
                             GSTin
                         </div>
                         <div className='mx-0 px-0 col-6 col-7'>
-                            <input onChange={handleChange} name="gst_in" value={customerAdd.gst_in||''} type='text' className='item_input names' />
+                            <input onKeyDown={handleKeyDown} onChange={handleChange} name="gst_in" value={customerAdd.gst_in||''} type='text' className='item_input names' />
                         </div>
                     </div>
                     {/* <div className="d-flex align-items-center ps-0 row mx-0 my-2">
@@ -406,7 +445,7 @@ const CustomerAddForm = ({edit,refresh}) =>{
                             GSTin
                         </div>
                         <div className='mx-0 px-0 col-6 col-7'>
-                            <input onChange={handleChange} name=""type= value={customerAdd.type||''} 'text' className='item_input names' />
+                            <input onKeyDown={handleKeyDown} onChange={handleChange} name=""type= value={customerAdd.type||''} 'text' className='item_input names' />
                         </div>
                     </div> */}
                     {/* <div className="d-flex align-items-center ps-0 row mx-0 my-2">
@@ -415,7 +454,7 @@ const CustomerAddForm = ({edit,refresh}) =>{
                                 Disc %
                             </div>
                             <div className='mx-0 px-0 col-7'>
-                                <input onChange={handleChange} name="disc" value={customerAdd.disc||''} type='text' className='item_input names' />
+                                <input onKeyDown={handleKeyDown} onChange={handleChange} name="disc" value={customerAdd.disc||''} type='text' className='item_input names' />
                             </div>
                         </div>
                         <div className="col-6 col-7 row ps-5 mx-0 px-0">
@@ -423,7 +462,7 @@ const CustomerAddForm = ({edit,refresh}) =>{
                                 Op Balance
                             </div>
                             <div className='mx-0 px-0 col-7'>
-                                <input onChange={handleChange} name="opening_balance" value={customerAdd.opening_balance||''} type='text' className='item_input names' />
+                                <input onKeyDown={handleKeyDown} onChange={handleChange} name="opening_balance" value={customerAdd.opening_balance||''} type='text' className='item_input names' />
                             </div>
                         </div>
                     </div> */}
@@ -432,8 +471,8 @@ const CustomerAddForm = ({edit,refresh}) =>{
                             Credit Limit
                         </div>
                         <div className='mx-0 px-0 col-6 col-7 d-flex gap-2'>
-                            <input onChange={handleChange} name="creadit_limit_in_amt" value={customerAdd.creadit_limit_in_amt||''}  type='text' placeholder='In Amnt' className='item_input names credit' />
-                            <input onChange={handleChange} name="creadit_limit_in_days" value={customerAdd.creadit_limit_in_days||''}  type='text' placeholder='In Days' className='item_input names credit' />
+                            <input onKeyDown={handleKeyDown} onChange={handleChange} name="creadit_limit_in_amt" value={customerAdd.creadit_limit_in_amt||''}  type='text' placeholder='In Amnt' className='item_input names credit' />
+                            <input onKeyDown={handleKeyDown} onChange={handleChange} name="creadit_limit_in_days" value={customerAdd.creadit_limit_in_days||''}  type='text' placeholder='In Days' className='item_input names credit' />
                         </div>
                     </div>
 
@@ -442,12 +481,12 @@ const CustomerAddForm = ({edit,refresh}) =>{
                                     Op Balance
                                 </div>
                                 <div className='mx-0 px-0 col-6 col-7'>
-                                    <div className='item_input row rounded-2 align-items-center p-0 mx-0'>
+                                    <div className='item_input_with_drop row d-flex rounded-2 align-items-center p-0 m-0'>
                                         <div className='col-6 col-7 mx-0 px-0 me-0'>
-                                        <input onChange={handleChange} name="opening_balance" value={customerAdd.opening_balance||''} type='text' className='item_input names border-0' />
+                                        <input onKeyDown={handleKeyDown} onChange={handleChange} name="opening_balance" value={customerAdd.opening_balance||''} type='text' className='item_input names border-0 ' />
                                         </div>
-                                        <div className='col-6 col-5 mx-0 px-0 pe-1 d-flex'>
-                                        <select onChange={handleChange} name='payment_type' value={customerAdd.payment_type||''}  placeholder='To Recieve' className='customer-select ms-0 pe-0'>
+                                        <div className='col-6 col-5 mx-0 px-0 d-flex align-items-center h-100'>
+                                        <select onKeyDown={handleKeyDown} onChange={handleChange} name='payment_type' value={customerAdd.payment_type||''}  placeholder='To Recieve' className='pay-type-select ms-0 pe-0'>
                                             <option value="TO_GIVE">To Give</option>
                                             <option value="TO_RECEIVE">To Receive</option>
                                         </select>
@@ -461,7 +500,7 @@ const CustomerAddForm = ({edit,refresh}) =>{
                                     Disc %
                                 </div>
                                 <div className='mx-0 px-0 col-3 col-4'>
-                                <input onChange={handleChange} name="disc" value={customerAdd.disc||''} type='text' className='item_input names' />
+                                <input onKeyDown={handleKeyDown} onChange={handleChange} name="disc" value={customerAdd.disc||''} type='text' className='item_input names' />
                                 </div>
                                 <div className='mx-0 px-0 col-3 d-flex ps-1'>
                                     <div onClick={()=>setShowRates(true)} className='btn btn-sm btn-dark py-0 w-100 rates-btn'>Set Rates</div>
@@ -479,7 +518,7 @@ const CustomerAddForm = ({edit,refresh}) =>{
                         </div>
                         <div className='mx-0 px-0 col-7 col-8'>
                         <SearchDropDown containerClass="large" id="route" addNew={true}  setNew={addNewOption} options={listItem}
-                        {... { showDropdown, setShowDropdown }} setDataValue={setCustomerAdd} selectedValue={customerAdd||''}/>
+                        {... { showDropdown, setShowDropdown, handleKeyDown }} setDataValue={setCustomerAdd} selectedValue={customerAdd||''}/>
                         </div>
                     </div>
                     <div className="d-flex align-items-start justify-content-between mx-0 ps-4 pe-0 my-2">
@@ -488,7 +527,7 @@ const CustomerAddForm = ({edit,refresh}) =>{
                         </div>
                         <div className='mx-0 px-0 col-7 col-8'>
                         <SearchDropDown containerClass="large" id="city" addNew={true}  setNew={addNewOption} options={listItem}
-                        {... { showDropdown, setShowDropdown }} setDataValue={setCustomerAdd} selectedValue={customerAdd||''}/>
+                        {... { showDropdown, setShowDropdown, handleKeyDown }} setDataValue={setCustomerAdd} selectedValue={customerAdd||''}/>
                         </div>
                     </div>
                     <div className="d-flex align-items-start justify-content-between mx-0 ps-4 pe-0 my-2">
@@ -497,7 +536,7 @@ const CustomerAddForm = ({edit,refresh}) =>{
                         </div>
                         <div className='mx-0 px-0 col-7 col-8'>
                             <SearchDropDown containerClass="large" id="town" addNew={true}  setNew={addNewOption} options={listItem}
-                        {... { showDropdown, setShowDropdown }} setDataValue={setCustomerAdd} selectedValue={customerAdd||''}/>
+                        {... { showDropdown, setShowDropdown, handleKeyDown }} setDataValue={setCustomerAdd} selectedValue={customerAdd||''}/>
                         </div>
                     </div>
                     <div className="d-flex align-items-start justify-content-between mx-0 ps-4 pe-0 my-2">
@@ -506,7 +545,7 @@ const CustomerAddForm = ({edit,refresh}) =>{
                         </div>
                         <div className='mx-0 px-0 col-7 col-8'>
                             <SearchDropDown containerClass="large" id="district" addNew={true}  setNew={addNewOption} options={listItem}
-                        {... { showDropdown, setShowDropdown }} setDataValue={setCustomerAdd} selectedValue={customerAdd||''}/>
+                        {... { showDropdown, setShowDropdown, handleKeyDown }} setDataValue={setCustomerAdd} selectedValue={customerAdd||''}/>
                         </div>
                     </div>
                     <div className="d-flex align-items-start justify-content-between mx-0 ps-4 pe-0 my-2">
@@ -515,7 +554,7 @@ const CustomerAddForm = ({edit,refresh}) =>{
                         </div>
                         <div className='mx-0 px-0 col-7 col-8'>
                             <SearchDropDown containerClass="large" id="types" addNew={true}  setNew={addNewOption} options={listItem}
-                        {... { showDropdown, setShowDropdown }} setDataValue={setCustomerAdd} selectedValue={customerAdd||''}/>
+                        {... { showDropdown, setShowDropdown, handleKeyDown }} setDataValue={setCustomerAdd} selectedValue={customerAdd||''}/>
                         </div>
                     </div>
                     <div className="d-flex align-items-start justify-content-between mx-0 ps-4 pe-0 my-2">
@@ -524,7 +563,7 @@ const CustomerAddForm = ({edit,refresh}) =>{
                         </div>
                         <div className='mx-0 px-0 col-7 col-8'>
                             <SearchDropDown containerClass="large" id="rate_types" noAdd={true} noSearch={true} setNew={addNewOption} options={listItem}
-                        {... { showDropdown, setShowDropdown }} setDataValue={setCustomerAdd} selectedValue={customerAdd||''}/>
+                        {... { showDropdown, setShowDropdown, handleKeyDown }} setDataValue={setCustomerAdd} selectedValue={customerAdd||''}/>
                         </div>
                     </div>
                     <div className="d-flex align-items-start justify-content-between mx-0 ps-4 pe-0 my-2">
@@ -533,24 +572,24 @@ const CustomerAddForm = ({edit,refresh}) =>{
                         </div>
                         <div className='mx-0 px-0 col-7 col-8'>
                             <SearchDropDown containerClass="large" id="bill_types" addNew={true}  setNew={addNewOption} options={listItem}
-                        {... { showDropdown, setShowDropdown }} setDataValue={setCustomerAdd} selectedValue={customerAdd||''}/>
+                        {... { showDropdown, setShowDropdown, handleKeyDown }} setDataValue={setCustomerAdd} selectedValue={customerAdd||''}/>
                         </div>
                     </div>
-                    <div className="d-flex align-items-start justify-content-between mx-0 ps-4 pe-0 my-2">
+                    <div className="d-flex align-items-center justify-content-between mx-0 ps-4 pe-0 my-2">
                         <div className='col-3 col-4'>
                             Remarks
                         </div>
                         <div className='mx-0 px-0 col-7 col-8'>
-                            <textarea onChange={handleChange} name='remark' value={customerAdd.remark||''}  rows={3} className='item_input names' />
+                            <textarea onKeyDown={handleKeyDown} onChange={handleChange} name='remark' value={customerAdd.remark||''}  rows={3} className='item_input text-area names' />
                         </div>
                     </div>
                     <div className="d-flex align-items-center row mx-0 ps-4 pe-3 my-2">
                         <div className='mx-0 px-0 col-4 d-flex align-items-center'>
-                            <input onChange={handleChange} name="repeat" value={customerAdd.repeat||''}  type='checkbox' />
+                            <input onKeyDown={handleKeyDown} onChange={handleChange} name="repeat" value={customerAdd.repeat||''}  type='checkbox' />
                             <label className='px-2'>Repeat</label>
                         </div>
                         <div className='mx-0 px-0 ps-4 col-8 d-flex align-items-center'>
-                            <input onChange={handleChange} name="blocked" value={customerAdd.blocked||''}  type='checkbox'/>
+                            <input onKeyDown={handleKeyDown} onChange={handleChange} name="blocked" value={customerAdd.blocked||''}  type='checkbox'/>
                             <label className='px-2'>Blocked</label>
                         </div>
                     </div>
@@ -569,11 +608,11 @@ const CustomerAddForm = ({edit,refresh}) =>{
             </div>
             <Modal
             show={showRates}
-            contentClassName="unit_modal px-3 bg-dark"
-            dialogClassName='d-flex justify-content-center'
+            contentClassName="unit_modal bg-dark"
+            dialogClassName=''
             size='lg'
             centered
-            onHide={()=>setShowRates(false)}
+            onHide={handleRatesClose}
             >
                 <Modal.Body>
                 <div className='text-light pb-2'>
@@ -595,28 +634,32 @@ const CustomerAddForm = ({edit,refresh}) =>{
                                                 <select onChange={handleChange} type='select' value={rates.R_id||''} className='unit_select py-2 text-light w-100' name='R_item'>
                                                     <option value={null}>Select</option>
                                                     {itemNameList?.length>0&&
-                                                    itemNameList.map((data,index)=><option key={index} value={data.value}>{data.label}</option>)}
+                                                    itemNameList.map((data,index)=><option key={index} value={data.value}>{data.text}</option>)}
                                                 </select>
                                             </td>
-                                            <td><input onChange={handleChange} type='number' name='R_wsRate' value={rates.R_wsRate||''} className='w-100 text-light'/></td>                                
-                                            <td><input onChange={handleChange} type='number' name='R_rtRate' value={rates.R_rtRate||''} className='w-100 text-light'/></td>
-                                            <td><input onChange={handleChange} type='number' name='R_mrp' value={rates.R_mrp||''} className='w-100 text-light'/></td>
+                                            <td><input onKeyDown={handleKeyDown} onChange={handleChange} type='number' name='R_wsRate' value={rates.R_wsRate||''} className='w-100 text-light'/></td>                                
+                                            <td><input onKeyDown={handleKeyDown} onChange={handleChange} type='number' name='R_rtRate' value={rates.R_rtRate||''} className='w-100 text-light'/></td>
+                                            <td><input onKeyDown={handleKeyDown} onChange={handleChange} type='number' name='R_mrp' value={rates.R_mrp||''} className='w-100 text-light'/></td>
                                             <th className='col col-1 cursor text-center'>
                                                 <img src={deleteBtn} alt="deletebtn"/>
                                             </th>
-                                            <th className='btn-td'>
-                                                <div onClick={addToList} className='add_unit_btn btn'>{"Add rate"}</div>
+                                            <th className='btn-td text-center col-1 col-2'>
+                                                <div onClick={addToList} className='add_unit_btn btn'>{ratesEdit!==false?"Edit rates":"Add rate"}</div>
                                             </th>
                                         </tr>
                                         {(ratesTempList?.length>0)&&
                                         ratesTempList.map(data=>(
                                         <tr>
-                                            <td><input disabled value={data.R_item} type='text' className='w-100 text-light'/></td>
+                                            <td><input onKeyDown={handleKeyDown} disabled value={data.R_item} type='text' className='w-100 text-light'/></td>
                                             <td>
-                                                <input disabled value={data.R_wsRate} type='text' className='w-100 text-light'/>
+                                                <input onKeyDown={handleKeyDown} disabled value={data.R_wsRate} type='text' className='w-100 text-light'/>
                                             </td>
-                                            <td><input disabled value={data.R_rtRate} type='number' className='w-100 text-light'/></td>
-                                            <td><input disabled value={data.R_mrp} type='number' className='w-100 text-light'/></td>
+                                            <td><input onKeyDown={handleKeyDown} disabled value={data.R_rtRate} type='number' className='w-100 text-light'/></td>
+                                            <td><input onKeyDown={handleKeyDown} disabled value={data.R_mrp} type='number' className='w-100 text-light'/></td>
+                                            <td style={{background:"#464646"}}><div /* onClick={e=>handleDeleteUnit(data)} */ className='text-center'><img src={deleteBtn} alt='delete btn'/></div></td>
+                                            <td style={{background:"#464646"}} className='btn-td text-center'>
+                                                <div onClick={(e)=>handleEditRates(e,data)} className='add_unit_btn btn'>{"Edit"}</div>
+                                            </td>
                                         </tr>))}
                                     </tbody>
                                 </table>
