@@ -191,7 +191,6 @@ export const ItemAddForm = ({edit,refresh}) =>{
                 })
                 b.push(r)
                 })
-                console.log(b)
                 setBarcode(...b)
             }
             keys.map((key)=>{
@@ -204,13 +203,10 @@ export const ItemAddForm = ({edit,refresh}) =>{
             }
             else setItemAdd(data=>({...data,[key]:edit[key]}))
         })
-        // console.log("##############")
         }else{
             handleReset()
         }
     },[edit])
-
-    // console.log(listItem)
 
     const getData = async () => {
         let list = {}
@@ -237,7 +233,7 @@ export const ItemAddForm = ({edit,refresh}) =>{
             let res2 = await getCode() 
             if(res2?.success){
                 let cod = res2?.data?.filter(x=>x.sub_id === "ITM")
-                setCode(cod[0]?.next_value)
+                setItemAdd(data=>({...data,['code']:cod[0]?.next_value}))
             }
         }
             
@@ -370,10 +366,10 @@ export const ItemAddForm = ({edit,refresh}) =>{
     const handleSubmit = async (e)=>{
         e.preventDefault()
         try{
-            let submitData = itemadd
+            var submitData = {...itemadd}
             let res, res2 = 1, res3 = 1
             const names = ['second_name','category','sub_category','company','size','color','group','tax_group','godown_rack','unit','purchase']
-            let data = handleChangeFk(names,submitData)
+            var data = handleChangeFk(names,submitData)
             if(edit){
                 res = await putItemAdd(edit?.id,data)
             }else{
@@ -381,8 +377,7 @@ export const ItemAddForm = ({edit,refresh}) =>{
             }
             if(res?.success){
                 let barcodeCheck = Object.values(barcode)
-                console.log(barcodeCheck)
-                console.log(edit && barcode.B_id)
+                barcodeCheck = barcodeCheck.filter(x=>x!==null)
                 if(barcodeCheck?.length>3 && res.data.id && ((edit && !barcode.B_id) || !edit)){
                     const data = {code:barcode.B_code,mrp:barcode.B_mrp,retail_rate:barcode.B_rate,expiry:barcode.B_expiry}
                     res3 = await postBarcode(res.data.id,data)
@@ -423,7 +418,6 @@ export const ItemAddForm = ({edit,refresh}) =>{
             submitData['fk_'+x] = submitData[x]
             delete submitData[x]
         })
-        // console.log(submitData)
         return submitData
     }
 
@@ -441,6 +435,7 @@ export const ItemAddForm = ({edit,refresh}) =>{
             setItemAdd(data=>({...data,[e.target.name]:null}))
         }else
         setItemAdd(data=>({...data,[e.target.name]:e.target.value}))
+        console.log(itemadd)
     }
 
     const handleCheck = (e) =>{
@@ -480,7 +475,7 @@ export const ItemAddForm = ({edit,refresh}) =>{
                         <div className="col-4 px-0">Code*</div>
                         <div className="col-8 px-0">
                     <input onKeyDown={handleKeyDown} required type='text' className='item_input'
-                        value={!edit?code?code:'':itemadd.code?itemadd.code:''} name='code' onChange={handleChange}/>
+                        value={itemadd.code?itemadd.code:''} name='code' onChange={handleChange}/>
                     </div>
                         </div>
                     <div className='item_inputs d-flex px-0 col-6 align-itmes-end'>

@@ -68,7 +68,7 @@ const PurchaseInvoiceDetails = ({handleEdit}) => {
                 />
             </Form.Group>
 {/* Row 3 -------------------------------------------------------------------------------------------------------- */}
-            <div className='col-2 col-3 d-flex align-items-end justify-content-start ps-1'>
+            <div className='col-3 d-flex align-items-end justify-content-start ps-1'>
                 <div className="px-1">
                     <div className="btn btn-sm btn-secondary px-3">Purchase</div>
                 </div>
@@ -84,7 +84,7 @@ const PurchaseInvoiceDetails = ({handleEdit}) => {
                     <FiEdit size={'1rem'} />Edit
                 </div>
             </div>
-            <div className="col-5 d-flex align-items-center row mx-0 my-0 justify-content-end">
+            <div className="col-4 col-5 d-flex align-items-center row mx-0 my-0 justify-content-end">
                 <div className='mx-0 px-0 col-4 d-flex align-items-center justify-content-end'>
                     <input type='checkbox' name='Repeat' value='Repeat' />
                     <label for='Repeat' className='ps-2'>Interstate</label>

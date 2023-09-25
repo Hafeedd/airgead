@@ -62,7 +62,7 @@ const PurchasePrintingDetails = ({handleEdit}) => {
                 />
             </Form.Group>
 {/* Row 3 -------------------------------------------------------------------------------------------------------- */}
-            <div className='col-2 col-3 d-flex align-items-end justify-content-start ps-1'>
+            <div className='col-3 d-flex align-items-end justify-content-start ps-1'>
                 <div className="px-1">
                     <div className="btn btn-sm btn-secondary px-3">Purchase</div>
                 </div>
@@ -78,7 +78,7 @@ const PurchasePrintingDetails = ({handleEdit}) => {
                     <FiEdit size={'1rem'} />Edit
                 </div>
             </div>
-            <span className="col-5" />
+            <span className="col-4 col-5" />
             <Form.Group className='col-3 col-4 mx-0 d-flex align-items-center my-1'>
                 <Form.Label className='col-3 col-4 purchase-input-label'>Order No</Form.Label>
                 <Form.Control

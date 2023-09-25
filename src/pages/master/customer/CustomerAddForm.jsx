@@ -250,22 +250,22 @@ const CustomerAddForm = ({edit,refresh}) =>{
 
     const handleSubmit = async (e) =>{
         e.preventDefault()
-        console.log(customerAdd)
+        // console.log(customerAdd)
         try{
             let submitData = customerAdd
             const names = ['district','route','city','town','bill_types','types']
-            let data = handleChangeFk(names,submitData)
+            let data =  (names,submitData)
             let res , res2 = 1
             if(edit){
                 res = await putCustomer(edit.id,data)
             }else{
                 res = await postCustomer(data)
             }
-            if(res.success && (!edit||(edit&& !rates.R_id))){
+            if(res?.success && (!edit||(edit&& !rates?.R_id))){
                 if(ratesTempList.length>0){
                     ratesTempList.map(async x=>{
                         const data = {fk_item:x.R_id,wholesale_rate:x.R_wsRate,retail_rate:x.R_rtRate,mrp:x.R_mrp}
-                 res2 = await postSetRate(res?.data?.id,data)
+                 res2 = await postSetRate(res?.data.data_customer?.id,data)
                     })
                 }
                 if(res2 !==1 && res2.success){
@@ -274,13 +274,15 @@ const CustomerAddForm = ({edit,refresh}) =>{
                     refresh()
                 }else if(res2 !=1 && !res2.success){
                     Swal.fire(res2?.message,'','error')
-                    await deleteCustomer(res?.data?.id)
+                    await deleteCustomer(res?.data.data_customer?.id)
                 }
             }else if(res?.success && !edit){
                 const errkey = Object.keys(res.data)
                 Swal.fire(res?.data[errkey[0]],'','error')
+                getData()
             }
         }catch(err){
+            console.log(err)
             const errkey = Object.keys(err.response.data.data)
             Swal.fire(err.response.data.data[errkey[0]][0],'','error')
         }
@@ -291,7 +293,6 @@ const CustomerAddForm = ({edit,refresh}) =>{
             submitData['fk_'+x] = submitData[x]
             delete submitData[x]
         })
-        console.log(submitData)
         return submitData
     }
 

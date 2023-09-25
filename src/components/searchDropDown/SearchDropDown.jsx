@@ -113,22 +113,26 @@ const SearchDropDown = ({
         // }else
         if(options[id]?.length>0)
                 setTempList([...options[id],])
-                // console.log(selectedValue[id])
+                // console.log(id)
+                console.log(selectedValue)
         if (selectedValue[id]) {
             options[id]?.map((item)=>{
                 let a = selectedValue[id]
                 if(typeof a !== 'number')
-                    a = a.toLowerCase()
+                a = a.toLowerCase()
+                console.log(item.value, a , id)
                 if (item.value==a){
                     setSelected(item?.text)
                     setSearch(item?.text)
                 }
             })
+            // console.log(selected, search)
         }
         else{
             handleReset()
         }}
     , [selectedValue,options])
+
     
     // useEffect(() => {
     //     if(options[id]?.length || id == 'transaction_unit'){
@@ -197,7 +201,7 @@ const SearchDropDown = ({
 // }
 
     const handleReset = () => {
-        setSelected(null)
+        setSelected('')
         setShowDropdown('')
         setShow(false)
         setSearch('')
@@ -223,10 +227,13 @@ const SearchDropDown = ({
 
     const handleChange = (e,data) =>{
         let value = data.value
+        if(value === ""){
+            setDataValue(data=>({...data,[id]:null}))
+        }else{
         if(value !== "" && typeof value !== "number")
             value = value.toUpperCase()
         setDataValue(data=>({...data,[id]:value}))
-        setSelected(value)
+        setSelected(value)}
     }
 
     const handleEdit = (data) =>{
