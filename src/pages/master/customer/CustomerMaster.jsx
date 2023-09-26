@@ -27,6 +27,8 @@ const CustomerList = () => {
                 setToEdit(x)
             }
         })
+       }else{
+        setToEdit(null)
        }
     },[listCustomer])
 
@@ -100,7 +102,7 @@ const CustomerList = () => {
                     </div>
                 </div> 
                 {/* toEdit||showCustomerAdd */ location.pathname === '/customer-add'?
-                <CustomerAddForm refresh={getData} edit={toEdit}/>:
+                <CustomerAddForm refresh={getData} edit={toEdit} setToEdit={setToEdit}/>:
                     <CustomerTable list={listCustomer} {...{navigate,handleEdit,handleDelete,toEdit}}/>
                 }
         </div>

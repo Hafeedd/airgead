@@ -10,15 +10,13 @@ const editBtn = (
         <path d="M20.9521 3.04801C20.2811 2.37702 19.371 2.00006 18.4221 2.00006C17.4732 2.00006 16.5631 2.37702 15.8921 3.04801L3.94011 15C3.5339 15.4062 3.24832 15.9172 3.11511 16.476L2.02011 21.078C1.99046 21.2027 1.99324 21.3328 2.02819 21.4561C2.06313 21.5794 2.12907 21.6916 2.21972 21.7822C2.31037 21.8727 2.42271 21.9385 2.54601 21.9734C2.66932 22.0082 2.79949 22.0108 2.92411 21.981L7.52511 20.885C8.0843 20.752 8.5956 20.4664 9.00211 20.06L20.9521 8.11C21.6231 7.439 22.0001 6.52894 22.0001 5.58C22.0001 4.63107 21.6231 3.72101 20.9521 3.05V3.04801ZM16.9521 4.108C17.1452 3.91496 17.3743 3.76183 17.6266 3.65736C17.8788 3.55288 18.1491 3.49911 18.4221 3.49911C18.6951 3.49911 18.9654 3.55288 19.2177 3.65736C19.4699 3.76183 19.6991 3.91496 19.8921 4.108C20.0852 4.30105 20.2383 4.53022 20.3428 4.78245C20.4472 5.03467 20.501 5.305 20.501 5.57801C20.501 5.85101 20.4472 6.12134 20.3428 6.37356C20.2383 6.62579 20.0852 6.85496 19.8921 7.04801L19.0001 7.939L16.0601 5.00001L16.9521 4.10901V4.108ZM15.0001 6.06201L17.9401 9L7.94011 19C7.73011 19.21 7.46611 19.357 7.17711 19.426L3.76111 20.24L4.57411 16.824C4.64311 16.534 4.79111 16.27 5.00111 16.06L15.0001 6.06001V6.06201Z" fill="#4E4E4E" stroke="#4E4E4E" stroke-width="0.5"/>
     </svg>)
 
-export const ItemAddForm = ({edit,refresh}) =>{
+export const ItemAddForm = ({edit,refresh,setToEdit}) =>{
 
     const [showDropdown, setShowDropdown] = useState('')
     const typesOptions = [{text:"PRODUCT",value:"PRODUCT"},{text:"RAW MATERIAL",value:"RAW MATERIAL"},{text:"SERVICE",value:"SERVICE"}]
     const rentOptions = [{text:"HOUR",value:"HOUR"},{text:"MONTH",value:"MONTH"}]
-    const [code, setCode] = useState(null)
     const [unitConvShow, setUnitConvShow] = useState(false)
     const [unitEdit, setUnitEdit] = useState(false)
-    const [loading, setLoading] = useState(false)
     const [barcodeShow, setBarcodeShow] = useState(false)
     const [unitConvTempList, setUnitConvTempList] = useState([])
     const [ref, setRef] = useState()
@@ -40,7 +38,7 @@ export const ItemAddForm = ({edit,refresh}) =>{
     const [listItem,setListItem] = useState({
         second_name:[],
         types:typesOptions,
-        rent_type:[{text:"HOUR",value:"HOUR"},{text:"MONTH",value:"MONTH"}],
+        rent_type:rentOptions,
         category:[],
         sub_category:[],
         company:[],
@@ -153,7 +151,6 @@ export const ItemAddForm = ({edit,refresh}) =>{
             }
         }
     };
-
     useEffect(()=>{
         getData();
     },[])
@@ -162,6 +159,7 @@ export const ItemAddForm = ({edit,refresh}) =>{
         let keys = Object.keys(itemadd)
         let keysUnit = Object.keys(unitConv)
         let keysBarc = Object.keys(barcode)
+        let items = {...itemadd}
         if(edit){
             if(edit.units.length>0){
                 let b = []
@@ -195,17 +193,21 @@ export const ItemAddForm = ({edit,refresh}) =>{
             }
             keys.map((key)=>{
                 if(key==='types') setItemAdd(data=>({...data,['types']:edit.type}))
-                else if(key.match(/^types|^second_name|^category|^sub_category|^company|^size|^color|^group|^tax_group|^unit|^rack/)){
+                else if(key.match(/^second_name|^category|^sub_category|^company|^size|^color|^group|^tax_group|^unit|^rack/)){
                 let a = "fk_"+key
                 if(edit[a]){
-                    // console.log(key)
-                    setItemAdd(data=>({...data,[key]:edit[a]}))}
-            }
-            else setItemAdd(data=>({...data,[key]:edit[key]}))
+                    // setItemAdd(data=>({...data,[key]:edit[a]}))
+                    items = {...items,[key]:edit[a]}
+                }
+                }
+                else 
+                    items = {...items,[key]:edit[key]}
+                // setItemAdd(data=>({...data,[key]:edit[key]}))
         })
         }else{
             handleReset()
         }
+        setItemAdd(items)
     },[edit])
 
     const getData = async () => {
@@ -398,9 +400,7 @@ export const ItemAddForm = ({edit,refresh}) =>{
                     Swal.fire(res3?.message,'','error')
                 if((res3!==1 && !res3?.success)||(res2!==1 && !res2?.success)){
                     await deleteItem(res?.data?.id)}
-
                 Swal.fire('Item Added Successfully','','success')
-                refresh()
                 handleReset()
             }
             else
@@ -435,7 +435,6 @@ export const ItemAddForm = ({edit,refresh}) =>{
             setItemAdd(data=>({...data,[e.target.name]:null}))
         }else
         setItemAdd(data=>({...data,[e.target.name]:e.target.value}))
-        console.log(itemadd)
     }
 
     const handleCheck = (e) =>{
@@ -448,6 +447,10 @@ export const ItemAddForm = ({edit,refresh}) =>{
             if(!data.match(/^blocked|^tax_inclusive|^manuel_qty_in_bc|^rent_item|^gate_pass|^types/))
                 setItemAdd(val=>({...val,[data]:null}))
             })
+        setItemAdd(data=>({...data,['types']:"PRODUCT"}))
+        setToEdit(false)
+        refresh()
+        getData()
     }
 
     const handleUnitHide = () =>{
@@ -479,9 +482,9 @@ export const ItemAddForm = ({edit,refresh}) =>{
                     </div>
                         </div>
                     <div className='item_inputs d-flex px-0 col-6 align-itmes-end'>
-                        <div className='col-4 px-0 ps-3'>HSN*</div>
+                        <div className='col-4 px-0 ps-3'>HSN</div>
                         <div className="col-8 px-0">
-                    <input onKeyDown={handleKeyDown} required type='number' className='item_input'
+                    <input onKeyDown={handleKeyDown} type='number' className='item_input'
                         value={itemadd.hsn?itemadd.hsn:''} name='hsn' onChange={handleChange}/>
                         </div>
                     </div>
@@ -503,12 +506,6 @@ export const ItemAddForm = ({edit,refresh}) =>{
                         <div className='col-6'>Type</div>
                     <SearchDropDown id="types" setNew={addOption} options={listItem} noAdd={true}
                         {... { showDropdown, setShowDropdown, handleKeyDown }} setDataValue={setItemAdd} selectedValue={itemadd}/>
-                        {/* <select type='select' className='item_input col-6 col-7'
-                            name='rent_type'>
-                            <option value='PRODUCT'>PRODUCT</option>
-                            <option value='RAW MATERIAL'>RAW MATERIAL</option>
-                            <option value='SERVICE'>SERVICE</option>
-                        </select> */}
                     </div>
                     <div className='item_inputs d-flex pt-2 px-0'>
                         <div className='col-6'>Category</div>

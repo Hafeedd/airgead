@@ -15,20 +15,51 @@ const PurchaseTransaction = () => {
     const [purchaseEditModal, setPurchaseEditModal] = useState(false)
     const [pageHeadItem, setPageHeadItem] = useState(1)
     const [purchaseHeader, setPurchaseHeader] = useState(1)
-    const navigate = useNavigate()
+    const navigate = useNavigate({})
+
+    const [purchaseAdd, setPurchaseAdd] = useState({
+        documents_no:null,
+        order_no:null,
+        bill_no:null,
+        bill_date:null,
+        interstate:null,
+        reverse_charge:null,
+        tax_bill:null,
+        total_item:null,
+        item:null,
+        discount:null,
+        roundoff:null,
+        paid_cash:null,
+        change_due:null,
+        fk_supplier:null,
+        vehicle_no:null,
+        driver:null,
+        poject:null,
+        address:null,
+        bank:null,
+        transfer_account:null,
+    }) 
+
+    const handleChange = (e) =>{
+        if(e.target.value == "")
+            setPurchaseAdd(data=>({...data,[e.target.name]:null}))
+        else
+            setPurchaseAdd(data=>({...data,[e.target.name]:e.target.value}))
+    }
+
     useEffect(() => {
         switch (pageHeadItem) {
-            case 1: setPurchaseHeader(<PurchaseInvoiceDetails {...{handleEdit}} />)
+            case 1: setPurchaseHeader(<PurchaseInvoiceDetails {...{handleEdit,purchaseAdd,handleChange}} />)
                 break
-            case 2: setPurchaseHeader(<PurchasePrintingDetails {...{handleEdit}} />)
+            case 2: setPurchaseHeader(<PurchasePrintingDetails {...{handleEdit,purchaseAdd,handleChange}} />)
                 break
-            case 3: setPurchaseHeader(<PurchaseDeliveryDetails {...{handleEdit}} />)
+            case 3: setPurchaseHeader(<PurchaseDeliveryDetails {...{handleEdit,purchaseAdd,handleChange}} />)
                 break
-            case 4: setPurchaseHeader(<PurchaseInvoiceDetails {...{handleEdit}} />)
+            case 4: setPurchaseHeader(<PurchaseInvoiceDetails {...{handleEdit,purchaseAdd,handleChange}} />)
                 break
             default: break;
         }
-    }, [pageHeadItem])
+    }, [pageHeadItem,purchaseAdd])
 
     const handleEdit = ()=>{
         setPurchaseEditModal(true)
@@ -79,7 +110,7 @@ const PurchaseTransaction = () => {
                         setPurchaseItemModal
                     }}
                 />
-                <PurchaseDetailFooter />
+                <PurchaseDetailFooter {...{handleEdit,purchaseAdd,handleChange}} />
             </form>
             <Modal
                 show={purchaseItemModal}

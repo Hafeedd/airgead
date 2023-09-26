@@ -6,11 +6,11 @@ import SearchDropDown from '../../../components/searchDropDown/SearchDropDown'
 import { Modal } from 'react-bootstrap'
 import useItemServices from '../../../services/master/itemServices'
 
-const CustomerAddForm = ({edit,refresh}) =>{
+const CustomerAddForm = ({edit,refresh,setToEdit}) =>{
 
     const [showDropdown, setShowDropdown ] = useState(1)
     const [showRates, setShowRates] = useState(false)
-    const [code, setCode] = useState(null)
+    // const [code, setCode] = useState(null)
     const [ratesEdit, setRatesEdit] = useState(false)
     const [ratesTempList, setRatesTempList] = useState([])
     const [itemNameList, setItemNameList] = useState([])
@@ -68,7 +68,6 @@ const CustomerAddForm = ({edit,refresh}) =>{
         postRateType,
         postTypes,
         postBillType,
-        postCustomer,
         getBillType,
         getRoute,
         getCity,
@@ -76,11 +75,12 @@ const CustomerAddForm = ({edit,refresh}) =>{
         getDistrict,
         getRateType,
         getTypes,
-        putCustomer,
+        getSetRate,
         deleteSetRate,
+        postCustomer,
+        putCustomer,
         putSetRate,
         postSetRate,
-        getSetRate,
         deleteCustomer,
     } = useCustomerServices()
 
@@ -107,11 +107,23 @@ const CustomerAddForm = ({edit,refresh}) =>{
             }
             else
             setCustomerAdd(data=>({...data,[key]:edit[key]}))
-        })
+            })
+            if(edit.fk_setrate.length>0){
+            // let keySetRates = Object.keys(rates)
+            let b = []
+            edit.fk_setrate.map((data)=>{
+            let r = {R_item:data.fk_item,R_wsRate:data.wholesale_rate,
+                R_rtRate:data.retail_rate,R_mrp:data.mrp,R_id:data.id}
+            b.push(r)
+            })
+            // console.log(b)
+            setRatesTempList(b)
+        }
         }else{
             handleReset()
         }
     },[edit, ])
+    // console.log(ratesTempList)
 
     useEffect(()=>{
         if(formRef.current) getRefValue(formRef,setRef)
@@ -150,9 +162,9 @@ const CustomerAddForm = ({edit,refresh}) =>{
     const addToList = async () =>{
         let valuesOfRates = Object.values(rates)
         let valueCheck = valuesOfRates.filter(x=>x!==null&&x!=='')
-        if(ratesEdit && valuesOfRates.length>3){
+        if(ratesEdit && valueCheck.length>3){
             try{
-                const data = {fk_item:rates.R_id,wholesale_rate:rates.R_wsRate,retail_rate:rates.R_rtRate,mrp:rates.R_mrp}
+                const data = {fk_item:rates.R_item,wholesale_rate:rates.R_wsRate,retail_rate:rates.R_rtRate,mrp:rates.R_mrp}
                 let res = await putSetRate(ratesEdit,data)
                 if(res.success){
                     refresh()
@@ -165,7 +177,7 @@ const CustomerAddForm = ({edit,refresh}) =>{
             }
         }
         else{
-            if(valueCheck.length>4){
+            if(valueCheck.length>3){
             let g = ratesTempList
             g.push(rates)
             setRatesTempList(g)
@@ -207,7 +219,7 @@ const CustomerAddForm = ({edit,refresh}) =>{
             let res2 = await getCode() 
             if(res2?.success){
                 let cod = res2?.data?.filter(x=>x.sub_id === "CUST")
-                setCode(cod[0]?.next_value)
+                setCustomerAdd(data=>({...data,['code']:cod[0]?.next_value}))
             }
         }
         // res = await getDistrict()
@@ -255,34 +267,45 @@ const CustomerAddForm = ({edit,refresh}) =>{
             let submitData = customerAdd
             const names = ['district','route','city','town','bill_types','types']
             let data =  (names,submitData)
-            let res , res2 = 1
+            let res , res2 = 1, customerId
             if(edit){
                 res = await putCustomer(edit.id,data)
+                customerId = res.data.id
             }else{
                 res = await postCustomer(data)
+                customerId = res.data.data_customer.id
             }
             if(res?.success && (!edit||(edit&& !rates?.R_id))){
                 if(ratesTempList.length>0){
                     ratesTempList.map(async x=>{
-                        const data = {fk_item:x.R_id,wholesale_rate:x.R_wsRate,retail_rate:x.R_rtRate,mrp:x.R_mrp}
-                 res2 = await postSetRate(res?.data.data_customer?.id,data)
+                        const data = {fk_item:x.R_item,wholesale_rate:x.R_wsRate,retail_rate:x.R_rtRate,mrp:x.R_mrp}
+                    res2 = await postSetRate(customerId,data)
                     })
                 }
                 if(res2 !==1 && res2.success){
                     Swal.fire(res?.message,'','success')
+                    console.log("1")
                     handleReset()
                     refresh()
+                    getData()
                 }else if(res2 !=1 && !res2.success){
+                    console.log("2")
                     Swal.fire(res2?.message,'','error')
+                    handleReset()
+                    refresh()
+                    getData()
                     await deleteCustomer(res?.data.data_customer?.id)
+                }else{
+                    console.log("3")
+                    Swal.fire('Customer Added successfully','','success')
+                    handleReset()
                 }
-            }else if(res?.success && !edit){
+            }else if(!res?.success && !edit){
                 const errkey = Object.keys(res.data)
                 Swal.fire(res?.data[errkey[0]],'','error')
                 getData()
             }
         }catch(err){
-            console.log(err)
             const errkey = Object.keys(err.response.data.data)
             Swal.fire(err.response.data.data[errkey[0]][0],'','error')
         }
@@ -301,26 +324,22 @@ const CustomerAddForm = ({edit,refresh}) =>{
         key.map((data)=>{
                 setCustomerAdd(val=>({...val,[data]:null}))
             })
+            getData()
+            setToEdit(false)
     }
-
+    
     const handleChange = (e) =>{
         if(typeof e.target.value === 'string' && (e.target.name !== 'email' && e.target.name != "R_item")){
                 e.target.value = e.target.value.toUpperCase()}
         if(e.target.name.match(/^R_/)){
             if(e.target.value === '' || (e.target.name === 'R_item' && e.target.value.length<0)){ 
-                setRates(data => ( {...data,  [e.target.name] : null} ))}
-                else{
-                        if(e.target.name === 'R_item' && e.target.value !== null){
-                            itemNameList.forEach(obj=>{
-                                if(obj.value==e.target.value){
-                                    setRates(data => ( {...data,  [e.target.name] : obj.text , ['R_id']:e.target.value} ))
-                                }
-                            })
-                        }
-                    else{
-                        setRates(data => ( {...data,  [e.target.name] : e.target.value} ))
-                    }
+                setRates(data => ( {...data,  [e.target.name] : null} ))
+            }else{
+                setRates(data => ( {...data,  [e.target.name] : e.target.value} ))
                 }
+                // else{
+                //     setRates(data => ( {...data,  [e.target.name] : e.target.value} ))
+                // }
             }
         else{
             if(e.target.value === '') 
@@ -332,13 +351,15 @@ const CustomerAddForm = ({edit,refresh}) =>{
 
     const handleEditRates = (e,data) =>{
         setRates(data)
-        setRatesEdit(data.U_id)
+        setRatesEdit(data.R_id)
     }
 
     const handleRatesClose = () =>{
         setShowRates(false)
         handleRatesClear()
     }
+
+    console.log(rates)
 
     return(
         <form ref={formRef} onSubmit={handleSubmit} className='item_add_cont'>
@@ -354,7 +375,7 @@ const CustomerAddForm = ({edit,refresh}) =>{
                             Code
                         </div>
                         <div className='mx-0 px-0 col-6 col-7'>
-                            <input onKeyDown={handleKeyDown} onChange={handleChange} name="code" value={!edit?code?code:customerAdd.code:''} type='text' required className='item_input names' />
+                            <input onKeyDown={handleKeyDown} onChange={handleChange} name="code" value={customerAdd.code||''} type='text' required className='item_input names' />
                         </div>
                     </div>
                     <div className="d-flex align-items-center ps-0 row mx-0 my-2">
@@ -632,7 +653,7 @@ const CustomerAddForm = ({edit,refresh}) =>{
                                     <tbody className='rounded-3 '>
                                         <tr className='table-head-input'>
                                             <td>
-                                                <select onChange={handleChange} type='select' value={rates.R_id||''} className='unit_select py-2 text-light w-100' name='R_item'>
+                                                <select onChange={handleChange} type='select' value={rates.R_item||''} className='unit_select py-2 text-light w-100' name='R_item'>
                                                     <option value={null}>Select</option>
                                                     {itemNameList?.length>0&&
                                                     itemNameList.map((data,index)=><option key={index} value={data.value}>{data.text}</option>)}
@@ -642,7 +663,7 @@ const CustomerAddForm = ({edit,refresh}) =>{
                                             <td><input onKeyDown={handleKeyDown} onChange={handleChange} type='number' name='R_rtRate' value={rates.R_rtRate||''} className='w-100 text-light'/></td>
                                             <td><input onKeyDown={handleKeyDown} onChange={handleChange} type='number' name='R_mrp' value={rates.R_mrp||''} className='w-100 text-light'/></td>
                                             <th className='col col-1 cursor text-center'>
-                                                <img src={deleteBtn} alt="deletebtn"/>
+                                                <img onClick={()=>handleReset()} src={deleteBtn} alt="deletebtn"/>
                                             </th>
                                             <th className='btn-td text-center col-1 col-2'>
                                                 <div onClick={addToList} className='add_unit_btn btn'>{ratesEdit!==false?"Edit rates":"Add rate"}</div>
@@ -651,7 +672,14 @@ const CustomerAddForm = ({edit,refresh}) =>{
                                         {(ratesTempList?.length>0)&&
                                         ratesTempList.map(data=>(
                                         <tr>
-                                            <td><input onKeyDown={handleKeyDown} disabled value={data.R_item} type='text' className='w-100 text-light'/></td>
+                                            {/* <td><input onKeyDown={handleKeyDown} disabled value={data.R_item} type='text' className='w-100 text-light'/></td> */}
+                                            <td>
+                                                <select onChange={handleChange} type='select' value={data.R_item||''} className='unit_select py-2 text-light w-100' disabled name='R_item'>
+                                                    <option value={null}>Select</option>
+                                                    {itemNameList?.length>0&&
+                                                    itemNameList.map((item,index)=><option key={index} value={item.value}>{item.text}</option>)}
+                                                </select>
+                                            </td>
                                             <td>
                                                 <input onKeyDown={handleKeyDown} disabled value={data.R_wsRate} type='text' className='w-100 text-light'/>
                                             </td>

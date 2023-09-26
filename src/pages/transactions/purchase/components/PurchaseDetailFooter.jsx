@@ -1,13 +1,17 @@
 import React from 'react'
 import { Form } from 'react-bootstrap'
 
-const PurchaseDetailFooter = () => {
+const PurchaseDetailFooter = (props) => {
+    const {handleEdit,purchaseAdd,handleChange} = props
+    
     return (
         <div className='row mx-0 my-1 me-0'>
             <div className="col-3 col-4 row me-0">
                 <Form.Group className='col-12 mx-0 d-flex align-items-center mt-1'>
                     <Form.Label className='col-5 purchase-input-label'>Discount</Form.Label>
                     <Form.Control
+                    name="discount" value={purchaseAdd.discount||''}
+                    onChange={handleChange}
                         className='purchase-input-text'
                         type='text'
                     />
@@ -15,6 +19,8 @@ const PurchaseDetailFooter = () => {
                 <Form.Group className='col-12 mx-0 d-flex align-items-center mt-1'>
                     <Form.Label className='col-5 purchase-input-label'>Round Off</Form.Label>
                     <Form.Control
+                    name="roundoff" value={purchaseAdd.roundoff||''}
+                    onChange={handleChange}
                         className='purchase-input-text'
                         type='text'
                     />
@@ -22,6 +28,8 @@ const PurchaseDetailFooter = () => {
                 <Form.Group className='col-12 mx-0 d-flex align-items-center mt-1'>
                     <Form.Label className='col-5 purchase-input-label'>Paid Cash</Form.Label>
                     <Form.Control
+                    name="paid_cash" value={purchaseAdd.paid_cash||''}
+                    onChange={handleChange}
                         className='purchase-input-text'
                         type='text'
                     />
@@ -29,6 +37,8 @@ const PurchaseDetailFooter = () => {
                 <Form.Group className='col-12 mx-0 d-flex align-items-center mt-1'>
                     <Form.Label className='col-5 purchase-input-label'>Change Due</Form.Label>
                     <Form.Control
+                    name="change_due" value={purchaseAdd.change_due||''}
+                    onChange={handleChange}
                         className='purchase-input-text'
                         type='text'
                     />

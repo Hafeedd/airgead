@@ -2,13 +2,17 @@ import React from 'react'
 import { Form } from 'react-bootstrap'
 import { FiEdit } from 'react-icons/fi'
 
-const PurchaseDeliveryDetails = ({handleEdit}) => {
+const PurchaseDeliveryDetails = (props) => {
+    const {handleEdit,purchaseAdd,handleChange} = props
+    
     return (
         <div className='row mx-0 mb-0'>
 {/* Row 1 -------------------------------------------------------------------------------------------------------- */}
             <Form.Group className='col-3 mx-0 d-flex align-items-center my-1'>
                 <Form.Label className='col-4 purchase-input-label'>Vehicle No</Form.Label>
                 <Form.Control
+                    name="vehicle_no" value={purchaseAdd.vehicle_no||''}
+                    onChange={handleChange}
                     className='purchase-input-text'
                     type='text'
                 />
@@ -16,6 +20,8 @@ const PurchaseDeliveryDetails = ({handleEdit}) => {
             <Form.Group className='col-3 ps-4 mx-0 d-flex align-items-center my-1'>
                 <Form.Label className='col-4 purchase-input-label'>Driver</Form.Label>
                 <Form.Control
+                    name="driver" value={purchaseAdd.driver||''}
+                    onChange={handleChange}
                     className='purchase-input-text'
                     type='text'
                 />
@@ -24,6 +30,8 @@ const PurchaseDeliveryDetails = ({handleEdit}) => {
             <Form.Group className='col-3 col-4 mx-0 d-flex align-items-center my-1'>
                 <Form.Label className='col-3 col-4 purchase-input-label'>Doc No</Form.Label>
                 <Form.Control
+                    name="documents_no" value={purchaseAdd.documents_no||''}
+                    onChange={handleChange}
                     className='purchase-input-text'
                     type='text'
                 />
@@ -32,6 +40,8 @@ const PurchaseDeliveryDetails = ({handleEdit}) => {
             <Form.Group className='col-3 mx-0 d-flex align-items-center my-1'>
                 <Form.Label className='col-4 purchase-input-label'>Project</Form.Label>
                 <Form.Control
+                    name="documents_no" value={purchaseAdd.documents_no||''}
+                    onChange={handleChange}
                     className='purchase-input-text'
                     type='text'
                 />
@@ -40,6 +50,8 @@ const PurchaseDeliveryDetails = ({handleEdit}) => {
             <Form.Group className='col-3 col-4 mx-0 d-flex align-items-center my-1'>
                 <Form.Label className='col-3 col-4 purchase-input-label'>Date</Form.Label>
                 <Form.Control
+                    name="bill_date" value={purchaseAdd.bill_date||''}
+                    onChange={handleChange}
                     className='purchase-input-text'
                     type='text'
                 />
@@ -65,6 +77,8 @@ const PurchaseDeliveryDetails = ({handleEdit}) => {
             <Form.Group className='col-3 col-4 mx-0 d-flex align-items-center my-1'>
                 <Form.Label className='col-3 col-4 purchase-input-label'>Order No</Form.Label>
                 <Form.Control
+                    name="order_no" value={purchaseAdd.order_no||''}
+                    onChange={handleChange}
                     className='purchase-input-text'
                     type='text'
                 />

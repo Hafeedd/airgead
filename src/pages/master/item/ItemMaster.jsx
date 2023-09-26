@@ -26,6 +26,8 @@ const ItemMaster = () => {
                  setToEdit(x)
              }
          })
+        }else{
+            setToEdit(false)
         }
      },[listItem])
 
@@ -96,7 +98,7 @@ const ItemMaster = () => {
                 </div>  
                 {
                     /* toEdit||showAddItem */ location.pathname === '/add'?
-                    <ItemAddForm refresh={getData} edit={toEdit}/>:
+                    <ItemAddForm refresh={getData} edit={toEdit} setToEdit={setToEdit}/>:
                     <ItemList list={listItem} {...{handleEdit,handleDelete,toEdit}}/>
                 }
         </div>

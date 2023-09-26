@@ -96,7 +96,7 @@ const SupplierAdd = ({edit,refresh}) => {
                 if(keys.indexOf(x.property_type)>-1){
                         if(!list[x.property_type]?.length>0)
                             list[x.property_type] = []
-                        list[x?.property_type].push({value:x['id'],label:x['property_value']})}
+                        list[x?.property_type].push({value:x['id'],text:x['property_value']})}
                 })
         }
         try{
@@ -107,7 +107,7 @@ const SupplierAdd = ({edit,refresh}) => {
             let res2 = await getCode() 
             if(res2?.success){
                 let cod = res2?.data?.filter(x=>x.sub_id === "SUP")
-                setCode(cod[0]?.next_value)
+                setSupplierAdd(data=>({...data,['code']:cod[0]?.next_value}))
             }
         }
         // let res
@@ -175,6 +175,7 @@ const SupplierAdd = ({edit,refresh}) => {
                 Swal.fire('Supplier Added Successfully','','success')
                 handleReset()
                 refresh()
+                getData()
             }else{
                 Swal.fire(res?.message,'','error')
             }
@@ -186,7 +187,7 @@ const SupplierAdd = ({edit,refresh}) => {
     const handleReset = () =>{
         let key = Object.keys(supplierAdd)
         key.map((data)=>{
-                setSupplierAdd(val=>({...val,[data]:''}))
+                setSupplierAdd(val=>({...val,[data]:null}))
             })
     }
     
@@ -205,7 +206,7 @@ const SupplierAdd = ({edit,refresh}) => {
                                 Code
                             </div>
                             <div className='mx-0 px-0 col-6 col-7'>
-                                <input onKeyDown={handleKeyDown} onChange={handleChange} name='code' value={!edit?code?code:'':supplierAdd.code?supplierAdd.code:''} type='text' className='item_input names' />
+                                <input onKeyDown={handleKeyDown} onChange={handleChange} name='code' value={supplierAdd.code||''} type='text' className='item_input names' />
                             </div>
                         </div>
                         <div className="d-flex align-items-center px-0 row mx-0 my-2">
