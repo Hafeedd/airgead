@@ -73,7 +73,6 @@ const SupplierAdd = ({edit,refresh}) => {
     }
 
     const handleKeyDown = (e) => {
-        console.log(ref)
         if (e.key === "Enter") {
             e.preventDefault();
             if (e.target && ref.length>0) {
@@ -239,7 +238,7 @@ const SupplierAdd = ({edit,refresh}) => {
                                     Pin
                                 </div>
                                 <div className='mx-0 px-0 col-7'>
-                                    <input onKeyDown={handleKeyDown} onChange={handleChange} name='pin' value={supplierAdd.pin?supplierAdd.pin:''} type='text' className='item_input names' />
+                                    <input onKeyDown={handleKeyDown} onChange={handleChange} name='pin' value={supplierAdd.pin?supplierAdd.pin:''} type='number' className='item_input names' />
                                 </div>
                             </div>
                         </div>
@@ -257,7 +256,7 @@ const SupplierAdd = ({edit,refresh}) => {
                                     PIN Distance
                                 </div>
                                 <div className='mx-0 px-0 col-7'>
-                                    <input onKeyDown={handleKeyDown} onChange={handleChange} name='pin_distance' value={supplierAdd.pin_distance?supplierAdd.pin_distance:''} type='text' className='item_input names' />
+                                    <input onKeyDown={handleKeyDown} onChange={handleChange} name='pin_distance' value={supplierAdd.pin_distance?supplierAdd.pin_distance:''} type='number' className='item_input names' />
                                 </div>
                             </div>
                         </div>
@@ -274,7 +273,7 @@ const SupplierAdd = ({edit,refresh}) => {
                                 Mob
                             </div>
                             <div className='mx-0 px-0 col-6 col-7'>
-                                <input onKeyDown={handleKeyDown} onChange={handleChange} name='mobile' value={supplierAdd.mobile?supplierAdd.mobile:''} type='text' className='item_input names' />
+                                <input onKeyDown={handleKeyDown} onChange={handleChange} name='mobile' value={supplierAdd.mobile?supplierAdd.mobile:''} type='number' className='item_input names' />
                             </div>
                         </div>
                         <div className="d-flex align-items-center px-0 row mx-0 my-2">
@@ -293,7 +292,7 @@ const SupplierAdd = ({edit,refresh}) => {
                                     <div className='mx-0 px-0 col-6 col-7'>
                                         <div className='item_input_with_drop row rounded-2 p-0 mx-0 align-items-center'>
                                             <div className='col-6 col-7 mx-0 px-0 me-0'>
-                                            <input onKeyDown={handleKeyDown} onChange={handleChange} name='opening_balance' value={supplierAdd.opening_balance?supplierAdd.opening_balance:''} type='text' className='item_input names border-0' />
+                                            <input onKeyDown={handleKeyDown} onChange={handleChange} name='opening_balance' value={supplierAdd.opening_balance?supplierAdd.opening_balance:''} type='number' className='item_input names border-0' />
                                             </div>
                                             <div className='col-6 col-5 m-0 p-0 d-flex '>
                                             <select onKeyDown={handleKeyDown} onChange={handleChange} name='payment_type' value={supplierAdd.payment_type?supplierAdd.payment_type:''} className='pay-type-select ms-0 pe-0'>
@@ -310,7 +309,7 @@ const SupplierAdd = ({edit,refresh}) => {
                                         Disc %
                                     </div>
                                     <div className='mx-0 px-0 col-3 col-4'>
-                                        <input onKeyDown={handleKeyDown} onChange={handleChange} name='disc' value={supplierAdd.disc?supplierAdd.disc:''} type='text' className='item_input names' />
+                                        <input onKeyDown={handleKeyDown} onChange={handleChange} name='disc' value={supplierAdd.disc?supplierAdd.disc:''} type='number' className='item_input names' />
                                     </div>
                             </div>
                             {/* <div className="col-6 col-7 row ps-5 mx-0 px-0">

@@ -329,6 +329,11 @@ const CustomerAddForm = ({edit,refresh,setToEdit}) =>{
     }
     
     const handleChange = (e) =>{
+        // console.log(e.target.type)
+        // if(e.target.type==="number"){
+        //     if(typeof e.target.value !== 'number') 
+        //         e.target.value = ''
+        // }
         if(typeof e.target.value === 'string' && (e.target.name !== 'email' && e.target.name != "R_item")){
                 e.target.value = e.target.value.toUpperCase()}
         if(e.target.name.match(/^R_/)){
@@ -358,8 +363,6 @@ const CustomerAddForm = ({edit,refresh,setToEdit}) =>{
         setShowRates(false)
         handleRatesClear()
     }
-
-    console.log(rates)
 
     return(
         <form ref={formRef} onSubmit={handleSubmit} className='item_add_cont'>
@@ -408,7 +411,7 @@ const CustomerAddForm = ({edit,refresh,setToEdit}) =>{
                                 Pin
                             </div>
                             <div className='mx-0 px-0 col-7'>
-                                <input onKeyDown={handleKeyDown} onChange={handleChange} name="pin" value={customerAdd.pin||''} type='text' className='item_input names' />
+                                <input onKeyDown={handleKeyDown} onChange={handleChange} name="pin" value={customerAdd.pin||''} type='number' className='item_input names' />
                             </div>
                         </div>
                     </div>
@@ -426,7 +429,7 @@ const CustomerAddForm = ({edit,refresh,setToEdit}) =>{
                                 PIN Distance
                             </div>
                             <div className='mx-0 px-0 col-7'>
-                                <input onKeyDown={handleKeyDown} onChange={handleChange} name="pin_distance" value={customerAdd.pin_distance||''} type='text' className='item_input names' />
+                                <input onKeyDown={handleKeyDown} onChange={handleChange} name="pin_distance" value={customerAdd.pin_distance||''} type='number' className='item_input names' />
                             </div>
                         </div>
                     </div>
@@ -493,41 +496,41 @@ const CustomerAddForm = ({edit,refresh,setToEdit}) =>{
                             Credit Limit
                         </div>
                         <div className='mx-0 px-0 col-6 col-7 d-flex gap-2'>
-                            <input onKeyDown={handleKeyDown} onChange={handleChange} name="creadit_limit_in_amt" value={customerAdd.creadit_limit_in_amt||''}  type='text' placeholder='In Amnt' className='item_input names credit' />
-                            <input onKeyDown={handleKeyDown} onChange={handleChange} name="creadit_limit_in_days" value={customerAdd.creadit_limit_in_days||''}  type='text' placeholder='In Days' className='item_input names credit' />
+                            <input onKeyDown={handleKeyDown} onChange={handleChange} name="creadit_limit_in_amt" value={customerAdd.creadit_limit_in_amt||''}  type='number' placeholder='In Amnt' className='item_input names credit' />
+                            <input onKeyDown={handleKeyDown} onChange={handleChange} name="creadit_limit_in_days" value={customerAdd.creadit_limit_in_days||''}  type='number' placeholder='In Days' className='item_input names credit' />
                         </div>
                     </div>
 
                     <div className="d-flex align-items-center ps-0 row mx-0 my-2">
-                                <div className='mx-0 px-0 col-5 col-6'>
-                                    Op Balance
+                        <div className='mx-0 px-0 col-5 col-6'>
+                            Op Balance
+                        </div>
+                        <div className='mx-0 px-0 col-6 col-7'>
+                            <div className='item_input_with_drop row d-flex rounded-2 align-items-center p-0 m-0'>
+                                <div className='col-6 col-7 mx-0 px-0 me-0'>
+                                <input onKeyDown={handleKeyDown} onChange={handleChange} name="opening_balance" value={customerAdd.opening_balance||''} type='number' className='item_input names border-0 ' />
                                 </div>
-                                <div className='mx-0 px-0 col-6 col-7'>
-                                    <div className='item_input_with_drop row d-flex rounded-2 align-items-center p-0 m-0'>
-                                        <div className='col-6 col-7 mx-0 px-0 me-0'>
-                                        <input onKeyDown={handleKeyDown} onChange={handleChange} name="opening_balance" value={customerAdd.opening_balance||''} type='text' className='item_input names border-0 ' />
-                                        </div>
-                                        <div className='col-6 col-5 mx-0 px-0 d-flex align-items-center h-100'>
-                                        <select onKeyDown={handleKeyDown} onChange={handleChange} name='payment_type' value={customerAdd.payment_type||''}  placeholder='To Recieve' className='pay-type-select ms-0 pe-0'>
-                                            <option value="TO_GIVE">To Give</option>
-                                            <option value="TO_RECEIVE">To Receive</option>
-                                        </select>
-                                        </div>
-                                    </div>
+                                <div className='col-6 col-5 mx-0 px-0 d-flex align-items-center h-100'>
+                                <select onKeyDown={handleKeyDown} onChange={handleChange} name='payment_type' value={customerAdd.payment_type||''}  placeholder='To Recieve' className='pay-type-select ms-0 pe-0'>
+                                    <option value="TO_GIVE">To Give</option>
+                                    <option value="TO_RECEIVE">To Receive</option>
+                                </select>
                                 </div>
                             </div>
-                            {/* ------------------------------ */}
-                            <div className="d-flex align-items-center ps-0 row mx-0 my-2">
-                                <div className='mx-0 px-0 col-5 col-6'>
-                                    Disc %
-                                </div>
-                                <div className='mx-0 px-0 col-3 col-4'>
-                                <input onKeyDown={handleKeyDown} onChange={handleChange} name="disc" value={customerAdd.disc||''} type='text' className='item_input names' />
-                                </div>
-                                <div className='mx-0 px-0 col-3 d-flex ps-1'>
-                                    <div onClick={()=>setShowRates(true)} className='btn btn-sm btn-dark py-0 w-100 rates-btn'>Set Rates</div>
-                                </div>      
-                            </div>
+                        </div>
+                    </div>
+                    {/* ------------------------------ */}
+                    <div className="d-flex align-items-center ps-0 row mx-0 my-2">
+                        <div className='mx-0 px-0 col-5 col-6'>
+                            Disc %
+                        </div>
+                        <div className='mx-0 px-0 col-3 col-4'>
+                        <input onKeyDown={handleKeyDown} onChange={handleChange} name="disc" value={customerAdd.disc||''} type='number' className='item_input names' />
+                        </div>
+                        <div className='mx-0 px-0 col-3 d-flex ps-1'>
+                            <div onClick={()=>setShowRates(true)} className='btn btn-sm btn-dark py-0 w-100 rates-btn'>Set Rates</div>
+                        </div>      
+                    </div>
                 </div>
 
                 {/* item rate ----------------------------------------------------------------------------------------------------------- */}
