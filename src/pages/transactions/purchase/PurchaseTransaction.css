@@ -213,3 +213,14 @@ td.clr{
     align-items: center;
     justify-content: center;
 }
+
+.purchase_input{
+    background: inherit;
+    color: inherit;
+    font-family: inherit;
+    border-radius: 0.2rem;
+    padding: 2px 0;
+}
+.purchase_input:focus{
+    outline: 1px solid black;
+}

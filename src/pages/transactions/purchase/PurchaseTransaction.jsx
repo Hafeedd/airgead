@@ -107,6 +107,7 @@ const PurchaseTransaction = () => {
                 {purchaseHeader}
                 <PurchaseTable 
                     {...{
+                        handleChange,
                         setPurchaseItemModal
                     }}
                 />
