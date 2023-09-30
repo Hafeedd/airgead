@@ -21,7 +21,7 @@ const AccountAdd = ({edit}) => {
     const handleChange = (e) => {
         if(typeof e.target.value === 'string')
             e.target.value = e.target.value.toUpperCase()
-        if(e.target.type == "checkbox")
+        if(e.target.type === "checkbox")
             setAccountAdd(data=> ( {...data,[e.target.name] : e.target.checked}))
         else if(e.target.value === '')
             setAccountAdd(data => ( {...data,[e.target.name] : null} ))
@@ -33,9 +33,6 @@ const AccountAdd = ({edit}) => {
     }
 
     const handleSubmit = async (e) =>{
-        if(!accountAdd.transaction){
-            setAccountAdd(data=>({...data,['hsn'] : null, ['tax'] : null}))
-        }
         e.preventDefault()
         console.log(accountAdd)
     }
@@ -133,11 +130,11 @@ const AccountAdd = ({edit}) => {
                             <div className="col-5 d-flex align-items-center row mx-0 my-0 px-0 justify-content-end">
                                 <div className='mx-0 px-0 col-6 d-flex align-items-center justify-content-end'>
                                     <input type='checkbox' onChange={handleChange} name='reserved' checked={accountAdd.reserved} />
-                                    <label for='Reserved' className='ps-2'>Reserved</label>
+                                    <label htmlFor='Reserved' className='ps-2'>Reserved</label>
                                 </div>
                                 <div className='mx-0 px-0 col-6 d-flex align-items-center justify-content-end'>
                                     <input type='checkbox' onChange={handleChange} name='blocked' checked={accountAdd.blocked} />
-                                    <label for='Blocked' className='ps-2'>Blocked</label>
+                                    <label htmlFor='Blocked' className='ps-2'>Blocked</label>
                                 </div>
                             </div>
                         </div>
@@ -163,7 +160,7 @@ const AccountAdd = ({edit}) => {
                             <div className="col-12 d-flex align-items-center row mx-0 my-0 px-0 justify-content-start">
                                 <div className='mx-0 px-0 col-12 d-flex align-items-center justify-content-start'>
                                     <input type='checkbox' onChange={handleChange} name='transaction' checked={accountAdd.transaction} />
-                                    <label for='Reserved' className='ps-2'>Transaction A/c</label>
+                                    <label htmlFor='Reserved' className='ps-2'>Transaction A/c</label>
                                 </div>
                             </div>
                         </div>

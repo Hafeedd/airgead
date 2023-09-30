@@ -1,0 +1,72 @@
+.btn-secondary.payment-nav-btn{
+    border-radius: 0.125rem;
+    background: #8F8F8F;
+    font-size: 0.75rem;
+    font-weight: 600;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+}
+
+.btn-secondary.active{
+    background: #373737;
+}
+
+.payment-detail-container{
+    border-radius: 0.3125rem;
+    background: #EEE;
+    
+}
+
+.item_input.arrow[type="number"]{
+    -moz-appearance: none !important;
+    appearance: none !important;
+}
+
+.form-control.words{
+    color: #4D872A;
+    font-size: 0.875rem;
+    font-weight: 700;
+    border: 1px solid #4D872A;
+    text-transform: capitalize;
+}
+
+.payment-balance-container{
+    background: #E6E6E6;
+    border-radius: 0.3125rem;
+    box-shadow: 0px 0px 3px 0px rgba(0, 0, 0, 0.25) inset;
+    color: #2C2C2C;
+    font-weight: 500;
+}
+
+.payment-table-container{
+    height: 12.125rem; 
+    overflow: hidden;
+    border: 1.056px solid #EEE;
+}
+
+.payment-table-card{
+    overflow-y: auto;
+    height: 12rem;
+}
+
+.table-light.payment-table th{
+    background: #000;
+    color: #FFF;
+    font-size: 0.92388rem;
+    font-weight: 600;
+    vertical-align: middle;
+    position: -webkit-sticky;
+    position: sticky;
+    top: 0;
+}
+
+
+.table-light.payment-table td{
+    background: #FFF;
+    color: #4E4E4E;
+    font-size: 0.92388rem;
+    font-weight: 400;
+    vertical-align: middle;
+}
