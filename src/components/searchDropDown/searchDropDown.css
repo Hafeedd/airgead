@@ -135,7 +135,7 @@
     outline: 0.3px solid black !important;
 }
 
-.ui.search.dropdown > input.search{
+.search-dropdown .ui.search.dropdown > input.search{
     width: inherit !important;
     border-radius: 0.3rem;
     border: 1px solid #BEBEBE !important;
@@ -220,6 +220,7 @@
 }
 
 .dropdown-add-item{
+    text-transform: uppercase;
     max-height: 14rem;
     background: white;
     border: 1px solid #bebebe;

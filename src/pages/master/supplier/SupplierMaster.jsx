@@ -20,20 +20,31 @@ const SupplierMaster = () => {
         getData()
     },[])
 
-    // useEffect(()=>{
-    //     if(location.pathname==='/supplier-master')
-    //         setToEdit(false)
-    // },[toEdit])
+    const handleDelete = (id,e)=>{
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "You won't be able to revert this!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, delete it!'
+          }).then((result) => {
+            if (result.isConfirmed) {
+                handleDeleteConfirm(id,e)
+            }
+          })
+    }
 
-    const handleDelete = async (id,e) =>{
+    const handleDeleteConfirm = async (id,e) =>{
         e.preventDefault()
         try{
-            let res = await deleteSupplier(id)
-            if(res.success) Swal.fire('Item deleted Successfully','','success')
+            let res = await deleteSupplier(id)    
+            if(res.success) Swal.fire('Supplier deleted Successfully','','success')
             else Swal.fire(res.message,'','error')
         getData()
         }catch(err){
-            Swal.fire('Failed to delete item please try again','','error')
+            Swal.fire('Failed to delete supplier please try again','','error')
         }
     }
 
@@ -84,7 +95,7 @@ const SupplierMaster = () => {
                 
                 {
                     /* toEdit||showAddItem */ location.pathname === "/supplier-add"?
-                    <SupplierAdd refresh={getData} edit={toEdit}/>:
+                    <SupplierAdd refresh={getData} edit={toEdit} setToEdit={setToEdit}/>:
                     <SupplierList list={listItem} {...{handleEdit,handleDelete,toEdit}}/>
                 }
         </div>

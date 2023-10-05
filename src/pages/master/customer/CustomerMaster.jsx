@@ -32,10 +32,6 @@ const CustomerList = () => {
        }
     },[listCustomer])
 
-    const refreshToEdit = () =>{
-
-    }
-
     const handleDelete = (id,e)=>{
         Swal.fire({
             title: 'Are you sure?',
@@ -100,7 +96,7 @@ const CustomerList = () => {
                             <div onClick={()=>{navigate("/customer-add");setToEdit(false)}} className="btn btn-primary add-btn px-0">+ &nbsp; Add Customer</div>
                         </div>
                     </div>
-                </div> 
+                </div>
                 {/* toEdit||showCustomerAdd */ location.pathname === '/customer-add'?
                 <CustomerAddForm refresh={getData} edit={toEdit} setToEdit={setToEdit}/>:
                     <CustomerTable list={listCustomer} {...{navigate,handleEdit,handleDelete,toEdit}}/>

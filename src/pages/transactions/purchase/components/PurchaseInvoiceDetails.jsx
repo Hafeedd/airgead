@@ -1,27 +1,55 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { Form } from 'react-bootstrap'
 import { FiEdit } from 'react-icons/fi'
+import useCustomerServices from '../../../../services/master/customerServices'
+import { Dropdown } from 'semantic-ui-react'
 
 const PurchaseInvoiceDetails = (props) => {
-    const {handleEdit,purchaseAdd,handleChange} = props
+    const {handleEdit,purchaseAdd,handleChange,invoiceDetailsRef} = props
 
+    const [supplierList, setSupplierList] = useState(null)
+    const {getSupplier} = useCustomerServices()
+
+    useEffect(()=>{
+        getData()
+    },[])
+    
+    const getData = async () =>{
+        let res = await getSupplier()
+        if(!res?.success) return 0
+
+        let tempList = []
+        res.data.map(item=>{
+            let a = {value:item.code,text:item.code,key:item.id,name:item.name,description:item.name}
+            tempList.push(a)
+        })
+        setSupplierList(tempList)
+    }
+    
+    const search = (options, searchValue) => {
+        return options.filter((option) => {return(option.value.includes(searchValue)||option.description.includes(searchValue))});
+      };
+      
     return (
-        <div className='row mx-0 mb-0'>
+        <div ref={invoiceDetailsRef} className='row mx-0 mb-0'>
 {/* Row 1 -------------------------------------------------------------------------------------------------------- */}
-            <Form.Group className='col-2 col-3 mx-0 d-flex align-items-center mt-1'>
+            <Form.Group className='col-2 col-3 mx-0 d-flex align-items-center mt-1 position-relative'>
                 <Form.Label className='col-3 purchase-input-label'>S.Code</Form.Label>
-                <Form.Control
-                    name="documents_no" value={purchaseAdd.documents_no||''}
-                    onChange={handleChange}
-                    className='purchase-input-text'
-                    placeholder='Code'
-                    type='text'
-                />
+                <Dropdown
+                        search={search}
+                        onChange={handleChange}
+                        className='pruchase-select d-flex align-items-center w-100 py-0 form-control'
+                        name="supplier_code" 
+                        value={purchaseAdd.supplier_code||''}
+                        // placeholder={`${!purchaseAdd.purchase_code?"select":purchaseAdd.purchase_code}`}
+                        clearable
+                        options={supplierList}
+                        />
             </Form.Group>
             <Form.Group className='col-3 ps-4 mx-0 d-flex align-items-center mt-1'>
                 <Form.Label className='col-3 purchase-input-label'>Supplier</Form.Label>
                 <Form.Control
-                    name="fk_supplier" value={purchaseAdd.fk_supplier||''}
+                    name="fk_supplier" value={purchaseAdd.supplier_name||''}
                     onChange={handleChange}
                     className='purchase-input-text'
                     placeholder='Name'
@@ -50,7 +78,7 @@ const PurchaseInvoiceDetails = (props) => {
             <Form.Group className='col-2 col-3 mx-0 d-flex align-items-center mt-1'>
                 <Form.Label className='col-3 purchase-input-label'>Cash/ Credit</Form.Label>
                 <div className='mx-0 col-9 px-0'>
-                    <select name='payment_type' className='customer-select'>
+                    <select name='payment_type' className='customer-select w-100'>
                         <option value="CASH">Cash</option>
                         <option value="CREDIT">Credit</option>
                     </select>
@@ -71,16 +99,16 @@ const PurchaseInvoiceDetails = (props) => {
                     name="bill_date" value={purchaseAdd.bill_date||''}
                     onChange={handleChange}
                     className='purchase-input-text'
-                    type='text'
+                    type='date'
                 />
             </Form.Group>
             <Form.Group className='col-3 col-4 mx-0 d-flex align-items-center my-1'>
                 <Form.Label className='col-3 col-4 purchase-input-label'>Date</Form.Label>
                 <Form.Control
-                    name="bill_date" value={purchaseAdd.bill_date||''}
+                    name="date" value={purchaseAdd.date||''}
                     onChange={handleChange}
                     className='purchase-input-text'
-                    type='text'
+                    type='date'
                 />
             </Form.Group>
 {/* Row 3 -------------------------------------------------------------------------------------------------------- */}

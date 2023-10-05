@@ -38,8 +38,6 @@ const SearchDropDown = ({
         }}
     , [selectedValue,options])
 
-    // if(id==='types') console.log(selectedValue[id])
-
     const handleSearch = (e) => {
         if(e.target.value !== "")
             e.target.value = e.target.value.toUpperCase()
@@ -79,7 +77,7 @@ const SearchDropDown = ({
     }
 
     const handleEdit = (data) =>{
-        setSearch(data.label)
+        setSearch(data.text)
         setEdit(data.value)
     }
 
@@ -90,7 +88,7 @@ const SearchDropDown = ({
     }
 
     return (
-        <Form.Group className={`search_container ${containerClass}`}>
+        <Form.Group className={`search_container search-dropdown ${containerClass}`}>
                     <Dropdown
                     placeholder='select'
                     onChange={handleChange}

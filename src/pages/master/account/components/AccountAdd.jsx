@@ -91,17 +91,17 @@ const AccountAdd = ({edit}) => {
                             Op Balance
                             </div>
                             <div className='mx-0 px-0 col-6 col-7'>
-                                <div className='item_input row rounded-2 p-0 mx-0 align-items-center'>
-                                    <div className='col-6 col-7 mx-0 px-0 me-0'>
-                                        <input onChange={handleChange} name='opening_balance' value={accountAdd.opening_balance?accountAdd.opening_balance:''} type='text' className='item_input names border-0' />
-                                    </div>
-                                    <div className='col-6 col-5 mx-0 px-0 pe-1 d-flex'>
-                                        <select onChange={handleChange} name='payment_type' value={accountAdd.payment_type?accountAdd.payment_type:''} className='customer-select ms-0 pe-0'>
-                                            <option value="TO_GIVE">To Give</option>
-                                            <option value="TO_RECEIVE">To Receive</option>
-                                        </select>
-                                    </div>
+                                <div className='item_input_with_drop row d-flex rounded-2 align-items-center p-0 m-0'>
+                                <div className='col-6 col-7 mx-0 px-0 me-0'>
+                                <input name="opening_balance" type='number' className='item_input names border-0 ' />
                                 </div>
+                                <div className='col-6 col-5 mx-0 px-0 d-flex align-items-center h-100'>
+                                <select name='payment_type'  placeholder='To Recieve' className='pay-type-select ms-0 pe-0'>
+                                    <option value="TO_GIVE">To Give</option>
+                                    <option value="TO_RECEIVE">To Receive</option>
+                                </select>
+                                </div>
+                            </div>
                             </div>
                         </div>
                         <div className="d-flex align-items-center px-0 row mx-0 my-2">

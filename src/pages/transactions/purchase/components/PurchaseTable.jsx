@@ -1,15 +1,26 @@
 import React, { useEffect, useState } from 'react'
 import PurchaseTableItemList from './PurchaseTableItemList'
 import useItemServices from '../../../../services/master/itemServices'
+import useOnKey from '../../../../onKeyFunct/onKeyFunct'
 
-const PurchaseTable = ({setPurchaseItemModal ,handleChange}) => {
+const PurchaseTable = (props) => {
+    const {setPurchaseItemModal,tableItem,
+        handleChangeTableItem,setTableItem,
+        setPurchaseItemSerielModal,cstm_id,
+        setCstm_id,tableItemList,setTableItemList,
+    } = props
+
+    const [ref, setRef] = useState()
     const [itemNameList, setItemNameList] = useState([])
+    const [unitList, setUnitList] = useState()
 
     useEffect(()=>{
         getData()
     },[])
 
-    const {getItemNameList} = useItemServices()
+    const { handleKeyDown, formRef } = useOnKey(ref, setRef);
+
+    const {getItemNameList,getProperty} = useItemServices()
 
     const setItemNameListState = (data) => {
         let tempList = []
@@ -24,13 +35,51 @@ const PurchaseTable = ({setPurchaseItemModal ,handleChange}) => {
     }
 
     const getData = async () => {
+        const minFunct = (data) => {
+            let list = []
+            data.map((x)=>{
+                if(x.property_type==='unit'){
+                    list.push({value:x['id'],text:x['property_value']})
+                }
+            })
+            setUnitList(list)
+        }
         try{
+            let res2 = await getProperty()
             let res = await getItemNameList()
+            if(res2?.success) minFunct(res2.data)
             if(res?.success) setItemNameListState(res.data)
+
         }catch(err){
             console.log(err)
         }
     } 
+
+    const handleFocus = (e) =>{
+        // if(tableItem[e.target.name]==0){
+        // }
+        setTableItem(data=>({...data,[e.target.name]:""}))
+    }
+    
+    const handleBlur = (e) =>{
+        if(!tableItem[e.target.name] || tableItem[e.target.name] == '0'){
+            setTableItem(data=>({...data,[e.target.name]:'0'}))
+        }
+    }
+
+    const handleAddBatch = (e) =>{
+        if(e.type === "keydown"){
+            if(e.key !== "Enter")
+            return 0
+        }
+        let itemTemp= {...tableItem}
+        let itemTempList = [...tableItemList]
+        itemTemp = {...itemTemp,['cstm_id']:cstm_id}
+        itemTempList.push(itemTemp)
+        setTableItemList(itemTempList)
+        setCstm_id(cstm_id+1)
+        setPurchaseItemSerielModal(cstm_id)
+    }
 
     return (
         <>
@@ -59,64 +108,140 @@ const PurchaseTable = ({setPurchaseItemModal ,handleChange}) => {
                             </th>
                         </tr>
                     </thead>
-                    <tbody className='purchase-table-body'>
+                    <tbody className='purchase-table-body' ref={formRef}>
                         <tr>
                             <td className='text-start ps-3' colSpan={2}>
-                                <select type='number' className='purchase_input border-0 w-100'>
+                                <select onKeyDown={handleKeyDown} name={'name'} onChange={handleChangeTableItem} value={(tableItem.name==''||tableItem.name)?tableItem.name:''} 
+                                type='number' className='purchase_input border-0 w-100'>
                                 <option value={null}>Select</option>
                                 {itemNameList?.length>0&&
-                                itemNameList.map((item,index)=><option key={index} value={item.value}>{item.text}</option>)}
+                                itemNameList.map((item,index)=>
+                                <option key={index} value={item.value}>{item.text}</option>)}
                                 </select>
                                 </td>
-                            <td><input type='number' className='purchase_input border-0 w-100 text-center' onChange={handleChange} name='' /></td>
-                            <td><input type='number' className='purchase_input border-0 w-100 text-center' onChange={handleChange} name='' /></td>
-                            <td><input type='number' className='purchase_input border-0 w-100 text-center' onChange={handleChange} name='' /></td>
-                            <td><input type='number' className='purchase_input border-0 w-100 text-center' onChange={handleChange} name='' /></td>
-                            <td><input type='number' className='purchase_input border-0 w-100 text-center' onChange={handleChange} name='' /></td>
-                            <td><input type='number' className='purchase_input border-0 w-100 text-center' onChange={handleChange} name='' /></td>
-                            <td><input type='number' className='purchase_input border-0 w-100 text-center' onChange={handleChange} name='' /></td>
-                            <td><input type='number' className='purchase_input border-0 w-100 text-center' onChange={handleChange} name='' /></td>
-                            <td><input type='number' className='purchase_input border-0 w-100 text-center' onChange={handleChange} name='' /></td>
-                            <td><input type='number' className='purchase_input border-0 w-100 text-center' onChange={handleChange} name='' /></td>
-                            <td><input type='number' className='purchase_input border-0 w-100 text-center' onChange={handleChange} name='' /></td>
-                            <td><input type='number' className='purchase_input border-0 w-100 text-center' onChange={handleChange} name='' /></td>
-                            <td><input type='number' className='purchase_input border-0 w-100 text-center' onChange={handleChange} name='' /></td>
-                            <td><input type='number' className='purchase_input border-0 w-100 text-center' onChange={handleChange} name='' /></td>
+                            <td>
+                                <input onKeyDown={handleKeyDown} name={'open_stock'} onChange={handleChangeTableItem} 
+                                onFocus={handleFocus} onBlur={handleBlur} value={(tableItem.open_stock==''||tableItem.open_stock||tableItem.open_stock=='0')?tableItem.open_stock:''}
+                                type='number' className='purchase_input border-0 w-100 text-center' /></td>
+                            <td>
+                                <select onKeyDown={handleKeyDown} name={'unit'} onChange={handleChangeTableItem} value={(tableItem.unit==''||tableItem.unit)?tableItem.unit:''} 
+                                style={{"-webkit-appearance":"none",fontSize:'10px',padding:'3.5px 1px'}} 
+                                className='purchase_input border-0 w-100 text-center'>
+                                {/* <option value={null}>{">"}</option> */}
+                                {unitList&&unitList.map((x,i)=>
+                                <option key={i} value={x.value}>{x.text}</option>)}
+                                </select></td>
+                            <td>
+                                <input onKeyDown={handleKeyDown} name={'purchase_rate'} onChange={handleChangeTableItem}
+                                 value={(tableItem.purchase_rate==''||tableItem.purchase_rate)?tableItem.purchase_rate:''}
+                                onFocus={handleFocus} onBlur={handleBlur} type='number' 
+                                className='purchase_input border-0 w-100 text-center' /></td>
+                            <td>
+                                <input onKeyDown={handleKeyDown} name={'sale_discount'} onChange={handleChangeTableItem}
+                                 value={(tableItem.sale_discount==''||tableItem.sale_discount)?tableItem.sale_discount:''}
+                                onFocus={handleFocus} onBlur={handleBlur} type='number' 
+                                className='purchase_input border-0 w-100 text-center' /></td>
+                            <td>
+                                <input onKeyDown={handleKeyDown} name={'disc_amnt'} onChange={handleChangeTableItem}
+                                 value={(tableItem.disc_amnt==''||tableItem.disc_amnt)?tableItem.disc_amnt:''}
+                                onFocus={handleFocus} onBlur={handleBlur} type='number' 
+                                className='purchase_input border-0 w-100 text-center' /></td>
+                            <td>
+                                <input onKeyDown={handleKeyDown} name={'value'} onChange={handleChangeTableItem}
+                                 value={(tableItem.value==''||tableItem.value)?tableItem.value:''}
+                                onFocus={handleFocus} onBlur={handleBlur} type='number' 
+                                className='purchase_input border-0 w-100 text-center' /></td>
+                            <td>
+                                <input onKeyDown={handleKeyDown} name={'tax_gst'} onChange={handleChangeTableItem}
+                                 value={(tableItem.tax_gst==''||tableItem.tax_gst)?tableItem.tax_gst:''}
+                                onFocus={handleFocus} onBlur={handleBlur} type='number' 
+                                className='purchase_input border-0 w-100 text-center' /></td>
+                            <td>
+                                <input onKeyDown={handleKeyDown} name={'cgst_igst'} onChange={handleChangeTableItem}
+                                 value={(tableItem.cgst_igst==''||tableItem.cgst_igst)?tableItem.cgst_igst:''}
+                                onFocus={handleFocus} onBlur={handleBlur} type='number' 
+                                className='purchase_input border-0 w-100 text-center' /></td>
+                            <td>
+                                <input onKeyDown={handleKeyDown} name={'sgst'} onChange={handleChangeTableItem}
+                                 value={(tableItem.sgst==''||tableItem.sgst)?tableItem.sgst:''}
+                                onFocus={handleFocus} onBlur={handleBlur} type='number' 
+                                className='purchase_input border-0 w-100 text-center' /></td>
+                            <td>
+                                <input onKeyDown={handleKeyDown} name={'total'} onChange={handleChangeTableItem}
+                                 value={(tableItem.total==''||tableItem.total)?tableItem.total:''}
+                                onFocus={handleFocus} onBlur={handleBlur} type='number' 
+                                className='purchase_input border-0 w-100 text-center' /></td>
+                            <td>
+                                <input onKeyDown={handleKeyDown} name={'cost'} onChange={handleChangeTableItem}
+                                 value={(tableItem.cost==''||tableItem.cost)?tableItem.cost:''}
+                                onFocus={handleFocus} onBlur={handleBlur} type='number' 
+                                className='purchase_input border-0 w-100 text-center' /></td>
+                            <td>
+                                <input onKeyDown={handleKeyDown} name={'margin'} onChange={handleChangeTableItem}
+                                 value={(tableItem.margin==''||tableItem.margin)?tableItem.margin:''}
+                                onFocus={handleFocus} onBlur={handleBlur} type='number' 
+                                className='purchase_input border-0 w-100 text-center' /></td>
+                            <td>
+                                <input onKeyDown={handleKeyDown} name={'retail_rate'} onChange={handleChangeTableItem}
+                                 value={(tableItem.retail_rate==''||tableItem.retail_rate)?tableItem.retail_rate:''}
+                                onFocus={handleFocus} onBlur={handleBlur} type='number' 
+                                className='purchase_input border-0 w-100 text-center' /></td>
+                            <td>
+                                <input onKeyDown={handleAddBatch} type='button' onClick={handleAddBatch}
+                                className='table-item-add-btn' value={"+"}/>
+                            </td>
                         </tr>
-                        <tr>
-                            <td className='text-start ps-3' colSpan={2}>Item Number 1</td>
-                            <td>01.0</td>
-                            <td>0.0</td>
-                            <td>102.</td>
-                            <td>10%</td>
-                            <td>10%</td>
-                            <td>00.0</td>
-                            <td>12.0</td>
-                            <td>5.0</td>
-                            <td>2.0</td>
-                            <td>01.0</td>
-                            <td>545</td>
-                            <td>540</td>
-                            <td>540</td>
-                            <td></td>
-                        </tr>
-                        <tr>
-                            <td className='text-start ps-3' colSpan={2}>Item Number 1</td>
-                            <td>01.0</td>
-                            <td>0.0</td>
-                            <td>102.</td>
-                            <td>10%</td>
-                            <td>10%</td>
-                            <td>00.0</td>
-                            <td>12.0</td>
-                            <td>5.0</td>
-                            <td>2.0</td>
-                            <td>01.0</td>
-                            <td>545</td>
-                            <td>540</td>
-                            <td>540</td>
-                            <td></td>
-                        </tr>
+                        {tableItemList?.length>0&&
+                        tableItemList.map(data=>(
+
+                                <tr>
+                                    <td className='text-start ps-3' colSpan={2}>
+                                    <select disabled 
+                                    value={data.name} 
+                                    className='purchase_input border-0 w-100'>
+                                    <option value={null}>Select</option>
+                                    {itemNameList?.length>0&&
+                                    itemNameList.map((item,index)=>
+                                    <option key={index} value={item.value}>{item.text}</option>)}
+                                    </select>
+                                    </td>
+                                    <td>
+                                        {data.open_stock}</td>
+                                        <td>
+                                        <select value={data.unit} 
+                                        style={{"-webkit-appearance":"none",fontSize:'10px',padding:'3.5px 1px'}} 
+                                        className='purchase_input border-0 w-100 text-center'>
+                                        {unitList&&unitList.map((x,i)=>
+                                        <option key={i} value={x.value}>{x.text}</option>)}
+                                        </select></td>
+                                    <td>
+                                        {data.purchase_rate}</td>
+                                    <td>
+                                        {data.sale_discount}</td>
+                                    <td>
+                                        {data.disc_amnt}%</td>
+                                    <td>
+                                        {data.value}</td>
+                                    <td>
+                                        {data.tax_gst}</td>
+                                    <td>
+                                        {data.cgst_igst}</td>
+                                    <td>
+                                        {data.sgst}</td>
+                                    <td>
+                                        {data.total}</td>
+                                    <td>
+                                        {data.cost}</td>
+                                    <td>
+                                        {data.margin}</td>
+                                    <td>
+                                        {data.retail_rate}</td>
+                                    <td>
+
+                                    </td>
+                                </tr>
+                                ))
+                            }
                         <tr><td style={{ height: "2.5rem" }} colSpan={16}></td></tr>
                         <tr className='purchase-table-green'>
                             <td className='item2 col-1'>
@@ -126,19 +251,35 @@ const PurchaseTable = ({setPurchaseItemModal ,handleChange}) => {
                                 Next {'>'}
                             </td>
                             <td className='item'>01.0</td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
+                            <td>
+
+                            </td>
+                            <td>
+
+                            </td>
+                            <td>
+
+                            </td>
                             <td className='item'>10%</td>
-                            <td className='item'>00.0</td>
-                            <td></td>
+                            <td className='item'>0''</td>
+                            <td>
+
+                            </td>
                             <td className='item'>5.0</td>
                             <td className='item'>2.0</td>
                             <td className='item'>01.0</td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
+                            <td>
+
+                            </td>
+                            <td>
+
+                            </td>
+                            <td>
+
+                            </td>
+                            <td>
+
+                            </td>
                         </tr>
                     </tbody>
                 </table>

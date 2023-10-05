@@ -4,16 +4,15 @@ import useItemServices from '../../../../services/master/itemServices'
 import SearchDropDown from '../../../../components/searchDropDown/SearchDropDown'
 import Swal from 'sweetalert2'
 
-const SupplierAdd = ({edit,refresh}) => {
+const SupplierAdd = ({edit,refresh,setToEdit}) => {
     const [showDropdown, setShowDropdown] = useState(false)
-    const [code, setCode] = useState(null)
     const [ref, setRef] = useState()
     const formRef = useRef(null)
     const [listItem, setListItem] = useState({
         company:[],
         district:[]
     })
-    const [pageHeadItem, setPageHeadItem] = useState(1)
+    
     const [supplierAdd, setSupplierAdd] = useState({
         district:null,
         company:null,
@@ -27,14 +26,14 @@ const SupplierAdd = ({edit,refresh}) => {
         mobile:null,
         gst_in:null,
         disc:null,
-        opening_balance:null,
+        opening_balance:'0.00',
         payment_type:'TO_GIVE',
         post:null,
         remark:null,
     })
 
-    const {postDistrict,getDistrict,postSupplier,putSupplier} = useCustomerServices()
-    const {postCompany,getCompany,getProperty,putProperty,postProperty,getCode} = useItemServices()
+    const {postSupplier,putSupplier} = useCustomerServices()
+    const {getProperty,putProperty,postProperty,getCode} = useItemServices()
 
     useEffect(()=>{
         getData()
@@ -44,20 +43,30 @@ const SupplierAdd = ({edit,refresh}) => {
     },[])
 
     useEffect(()=>{
+        let tempSupplierAdd = {...supplierAdd}
         let keys = Object.keys(supplierAdd)
         if(edit){
             keys.map((key)=>{
-                // if(key==='rate_types') 
                 if(key.match(/^district|^company/)){
-                let a = "fk_"+key
-                if(edit[a]){
-                    setSupplierAdd(data=>({...data,[key]:edit[a]}))}
-            }
+                        let a = "fk_"+key
+                    if(edit[a])
+                        tempSupplierAdd = {...tempSupplierAdd,[key]:edit[a]}
+                }
             else
-            setSupplierAdd(data=>({...data,[key]:edit[key]}))
+                tempSupplierAdd = {...tempSupplierAdd,[key]:edit[key]}
            })
+           if(edit.account_opening_balance[0]?.opening_balance){
+                let a = edit.account_opening_balance[0].opening_balance.toString()
+                let b = a.split("")
+                if(a.match('-1')){
+                    b.splice(0,1)
+                    a = b.join("")
+                }
+                tempSupplierAdd = {...tempSupplierAdd,['opening_balance']:a}
+            }
         }else
-        handleReset()
+            handleReset()
+        setSupplierAdd(tempSupplierAdd)
     },[edit])
 
     useEffect(()=>{
@@ -109,14 +118,8 @@ const SupplierAdd = ({edit,refresh}) => {
                 setSupplierAdd(data=>({...data,['code']:cod[0]?.next_value}))
             }
         }
-        // let res
-        // res = await getCompany()
-        // if(res.success) miniFunct(res.data,'company')
-        // res = await getDistrict()
-        // if(res.success) miniFunct(res.data,'district')
         setListItem(list)
         }catch(err){
-            // console.log(err)
         }
     }
 
@@ -157,7 +160,7 @@ const SupplierAdd = ({edit,refresh}) => {
         e.preventDefault()
         try{
             let x = Object.keys(supplierAdd)
-            let submitData = supplierAdd
+            let submitData = {...supplierAdd}
             x.map(data=>{
                 if(data=='district'||data=='company'){
                     submitData['fk_'+data] = submitData[data]
@@ -174,12 +177,12 @@ const SupplierAdd = ({edit,refresh}) => {
                 Swal.fire('Supplier Added Successfully','','success')
                 handleReset()
                 refresh()
-                getData()
             }else{
                 Swal.fire(res?.message,'','error')
             }
         }catch(err){
             Swal.fire('Something went wrong Pls try again','','error')
+            handleReset()
         }
     }
 
@@ -188,6 +191,15 @@ const SupplierAdd = ({edit,refresh}) => {
         key.map((data)=>{
                 setSupplierAdd(val=>({...val,[data]:null}))
             })
+            getData()
+            refresh()
+            setToEdit(false)
+    }
+
+    const handleValueNull = (e) =>{
+        if(e.target.value == ''||parseInt(e.target.value) == 0){
+            setSupplierAdd((data)=>({...data,['opening_balance']:'0.00'}))
+        }
     }
     
     return (
@@ -265,7 +277,7 @@ const SupplierAdd = ({edit,refresh}) => {
                                 Email
                             </div>
                             <div className='mx-0 px-0 col-6 col-7'>
-                                <input onKeyDown={handleKeyDown} onChange={handleChange} name='email' value={supplierAdd.email?supplierAdd.email:''} type='text' className='item_input names' />
+                                <input onKeyDown={handleKeyDown} onChange={handleChange} name='email' value={supplierAdd.email?supplierAdd.email:''} type='text' className='item_input names text-lowercase' />
                             </div>
                         </div>
                         <div className="d-flex align-items-center px-0 row mx-0 my-2">
@@ -292,7 +304,7 @@ const SupplierAdd = ({edit,refresh}) => {
                                     <div className='mx-0 px-0 col-6 col-7'>
                                         <div className='item_input_with_drop row rounded-2 p-0 mx-0 align-items-center'>
                                             <div className='col-6 col-7 mx-0 px-0 me-0'>
-                                            <input onKeyDown={handleKeyDown} onChange={handleChange} name='opening_balance' value={supplierAdd.opening_balance?supplierAdd.opening_balance:''} type='number' className='item_input names border-0' />
+                                            <input required onBlur={handleValueNull} onKeyDown={handleKeyDown} onChange={handleChange} name='opening_balance' value={supplierAdd.opening_balance?supplierAdd.opening_balance:''} type='number' className='item_input names border-0' />
                                             </div>
                                             <div className='col-6 col-5 m-0 p-0 d-flex '>
                                             <select onKeyDown={handleKeyDown} onChange={handleChange} name='payment_type' value={supplierAdd.payment_type?supplierAdd.payment_type:''} className='pay-type-select ms-0 pe-0'>

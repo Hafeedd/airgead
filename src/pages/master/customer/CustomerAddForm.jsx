@@ -47,7 +47,7 @@ const CustomerAddForm = ({edit,refresh,setToEdit}) =>{
         gst_in:null,
         disc:null,
         remark:null,
-        opening_balance:null,
+        opening_balance:'0.00',
         payment_type:'TO_GIVE',
         district:null,
         route:null,
@@ -61,22 +61,6 @@ const CustomerAddForm = ({edit,refresh,setToEdit}) =>{
     })
 
     const {
-        postRoute,
-        postCity,
-        postTown,
-        postDistrict,
-        postRateType,
-        postTypes,
-        postBillType,
-        getBillType,
-        getRoute,
-        getCity,
-        getTown,
-        getDistrict,
-        getRateType,
-        getTypes,
-        getSetRate,
-        deleteSetRate,
         postCustomer,
         putCustomer,
         putSetRate,
@@ -96,34 +80,38 @@ const CustomerAddForm = ({edit,refresh,setToEdit}) =>{
 
     useEffect(()=>{
         let keys = Object.keys(customerAdd)
+        let tempCustomerAdd = {...customerAdd}
         if(edit){
-            // console.log(keys)
             keys.map((key)=>{
-                // if(key==='rate_types') 
                 if(key.match(/^district|^route|^city|^town|^types|^bill_types/)){
                 let a = "fk_"+key
                 if(edit[a]){
-                    setCustomerAdd(data=>({...data,[key]:edit[a]}))}
-            }
-            else
-            setCustomerAdd(data=>({...data,[key]:edit[key]}))
+                    tempCustomerAdd = {...tempCustomerAdd,[key]:edit[a]}
+                }}
+                else{
+                tempCustomerAdd = {...tempCustomerAdd,[key]:edit[key]}}
             })
+            if(edit.account_opening_balance.length[0]?.opening_balance){
+                let a = edit.account_opening_balance[0].opening_balance.toString()
+                let b = a.split("")
+                if(a.match('-1')){
+                    b.splice(0,1)
+                    a = b.join("")
+                }
+                tempCustomerAdd = {...tempCustomerAdd,['opening_balance']:a}
+            }
             if(edit.fk_setrate.length>0){
-            // let keySetRates = Object.keys(rates)
             let b = []
             edit.fk_setrate.map((data)=>{
             let r = {R_item:data.fk_item,R_wsRate:data.wholesale_rate,
                 R_rtRate:data.retail_rate,R_mrp:data.mrp,R_id:data.id}
             b.push(r)
             })
-            // console.log(b)
             setRatesTempList(b)
         }
-        }else{
-            handleReset()
         }
-    },[edit, ])
-    // console.log(ratesTempList)
+        setCustomerAdd(tempCustomerAdd)
+    },[edit])
 
     useEffect(()=>{
         if(formRef.current) getRefValue(formRef,setRef)
@@ -153,6 +141,7 @@ const CustomerAddForm = ({edit,refresh,setToEdit}) =>{
     };
 
     const handleRatesClear = () =>{
+        console.log("first")
         let x = Object.keys(rates)
         x.map(key=>{
             setRates(data=>({...data,[key]:null}))
@@ -222,23 +211,8 @@ const CustomerAddForm = ({edit,refresh,setToEdit}) =>{
                 setCustomerAdd(data=>({...data,['code']:cod[0]?.next_value}))
             }
         }
-        // res = await getDistrict()
-        // if(res.success) miniFunct(res.data,'district')
-        // res = await getRoute()
-        // if(res.success) miniFunct(res.data,'route')
-        // res = await getCity()
-        // if(res.success) miniFunct(res.data,'city')
-        // res = await getTown()
-        // if(res.success) miniFunct(res.data,'town')
-        // res = await getTypes()
-        // if(res.success) miniFunct(res.data,'types')
-        // res = await getRateType()
-        // if(res.success) miniFunct(res.data,'rate_types')
-        // res = await getBillType()
-        // if(res.success) miniFunct(res.data,'bill_types')
             setLisItem(list)
         }catch(err){
-            // console.log(err)
         }
     }
 
@@ -259,20 +233,21 @@ const CustomerAddForm = ({edit,refresh,setToEdit}) =>{
                 Swal.fire(err?.response?.data?.message,'','error')
         }
         }
-
+        
     const handleSubmit = async (e) =>{
         e.preventDefault()
-        // console.log(customerAdd)
         try{
-            let submitData = customerAdd
+            let submitData = {...customerAdd}
             const names = ['district','route','city','town','bill_types','types']
-            let data =  (names,submitData)
+            let data =  handleChangeFk(names,submitData)
+            console.log(data)
             let res , res2 = 1, customerId
             if(edit){
                 res = await putCustomer(edit.id,data)
                 customerId = res.data.id
             }else{
                 res = await postCustomer(data)
+                console.log("first")
                 customerId = res.data.data_customer.id
             }
             if(res?.success && (!edit||(edit&& !rates?.R_id))){
@@ -284,21 +259,15 @@ const CustomerAddForm = ({edit,refresh,setToEdit}) =>{
                 }
                 if(res2 !==1 && res2.success){
                     Swal.fire(res?.message,'','success')
-                    console.log("1")
                     handleReset()
-                    refresh()
-                    getData()
                 }else if(res2 !=1 && !res2.success){
-                    console.log("2")
                     Swal.fire(res2?.message,'','error')
                     handleReset()
-                    refresh()
-                    getData()
                     await deleteCustomer(res?.data.data_customer?.id)
                 }else{
-                    console.log("3")
                     Swal.fire('Customer Added successfully','','success')
                     handleReset()
+                    refresh()
                 }
             }else if(!res?.success && !edit){
                 const errkey = Object.keys(res.data)
@@ -322,35 +291,33 @@ const CustomerAddForm = ({edit,refresh,setToEdit}) =>{
     const handleReset = () =>{
         let key = Object.keys(customerAdd)
         key.map((data)=>{
-                setCustomerAdd(val=>({...val,[data]:null}))
+                setCustomerAdd(val=>({...val,[data]:null,['payment_type']:'TO_GIVE'}))
             })
             getData()
             setToEdit(false)
+            refresh()
     }
     
     const handleChange = (e) =>{
-        // console.log(e.target.type)
-        // if(e.target.type==="number"){
-        //     if(typeof e.target.value !== 'number') 
-        //         e.target.value = ''
-        // }
-        if(typeof e.target.value === 'string' && (e.target.name !== 'email' && e.target.name != "R_item")){
-                e.target.value = e.target.value.toUpperCase()}
+        if(typeof e.target.value === 'string' && (e.target.name !== 'email' && e.target.name != "R_item"))
+                e.target.value = e.target.value.toUpperCase()
         if(e.target.name.match(/^R_/)){
             if(e.target.value === '' || (e.target.name === 'R_item' && e.target.value.length<0)){ 
                 setRates(data => ( {...data,  [e.target.name] : null} ))
             }else{
                 setRates(data => ( {...data,  [e.target.name] : e.target.value} ))
                 }
-                // else{
-                //     setRates(data => ( {...data,  [e.target.name] : e.target.value} ))
-                // }
             }
-        else{
+        else{ 
+            let a = e.target.value
+            if(e.target.type === "number" && e.target.value !== ''){
+               let a = parseInt(e.target.value)
+               e.target.value = a
+            }
             if(e.target.value === '') 
                 setCustomerAdd(data => ( {...data,  [e.target.name] : null} ))
             else
-                setCustomerAdd(data => ( {...data,[e.target.name] : e.target.value} ))
+                setCustomerAdd(data => ( {...data,[e.target.name] : a} ))
         }
     }
 
@@ -362,6 +329,12 @@ const CustomerAddForm = ({edit,refresh,setToEdit}) =>{
     const handleRatesClose = () =>{
         setShowRates(false)
         handleRatesClear()
+    }
+
+    const handleValueNull = (e) =>{
+        if(e.target.value == ''||parseInt(e.target.value) == 0){
+            setCustomerAdd((data)=>({...data,['opening_balance']:'0.00'}))
+        }
     }
 
     return(
@@ -508,7 +481,7 @@ const CustomerAddForm = ({edit,refresh,setToEdit}) =>{
                         <div className='mx-0 px-0 col-6 col-7'>
                             <div className='item_input_with_drop row d-flex rounded-2 align-items-center p-0 m-0'>
                                 <div className='col-6 col-7 mx-0 px-0 me-0'>
-                                <input onKeyDown={handleKeyDown} onChange={handleChange} name="opening_balance" value={customerAdd.opening_balance||''} type='number' className='item_input names border-0 ' />
+                                <input onBlur={handleValueNull} required onKeyDown={handleKeyDown} onChange={handleChange} name="opening_balance" value={customerAdd.opening_balance||''} type='number' className='item_input names border-0 ' />
                                 </div>
                                 <div className='col-6 col-5 mx-0 px-0 d-flex align-items-center h-100'>
                                 <select onKeyDown={handleKeyDown} onChange={handleChange} name='payment_type' value={customerAdd.payment_type||''}  placeholder='To Recieve' className='pay-type-select ms-0 pe-0'>
