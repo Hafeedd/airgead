@@ -1,6 +1,5 @@
 import React from 'react'
 import search from "../../../../assets/icons/search.png"
-import deleteBtn from "../../../../assets/icons/delete.svg"
 
 const AccountList = (props) => {
     const { list, handleEdit, handleDelete, toEdit } = props
@@ -11,7 +10,8 @@ const AccountList = (props) => {
         </svg>
     )
 
-    return (<div>
+    return (
+    <div>
         <div className="row mx-0 px-4 my-2">
             <div className="col-2 col-3 px-0">
                 <div className='item_seach_bar_cont rounded-2'>
