@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import '../item/item-list/ItemList.css'
+import '../item/components/ItemList.css'
 import { useNavigate , useLocation} from 'react-router'
 import Swal from 'sweetalert2'
 import CustomerTable from './components/CustomerTable'
@@ -10,7 +10,8 @@ const CustomerList = () => {
     const [pageHeadCustomer,setPageHeadCustomer] = useState(1)
     const [toEdit, setToEdit] = useState(false)
     const [listCustomer,setListCustomer] = useState([])
-    const [showCustomerAdd,setShowCustomerAdd] = useState(false)
+    const [search,setSearch] = useState()
+    // const [showCustomerAdd,setShowCustomerAdd] = useState(false)
     const {getCustomer,deleteCustomer} = useCustomerServices()
 
     const location = useLocation()
@@ -62,7 +63,11 @@ const CustomerList = () => {
 
     const getData = async () =>{
         try{
-            const res = await getCustomer()
+            let params
+            if(search){
+                params={'code':search,'name':search}
+            }
+            const res = await getCustomer(params)
             if(res?.success){
                 setListCustomer(res?.data)
             }
@@ -76,10 +81,10 @@ const CustomerList = () => {
         setToEdit(data)
     }
 
-    const handleClose = () =>{
-        setToEdit(false);
-        setShowCustomerAdd(false)
-    }
+    // const handleClose = () =>{
+    //     setToEdit(false);
+    //     setShowCustomerAdd(false)
+    // }
 
     return(
         <div className='item_add'>
@@ -99,7 +104,7 @@ const CustomerList = () => {
                 </div>
                 {/* toEdit||showCustomerAdd */ location.pathname === '/customer-add'?
                 <CustomerAddForm refresh={getData} edit={toEdit} setToEdit={setToEdit}/>:
-                    <CustomerTable list={listCustomer} {...{navigate,handleEdit,handleDelete,toEdit}}/>
+                    <CustomerTable list={listCustomer} {...{getData,search,setSearch,navigate,handleEdit,handleDelete,toEdit}}/>
                 }
         </div>
     )

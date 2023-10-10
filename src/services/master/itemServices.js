@@ -1,4 +1,4 @@
-import axios, { axiosPrivate } from "../../api/axios";
+import { axiosPrivate } from "../../api/axios";
 
 const useItemServices = () =>{
 
@@ -189,8 +189,8 @@ const useItemServices = () =>{
     }
 
     // item list
-    const getItemList = async () =>{
-        const response = await axiosPrivate.get('master/item/created/')
+    const getItemList = async (data) =>{
+        const response = await axiosPrivate.get('master/item/created/',{params:{data}})
         return response.data
     }
     

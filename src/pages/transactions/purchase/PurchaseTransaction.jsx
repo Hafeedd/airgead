@@ -10,7 +10,6 @@ import PurchaseDeliveryDetails from './components/PurchaseDeliveryDetails'
 import PurchaseTableItemList from './components/PurchaseTableItemList'
 import PurchaseEditList from './components/PurchaseEditList'
 import { PurchaseItemBatchAdd } from './components/PurchaseItemSerielAdd'
-// import useCustomerServices from '../../../services/master/customerServices'
 
 const PurchaseTransaction = () => {
     const [purchaseItemModal, setPurchaseItemModal] = useState(false)
@@ -20,6 +19,7 @@ const PurchaseTransaction = () => {
     const [pageHeadItem, setPageHeadItem] = useState(1)
     const [purchaseHeader, setPurchaseHeader] = useState(1)
     const [itemBatchStore, setItemBatchStore] = useState()
+    const [calcChange, setCalcChange] = useState(true)
     const invoiceDetailsRef = useRef()
     const printDetailsRef = useRef()
     const deliveryDetailsRef = useRef()
@@ -54,7 +54,7 @@ const PurchaseTransaction = () => {
         bank:null,
         transfer_account:null,
     })
-
+    
     const [tableItem, setTableItem] = useState({
         cstm_id:null,
         name:null,
@@ -67,13 +67,14 @@ const PurchaseTransaction = () => {
         cost:0.0,
         total:0.0,
         sgst:0.0,
-        cgst_igst:0.0,
+        cgst_or_igst:0.0,
         tax_gst:0.0,
         value:0.0,
         sale_discount:0.0,
-        disc_amnt:0.0
+        discount_1_percentage:0.0,
+        discount_1_amount:0.0
     })
-
+    
     const [tableItemBatch, setTableItemBatch] = useState({
         cstm_id:null,
         batch:null,
@@ -83,13 +84,7 @@ const PurchaseTransaction = () => {
         size:null,
         color:null,
     })
-
-    const handlePurchaseAddReset = () =>{
-        let tempItem = {...purchaseAdd}
-        const keys =  Object.keys(purchaseAdd)
-        keys.map(data=>tempItem = {...tempItem,[data]:null})
-        setPurchaseAdd(tempItem)
-    }
+    
     const handleTableItemReset = () =>{
         let tempItem = {...tableItem}
         const keys =  Object.keys(tableItem)
@@ -105,7 +100,7 @@ const PurchaseTransaction = () => {
     const handleChange = (e,data) =>{
         if(data){
             let supplier_data = data.options.filter(x=>x.value===data.value)[0]
-            setPurchaseAdd(data=>({...data,['supplier_code']:supplier_data.value,['supplier_name']:supplier_data.name,['fk_supplier']:supplier_data.id}))
+            setPurchaseAdd(data=>({...data,['supplier_code']:supplier_data?.value,['supplier_name']:supplier_data?.name,['fk_supplier']:supplier_data?.id}))
         }
         else if(e.target.value == "")
             setPurchaseAdd(data=>({...data,[e.target.name]:null}))
@@ -131,24 +126,83 @@ const PurchaseTransaction = () => {
         setPurchaseEditModal(true)
     }
 
-    const handleChangeTableItem = (e) =>{
-        console.log(e.target.value)
-        if(e.target.value == "")
-            setTableItem(data=>({...data,[e.target.name]:''}))
-        else
-            setTableItem(data=>({...data,[e.target.name]:e.target.value}))
+    const handleAmountCalculation = (tempItem,e) =>{
+        let name = e.target.name
+        let value = {}
+            if((tempItem.purchase_rate)&&tableItem.open_stock){
+                value = {['value']:(tempItem.open_stock*tempItem.purchase_rate)}
+                if(name=='discount_1_percentage'  && tempItem.discount_1_percentage){
+                    value = {...value,['discount_1_amount']:value.value-(value.value-(tempItem.discount_1_percentage*(value.value/100)))}
+                }
+                else if(name=='discount_1_percentage'){
+                    value = {...value,['discount_1_amount']:0}
+                }
+                if(name=='discount_1_amount' && tempItem.discount_1_amount){
+                    value = {...value,['discount_1_percentage']:(tempItem.discount_1_amount/value.value)*100}
+                }else if(name=='discount_1_amount'){
+                    value = {...value,['discount_1_percentage']:0}
+                }
+                
+                
+                tempItem = {...tempItem,...value}
+                if(value.value && tempItem.discount_1_amount){
+                    tempItem.discount_1_amount = parseFloat(tempItem.discount_1_amount)
+                    value = {...value,['value']:(parseFloat(tempItem.open_stock*tempItem.purchase_rate)-parseFloat(tempItem.discount_1_amount))}
+                }else{
+                    value = {...value,['value']:(tempItem.open_stock*tempItem.purchase_rate)}
+            }
+            if(name=='tax_gst'){
+                    value = {...value,['total']:(value.value+(tempItem.tax_gst*(value.value/100))),
+                    ['cost']:(value.value+(tempItem.tax_gst*(value.value/100))),
+                    ['cgst_or_igst']:tempItem.tax_gst/2,['sgst']:tempItem.tax_gst/2}
+                }
+            if(name=='margin' && tempItem.margin){
+                value = {...value,['retail_rate']:parseFloat(tempItem.total)+parseFloat(tempItem.total*(tempItem.margin/100))}
+            }else{
+                value = {...value,['retail_rate']:0}
+            }
+            }
+            tempItem = {...tempItem,...value}
+            let tempItemKeys = Object.keys(tempItem)
+            tempItemKeys?.map(key=>{
+                let number = parseFloat(tempItem[key])
+                if(number?.toFixed(2) && !Number.isInteger(number)  && number){
+                tempItem = {...tempItem,[key]:number?.toFixed(2)}
+                }
+            })
+        tempItem = {...tempItem}
+        setTableItem(tempItem)
     }
 
-    console.log(tableItem)
+    const handleChangeTableItem = (e) =>{
+        let tempItem = {...tableItem}
+        if(e.target.value === ""){
+            tempItem = {...tempItem,[e.target.name]:''}
+        }else{
+            tempItem = {...tempItem,[e.target.name]:e.target.value}
+        }
+        handleAmountCalculation(tempItem,e)
+        setCalcChange(!calcChange)
+    }
 
     const handleChangeTableItemBatch = (e) =>{
         if(e.target.value == "")
             setTableItemBatch(data=>({...data,[e.target.name]:null}))
         else
             e.target.value = e.target.value.toUpperCase()
-            setTableItemBatch(data=>({...data,[e.target.name]:e.target.value}))
+        setTableItemBatch(data=>({...data,[e.target.name]:e.target.value}))
     }
     
+    const handleClose = () =>{
+        let tempList = [...tableItemList]
+        let index = tempList.indexOf((data)=>data.cstm_id === purchaseItemSerielModal)
+        if(index){
+        tempList.splice(index,1)
+        }
+        setTableItemList(tempList)
+        setPurchaseItemSerielModal(false)
+    }
+
     return (
         <div className='item_add'>
             <div className="itemList_header row mx-0">
@@ -223,7 +277,7 @@ const PurchaseTransaction = () => {
             size='lg'
             centered
             contentClassName='purchase-batch-modal'
-            onHide={()=>setPurchaseItemSerielModal(false)}
+            onHide={()=>handleClose()}
             >
                 <PurchaseItemBatchAdd 
                 {...{tableItemBatch, setTableItemBatch,purchaseItemSerielModal,

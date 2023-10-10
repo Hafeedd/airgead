@@ -41,7 +41,7 @@
 }
 
 .btn-dark.filter-btn{
-    height: 2.1875rem;
+    /* height: 2rem; */
     background: #000;
     border-radius: 0.3125rem;
     border: 1px solid #D8D8D8;

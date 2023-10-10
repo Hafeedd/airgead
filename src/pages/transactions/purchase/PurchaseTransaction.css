@@ -246,14 +246,14 @@ td.clr{
     background: inherit;
 }
 
-.pruchase-select{
-    border-radius: 0.3rem;
-    background: #eeeeee;
-    height: 1.7rem;
+.ui.search.selection.dropdown.pruchase-select{
+    border-radius: 0.3rem !important;
+    background: #eeeeee !important;
+    min-height: 1.7em !important;
     text-transform: uppercase;
     padding-left: 0.4rem;
     color: black;
-    width: 100%;
+    min-width: 0.3rem;
     border: 0.01px solid #e7e9ea !important;
     font-size: 12px !important;
     font-weight: normal;
@@ -263,10 +263,13 @@ td.clr{
     color: #55585b;
     border-radius: inherit;
     font-size: 12px;
+    left: 0px !important;
     text-transform: uppercase;
     width: inherit;
     height: inherit !important;
+    padding: 0.2rem !important;
 }
+
 .pruchase-select input:focus{
     outline : 1px solid black !important
 }
@@ -274,12 +277,14 @@ td.clr{
 .purchase-select> input> .divider{
     top: 0.1em;
 }
-.ui.active.visible.search.dropdown.pruchase-select .menu{
-    width: 100% ;
+.ui.active.visible.selection.search.dropdown.pruchase-select .menu{
+    width:max-content !important ;
 }
 
-.pruchase-select .dropdown.icon{
-    visibility: hidden;
+.pruchase-select.selection .dropdown.icon{
+    /* display: none; */
+    height: 5px;
+    top: 0.18rem !important;
 }
 
 .purchase-batch-modal{

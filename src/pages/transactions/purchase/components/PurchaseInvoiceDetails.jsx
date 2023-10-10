@@ -27,6 +27,7 @@ const PurchaseInvoiceDetails = (props) => {
     }
     
     const search = (options, searchValue) => {
+        searchValue = searchValue.toUpperCase()
         return options.filter((option) => {return(option.value.includes(searchValue)||option.description.includes(searchValue))});
       };
       
@@ -36,15 +37,16 @@ const PurchaseInvoiceDetails = (props) => {
             <Form.Group className='col-2 col-3 mx-0 d-flex align-items-center mt-1 position-relative'>
                 <Form.Label className='col-3 purchase-input-label'>S.Code</Form.Label>
                 <Dropdown
-                        search={search}
-                        onChange={handleChange}
-                        className='pruchase-select d-flex align-items-center w-100 py-0 form-control'
-                        name="supplier_code" 
-                        value={purchaseAdd.supplier_code||''}
-                        // placeholder={`${!purchaseAdd.purchase_code?"select":purchaseAdd.purchase_code}`}
-                        clearable
-                        options={supplierList}
-                        />
+                    clearable
+                    selection
+                    search={search}
+                    onChange={handleChange}
+                    className='pruchase-select d-flex align-items-center py-0 form-control'
+                    name="supplier_code"
+                    placeholder='select'
+                    value={purchaseAdd.supplier_code||''}
+                    options={supplierList}
+                    />
             </Form.Group>
             <Form.Group className='col-3 ps-4 mx-0 d-flex align-items-center mt-1'>
                 <Form.Label className='col-3 purchase-input-label'>Supplier</Form.Label>

@@ -16,19 +16,31 @@ const useOnKey = (ref, setRef) =>{
     }
 
     const handleKeyDown = (e) => {
-        if (e.key === "Enter") {
+        if (e.keyCode == 13 && e.shiftKey) { 
+            e.target.value += '\n';
+            e.preventDefault()
+        }
+        else if(e.key === "Enter") {
             e.preventDefault();
             if (e.target && ref.length>0) {
                 let a = ref.indexOf(e.target)
-                if(a===ref.length-1){
-                    ref[0].focus()
-                }else{
-                ref[a].blur()
-                ref[a+1].focus();
-            }
+                    if(a===ref.length-1){
+                        ref[0].focus()
+                    }else if (ref[a+1]?.disabled ){
+                        if(a!==ref.length-2){
+                        ref[a]?.blur()
+                        ref[a+2]?.focus();}
+                        else{
+                            ref[0].focus()
+                        }
+                    }
+                    else{
+                        ref[a].blur()
+                        ref[a+1].focus();
+                    }
             }
         }
-    };
+    }
 
     return{handleKeyDown,formRef}
 }

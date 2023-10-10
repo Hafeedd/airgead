@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import PurchaseTableItemList from './PurchaseTableItemList'
 import useItemServices from '../../../../services/master/itemServices'
 import useOnKey from '../../../../onKeyFunct/onKeyFunct'
@@ -18,7 +18,7 @@ const PurchaseTable = (props) => {
         getData()
     },[])
 
-    const { handleKeyDown, formRef } = useOnKey(ref, setRef);
+    const {handleKeyDown,  formRef } = useOnKey(ref, setRef);
 
     const {getItemNameList,getProperty} = useItemServices()
 
@@ -56,14 +56,13 @@ const PurchaseTable = (props) => {
     } 
 
     const handleFocus = (e) =>{
-        // if(tableItem[e.target.name]==0){
-        // }
-        setTableItem(data=>({...data,[e.target.name]:""}))
+        if(!tableItem[e.target.name])
+            setTableItem(data=>({...data,[e.target.name]:""}))
     }
     
     const handleBlur = (e) =>{
-        if(!tableItem[e.target.name] || tableItem[e.target.name] == '0'){
-            setTableItem(data=>({...data,[e.target.name]:'0'}))
+        if(!tableItem[e.target.name] || tableItem[e.target.name] == '' || tableItem[e.target.name] == '0'){
+            setTableItem(data=>({...data,[e.target.name]:0}))
         }
     }
 
@@ -75,7 +74,7 @@ const PurchaseTable = (props) => {
         let itemTemp= {...tableItem}
         let itemTempList = [...tableItemList]
         itemTemp = {...itemTemp,['cstm_id']:cstm_id}
-        itemTempList.push(itemTemp)
+        itemTempList.unshift(itemTemp)
         setTableItemList(itemTempList)
         setCstm_id(cstm_id+1)
         setPurchaseItemSerielModal(cstm_id)
@@ -83,7 +82,7 @@ const PurchaseTable = (props) => {
 
     return (
         <>
-            <div className='px-2'>
+            <div className='px-2 mt-1'>
                 <table className='table table-secondary purchase-table mb-0'>
                     <thead className='purchase-table-header'>
                         <tr>
@@ -94,9 +93,9 @@ const PurchaseTable = (props) => {
                             <th>Disc%</th>
                             <th>Disc</th>
                             <th>Value</th>
-                            <th>Tax</th>
-                            <th>CGST/IGST</th>
-                            <th>SGST</th>
+                            <th>Tax%</th>
+                            <th>CGST/IGST%</th>
+                            <th>SGST%</th>
                             <th>Total</th>
                             <th>Cost</th>
                             <th>Margin%</th>
@@ -112,7 +111,7 @@ const PurchaseTable = (props) => {
                         <tr>
                             <td className='text-start ps-3' colSpan={2}>
                                 <select onKeyDown={handleKeyDown} name={'name'} onChange={handleChangeTableItem} value={(tableItem.name==''||tableItem.name)?tableItem.name:''} 
-                                type='number' className='purchase_input border-0 w-100'>
+                                type='number' className='purchase_input border-0 w-100 ps-2'>
                                 <option value={null}>Select</option>
                                 {itemNameList?.length>0&&
                                 itemNameList.map((item,index)=>
@@ -137,17 +136,17 @@ const PurchaseTable = (props) => {
                                 onFocus={handleFocus} onBlur={handleBlur} type='number' 
                                 className='purchase_input border-0 w-100 text-center' /></td>
                             <td>
-                                <input onKeyDown={handleKeyDown} name={'sale_discount'} onChange={handleChangeTableItem}
-                                 value={(tableItem.sale_discount==''||tableItem.sale_discount)?tableItem.sale_discount:''}
+                                <input onKeyDown={handleKeyDown} name={'discount_1_percentage'} onChange={handleChangeTableItem}
+                                 value={(tableItem.discount_1_percentage==''||tableItem.discount_1_percentage)?tableItem.discount_1_percentage:''}
                                 onFocus={handleFocus} onBlur={handleBlur} type='number' 
                                 className='purchase_input border-0 w-100 text-center' /></td>
                             <td>
-                                <input onKeyDown={handleKeyDown} name={'disc_amnt'} onChange={handleChangeTableItem}
-                                 value={(tableItem.disc_amnt==''||tableItem.disc_amnt)?tableItem.disc_amnt:''}
+                                <input onKeyDown={handleKeyDown} name={'discount_1_amount'} onChange={handleChangeTableItem}
+                                 value={(tableItem.discount_1_amount==''||tableItem.discount_1_amount)?tableItem.discount_1_amount:''}
                                 onFocus={handleFocus} onBlur={handleBlur} type='number' 
                                 className='purchase_input border-0 w-100 text-center' /></td>
                             <td>
-                                <input onKeyDown={handleKeyDown} name={'value'} onChange={handleChangeTableItem}
+                                <input disabled onKeyDown={handleKeyDown} name={'value'} onChange={handleChangeTableItem}
                                  value={(tableItem.value==''||tableItem.value)?tableItem.value:''}
                                 onFocus={handleFocus} onBlur={handleBlur} type='number' 
                                 className='purchase_input border-0 w-100 text-center' /></td>
@@ -157,8 +156,8 @@ const PurchaseTable = (props) => {
                                 onFocus={handleFocus} onBlur={handleBlur} type='number' 
                                 className='purchase_input border-0 w-100 text-center' /></td>
                             <td>
-                                <input onKeyDown={handleKeyDown} name={'cgst_igst'} onChange={handleChangeTableItem}
-                                 value={(tableItem.cgst_igst==''||tableItem.cgst_igst)?tableItem.cgst_igst:''}
+                                <input onKeyDown={handleKeyDown} name={'cgst_or_igst'} onChange={handleChangeTableItem}
+                                 value={(tableItem.cgst_or_igst==''||tableItem.cgst_or_igst)?tableItem.cgst_or_igst:''}
                                 onFocus={handleFocus} onBlur={handleBlur} type='number' 
                                 className='purchase_input border-0 w-100 text-center' /></td>
                             <td>
@@ -217,17 +216,17 @@ const PurchaseTable = (props) => {
                                     <td>
                                         {data.purchase_rate}</td>
                                     <td>
-                                        {data.sale_discount}</td>
+                                        {data.discount_1_percentage}%</td>
                                     <td>
-                                        {data.disc_amnt}%</td>
+                                        {data.discount_1_amount}</td>
                                     <td>
                                         {data.value}</td>
                                     <td>
-                                        {data.tax_gst}</td>
+                                        {data.tax_gst}%</td>
                                     <td>
-                                        {data.cgst_igst}</td>
+                                        {data.cgst_or_igst}%</td>
                                     <td>
-                                        {data.sgst}</td>
+                                        {data.sgst}%</td>
                                     <td>
                                         {data.total}</td>
                                     <td>

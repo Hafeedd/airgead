@@ -11,6 +11,7 @@ const ItemMaster = () => {
     const [pageHeadItem,setPageHeadItem] = useState(1)
     const [toEdit, setToEdit] = useState(false)
     const [listItem,setListItem] = useState()
+    const [search, setSearch] = useState()
     // const [showAddItem, setShowAddItem] = useState(false)
     const {getItemList,deleteItemList} = useItemServices()
     const navigate = useNavigate()
@@ -63,6 +64,10 @@ const ItemMaster = () => {
 
     const getData = async () =>{
         try{
+            let params
+            if(search){
+                params={'code':search,'name':search}
+            }
             const res = await getItemList()
             if(res.success){
                 setListItem(res.data)
@@ -99,7 +104,7 @@ const ItemMaster = () => {
                 {
                     /* toEdit||showAddItem */ location.pathname === '/add'?
                     <ItemAddForm refresh={getData} edit={toEdit} setToEdit={setToEdit}/>:
-                    <ItemList list={listItem} {...{handleEdit,handleDelete,toEdit}}/>
+                    <ItemList list={listItem} {...{search,setSearch,getData,handleEdit,handleDelete,toEdit}}/>
                 }
         </div>
     )

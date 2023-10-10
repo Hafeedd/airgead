@@ -189,7 +189,10 @@ const SupplierAdd = ({edit,refresh,setToEdit}) => {
     const handleReset = () =>{
         let key = Object.keys(supplierAdd)
         key.map((data)=>{
-                setSupplierAdd(val=>({...val,[data]:null}))
+                if(data==="opening_balance")
+                    setSupplierAdd(val=>({...val,[data]:'0.00'}))
+                else
+                    setSupplierAdd(val=>({...val,[data]:null}))
             })
             getData()
             refresh()

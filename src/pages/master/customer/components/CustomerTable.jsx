@@ -1,11 +1,11 @@
 
 import { useState } from "react"
 import deleteBtn from "../../../../assets/icons/delete.svg"
-import search from "../../../../assets/icons/search.png"
+import searchIcon from "../../../../assets/icons/search.png"
 import { OverlayTrigger, ButtonToolbar, Popover } from "react-bootstrap"
 
 const CustomerTable = (props) => {
-    const { list, handleEdit, handleDelete} = props
+    const { list, handleEdit, handleDelete,search,setSearch ,getData} = props
 
     const editBtn = (
         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
@@ -18,8 +18,10 @@ const CustomerTable = (props) => {
             <div className="row mx-0 px-4 my-2">
                 <div className="col-2 col-3 px-0">
                     <div className='item_seach_bar_cont rounded-2'>
-                        <img src={search} className='search_img me-3 ms-2 py-2' />
+                        <img src={searchIcon} className='search_img me-3 ms-2 py-2' />
                         <input
+                            value={search}
+                            onChange={(e)=>setSearch(e.target.value)}
                             className='item_search_bar rounded-2 border-0 py-1'
                             placeholder='Search'
                             type='text'
@@ -27,7 +29,7 @@ const CustomerTable = (props) => {
                     </div>
                 </div>
                 <div className="col-2">
-                    <div className="btn btn-sm btn-dark filter-btn">
+                    <div onClick={getData} className="btn btn-sm btn-dark filter-btn">
                         Filter Here
                     </div>
                 </div>
@@ -37,6 +39,7 @@ const CustomerTable = (props) => {
                     <thead>
                         <tr>
                             {/* <th style={{borderTopLeftRadius: "0.3125rem"}}>No</th> */}
+                            <th>SL</th>
                             <th>Code</th>
                             <th>Name</th>
                             <th>Mob1</th>
@@ -62,6 +65,7 @@ const CustomerTable = (props) => {
                                 );
                                 return (<tr>
                                     {/* <td>{i+1}</td> */}
+                                    <td>{i+1}</td>
                                     <td>{data.code}</td>
                                     <td>{data.name}</td>
                                     <td>{data.mobile}</td>

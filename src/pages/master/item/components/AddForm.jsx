@@ -99,6 +99,8 @@ export const ItemAddForm = ({edit,refresh,setToEdit}) =>{
         gate_pass:false,
         barcode:null,
     })
+
+    console.log(itemadd)
     
     useEffect(()=>{
         if(listItem?.unit?.length>0 && listItem?.transaction_unit?.length>0 && !edit){

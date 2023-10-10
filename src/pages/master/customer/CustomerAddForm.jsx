@@ -5,6 +5,7 @@ import useCustomerServices from '../../../services/master/customerServices'
 import SearchDropDown from '../../../components/searchDropDown/SearchDropDown'
 import { Modal } from 'react-bootstrap'
 import useItemServices from '../../../services/master/itemServices'
+import useOnKey from '../../../onKeyFunct/onKeyFunct'
 
 const CustomerAddForm = ({edit,refresh,setToEdit}) =>{
 
@@ -15,7 +16,6 @@ const CustomerAddForm = ({edit,refresh,setToEdit}) =>{
     const [ratesTempList, setRatesTempList] = useState([])
     const [itemNameList, setItemNameList] = useState([])
     const [ref, setRef] = useState()
-    const formRef = useRef(null)
     const [rates, setRates] = useState({
         R_item:null,
         R_wsRate:null,
@@ -113,32 +113,7 @@ const CustomerAddForm = ({edit,refresh,setToEdit}) =>{
         setCustomerAdd(tempCustomerAdd)
     },[edit])
 
-    useEffect(()=>{
-        if(formRef.current) getRefValue(formRef,setRef)
-        }
-    ,[formRef])
-
-    const getRefValue = (ref,set) =>{
-        const data = [...ref.current.children]
-        const newList = [...data[0].querySelectorAll('input, select, textarea')]
-        newList[0].focus()
-            set(newList)
-    }
-
-    const handleKeyDown = (e) => {
-        if (e.key === "Enter") {
-            e.preventDefault();
-            if (e.target && ref.length>0) {
-                let a = ref.indexOf(e.target)
-                if(a===ref.length-1){
-                    ref[0].focus()
-                }else{
-                ref[a].blur()
-                ref[a+1].focus();
-            }
-            }
-        }
-    };
+    const {handleKeyDown,  formRef } = useOnKey(ref, setRef);
 
     const handleRatesClear = () =>{
         console.log("first")

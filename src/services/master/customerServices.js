@@ -102,14 +102,14 @@ const useCustomerServices = () => {
     }
 
     // supplier
-    const getSupplier = async() =>{
-        const response = await axiosPrivate.get('master/supplier/created/')
+    const getSupplier = async(data) =>{
+        const response = await axiosPrivate.get('master/supplier/created/',{params:{data}})
         return response.data
     }
 
     // customer
-    const getCustomer = async() =>{
-        const response = await axiosPrivate.get('master/customer/created/')
+    const getCustomer = async(data) =>{
+        const response = await axiosPrivate.get('master/customer/created/',{params:{...data}})
         return response.data
     }
 

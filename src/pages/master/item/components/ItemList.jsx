@@ -2,7 +2,7 @@ import search from "../../../../assets/icons/search.png"
 import deleteBtn from "../../../../assets/icons/delete.svg"
 
 const ItemList = (props) => {
-    const {list,handleEdit,handleDelete} = props
+    const {list,handleEdit,handleDelete,search,setSearch,getData,} = props
     
     const editBtn = (
         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
@@ -16,7 +16,9 @@ const ItemList = (props) => {
         <div className="col-2 col-3 px-0">
             <div className='item_seach_bar_cont rounded-2'>
                 <img src={search} className='search_img me-3 ms-2 py-2'/>
-                <input 
+                <input
+                    value={search}
+                    onChange={(e)=>setSearch(e.target.value)}
                     className='item_search_bar rounded-2 border-0 py-1' 
                     placeholder='Search' 
                     type='text'
@@ -24,7 +26,7 @@ const ItemList = (props) => {
             </div>
         </div>
         <div className="col-2">
-            <div className="btn btn-sm btn-dark filter-btn">
+            <div onClick={getData} className="btn btn-sm btn-dark filter-btn">
                 Filter Here
             </div>
         </div>

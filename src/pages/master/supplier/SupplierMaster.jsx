@@ -9,8 +9,9 @@ import useCustomerServices from '../../../services/master/customerServices'
 const SupplierMaster = () => {
     const [pageHeadItem,setPageHeadItem] = useState(1)
     const [toEdit, setToEdit] = useState(false)
-    const [listItem,setListItem] = useState()
-    const [showAddItem, setShowAddItem] = useState(false)
+    const [listItem, setListItem] = useState()
+    const [search, setSearch] = useState()
+    // const [showAddItem, setShowAddItem] = useState(false)
     const navigate = useNavigate()
     const {getSupplier,deleteSupplier} = useCustomerServices()
 
@@ -50,7 +51,11 @@ const SupplierMaster = () => {
 
     const getData = async () =>{
         try{
-            const res = await getSupplier()
+            let params
+            if(search){
+                params={'code':search,'name':search}
+            }
+            const res = await getSupplier(params)
             if(res.success){
                 // const listhead = ['code','name','fk_company.company','hsn','retail_rate','purchase_rate','tax_gst','mrp_rate']
                 // const newList = handleList(tempList,listhead)
@@ -96,7 +101,7 @@ const SupplierMaster = () => {
                 {
                     /* toEdit||showAddItem */ location.pathname === "/supplier-add"?
                     <SupplierAdd refresh={getData} edit={toEdit} setToEdit={setToEdit}/>:
-                    <SupplierList list={listItem} {...{handleEdit,handleDelete,toEdit}}/>
+                    <SupplierList list={listItem} {...{search,setSearch,getData,handleEdit,handleDelete,toEdit}}/>
                 }
         </div>
     )

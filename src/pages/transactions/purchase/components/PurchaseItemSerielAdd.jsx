@@ -60,7 +60,7 @@ export const PurchaseItemBatchAdd = (props) => {
   const handleClose = () =>{
     setPurchaseItemSerielModal(false)
     handleTableItemReset()
-    setBatchList([])
+    setBatchList()
     let tempList = [...tableItemList]
     let index = tempList.indexOf((data)=>data.cstm_id === purchaseItemSerielModal)
     if(index){
@@ -68,8 +68,6 @@ export const PurchaseItemBatchAdd = (props) => {
     }
     setTableItemList(tempList)
   }
-
-  console.log(tableItemBatchList)
 
   const handleBatchSubmit = (e) =>{
     if(batchList?.length>0){

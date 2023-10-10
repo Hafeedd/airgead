@@ -63,8 +63,8 @@
 }
 
 .table-scroller{
-    min-height: 20rem;
-    max-height: 25rem;
+    min-height: 32rem;
+    max-height: 32rem;
     overflow-y: scroll;
     overflow-x: visible;
 }
