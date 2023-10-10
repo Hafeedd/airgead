@@ -14,6 +14,8 @@
     padding: 0 0;
     height: 18.25rem;
     box-shadow: 0px 0px 6px 0px rgba(91, 91, 91, 0.18) inset;
+    overflow-y: scroll;
+    overflow-x: hidden;
 }
 
 .table.account-group-table th{
@@ -22,6 +24,9 @@
     font-weight: 500;
     color: #FFF;
     padding-left: 0rem;
+    position: -webkit-sticky;
+    position: sticky;
+    top: 0;
 }
 
 .table.account-group-table th:first-child{
@@ -52,10 +57,16 @@
 
 .table.account-group-table td .content{
     background: #FFF;
-    padding: 0.25rem 0rem;
+    padding: 0.25rem 0.25rem;
     height: 2.5rem;
     display: flex;
     align-items: center;
+}
+
+.table.account-group-table td .content .form-select-sm{
+    background-position: right .25rem center;
+    padding-left: 0.25rem;
+    padding-right: 1.5rem;
 }
 
 .table.account-group-table td:first-child .content{

@@ -24,6 +24,12 @@
     appearance: none !important;
 }
 
+.form-control.purchase-input-text.mobile[type="number"]{
+    -moz-appearance: textfield !important;
+    -webkit-appearance: textfield !important;
+    appearance: textfield !important;
+}
+
 .form-control.purchase-input-date{
     background: #000;
     color: #88ED7F;
@@ -110,7 +116,6 @@
     color: #2C2C2C;
     font-size: 0.875rem;
     font-weight: 500;
-    
 }
 
 .purchase-supplier-container{

@@ -8,6 +8,7 @@ import PurchaseTransaction from './pages/transactions/purchase/PurchaseTransacti
 import StaffMaster from './pages/master/staff/StaffMaster';
 import AccountMaster from './pages/master/account/AccountMaster';
 import PaymentTransaction from './pages/transactions/payment/PaymentTransaction';
+import SalesTransaction from './pages/transactions/sales/SalesTransaction';
 
 function App() {
   return (
@@ -25,6 +26,7 @@ function App() {
             <Route path="/account-add" element={<AccountMaster/>}/>
             <Route path="/staff-master" element={<StaffMaster/>}/>
             <Route path="/purchase-transaction" element={<PurchaseTransaction/>}/>
+            <Route path="/sales-transaction" element={<SalesTransaction/>}/>
             <Route path="/payment-transaction" element={<PaymentTransaction/>}/>
           </Route>
         </Route>

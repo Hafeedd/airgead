@@ -481,7 +481,7 @@ const CustomerAddForm = ({edit,refresh}) =>{
                                     Op Balance
                                 </div>
                                 <div className='mx-0 px-0 col-6 col-7'>
-                                    <div className='item_input_with_drop row d-flex rounded-2 align-items-center p-0 m-0'>
+                                    <div className='item_input_with_drop row rounded-2 align-items-center p-0 m-0'>
                                         <div className='col-6 col-7 mx-0 px-0 me-0'>
                                         <input onKeyDown={handleKeyDown} onChange={handleChange} name="opening_balance" value={customerAdd.opening_balance||''} type='text' className='item_input names border-0 ' />
                                         </div>

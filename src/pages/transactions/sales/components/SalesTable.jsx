@@ -1,6 +1,6 @@
 import React from 'react'
 
-const PurchaseTable = ({setPurchaseItemModal}) => {
+const SalesTable = ({ setSalesItemModal }) => {
     return (
         <>
             <div className='px-2'>
@@ -22,7 +22,7 @@ const PurchaseTable = ({setPurchaseItemModal}) => {
                             <th>Margin%</th>
                             <th>S.Rate</th>
                             <th className='py-1 text-end'>
-                                <div className='btn btn-primary purchase-add-btn my-0' onClick={()=>setPurchaseItemModal(true)}>
+                                <div className='btn btn-primary purchase-add-btn my-0' onClick={() => setSalesItemModal(true)}>
                                     +
                                 </div>
                             </th>
@@ -106,29 +106,45 @@ const PurchaseTable = ({setPurchaseItemModal}) => {
                     </tbody>
                 </table>
             </div>
-            <div className="purchase-detail-container px-3 py-1 mx-2 mt-1">
-                <div className="col-3 col-4 row mx-0">
-                    <div className="col-5 text-end">Total Item :</div>
+            <div className="sales-detail-container mx-2 mt-1">
+                <div className="col-2 col-3 mx-0 item">
+                    <div className="col-4">Total Item</div>
+                    <div className="col-1">:</div>
                     <div className="col-7">03</div>
                 </div>
-                <div className="col-3 col-4 row mx-0">
-                    <div className="col-5 text-end">Item :</div>
+                <div className="col-1 col-2 mx-0 item">
+                    <div className="col-4">PR</div>
+                    <div className="col-1">:</div>
                     <div className="col-7">323</div>
-                    <div className="col-5 text-end">HSN :</div>
-                    <div className="col-7">323</div>
                 </div>
-                <div className="col-2 row mx-0">
-                    <div className="col-5 text-end">CTC :</div>
-                    <div className="col-7">0.22</div>
+                <div className="col-1 col-2 mx-0 item">
+                    <div className="col-4">CT</div>
+                    <div className="col-1">:</div>
+                    <div className="col-7">234.1</div>
                 </div>
-                <div className="col-2 row mx-0">
-                    <div className="col-5 text-end">Godown :</div>
-                    <div className="col-7"></div>
+                <div className="col-1 col-2 mx-0 item">
+                    <div className="col-4">MIN</div>
+                    <div className="col-1">:</div>
+                    <div className="col-7">0</div>
                 </div>
-                <div className="col-1">M %</div>
+                <div className="col-1 col-2 mx-0 item">
+                    <div className="col-4">SR</div>
+                    <div className="col-1">:</div>
+                    <div className="col-7">500</div>
+                </div>
+                <div className="col-2 mx-0 item">
+                    <div className="col-4">MRP</div>
+                    <div className="col-1">:</div>
+                    <div className="col-7">600</div>
+                </div>
+                <div className="col-1 col-2 mx-0 item">
+                    <div className="col-4">IM</div>
+                    <div className="col-1">:</div>
+                    <div className="col-7">.00</div>
+                </div>
             </div>
         </>
     )
 }
 
-export default PurchaseTable
+export default SalesTable
