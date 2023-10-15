@@ -1,4 +1,4 @@
-import axios, { axiosPrivate } from "../../api/axios"
+import { axiosPrivate } from "../../api/axios"
 
 const usePurchaseServices = () => {
 
@@ -11,12 +11,12 @@ const usePurchaseServices = () => {
     }
     // post purchase item
     const postPurchaseItem = async (data) =>{
-        const response = await axiosPrivate.post('transactions/purchase_item/created/'+id+'/',data)
+        const response = await axiosPrivate.post('transactions/purchase_item/created/',data)
         return response.data
     }
     // post purchase item batch 
     const postPurchaseItemBatch = async (data) =>{
-        const response = await axiosPrivate.post('transactions/purchase_item/batch_qty/created/'+id+'/',data)
+        const response = await axiosPrivate.post('transactions/purchase_item/batch_qty/created/',data)
         return response.data
     }
 
@@ -41,18 +41,36 @@ const usePurchaseServices = () => {
     //get requests ===================================
 
     // get all purchase data
-    const getPurchase = async (data) =>{
+    const getPurchase = async (id) =>{
         const response = await axiosPrivate.get('transactions/purchase/created/')
         return response.data
     }
     // get purchase item 
-    const getPurchaseItem = async (data) =>{
+    const getPurchaseItem = async (id) =>{
         const response = await axiosPrivate.get('transactions/purchase_item/created/'+id+'/')
         return response.data
     }
     // get purchase item batch 
-    const getPurchaseItemBatch = async (data) =>{
+    const getPurchaseItemBatch = async (id) =>{
         const response = await axiosPrivate.get('transactions/purchase_item/batch_qty/created/'+id+'/')
+        return response.data
+    }
+
+    //delete requests ===================================
+
+    // get all purchase data
+    const deletePurchase = async (id) =>{
+        const response = await axiosPrivate.delete('transactions/purchase/created/')
+        return response.data
+    }
+    // delete purchase item 
+    const deletePurchaseItem = async (id) =>{
+        const response = await axiosPrivate.delete('transactions/purchase_item/created/'+id+'/')
+        return response.data
+    }
+    // delete purchase item batch 
+    const deletePurchaseItemBatch = async (id) =>{
+        const response = await axiosPrivate.delete('transactions/purchase_item/batch_qty/created/'+id+'/')
         return response.data
     }
 
@@ -69,5 +87,11 @@ const usePurchaseServices = () => {
         getPurchase,
         getPurchaseItem,
         getPurchaseItemBatch,
+        //delete
+        deletePurchase,
+        deletePurchaseItem,
+        deletePurchaseItemBatch,
     }
 }
+
+export default usePurchaseServices

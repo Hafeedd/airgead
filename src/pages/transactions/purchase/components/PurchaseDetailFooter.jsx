@@ -2,7 +2,7 @@ import React from 'react'
 import { Form } from 'react-bootstrap'
 
 const PurchaseDetailFooter = (props) => {
-    const {handleEdit,purchaseAdd,handleChange} = props
+    const {handleEdit,purchaseAdd,handleChange,handleKeyDown,handlePurchaseAllReset} = props
     
     return (
         <div className='row mx-0 my-1 me-0'>
@@ -11,36 +11,40 @@ const PurchaseDetailFooter = (props) => {
                     <Form.Label className='col-5 purchase-input-label'>Discount</Form.Label>
                     <Form.Control
                     name="discount" value={purchaseAdd.discount||''}
+                    onKeyDown={handleKeyDown}
                     onChange={handleChange}
                         className='purchase-input-text'
-                        type='text'
+                        type='number'
                     />
                 </Form.Group>
                 <Form.Group className='col-12 mx-0 d-flex align-items-center mt-1'>
                     <Form.Label className='col-5 purchase-input-label'>Round Off</Form.Label>
                     <Form.Control
                     name="roundoff" value={purchaseAdd.roundoff||''}
+                    onKeyDown={handleKeyDown}
                     onChange={handleChange}
                         className='purchase-input-text'
-                        type='text'
+                        type='number'
                     />
                 </Form.Group>
                 <Form.Group className='col-12 mx-0 d-flex align-items-center mt-1'>
                     <Form.Label className='col-5 purchase-input-label'>Paid Cash</Form.Label>
                     <Form.Control
                     name="paid_cash" value={purchaseAdd.paid_cash||''}
+                    onKeyDown={handleKeyDown}
                     onChange={handleChange}
                         className='purchase-input-text'
-                        type='text'
+                        type='number'
                     />
                 </Form.Group>
                 <Form.Group className='col-12 mx-0 d-flex align-items-center mt-1'>
                     <Form.Label className='col-5 purchase-input-label'>Change Due</Form.Label>
                     <Form.Control
                     name="change_due" value={purchaseAdd.change_due||''}
+                    onKeyDown={handleKeyDown}
                     onChange={handleChange}
                         className='purchase-input-text'
-                        type='text'
+                        type='number'
                     />
                 </Form.Group>
             </div>
@@ -69,7 +73,8 @@ const PurchaseDetailFooter = (props) => {
                 <div className="col-12 row px-0 mx-0 mt-3">
                     <div className='mx-0 px-0 col-4' />
                     <div className='mx-0 px-1 col-4'>
-                        <button type='reset' className='btn btn-sm btn-outline-dark w-100'>Clear</button>
+                        <button type='reset' onClick={handlePurchaseAllReset}
+                        className='btn btn-sm btn-outline-dark w-100'>Clear</button>
                     </div>
                     <div className='mx-0 px-1 pe-0 col-4'>
                         <button type='submit' className='btn btn-sm btn-dark w-100'>Save</button>

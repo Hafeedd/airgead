@@ -1,18 +1,24 @@
 import React, { useEffect, useState } from "react";
 import useOnKey from "../../../../onKeyFunct/onKeyFunct";
+import usePurchaseServices from "../../../../services/transactions/purchcaseServices";
+import Swal from "sweetalert2";
 
 export const PurchaseItemBatchAdd = (props) => {
   const { tableItemBatch, setTableItemBatch,edit,
     setPurchaseItemSerielModal, handleChangeTableItemBatch,
     purchaseItemSerielModal,handleTableItemReset,
     tableItemBatchList, setTableItemBatchList,
-    tableItemList,setTableItemList,
+    tableItemList,setTableItemList,purchaseAdd,
+    tebleItemKeys, setTableItemKeys,tableItem,
     } = props;
 
   const [ref, setRef] = useState();
-  const [batchList, setBatchList] = useState();
+  const [batchList, setBatchList] = useState([]);
+  const [batchKeys, setBatchKeys] = useState([]);
 
   const { handleKeyDown, formRef } = useOnKey(ref, setRef);
+
+  const {postPurchaseItem,postPurchaseItemBatch} = usePurchaseServices()
 
   useEffect(()=>{
     if(!purchaseItemSerielModal){
@@ -21,11 +27,24 @@ export const PurchaseItemBatchAdd = (props) => {
     }
   },[purchaseItemSerielModal])
 
-  const addToBatchList = () => {
-    let tempList = batchList ? [...batchList] : [];
+  const addToBatchList = async () => {
+    let tempList = [...batchList];
+    let tempBatchKeys = [...batchKeys]
     let valueLength = Object.values(tableItemBatch).length;
     if (valueLength > 5) {
-      tempList.push(tableItemBatch);
+      try{
+        const response = await postPurchaseItemBatch(tableItemBatch)
+        if(response?.success){
+            tempBatchKeys.push({id:response?.data?.id})
+            tempList.push(tableItemBatch);
+            setBatchKeys(tempBatchKeys)
+          }else{
+            Swal.fire(response?.data?.message,'','error')
+          }
+        }catch(err){
+          console.log(err)
+        Swal.fire(err?.response?.data?.message,'','error')
+      }
     }
     setBatchList(tempList);
     handleReset();
@@ -69,15 +88,26 @@ export const PurchaseItemBatchAdd = (props) => {
     setTableItemList(tempList)
   }
 
-  const handleBatchSubmit = (e) =>{
-    if(batchList?.length>0){
-      let ItemTempList = [...tableItemBatchList]
-      batchList.map(data=>{
+  const handleBatchSubmit = async (e) =>{
+    let ItemTempList = [...tableItemBatchList] , itemTemp = {}
+    if(batchList){
+      batchList?.map(data=>{
         let itemTemp = {...data}
         itemTemp = {...itemTemp,['cstm_id']:purchaseItemSerielModal}
-        ItemTempList.push(itemTemp)
       })
-      setTableItemBatchList(ItemTempList)
+      try{
+        const submitData = {...tableItem,batch_items:batchKeys}
+        const response = await postPurchaseItem(submitData)
+        if(response?.success){
+          let tempItemKeys = [...tebleItemKeys]
+          tempItemKeys.push({id:response?.data1?.id})
+          ItemTempList.push(itemTemp)
+          setTableItemKeys(tempItemKeys)
+        }
+        setTableItemBatchList(ItemTempList)
+      }catch(err){
+
+      }
       setPurchaseItemSerielModal(false)
       handleTableItemReset()
     }

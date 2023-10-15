@@ -2,6 +2,7 @@ import React, { useCallback, useEffect, useState } from 'react'
 import PurchaseTableItemList from './PurchaseTableItemList'
 import useItemServices from '../../../../services/master/itemServices'
 import useOnKey from '../../../../onKeyFunct/onKeyFunct'
+import { Dropdown } from 'semantic-ui-react'
 
 const PurchaseTable = (props) => {
     const {setPurchaseItemModal,tableItem,
@@ -44,11 +45,18 @@ const PurchaseTable = (props) => {
             })
             setUnitList(list)
         }
+        const handleDataNameList= (data) => {
+            let tempList = []
+            data?.map((x)=>{
+                tempList.push({text:x.name,description:x.code,value:x.id})
+            })
+            setItemNameList([...tempList])
+        }
         try{
             let res2 = await getProperty()
             let res = await getItemNameList()
             if(res2?.success) minFunct(res2.data)
-            if(res?.success) setItemNameListState(res.data)
+            if(res?.success) handleDataNameList(res.data)
 
         }catch(err){
             console.log(err)
@@ -80,6 +88,8 @@ const PurchaseTable = (props) => {
         setPurchaseItemSerielModal(cstm_id)
     }
 
+    // console.log(itemNameList)
+
     return (
         <>
             <div className='px-2 mt-1'>
@@ -105,18 +115,32 @@ const PurchaseTable = (props) => {
                                     +
                                 </div>
                             </th>
+                            <th className='py-1 text-end'>
+                            </th>
                         </tr>
                     </thead>
                     <tbody className='purchase-table-body' ref={formRef}>
                         <tr>
-                            <td className='text-start ps-3' colSpan={2}>
-                                <select onKeyDown={handleKeyDown} name={'name'} onChange={handleChangeTableItem} value={(tableItem.name==''||tableItem.name)?tableItem.name:''} 
+                            <td className='purchase_search_drop_td text-start ps-3' colSpan={2}>
+                                <Dropdown
+                                clearable
+                                selection
+                                required
+                                search
+                                placeholder='SELECT'
+                                className='purchase_search_drop border-0 w-100 ps-2'
+                                onKeyDown={handleKeyDown} name={'name'}
+                                onChange={handleChangeTableItem}
+                                value={(tableItem.name==''||tableItem.name)?tableItem.name:''} 
+                                options={itemNameList}
+                                />
+                                {/* <select required onKeyDown={handleKeyDown} name={'name'} onChange={handleChangeTableItem} value={(tableItem.name==''||tableItem.name)?tableItem.name:''} 
                                 type='number' className='purchase_input border-0 w-100 ps-2'>
                                 <option value={null}>Select</option>
                                 {itemNameList?.length>0&&
                                 itemNameList.map((item,index)=>
                                 <option key={index} value={item.value}>{item.text}</option>)}
-                                </select>
+                                </select> */}
                                 </td>
                             <td>
                                 <input onKeyDown={handleKeyDown} name={'open_stock'} onChange={handleChangeTableItem} 
@@ -189,30 +213,33 @@ const PurchaseTable = (props) => {
                                 <input onKeyDown={handleAddBatch} type='button' onClick={handleAddBatch}
                                 className='table-item-add-btn' value={"+"}/>
                             </td>
+                            <td>
+                            </td>
                         </tr>
                         {tableItemList?.length>0&&
                         tableItemList.map(data=>(
 
                                 <tr>
                                     <td className='text-start ps-3' colSpan={2}>
-                                    <select disabled 
-                                    value={data.name} 
-                                    className='purchase_input border-0 w-100'>
-                                    <option value={null}>Select</option>
-                                    {itemNameList?.length>0&&
-                                    itemNameList.map((item,index)=>
-                                    <option key={index} value={item.value}>{item.text}</option>)}
-                                    </select>
+                                        <select disabled 
+                                            value={data.name} 
+                                            className='purchase_input border-0 w-100'>
+                                            <option value={null}>Select</option>
+                                            {itemNameList?.length>0&&
+                                            itemNameList.map((item,index)=>
+                                            <option key={index} value={item.value}>{item.text}</option>)}
+                                        </select>
                                     </td>
                                     <td>
-                                        {data.open_stock}</td>
-                                        <td>
-                                        <select value={data.unit} 
-                                        style={{"-webkit-appearance":"none",fontSize:'10px',padding:'3.5px 1px'}} 
-                                        className='purchase_input border-0 w-100 text-center'>
-                                        {unitList&&unitList.map((x,i)=>
-                                        <option key={i} value={x.value}>{x.text}</option>)}
-                                        </select></td>
+                                        {data.open_stock}
+                                    </td>
+                                    <td>
+                                            <select value={data.unit} 
+                                                style={{"-webkit-appearance":"none",fontSize:'10px',padding:'3.5px 1px'}} 
+                                                className='purchase_input border-0 w-100 text-center'>
+                                                {unitList&&unitList.map((x,i)=>
+                                                <option key={i} value={x.value}>{x.text}</option>)}
+                                            </select></td>
                                     <td>
                                         {data.purchase_rate}</td>
                                     <td>
@@ -238,10 +265,13 @@ const PurchaseTable = (props) => {
                                     <td>
 
                                     </td>
+                                    <td>
+
+                                    </td>
                                 </tr>
                                 ))
                             }
-                        <tr><td style={{ height: "2.5rem" }} colSpan={16}></td></tr>
+                        <tr><td style={{ height: "2rem" }} colSpan={17}></td></tr>
                         <tr className='purchase-table-green'>
                             <td className='item2 col-1'>
                                 {'<'} Previous
@@ -279,11 +309,14 @@ const PurchaseTable = (props) => {
                             <td>
 
                             </td>
+                            <td>
+
+                            </td>
                         </tr>
                     </tbody>
                 </table>
             </div>
-            <div className="purchase-detail-container px-3 py-1 mx-2 mt-1">
+            <div className="purchase-detail-container px-3 py-0 mx-2 mt-1">
                 <div className="col-3 col-4 row mx-0">
                     <div className="col-5 text-end">Total Item :</div>
                     <div className="col-7">03</div>

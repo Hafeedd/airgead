@@ -1,11 +1,11 @@
 import React, { useEffect, useRef, useState } from 'react'
 import Swal from 'sweetalert2'
-import deleteBtn from "../../../assets/icons/delete-white.svg"
-import useCustomerServices from '../../../services/master/customerServices'
-import SearchDropDown from '../../../components/searchDropDown/SearchDropDown'
+import deleteBtn from "../../../../assets/icons/delete-white.svg"
 import { Modal } from 'react-bootstrap'
-import useItemServices from '../../../services/master/itemServices'
-import useOnKey from '../../../onKeyFunct/onKeyFunct'
+import useOnKey from '../../../../onKeyFunct/onKeyFunct'
+import useCustomerServices from '../../../../services/master/customerServices'
+import SearchDropDown from '../../../../components/searchDropDown/SearchDropDown'
+import useItemServices from '../../../../services/master/itemServices'
 
 const CustomerAddForm = ({edit,refresh,setToEdit}) =>{
 
@@ -116,7 +116,6 @@ const CustomerAddForm = ({edit,refresh,setToEdit}) =>{
     const {handleKeyDown,  formRef } = useOnKey(ref, setRef);
 
     const handleRatesClear = () =>{
-        console.log("first")
         let x = Object.keys(rates)
         x.map(key=>{
             setRates(data=>({...data,[key]:null}))

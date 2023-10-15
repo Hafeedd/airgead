@@ -41,7 +41,7 @@ const PaymentListSection = (props) => {
                         <tr>
                             <td className='ps-4'>1</td>
                             <td>James CD</td>
-                            <td>{paymentAdd?.type}</td>
+                            <td>{paymentAdd?.method}</td>
                             <td colSpan={2}>121.10 db</td>
                             <td className='text-center'>
                                 <div className='button'>
@@ -52,7 +52,7 @@ const PaymentListSection = (props) => {
                         <tr>
                             <td className='ps-4'>1</td>
                             <td>James CD</td>
-                            <td>{paymentAdd?.type}</td>
+                            <td>{paymentAdd?.method}</td>
                             <td colSpan={2}>121.10 db</td>
                             <td className='text-center'>
                                 <div className='button'>
@@ -63,7 +63,7 @@ const PaymentListSection = (props) => {
                         <tr>
                             <td className='ps-4'>1</td>
                             <td>James CD</td>
-                            <td>{paymentAdd?.type}</td>
+                            <td>{paymentAdd?.method}</td>
                             <td colSpan={2}>121.10 db</td>
                             <td className='text-center'>
                                 <div className='button'>
@@ -74,7 +74,7 @@ const PaymentListSection = (props) => {
                         <tr>
                             <td className='ps-4'>1</td>
                             <td>James CD</td>
-                            <td>{paymentAdd?.type}</td>
+                            <td>{paymentAdd?.method}</td>
                             <td colSpan={2}>121.10 db</td>
                             <td className='text-center'>
                                 <div className='button'>

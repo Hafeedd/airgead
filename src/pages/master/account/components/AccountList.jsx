@@ -1,8 +1,12 @@
 import React from 'react'
 import search from "../../../../assets/icons/search.png"
 
-const AccountList = (props) => {
-    const { list, handleEdit, handleDelete, toEdit } = props
+const AccountList = ({
+    listItem,
+    handleEdit,
+    handleDelete,
+    toEdit 
+}) => {
 
     const editBtn = (
         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
@@ -11,72 +15,65 @@ const AccountList = (props) => {
     )
 
     return (
-    <div>
-        <div className="row mx-0 px-4 my-2">
-            <div className="col-2 col-3 px-0">
-                <div className='item_seach_bar_cont rounded-2'>
-                    <img src={search} className='search_img me-3 ms-2 py-2' />
-                    <input
-                        className='item_search_bar rounded-2 border-0 py-1'
-                        placeholder='Search'
-                        type='text'
-                    />
+        <div>
+            <div className="row mx-0 px-4 my-2">
+                <div className="col-2 col-3 px-0">
+                    <div className='item_seach_bar_cont rounded-2'>
+                        <img src={search} className='search_img me-3 ms-2 py-2' />
+                        <input
+                            className='item_search_bar rounded-2 border-0 py-1'
+                            placeholder='Search'
+                            type='text'
+                        />
+                    </div>
+                </div>
+                <div className="col-2">
+                    <div className="btn btn-sm btn-dark filter-btn">
+                        Filter Here
+                    </div>
                 </div>
             </div>
-            <div className="col-2">
-                <div className="btn btn-sm btn-dark filter-btn">
-                    Filter Here
-                </div>
+            <div className='item_add_cont p-0 table-scroller' style={{ borderRadius: "0.3125rem 0.3125rem 0rem 0rem" }}>
+                <table className='table table-light custom-table'>
+                    <thead>
+                        <tr>
+                            <th style={{ borderTopLeftRadius: "0.3125rem", width: "4rem" }}>No</th>
+                            <th className='text-start' style={{ width: "25rem" }}>A/C Name</th>
+                            <th className='text-start ps-2'>Code</th>
+                            <th className='text-start ps-2'>A/C Type</th>
+                            <th style={{ width: "15rem" }}>Cl. Balance</th>
+                            <th style={{ width: "15rem" }}>Op. Balance</th>
+                            <th style={{ borderTopRightRadius: "0.3125rem", width: '5rem' }}></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {
+                            listItem?.length > 0 ?
+                                listItem?.map((data, i) => {
+                                    return (
+                                        <tr key={i}>
+                                            <td>{i + 1}</td>
+                                            <td className='text-start'>{data?.name}</td>
+                                            <td className='text-start'>{data?.code}</td>
+                                            <td className='text-start'>{data?.account_type_one}</td>
+                                            <td>0</td>
+                                            <td>{data?.opening_balance}</td>
+                                            <td>
+                                                <div className='button' onClick={e => handleEdit(data && data)}>
+                                                    {editBtn}
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    )
+                                }) :
+                                <tr>
+                                    <td className='fs-5 text-center' colSpan={5}>No Item Added Yet</td>
+                                </tr>
+                        }
+                    </tbody>
+                </table>
             </div>
         </div>
-        <div className='item_add_cont p-0 table-scroller' style={{ borderRadius: "0.3125rem 0.3125rem 0rem 0rem" }}>
-            <table className='table table-light custom-table'>
-                <thead>
-                    <tr>
-                        <th style={{ borderTopLeftRadius: "0.3125rem", width: "4rem" }}>No</th>
-                        <th className='text-start' style={{ width: "35rem" }}>A/C Name</th>
-                        <th className='text-start'>Code</th>
-                        <th style={{ width: "18rem" }}>CI. Balance</th>
-                        <th style={{ borderTopRightRadius: "0.3125rem", width:'5rem' }}></th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>1</td>
-                        <td className='text-start'>James CD</td>
-                        <td className='text-start'>VYAPARI2</td>
-                        <td>121.10 db</td>
-                        <td>
-                            <div className='button'>
-                                {editBtn}
-                            </div>
-                        </td>
-                    </tr>
-                    {
-                        list?.length > 0 ?
-                            list.map((data, i) => {
-                                return (
-                                    <tr>
-                                        <td>{i + 1}</td>
-                                        <td className='text-start'>{data?.name}</td>
-                                        <td className='text-start'>{data?.code}</td>
-                                        <td>{data?.balance}</td>
-                                        <td>
-                                            <div className='button' onClick={e => handleEdit(data && data)}>
-                                                {editBtn}
-                                            </div>
-                                        </td>
-                                    </tr>
-                                )
-                            }) :
-                            <tr>
-                                <td className='fs-5 text-center' colSpan={5}>No Item Added Yet</td>
-                            </tr>
-                    }
-                </tbody>
-            </table>
-        </div>
-    </div>
     )
 }
 

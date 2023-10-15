@@ -8,7 +8,7 @@ const PaymentChequeDetails = ({handleChange, paymentAdd}) => {
                 Cheque No 
             </div>
             <div className='mx-0 px-0 col-9'>
-                <input onChange={handleChange} name='cheque_no' value={paymentAdd.cheque_no ? paymentAdd.cheque_no : ''} type='text' className='item_input names' />
+                <input required onChange={handleChange} name='cheque_no' value={paymentAdd.cheque_no ? paymentAdd.cheque_no : ''} type='text' className='item_input names' />
             </div>
         </div>
         <div className="col-12 row mx-0 my-1 px-0">
@@ -16,7 +16,7 @@ const PaymentChequeDetails = ({handleChange, paymentAdd}) => {
                 Drawn No
             </div>
             <div className='mx-0 px-0 col-9'>
-                <input onChange={handleChange} name='cheque_drawn' value={paymentAdd.cheque_drawn ? paymentAdd.cheque_drawn : ''} type='text' className='item_input names' />
+                <input onChange={handleChange} name='draw_no' value={paymentAdd.draw_no ? paymentAdd.draw_no : ''} type='text' className='item_input names' />
             </div>
         </div>
         <div className="col-12 row mx-0 my-1 px-0">

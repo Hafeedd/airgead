@@ -1,10 +1,10 @@
 import React, { useEffect, useRef, useState } from 'react'
-import SearchDropDown from '../../../../components/searchDropDown/SearchDropDown'
 import PaymentChequeDetails from './PaymentChequeDetails'
 import PaymentSalesmanDetails from './PaymentSalesmanDetails'
 import PaymentDiscountDetails from './PaymentDiscountDetails'
 import PaymentTaxDetails from './PaymentTaxDetails'
 import PaymentPrintDetails from './PaymentPrintDetails'
+import { Dropdown } from 'semantic-ui-react'
 
 const PaymentDetail = ({
     setPaymentAdd,
@@ -12,48 +12,21 @@ const PaymentDetail = ({
     handleChange,
     handleNumber,
     handleReset,
-    handleSubmit
-}) => {   
-    const [showDropdown, setShowDropdown ] = useState(1)
+    handleSubmit,
+    accountList,
+    accountPayList,
+    handleChangePaymentCash,
+}) => {
     const [paymentNav, setPaymentNav] = useState(1)
     const [paymentContent, setPaymentContent] = useState('')
-    const [ref, setRef] = useState()
     const formRef = useRef(null)
 
-    const cash_type_list = [
-        {text:"Cash Inhand",value:"INHAND"},
-        {text:"UPI",value:"UPI"},
-        {text:"Cheque",value:"CHEQUE"},
-        {text:"Bank Transfer",value:"TRANSFER"},
-    ]
-
-    useEffect(()=>{
-        if(formRef.current) getRefValue(formRef,setRef)
-        }
-    ,[formRef])
-
-    const getRefValue = (ref,set) =>{
-        const data = [...ref.current.children]
-        const newList = [...data[0].querySelectorAll('input, select, textarea')]
-        newList[0].focus()
-            set(newList)
-    }
-
-    const handleKeyDown = (e) => {
-        if (e.key === "Enter") {
-            e.preventDefault();
-            if (e.target && ref.length>0) {
-                let a = ref.indexOf(e.target)
-                if(a===ref.length-1){
-                    ref[0].focus()
-                }else{
-                ref[a].blur()
-                ref[a+1].focus();
-            }
-            }
-        }
-    };
-
+    // const cash_type_list = [
+    //     {text:"Cash Inhand",value:"INHAND"},
+    //     {text:"UPI",value:"UPI"},
+    //     {text:"Cheque",value:"CHEQUE"},
+    //     {text:"Bank Transfer",value:"TRANSFER"},
+    // ]
     
     useEffect(() => {
         switch (paymentNav) {
@@ -81,6 +54,11 @@ const PaymentDetail = ({
         }
     }, [paymentNav,paymentAdd])
 
+    const search = (options, searchValue) => {
+        searchValue = searchValue.toUpperCase()
+        return options.filter((option) => {return(option.value.includes(searchValue)||option.description.includes(searchValue))});
+      };
+
     return (
         <form ref={formRef} onSubmit={handleSubmit} className='item_add_form pt-1 row mt-1'>
 
@@ -93,7 +71,8 @@ const PaymentDetail = ({
                             Type
                         </div>
                         <div className='mx-0 px-0 col-7'>
-                            <select onChange={handleChange} value={paymentAdd?.type} name='type' className='account-select-dropdown ms-0 pe-0'>
+                            <select onChange={handleChange} value={paymentAdd?.type}
+                            name='method' className='account-select-dropdown ms-0 pe-0'>
                                 <option value="Payment" >Payment</option>
                                 <option value="Receipt" >Receipt</option>
                             </select>
@@ -104,7 +83,9 @@ const PaymentDetail = ({
                             Voucher No
                         </div>
                         <div className='mx-0 px-0 col-7'>
-                            <input onChange={handleChange} name='voucher' value={paymentAdd.voucher ? paymentAdd.voucher : ''} type='text' className='item_input names' />
+                            <input required onChange={handleChange} name='voucher_number'
+                             value={paymentAdd.voucher_number ? paymentAdd.voucher_number : ''}
+                              type='text' className='item_input names' />
                         </div>
                     </div>
                 </div>
@@ -113,8 +94,18 @@ const PaymentDetail = ({
                     <div className='mx-0 px-0 col-3'>
                         A/C Details
                     </div>
-                    <div className='mx-0 px-0 col-9'>
-                        <input onChange={handleChange} name='account_detail' value={paymentAdd.account_detail ? paymentAdd.account_detail : ''} type='text' className='item_input names' />
+                    <div className='mx-0 px-0 col-9 payment-select'>        
+                        <Dropdown
+                        clearable
+                        selection
+                        search={search}
+                        onChange={(e,data)=>handleChange(e,data)}
+                        className='payment-select item d-flex align-items-center py-0 form-control'
+                        name="supplier_detail"
+                        placeholder='select Account Details'
+                        value={paymentAdd.account_detail ||''}
+                        options={accountList}
+                        />
                     </div>
                 </div>
                 <div className="d-flex align-items-center px-0 row mx-0 my-2">
@@ -122,7 +113,9 @@ const PaymentDetail = ({
                         A/C Code
                     </div>
                     <div className='mx-0 px-0 col-6'>
-                        <input onChange={handleChange} name='account_code' value={paymentAdd.account_code ? paymentAdd.account_code : ''} type='text' className='item_input names' />
+                        <input disabled required onChange={handleChange} name='account_code'
+                         value={paymentAdd.account_code ? paymentAdd.account_code : ''}
+                        type='text' className='item_input names' />
                     </div>
                     <span className="col-3" />
                 </div>
@@ -139,8 +132,16 @@ const PaymentDetail = ({
                         Cash/Bank A/c
                     </div>
                     <div className='mx-0 px-0 col-9'>
-                        <SearchDropDown containerClass="large" id="rate_types" noAdd={true} noSearch={true} options={cash_type_list}
-                    {... { showDropdown, setShowDropdown, handleKeyDown }} setDataValue={(e, data)=>console.log(data)} selectedValue={paymentAdd.cash_type}/>
+                    <Dropdown
+                        selection
+                        search={search}
+                        onChange={(e,data)=>handleChangePaymentCash(e,data)}
+                        className='payment-select item d-flex align-items-center py-0 form-control'
+                        name="cash_bank_account_name"
+                        placeholder='select'
+                        value={paymentAdd.cash_bank_account|| ''}
+                        options={accountPayList}
+                        />
                     </div>
                 </div>
             </div>

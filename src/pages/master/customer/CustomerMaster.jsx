@@ -3,7 +3,7 @@ import '../item/components/ItemList.css'
 import { useNavigate , useLocation} from 'react-router'
 import Swal from 'sweetalert2'
 import CustomerTable from './components/CustomerTable'
-import CustomerAddForm from './CustomerAddForm'
+import CustomerAddForm from './components/CustomerAddForm'
 import useCustomerServices from '../../../services/master/customerServices'
 
 const CustomerList = () => {

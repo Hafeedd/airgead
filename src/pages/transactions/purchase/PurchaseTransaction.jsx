@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react'
 import './PurchaseTransaction.css'
 import { useNavigate } from 'react-router'
-import { Form, Modal } from 'react-bootstrap'
+import { Modal } from 'react-bootstrap'
 import PurchaseInvoiceDetails from './components/PurchaseInvoiceDetails'
 import PurchaseTable from './components/PurchaseTable'
 import PurchaseDetailFooter from './components/PurchaseDetailFooter'
@@ -10,6 +10,10 @@ import PurchaseDeliveryDetails from './components/PurchaseDeliveryDetails'
 import PurchaseTableItemList from './components/PurchaseTableItemList'
 import PurchaseEditList from './components/PurchaseEditList'
 import { PurchaseItemBatchAdd } from './components/PurchaseItemSerielAdd'
+import Swal from 'sweetalert2'
+import usePurchaseServices from '../../../services/transactions/purchcaseServices'
+import useOnKey from '../../../onKeyFunct/onKeyFunct'
+import {formValidation} from '../../../formValidation/formValidation'
 
 const PurchaseTransaction = () => {
     const [purchaseItemModal, setPurchaseItemModal] = useState(false)
@@ -17,29 +21,31 @@ const PurchaseTransaction = () => {
     const [purchaseEditModal, setPurchaseEditModal] = useState(false)
     const [purchaseItemSerielModal, setPurchaseItemSerielModal] = useState(false)
     const [pageHeadItem, setPageHeadItem] = useState(1)
+    const [tebleItemKeys, setTableItemKeys] = useState([])
     const [purchaseHeader, setPurchaseHeader] = useState(1)
+    const [purchaseList, setPurchaseList] = useState(1)
     const [itemBatchStore, setItemBatchStore] = useState()
+    const [ref, setRef] = useState(null)
     const [calcChange, setCalcChange] = useState(true)
-    const invoiceDetailsRef = useRef()
-    const printDetailsRef = useRef()
-    const deliveryDetailsRef = useRef()
     const navigate = useNavigate({})
     
     const [tableItemList, setTableItemList] = useState([])
     const [tableItemBatchList, setTableItemBatchList] = useState([])
-
+    
+    const {handleKeyDown,  formRef } = useOnKey(ref, setRef);
     const [purchaseAdd, setPurchaseAdd] = useState({
         cstm_id:null,
         supplier_code:null,
         supplier_name:null,
         documents_no:null,
+        patyment_type:null,
         order_no:null,
         bill_no:null,
         date:null,
         bill_date:null,
-        interstate:null,
-        reverse_charge:null,
-        tax_bill:null,
+        interstate:false,
+        reverse_charge:false,
+        tax_bill:false,
         total_item:null,
         item:null,
         discount:null,
@@ -58,6 +64,7 @@ const PurchaseTransaction = () => {
     const [tableItem, setTableItem] = useState({
         cstm_id:null,
         name:null,
+        code:null,
         open_stock:0.0,
         unit:null,
         transaction_unit:null,
@@ -84,7 +91,44 @@ const PurchaseTransaction = () => {
         size:null,
         color:null,
     })
+
+    useEffect(()=>{
+        getData()
+    },[])
     
+    useEffect(() => {
+        switch (pageHeadItem) {
+            case 1: setPurchaseHeader(<PurchaseInvoiceDetails {...{handleEdit,purchaseAdd,
+                handleKeyDown,handleChange}} />)
+            break
+            case 2: setPurchaseHeader(<PurchasePrintingDetails {...{handleEdit,purchaseAdd,
+                handleKeyDown,handleChange}} />)
+            break
+            case 3: setPurchaseHeader(<PurchaseDeliveryDetails {...{handleEdit,purchaseAdd,
+                handleKeyDown,handleChange}} />)
+            break
+            case 4: setPurchaseHeader(<PurchaseInvoiceDetails {...{handleEdit,purchaseAdd,
+                handleKeyDown,handleChange}} />)
+                break
+            default: break;
+        }
+    }, [pageHeadItem,purchaseAdd])
+
+    const {postPurchase,getPurchase,deletePurchase,
+        deletePurchaseItem,deletePurchaseItemBatch} = usePurchaseServices()
+
+    const getData = async () => {
+        try{
+            const response = await getPurchase()
+            if(response?.success){
+                console.log(response.data)
+                setPurchaseList(response.data)
+            }
+        }catch(err){
+
+        }
+    }
+
     const handleTableItemReset = () =>{
         let tempItem = {...tableItem}
         const keys =  Object.keys(tableItem)
@@ -96,40 +140,61 @@ const PurchaseTransaction = () => {
         })
         setTableItem(tempItem)
     }
+    
+    const handleEdit = ()=>{
+        setPurchaseEditModal(true)
+    }
 
+    const handlePurchaseAllReset = () =>{
+        setPurchaseAdd({
+            cstm_id:null,
+            supplier_code:null,
+            supplier_name:null,
+            documents_no:null,
+            order_no:null,
+            bill_no:null,
+            date:null,
+            bill_date:null,
+            interstate:false,
+            reverse_charge:false,
+            tax_bill:false,
+            total_item:null,
+            item:null,
+            discount:null,
+            roundoff:null,
+            paid_cash:null,
+            change_due:null,
+            fk_supplier:null,
+            vehicle_no:null,
+            driver:null,
+            poject:null,
+            address:null,
+            bank:null,
+            transfer_account:null,
+        })
+        setTableItemList([])
+        setTableItemBatchList([])
+    }
+    
     const handleChange = (e,data) =>{
         if(data){
             let supplier_data = data.options.filter(x=>x.value===data.value)[0]
-            setPurchaseAdd(data=>({...data,['supplier_code']:supplier_data?.value,['supplier_name']:supplier_data?.name,['fk_supplier']:supplier_data?.id}))
+            setPurchaseAdd(data=>({...data,['supplier_code']:supplier_data?.value,
+            ['supplier_name']:supplier_data?.name,['fk_supplier']:supplier_data?.id}))
+        }
+        else if(e.target.type === "checkbox"){
+            setPurchaseAdd(data=>({...data,[e.target.name]:!e.target.value}))
         }
         else if(e.target.value == "")
             setPurchaseAdd(data=>({...data,[e.target.name]:null}))
         else
             setPurchaseAdd(data=>({...data,[e.target.name]:e.target.value}))
     }
-
-    useEffect(() => {
-        switch (pageHeadItem) {
-            case 1: setPurchaseHeader(<PurchaseInvoiceDetails {...{handleEdit,purchaseAdd,handleChange,invoiceDetailsRef}} />)
-                break
-            case 2: setPurchaseHeader(<PurchasePrintingDetails {...{handleEdit,purchaseAdd,handleChange,printDetailsRef}} />)
-                break
-            case 3: setPurchaseHeader(<PurchaseDeliveryDetails {...{handleEdit,purchaseAdd,handleChange,deliveryDetailsRef}} />)
-                break
-            case 4: setPurchaseHeader(<PurchaseInvoiceDetails {...{handleEdit,purchaseAdd,handleChange,invoiceDetailsRef}} />)
-                break
-            default: break;
-        }
-    }, [pageHeadItem,purchaseAdd])
-
-    const handleEdit = ()=>{
-        setPurchaseEditModal(true)
-    }
-
+    
     const handleAmountCalculation = (tempItem,e) =>{
         let name = e.target.name
         let value = {}
-            if((tempItem.purchase_rate)&&tableItem.open_stock){
+        if((tempItem.purchase_rate)&&tableItem.open_stock){
                 value = {['value']:(tempItem.open_stock*tempItem.purchase_rate)}
                 if(name=='discount_1_percentage'  && tempItem.discount_1_percentage){
                     value = {...value,['discount_1_amount']:value.value-(value.value-(tempItem.discount_1_percentage*(value.value/100)))}
@@ -173,9 +238,13 @@ const PurchaseTransaction = () => {
         tempItem = {...tempItem}
         setTableItem(tempItem)
     }
-
-    const handleChangeTableItem = (e) =>{
+    
+    const handleChangeTableItem = (e,data) =>{
         let tempItem = {...tableItem}
+        if(data){
+            let Item_data = data.options.filter(x=>x.value===data.value)[0]
+            tempItem = {...tempItem,name:Item_data.value,code:Item_data.description}
+        }
         if(e.target.value === ""){
             tempItem = {...tempItem,[e.target.name]:''}
         }else{
@@ -203,6 +272,32 @@ const PurchaseTransaction = () => {
         setPurchaseItemSerielModal(false)
     }
 
+    const handleSubmit = async (e) =>{
+        e.preventDefault()
+        try{
+            let submitData = {...purchaseAdd,items:tebleItemKeys}
+            formValidation(formRef)
+            const response = await postPurchase(submitData)
+            if(response?.success){
+                handlePurchaseAllReset()
+                Swal.fire('Purchase added successfully','','success')
+            }else{
+                Swal.fire('Failed to create purchase','','error')
+            }
+        }catch(err){
+            let data = err?.response?.data?.data
+            let index = Object.keys(data)[0]
+            let error = data[index][0]
+            Swal.fire({
+                title:index.toUpperCase(),
+                text:error,
+                icon:'error',
+                timer:1000,
+                showConfirmButton:false
+            })
+        }
+    }
+
     return (
         <div className='item_add'>
             <div className="itemList_header row mx-0">
@@ -210,51 +305,55 @@ const PurchaseTransaction = () => {
                     <div className='col-6 col-7'>
                         <div className='fw-600 fs-5'>Purchase</div>
                         <div className='page_head_items mb-3'>
-                            <div onClick={() => { navigate('/purchase-transaction') }} className={`page_head_item active`}>Purchase Details</div>
+                            <div onClick={() => { navigate('/purchase-transaction') }} 
+                            className={`page_head_item active`}>Purchase Details</div>
                         </div>
                     </div>
                     <div className='col-5 col-6 pe-4 d-flex align-items-center justify-content-end'>
                         <div className="col-3 d-flex px-0 align-items-center justify-content-end">
                             <div
                                 onClick={() => setPageHeadItem(2)}
-                                className={`btn btn-secondary purchase-nav-btn px-2 ${pageHeadItem === 2 && 'select'}`}
+                                className={`btn btn-secondary purchase-nav-btn px-2 
+                                ${pageHeadItem === 2 && 'select'}`}
                             >Printing details</div>
                         </div>
                         <div className="col-3 d-flex px-0 align-items-center justify-content-end">
                             <div
                                 // onClick={() => setPageHeadItem(4)} 
-                                className={`btn btn-secondary purchase-nav-btn px-3 ${pageHeadItem === 4 && 'select'}`}
+                                className={`btn btn-secondary purchase-nav-btn px-3 
+                                ${pageHeadItem === 4 && 'select'}`}
                             >E-Payment</div>
                         </div>
                         <div className="col-3 d-flex px-0 align-items-center justify-content-end">
                             <div
                                 onClick={() => setPageHeadItem(3)}
-                                className={`btn btn-secondary purchase-nav-btn px-2 ${pageHeadItem === 3 && 'select'}`}
+                                className={`btn btn-secondary purchase-nav-btn px-2 
+                                ${pageHeadItem === 3 && 'select'}`}
                             >Delivery details</div>
                         </div>
                         <div className="col-3 d-flex px-0 align-items-center justify-content-end">
                             <div
                                 onClick={() => setPageHeadItem(1)}
-                                className={`btn btn-secondary purchase-nav-btn px-2 ${pageHeadItem === 1 && 'select'}`}
+                                className={`btn btn-secondary purchase-nav-btn px-2 
+                                ${pageHeadItem === 1 && 'select'}`}
                             >Invoice details</div>
                         </div>
                     </div>
                 </div>
             </div>
-            <form className='item_add_cont px-3 pb-1 pt-0'>
+            <form ref={formRef} onSubmit={handleSubmit} className='item_add_cont px-3 pb-1 pt-0'>
                 {purchaseHeader}
                 <PurchaseTable 
                     {...{
-                        handleChange,
-                        cstm_id, setCstm_id,
                         setPurchaseItemModal,
                         tableItem,setTableItem,
                         handleChangeTableItem,
                         setPurchaseItemSerielModal,
+                        handleChange,cstm_id, setCstm_id,
                         tableItemList,setTableItemList
                     }}
                 />
-                <PurchaseDetailFooter {...{handleEdit,purchaseAdd,handleChange}} />
+                <PurchaseDetailFooter {...{handleEdit,purchaseAdd,handleChange,handleKeyDown}} />
             </form>
             <Modal
                 show={purchaseItemModal}
@@ -280,11 +379,14 @@ const PurchaseTransaction = () => {
             onHide={()=>handleClose()}
             >
                 <PurchaseItemBatchAdd 
-                {...{tableItemBatch, setTableItemBatch,purchaseItemSerielModal,
-                    handleChangeTableItemBatch,setPurchaseItemSerielModal,
-                    itemBatchStore, setItemBatchStore,handleTableItemReset,
+                {...{tableItemBatch, setTableItemBatch,
+                    purchaseItemSerielModal,handleChangeTableItemBatch,
+                    setPurchaseItemSerielModal,itemBatchStore,
+                    setItemBatchStore,handleTableItemReset,
+                    tebleItemKeys,setTableItemKeys,
                     tableItemBatchList, setTableItemBatchList,
-                    tableItemList,setTableItemList,
+                    tableItemList,setTableItemList,purchaseAdd,
+                    tableItem
                     }}/>
             </Modal>
         </div>

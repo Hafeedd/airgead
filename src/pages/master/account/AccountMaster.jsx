@@ -1,8 +1,9 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router'
 import AccountList from './components/AccountList'
 import AccountAdd from './components/AccountAdd'
 import './AccountMaster.css'
+import useAccountServices from '../../../services/master/accountServices'
 
 const AccountMaster = () => {
     const [pageHeadItem, setPageHeadItem] = useState(1)
@@ -11,6 +12,22 @@ const AccountMaster = () => {
     const navigate = useNavigate()
 
     const location = useLocation()
+
+    const {
+        getAccountList
+    } = useAccountServices()
+
+    const loadAccountList = async() => {
+        const response = await getAccountList()
+        if (response?.success){
+            setListItem(response?.data)
+            // console.log(response?.data)
+        }
+    }
+
+    useEffect(()=>{
+        loadAccountList()
+    },[])
 
     const handleEdit = (data) => {
         navigate('/account-add')
@@ -33,9 +50,9 @@ const AccountMaster = () => {
             </div>
 
             {
-                /* toEdit||showAddItem */ location.pathname === "/account-add" ?
-                    <AccountAdd edit={toEdit} /> :
-                    <AccountList list={listItem} {...{ handleEdit, toEdit }} />
+                location.pathname === "/account-add" ?
+                    <AccountAdd edit={toEdit} refresh={loadAccountList} setEdit={setToEdit} /> :
+                    <AccountList {...{ handleEdit, toEdit, listItem }} />
             }
         </div>
     )
