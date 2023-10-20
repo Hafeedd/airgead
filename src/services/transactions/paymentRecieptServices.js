@@ -5,14 +5,14 @@ const usePaymentRecieptServices = () =>{
     // post 
 
     const postPaymentReciept = async (data) => {
-        const response = await axiosPrivate.post('/transactions/receipt/create/',data)
+        const response = await axiosPrivate.post('/transactions/receipt/created/',data)
         return response.data
     }
 
     //put 
     
     const putPaymentReciept = async (id,data) => {
-        const response = await axiosPrivate.put('transactions/receipt/update/'+id+'/',data)
+        const response = await axiosPrivate.put('transactions/receipt/updated/'+id+'/',data)
         return response.data
     }
   
@@ -25,8 +25,8 @@ const usePaymentRecieptServices = () =>{
 
     //get 
 
-    const getPaymentReciept = async () => {
-        const response = await axiosPrivate.get('/transactions/receipt/create/')
+    const getPaymentReciept = async (params) => {
+        const response = await axiosPrivate.get('/transactions/receipt/created/',{...params})
         return response.data
     }
 

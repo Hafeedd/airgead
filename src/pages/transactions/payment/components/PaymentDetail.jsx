@@ -7,6 +7,7 @@ import PaymentPrintDetails from './PaymentPrintDetails'
 import { Dropdown } from 'semantic-ui-react'
 
 const PaymentDetail = ({
+    edit,
     setPaymentAdd,
     paymentAdd, 
     handleChange,
@@ -103,7 +104,7 @@ const PaymentDetail = ({
                         className='payment-select item d-flex align-items-center py-0 form-control'
                         name="supplier_detail"
                         placeholder='select Account Details'
-                        value={paymentAdd.account_detail ||''}
+                        value={paymentAdd.account_code ||''}
                         options={accountList}
                         />
                     </div>
@@ -139,7 +140,7 @@ const PaymentDetail = ({
                         className='payment-select item d-flex align-items-center py-0 form-control'
                         name="cash_bank_account_name"
                         placeholder='select'
-                        value={paymentAdd.cash_bank_account|| ''}
+                        value={paymentAdd.cash_bank_account_name|| ''}
                         options={accountPayList}
                         />
                     </div>
@@ -155,7 +156,7 @@ const PaymentDetail = ({
                             Date
                         </div>
                         <div className='mx-0 px-0 col-7'>
-                            <input onChange={handleChange} name='date' value={paymentAdd.date ? paymentAdd.date : ''} type='date' className='item_input names' />
+                            <input onChange={handleChange} name='date' value={paymentAdd.date ? paymentAdd.date.slice(0,10) : ''} type='date' className='item_input names' />
                         </div>
                     </div>
                     <div className="col-6 row ps-4 mx-0 px-0">
@@ -254,7 +255,7 @@ const PaymentDetail = ({
                     <button onClick={handleReset} type='reset' className='btn btn-sm btn-outline-dark w-100'>Clear</button>
                 </div>
                 <div className='mx-0 ps-1 pe-0 col-1 col-2'>
-                    <button type='submit' className='btn btn-sm btn-dark w-100'>Save</button>
+                    <button type='submit' className='btn btn-sm btn-dark w-100'>{edit?"Update":"Save"}</button>
                 </div>
             </div>
 

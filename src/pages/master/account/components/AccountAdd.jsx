@@ -3,11 +3,13 @@ import { Form } from 'react-bootstrap'
 import useAccountServices from '../../../../services/master/accountServices'
 import Swal from 'sweetalert2'
 import { useNavigate } from 'react-router'
+import useOnKey from '../../../../onKeyFunct/onKeyFunct'
 
 const AccountAdd = ({ edit, refresh, setEdit }) => {
     const [showAccountGroup, setShowAccountGroup] = useState(false)
     const [accountGroupList, setAccountGroupList] = useState([])
     const [tempGroupList, setTempGroupList] = useState([])
+    const [ref, setRef] = useState()
 
     const [accountAdd, setAccountAdd] = useState({
         code: null,
@@ -33,6 +35,8 @@ const AccountAdd = ({ edit, refresh, setEdit }) => {
         position: null,
         reserve: 'YES'
     })
+
+    const {formRef, handleKeyDown} = useOnKey(ref,setRef)
 
     const {
         postAccountGroup,
@@ -269,7 +273,7 @@ const AccountAdd = ({ edit, refresh, setEdit }) => {
         <div className='item_add'>
             <div className='item_add_cont'>
                 {edit ? "Edit Account" : "Add New Account"}
-                <form onSubmit={handleSubmit} className='item_add_form pt-1 row mt-1'>
+                <form ref={formRef} onSubmit={handleSubmit} className='item_add_form pt-1 row mt-1'>
 
                     {/* account details --------------------------------------------------------------------------------------- */}
 
@@ -280,7 +284,8 @@ const AccountAdd = ({ edit, refresh, setEdit }) => {
                                 Code
                             </div>
                             <div className='mx-0 px-0 col-6 col-7'>
-                                <input onChange={handleChange} name='code' value={accountAdd.code ? accountAdd.code : ''} type='text' className='item_input names' />
+                                <input onChange={handleChange} onKeyDown={handleKeyDown}
+                                 name='code' value={accountAdd.code ? accountAdd.code : ''} type='text' className='item_input names' />
                             </div>
                         </div>
                         <div className="d-flex align-items-center px-0 row mx-0 my-2">
@@ -288,7 +293,8 @@ const AccountAdd = ({ edit, refresh, setEdit }) => {
                                 Name
                             </div>
                             <div className='mx-0 px-0 col-6 col-7'>
-                                <input onChange={handleChange} name='name' value={accountAdd.name ? accountAdd.name : ''} type='text' className='item_input names' />
+                                <input onChange={handleChange} onKeyDown={handleKeyDown}
+                                 name='name' value={accountAdd.name ? accountAdd.name : ''} type='text' className='item_input names' />
                             </div>
                         </div>
                         <div className="d-flex align-items-center px-0 row mx-0 my-2">
@@ -296,7 +302,8 @@ const AccountAdd = ({ edit, refresh, setEdit }) => {
                                 A/c Group
                             </div>
                             <div className='mx-0 px-0 col-4 col-5'>
-                                <input onChange={handleChange} name='account_group' value={accountAdd.account_group ? accountAdd.account_group : ''} type='text' className='item_input names' />
+                                <input onChange={handleChange} onKeyDown={handleKeyDown}
+                                 name='account_group' value={accountAdd.account_group ? accountAdd.account_group : ''} type='text' className='item_input names' />
                             </div>
                             <div className="col-2 pe-0 d-flex align-items-center">
                                 <div 
@@ -314,10 +321,12 @@ const AccountAdd = ({ edit, refresh, setEdit }) => {
                             <div className='mx-0 px-0 col-6 col-7'>
                                 <div className='item_input_with_drop row rounded-2 p-0 m-0 align-items-center'>
                                     <div className='col-6 col-7 mx-0 px-0 me-0'>
-                                        <input onChange={handleChange} name='opening_balance' value={accountAdd.opening_balance ? accountAdd.opening_balance : ''} type='text' className='item_input names border-0' />
+                                        <input onChange={handleChange} onKeyDown={handleKeyDown}
+                                         name='opening_balance' value={accountAdd.opening_balance ? accountAdd.opening_balance : ''} type='text' className='item_input names border-0' />
                                     </div>
                                     <div className='col-6 col-5 mx-0 px-0 d-flex align-items-center h-100'>
-                                        <select onChange={handleChange} name='debit_credit' value={accountAdd.debit_credit ? accountAdd.debit_credit : ''} className='pay-type-select ms-0 pe-0'>
+                                        <select onChange={handleChange} onKeyDown={handleKeyDown}
+                                         name='debit_credit' value={accountAdd.debit_credit ? accountAdd.debit_credit : ''} className='pay-type-select ms-0 pe-0'>
                                             <option value="DEBIT">DEBIT</option>
                                             <option value="CREDIT">CREDIT</option>
                                         </select>
@@ -331,7 +340,8 @@ const AccountAdd = ({ edit, refresh, setEdit }) => {
                                     A/c Type
                                 </div>
                                 <div className='mx-0 px-0 col-7'>
-                                    <select onChange={handleChange} name='account_type_one' value={accountAdd.account_type_one ? accountAdd.account_type_one : ''} className='account-select-dropdown ms-0 pe-0'>
+                                    <select onChange={handleChange} onKeyDown={handleKeyDown}
+                                     name='account_type_one' value={accountAdd.account_type_one ? accountAdd.account_type_one : ''} className='account-select-dropdown ms-0 pe-0'>
                                         <option value="INCOME">INCOME</option>
                                         <option value="EXPENSE">EXPENSE</option>
                                         <option value="ASSET">ASSET</option>
@@ -344,7 +354,8 @@ const AccountAdd = ({ edit, refresh, setEdit }) => {
                                     Cash/Bank
                                 </div>
                                 <div className='mx-0 px-0 col-7'>
-                                    <select onChange={handleChange} name='cash_bank' value={accountAdd.cash_bank ? accountAdd.cash_bank : ''} className='account-select-dropdown ms-0 pe-0'>
+                                    <select onChange={handleChange} onKeyDown={handleKeyDown}
+                                     name='cash_bank' value={accountAdd.cash_bank ? accountAdd.cash_bank : ''} className='account-select-dropdown ms-0 pe-0'>
                                         <option value="CASH">CASH</option>
                                         <option value="BANK">BANK</option>
                                     </select>
@@ -355,11 +366,13 @@ const AccountAdd = ({ edit, refresh, setEdit }) => {
                             <span className="col-7" />
                             <div className="col-5 d-flex align-items-center row mx-0 my-0 px-0 justify-content-end">
                                 <div className='mx-0 px-0 col-6 d-flex align-items-center justify-content-end'>
-                                    <input type='checkbox' onChange={handleChange} name='reserved' checked={accountAdd.reserved} />
+                                    <input type='checkbox' onChange={handleChange} onKeyDown={handleKeyDown}
+                                     name='reserved' checked={accountAdd.reserved} />
                                     <label htmlFor='reserved' className='ps-2'>Reserved</label>
                                 </div>
                                 <div className='mx-0 px-0 col-6 d-flex align-items-center justify-content-end'>
-                                    <input type='checkbox' onChange={handleChange} name='blocked' checked={accountAdd.blocked} />
+                                    <input type='checkbox' onChange={handleChange} onKeyDown={handleKeyDown}
+                                     name='blocked' checked={accountAdd.blocked} />
                                     <label htmlFor='blocked' className='ps-2'>Blocked</label>
                                 </div>
                             </div>
@@ -370,7 +383,8 @@ const AccountAdd = ({ edit, refresh, setEdit }) => {
                                     Position in P/L
                                 </div>
                                 <div className='mx-0 px-0 col-7'>
-                                    <input onChange={handleChange} name='position_in_profit_loss' value={accountAdd.position_in_profit_loss ? accountAdd.position_in_profit_loss : ''} type='text' className='item_input names' />
+                                    <input onChange={handleChange} onKeyDown={handleKeyDown}
+                                     name='position_in_profit_loss' value={accountAdd.position_in_profit_loss ? accountAdd.position_in_profit_loss : ''} type='text' className='item_input names' />
                                 </div>
                             </div>
                             <div className="col-6 col-7 row ps-4 mx-0 px-0">
@@ -378,14 +392,16 @@ const AccountAdd = ({ edit, refresh, setEdit }) => {
                                     Position in BS
                                 </div>
                                 <div className='mx-0 px-0 col-7'>
-                                    <input onChange={handleChange} name='position_in_balance_sheet' value={accountAdd.position_in_balance_sheet ? accountAdd.position_in_balance_sheet : ''} type='text' className='item_input names' />
+                                    <input onChange={handleChange} onKeyDown={handleKeyDown}
+                                     name='position_in_balance_sheet' value={accountAdd.position_in_balance_sheet ? accountAdd.position_in_balance_sheet : ''} type='text' className='item_input names' />
                                 </div>
                             </div>
                         </div>
                         <div className="d-flex align-items-center px-0 row mx-0 my-2">
                             <div className="col-12 d-flex align-items-center row mx-0 my-0 px-0 justify-content-start">
                                 <div className='mx-0 px-0 col-12 d-flex align-items-center justify-content-start'>
-                                    <input type='checkbox' onChange={handleChange} name='transaction' checked={accountAdd.transaction} />
+                                    <input type='checkbox' onChange={handleChange} onKeyDown={handleKeyDown}
+                                     name='transaction' checked={accountAdd.transaction} />
                                     <label htmlFor='transaction' className='ps-2'>Transaction A/c</label>
                                 </div>
                             </div>
@@ -396,7 +412,8 @@ const AccountAdd = ({ edit, refresh, setEdit }) => {
                                     HSN
                                 </div>
                                 <div className='mx-0 px-0 col-7'>
-                                    <input onChange={handleChange} name='hsn' value={accountAdd.hsn ? accountAdd.hsn : ''} type='text' className='item_input names' />
+                                    <input disabled={accountAdd.transaction==false&&true} onChange={handleChange} onKeyDown={handleKeyDown}
+                                     name='hsn' value={accountAdd.hsn ? accountAdd.hsn : ''} type='text' className='item_input names' />
                                 </div>
                             </div>
                             <div className="col-6 col-7 row ps-4 mx-0 px-0">
@@ -404,7 +421,8 @@ const AccountAdd = ({ edit, refresh, setEdit }) => {
                                     Tax %
                                 </div>
                                 <div className='mx-0 px-0 col-7'>
-                                    <input onChange={handleChange} name='tax' value={accountAdd.tax ? accountAdd.tax : ''} type='text' className='item_input names' />
+                                    <input disabled={accountAdd.transaction==false&&true} onChange={handleChange} onKeyDown={handleKeyDown}
+                                     name='tax' value={accountAdd.tax ? accountAdd.tax : ''} type='text' className='item_input names' />
                                 </div>
                             </div>
                         </div>}

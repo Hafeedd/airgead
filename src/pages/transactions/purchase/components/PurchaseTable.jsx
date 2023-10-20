@@ -3,12 +3,18 @@ import PurchaseTableItemList from './PurchaseTableItemList'
 import useItemServices from '../../../../services/master/itemServices'
 import useOnKey from '../../../../onKeyFunct/onKeyFunct'
 import { Dropdown } from 'semantic-ui-react'
+import { FiEdit } from 'react-icons/fi'
+import Swal from 'sweetalert2'
 
 const PurchaseTable = (props) => {
     const {setPurchaseItemModal,tableItem,
-        handleChangeTableItem,setTableItem,
-        setPurchaseItemSerielModal,cstm_id,
+        handleChangeTableItem,setTableItem,edit,
+        setPurchaseItemSerielModal,cstm_id,purchaseAdd,
         setCstm_id,tableItemList,setTableItemList,
+        tableItemBatchList, setTableItemBatchList,
+        tableEdit, setTableEdit,setEdit,
+        purchaseList, setPurchaseList,
+        handlePurchaseAllReset,handleResetTable,
     } = props
 
     const [ref, setRef] = useState()
@@ -23,17 +29,26 @@ const PurchaseTable = (props) => {
 
     const {getItemNameList,getProperty} = useItemServices()
 
-    const setItemNameListState = (data) => {
-        let tempList = []
-        data.map(item=>{
-            item['value'] = item.id
-            delete item.id
-            item['text'] = item.name
-            delete item.name
-            tempList.push(item)
-        })
-        setItemNameList(tempList)
+    const handleTableItemEdit = (data) =>{
+        if(data?.batches){
+            let {batches,...others} = data
+            setTableItemBatchList([...data?.batches])
+            setTableItem(others)
+        }
+        setTableEdit(data.id)
     }
+
+    // const setItemNameListState = (data) => {
+    //     let tempList = []
+    //     data.map(item=>{
+    //         item['value'] = item.id
+    //         delete item.id
+    //         item['text'] = item.name
+    //         delete item.name
+    //         tempList.push(item)
+    //     })
+    //     setItemNameList(tempList)
+    // }
 
     const getData = async () => {
         const minFunct = (data) => {
@@ -74,7 +89,13 @@ const PurchaseTable = (props) => {
         }
     }
 
-    const handleAddBatch = (e) =>{
+    const handleAddBatchOpen = (e) =>{
+        if( !tableEdit && (!tableItem.item_name || !tableItem.quantity || !tableItem.rate)){
+            Swal.fire('please enter Essential details firs',
+            'Enter Rate , Quantity and Select Item First', 'warning' )
+            return 0
+        }
+        if(!tableEdit){
         if(e.type === "keydown"){
             if(e.key !== "Enter")
             return 0
@@ -87,12 +108,49 @@ const PurchaseTable = (props) => {
         setCstm_id(cstm_id+1)
         setPurchaseItemSerielModal(cstm_id)
     }
+    setPurchaseItemSerielModal(tableEdit||true)
+    }
 
-    // console.log(itemNameList)
+    const handlePrev = () => {
+        if(!edit){
+            setEdit(purchaseList[0])
+        }else{
+            let ind = purchaseList?.findIndex((x)=>edit.id == x.id)
+            if(ind !== purchaseList?.length-1){
+                setEdit(purchaseList[ind+1])
+            }else{
+                Swal.fire("No more purchase to edit",'go for next','warning')
+            }
+        }
+    }
+    const handleNext = () => {
+        let i = purchaseList?.length -1
+        if(!edit){
+            Swal.fire("No more purchase to edit",'go for prev','warning')
+        }else if(edit?.id == purchaseList[0].id){
+            handlePurchaseAllReset()
+        }else{
+            let ind = purchaseList?.findIndex((x)=>edit.id == x.id)
+            if(ind !== purchaseList[0]){
+                setEdit(purchaseList[ind-1])
+            }else{
+                Swal.fire("No more purchase to edit",'go for prev','warning')
+            }
+        }
+    }
+
+    const AdjustHeightOfTable = () =>{
+        console.log("fdsf")
+        let a = []
+        for(let i = 0;i<6-purchaseAdd.total_items;i++){
+            a.push(<tr><td style={{ height: "",display: "" }} colSpan={17}></td></tr>)
+        }
+        return a
+    }
 
     return (
         <>
-            <div className='px-2 mt-1'>
+            <div className='mx-2 mt-1 purchase-table-item-container px-0'>
                 <table className='table table-secondary purchase-table mb-0'>
                     <thead className='purchase-table-header'>
                         <tr>
@@ -111,7 +169,8 @@ const PurchaseTable = (props) => {
                             <th>Margin%</th>
                             <th>S.Rate</th>
                             <th className='py-1 text-end'>
-                                <div className='btn btn-primary purchase-add-btn my-0' onClick={()=>setPurchaseItemModal(true)}>
+                                <div className='btn btn-primary purchase-add-btn my-0'
+                                onClick={()=>setPurchaseItemModal(true)}>
                                     +
                                 </div>
                             </th>
@@ -131,32 +190,24 @@ const PurchaseTable = (props) => {
                                 className='purchase_search_drop border-0 w-100 ps-2'
                                 onKeyDown={handleKeyDown} name={'name'}
                                 onChange={handleChangeTableItem}
-                                value={(tableItem.name==''||tableItem.name)?tableItem.name:''} 
+                                value={(tableItem.fk_items==''||tableItem.fk_items)?tableItem.fk_items:''} 
                                 options={itemNameList}
                                 />
-                                {/* <select required onKeyDown={handleKeyDown} name={'name'} onChange={handleChangeTableItem} value={(tableItem.name==''||tableItem.name)?tableItem.name:''} 
-                                type='number' className='purchase_input border-0 w-100 ps-2'>
-                                <option value={null}>Select</option>
-                                {itemNameList?.length>0&&
-                                itemNameList.map((item,index)=>
-                                <option key={index} value={item.value}>{item.text}</option>)}
-                                </select> */}
                                 </td>
                             <td>
-                                <input onKeyDown={handleKeyDown} name={'open_stock'} onChange={handleChangeTableItem} 
-                                onFocus={handleFocus} onBlur={handleBlur} value={(tableItem.open_stock==''||tableItem.open_stock||tableItem.open_stock=='0')?tableItem.open_stock:''}
+                                <input onKeyDown={handleKeyDown} name={'quantity'} onChange={handleChangeTableItem} 
+                                onFocus={handleFocus} onBlur={handleBlur} value={(tableItem.quantity==''||tableItem.quantity||tableItem.quantity=='0')?tableItem.quantity:''}
                                 type='number' className='purchase_input border-0 w-100 text-center' /></td>
                             <td>
                                 <select onKeyDown={handleKeyDown} name={'unit'} onChange={handleChangeTableItem} value={(tableItem.unit==''||tableItem.unit)?tableItem.unit:''} 
                                 style={{"-webkit-appearance":"none",fontSize:'10px',padding:'3.5px 1px'}} 
                                 className='purchase_input border-0 w-100 text-center'>
-                                {/* <option value={null}>{">"}</option> */}
                                 {unitList&&unitList.map((x,i)=>
                                 <option key={i} value={x.value}>{x.text}</option>)}
                                 </select></td>
                             <td>
-                                <input onKeyDown={handleKeyDown} name={'purchase_rate'} onChange={handleChangeTableItem}
-                                 value={(tableItem.purchase_rate==''||tableItem.purchase_rate)?tableItem.purchase_rate:''}
+                                <input onKeyDown={handleKeyDown} name={'rate'} onChange={handleChangeTableItem}
+                                 value={(tableItem.rate==''||tableItem.rate)?tableItem.rate:''}
                                 onFocus={handleFocus} onBlur={handleBlur} type='number' 
                                 className='purchase_input border-0 w-100 text-center' /></td>
                             <td>
@@ -180,22 +231,22 @@ const PurchaseTable = (props) => {
                                 onFocus={handleFocus} onBlur={handleBlur} type='number' 
                                 className='purchase_input border-0 w-100 text-center' /></td>
                             <td>
-                                <input onKeyDown={handleKeyDown} name={'cgst_or_igst'} onChange={handleChangeTableItem}
+                                <input disabled onKeyDown={handleKeyDown} name={'cgst_or_igst'} onChange={handleChangeTableItem}
                                  value={(tableItem.cgst_or_igst==''||tableItem.cgst_or_igst)?tableItem.cgst_or_igst:''}
                                 onFocus={handleFocus} onBlur={handleBlur} type='number' 
                                 className='purchase_input border-0 w-100 text-center' /></td>
                             <td>
-                                <input onKeyDown={handleKeyDown} name={'sgst'} onChange={handleChangeTableItem}
+                                <input disabled onKeyDown={handleKeyDown} name={'sgst'} onChange={handleChangeTableItem}
                                  value={(tableItem.sgst==''||tableItem.sgst)?tableItem.sgst:''}
                                 onFocus={handleFocus} onBlur={handleBlur} type='number' 
                                 className='purchase_input border-0 w-100 text-center' /></td>
                             <td>
-                                <input onKeyDown={handleKeyDown} name={'total'} onChange={handleChangeTableItem}
+                                <input disabled onKeyDown={handleKeyDown} name={'total'} onChange={handleChangeTableItem}
                                  value={(tableItem.total==''||tableItem.total)?tableItem.total:''}
                                 onFocus={handleFocus} onBlur={handleBlur} type='number' 
                                 className='purchase_input border-0 w-100 text-center' /></td>
                             <td>
-                                <input onKeyDown={handleKeyDown} name={'cost'} onChange={handleChangeTableItem}
+                                <input disabled onKeyDown={handleKeyDown} name={'cost'} onChange={handleChangeTableItem}
                                  value={(tableItem.cost==''||tableItem.cost)?tableItem.cost:''}
                                 onFocus={handleFocus} onBlur={handleBlur} type='number' 
                                 className='purchase_input border-0 w-100 text-center' /></td>
@@ -205,15 +256,24 @@ const PurchaseTable = (props) => {
                                 onFocus={handleFocus} onBlur={handleBlur} type='number' 
                                 className='purchase_input border-0 w-100 text-center' /></td>
                             <td>
-                                <input onKeyDown={handleKeyDown} name={'retail_rate'} onChange={handleChangeTableItem}
-                                 value={(tableItem.retail_rate==''||tableItem.retail_rate)?tableItem.retail_rate:''}
+                                <input onKeyDown={handleKeyDown} name={'sale_rate'} onChange={handleChangeTableItem}
+                                 value={(tableItem.sale_rate==''||tableItem.sale_rate)?tableItem.sale_rate:''}
                                 onFocus={handleFocus} onBlur={handleBlur} type='number' 
                                 className='purchase_input border-0 w-100 text-center' /></td>
                             <td>
-                                <input onKeyDown={handleAddBatch} type='button' onClick={handleAddBatch}
-                                className='table-item-add-btn' value={"+"}/>
+                                {tableEdit?
+                                <div onClick={handleAddBatchOpen}
+                                className='text-center'>
+                                    <FiEdit className='mb-1 btn p-0' size={"16px"}/>
+                                </div>:
+                                <input onKeyDown={handleAddBatchOpen} type='button' onClick={handleAddBatchOpen}
+                                className='table-item-add-btn' value={"+"}/>}
                             </td>
-                            <td>
+                            <td className='p-0 text-start'>
+                                {tableEdit&&
+                                <input type='button' 
+                                onClick={()=>{setTableEdit(false);handleResetTable()}}
+                                className='table-item-add-btn2 text-start' value={"+"}/>}
                             </td>
                         </tr>
                         {tableItemList?.length>0&&
@@ -221,8 +281,8 @@ const PurchaseTable = (props) => {
 
                                 <tr>
                                     <td className='text-start ps-3' colSpan={2}>
-                                        <select disabled 
-                                            value={data.name} 
+                                        <select disabled
+                                            value={data.fk_items}
                                             className='purchase_input border-0 w-100'>
                                             <option value={null}>Select</option>
                                             {itemNameList?.length>0&&
@@ -231,7 +291,7 @@ const PurchaseTable = (props) => {
                                         </select>
                                     </td>
                                     <td>
-                                        {data.open_stock}
+                                        {data.quantity}
                                     </td>
                                     <td>
                                             <select value={data.unit} 
@@ -241,7 +301,7 @@ const PurchaseTable = (props) => {
                                                 <option key={i} value={x.value}>{x.text}</option>)}
                                             </select></td>
                                     <td>
-                                        {data.purchase_rate}</td>
+                                        {data.rate}</td>
                                     <td>
                                         {data.discount_1_percentage}%</td>
                                     <td>
@@ -261,25 +321,29 @@ const PurchaseTable = (props) => {
                                     <td>
                                         {data.margin}</td>
                                     <td>
-                                        {data.retail_rate}</td>
+                                        {data.sale_rate}</td>
                                     <td>
-
+                                        <div onClick={()=>handleTableItemEdit(data)} 
+                                        className='text-center'>
+                                            <FiEdit className='mb-1 btn p-0' size={"16px"}/>
+                                        </div>
                                     </td>
-                                    <td>
-
+                                    <td className=''>
                                     </td>
                                 </tr>
                                 ))
                             }
-                        <tr><td style={{ height: "2rem" }} colSpan={17}></td></tr>
+                        {
+                            <AdjustHeightOfTable/>
+                        }
                         <tr className='purchase-table-green'>
                             <td className='item2 col-1'>
-                                {'<'} Previous
+                            <div className='btn bg-none outline-none text-light border-none' onClick={handlePrev}>{'<'} Previous</div>
                             </td>
                             <td className='item3 px-3 col-1'>
-                                Next {'>'}
+                                <div className='btn bg-none outline-none text-light border-none' onClick={handleNext}>Next {'>'}</div>
                             </td>
-                            <td className='item'>01.0</td>
+                            <td className='item'><div className='purch-green-table-item'>{purchaseAdd.total_qty||0}</div></td>
                             <td>
 
                             </td>
@@ -289,14 +353,14 @@ const PurchaseTable = (props) => {
                             <td>
 
                             </td>
-                            <td className='item'>10%</td>
-                            <td className='item'>0''</td>
+                            <td className='item'><div className='purch-green-table-item'>{purchaseAdd.total_disc||0}%</div></td>
+                            <td className='item'><div className='purch-green-table-item'>{purchaseAdd.total_value||0}</div></td>
                             <td>
 
                             </td>
-                            <td className='item'>5.0</td>
-                            <td className='item'>2.0</td>
-                            <td className='item'>01.0</td>
+                            <td className='item'><div className='purch-green-table-item'>{purchaseAdd.total_scGst||0}%</div></td>
+                            <td className='item'><div className='purch-green-table-item'>{purchaseAdd.total_scGst||0}%</div></td>
+                            <td className='item'><div className='purch-green-table-item'>{purchaseAdd.total_total||0}</div></td>
                             <td>
 
                             </td>
@@ -319,23 +383,23 @@ const PurchaseTable = (props) => {
             <div className="purchase-detail-container px-3 py-0 mx-2 mt-1">
                 <div className="col-3 col-4 row mx-0">
                     <div className="col-5 text-end">Total Item :</div>
-                    <div className="col-7">03</div>
+                    <div className="col-7">{purchaseAdd.total_items || 0}</div>
                 </div>
                 <div className="col-3 col-4 row mx-0">
                     <div className="col-5 text-end">Item :</div>
-                    <div className="col-7">323</div>
+                    <div className="col-7">{purchaseAdd.total_qty || 0}</div>
                     <div className="col-5 text-end">HSN :</div>
                     <div className="col-7">323</div>
                 </div>
                 <div className="col-2 row mx-0">
                     <div className="col-5 text-end">CTC :</div>
-                    <div className="col-7">0.22</div>
+                    <div className="col-7">{purchaseAdd.total_CTC || 0}</div>
                 </div>
                 <div className="col-2 row mx-0">
                     <div className="col-5 text-end">Godown :</div>
                     <div className="col-7"></div>
                 </div>
-                <div className="col-1">M %</div>
+                <div className="col-1">M : {purchaseAdd.total_margin || 0 }%</div>
             </div>
         </>
     )

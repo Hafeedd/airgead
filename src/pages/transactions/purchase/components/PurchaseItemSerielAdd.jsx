@@ -2,6 +2,9 @@ import React, { useEffect, useState } from "react";
 import useOnKey from "../../../../onKeyFunct/onKeyFunct";
 import usePurchaseServices from "../../../../services/transactions/purchcaseServices";
 import Swal from "sweetalert2";
+import {FaPencilAlt} from 'react-icons/fa'
+import {MdClear,MdDeleteForever} from 'react-icons/md'
+import {AiOutlineArrowUp} from 'react-icons/ai'
 
 export const PurchaseItemBatchAdd = (props) => {
   const { tableItemBatch, setTableItemBatch,edit,
@@ -10,25 +13,33 @@ export const PurchaseItemBatchAdd = (props) => {
     tableItemBatchList, setTableItemBatchList,
     tableItemList,setTableItemList,purchaseAdd,
     tebleItemKeys, setTableItemKeys,tableItem,
+    handleCloseItemBatch,tableEdit, setTableEdit,
+    handleResetBatch,getData,
     } = props;
 
   const [ref, setRef] = useState();
-  const [batchList, setBatchList] = useState([]);
+  // const [batchList, setTableItemBatchList] = useState([]);
+  const [batchEdit, setBatchEdit] = useState(false);
   const [batchKeys, setBatchKeys] = useState([]);
 
   const { handleKeyDown, formRef } = useOnKey(ref, setRef);
 
-  const {postPurchaseItem,postPurchaseItemBatch} = usePurchaseServices()
+  const {postPurchaseItem,putPurchaseItem,postPurchaseItemBatch,
+    putPurchaseItemBatch} = usePurchaseServices()
 
   useEffect(()=>{
     if(!purchaseItemSerielModal){
-        handleReset()
-        setBatchList([])
+        handleResetBatch()
+        setTableItemBatchList([])
     }
   },[purchaseItemSerielModal])
 
   const addToBatchList = async () => {
-    let tempList = [...batchList];
+    if(!tableItemBatch?.batch_or_serial){
+      Swal.fire('Please Enter seriel number','','warning')
+      return 0
+    }
+    let tempList = [...tableItemBatchList];
     let tempBatchKeys = [...batchKeys]
     let valueLength = Object.values(tableItemBatch).length;
     if (valueLength > 5) {
@@ -36,7 +47,7 @@ export const PurchaseItemBatchAdd = (props) => {
         const response = await postPurchaseItemBatch(tableItemBatch)
         if(response?.success){
             tempBatchKeys.push({id:response?.data?.id})
-            tempList.push(tableItemBatch);
+            tempList.push({...tableItemBatch,id:response?.data?.id});
             setBatchKeys(tempBatchKeys)
           }else{
             Swal.fire(response?.data?.message,'','error')
@@ -46,15 +57,8 @@ export const PurchaseItemBatchAdd = (props) => {
         Swal.fire(err?.response?.data?.message,'','error')
       }
     }
-    setBatchList(tempList);
-    handleReset();
-  };
-
-  const handleReset = () => {
-    let keys = Object.keys(tableItemBatch);
-    keys.map((key) => {
-      setTableItemBatch((data) => ({ ...data, [key]: null }));
-    });
+    setTableItemBatchList(tempList);
+    handleResetBatch();
   };
 
   const handleBatchAddBtn = (e) => {
@@ -69,40 +73,72 @@ export const PurchaseItemBatchAdd = (props) => {
   
 
   const handleRemoveBatch = (index) =>{
-    if(!edit,index>-1){
-        let tempList = [...batchList]
+    if(!edit && index>-1){
+        let tempList = [...tableItemBatchList]
         tempList.splice(index,1)
-        setBatchList(tempList)
+        setTableItemBatchList(tempList)
+    }else{
+      setTableEdit(false)
     }
   }
 
   const handleClose = () =>{
+    handleCloseItemBatch()
     setPurchaseItemSerielModal(false)
     handleTableItemReset()
-    setBatchList()
-    let tempList = [...tableItemList]
-    let index = tempList.indexOf((data)=>data.cstm_id === purchaseItemSerielModal)
-    if(index){
-      tempList.splice(index,1)
-    }
-    setTableItemList(tempList)
+    setTableItemBatchList()
+    setTableEdit(false)
   }
 
-  const handleBatchSubmit = async (e) =>{
+  const handelDeleteBatch = async (data) =>{
+    let id
+    if(batchEdit){
+      id = data.cstm_id
+    }else{
+      id = data.id
+    }
+  }
+
+  const refreshBatchList = async () =>{
+    try{
+      const data = await getData()
+      if(data){
+      for (let purch of data){
+        for (let item of purch?.items){
+          if(item?.id == purchaseItemSerielModal){
+            if(item.batches?.length>0)
+            setTableItemBatchList(item?.batches)
+          }
+        }
+      }}
+    }catch(err){
+    }
+  }
+
+  const handleBatchSubmit = async (e) => {
     let ItemTempList = [...tableItemBatchList] , itemTemp = {}
-    if(batchList){
-      batchList?.map(data=>{
+    if(tableItemBatchList){
+      tableItemBatchList?.map(data=>{
         let itemTemp = {...data}
         itemTemp = {...itemTemp,['cstm_id']:purchaseItemSerielModal}
       })
       try{
         const submitData = {...tableItem,batch_items:batchKeys}
-        const response = await postPurchaseItem(submitData)
-        if(response?.success){
+        let response
+        if(!tableEdit){
+          response = await postPurchaseItem(submitData)
+        }else{
+          console.log(tableEdit)
+          response = await putPurchaseItem(tableEdit,submitData)
+        }
+        if(response?.success && !tableEdit){
           let tempItemKeys = [...tebleItemKeys]
           tempItemKeys.push({id:response?.data1?.id})
           ItemTempList.push(itemTemp)
           setTableItemKeys(tempItemKeys)
+        }else{
+          getData()
+          setTableEdit(false)
         }
         setTableItemBatchList(ItemTempList)
       }catch(err){
@@ -113,13 +149,42 @@ export const PurchaseItemBatchAdd = (props) => {
     }
   }
 
+  const handleMoveToEdit = (data) =>{
+    setTableItemBatch(data)
+    setBatchEdit(data)
+  }
+
+  const handleClearEdit = () =>{
+    setBatchEdit(false)
+    handleResetBatch()
+  }
+
+  const handleEditBatch = async () =>{
+    try{
+      let res
+      if(tableItemBatch?.id){
+         res = await putPurchaseItemBatch(tableItemBatch,tableItemBatch?.id)
+      }else{
+        Swal.fire('Nothing to edit yet','please try again','error')
+      }
+      if(res?.success){
+        Swal.fire('Batch edited successfully','','success')
+        refreshBatchList()
+        handleResetBatch()
+      }else  
+        Swal.fire(res.message,'','error')
+    }catch(err){
+      console.log(err)
+    }
+  }
+
   return (
     <div
       ref={formRef}
       className="p-0 row mx-0 pb-2 bg-dark"
       style={{ borderRadius: "0.3125rem", minHeight: "inherit" }}
     >
-      <div className="col-12 table_cont">
+      <div className="col-12 px-0 table_cont">
         <table className="table table-hover purchase-serial-table">
           <thead>
             <tr>
@@ -128,7 +193,10 @@ export const PurchaseItemBatchAdd = (props) => {
               <th>Qty</th>
               <th>Company</th>
               <th>Size</th>
-              <th colSpan={2}>Color</th>
+              <th>Color</th>
+              {/* <th>Expiry</th> */}
+              <th></th>
+              <th></th>
             </tr>
           </thead>
           <tbody>
@@ -138,8 +206,8 @@ export const PurchaseItemBatchAdd = (props) => {
                   onKeyDown={handleKeyDown}
                   onChange={handleChangeTableItemBatch}
                   placeholder="Enter"
-                  name="batch"
-                  value={tableItemBatch.batch || ""}
+                  name="batch_or_serial"
+                  value={tableItemBatch.batch_or_serial || ""}
                   className="seriel-input color-trnsp text-light"
                 />
               </td>
@@ -148,8 +216,8 @@ export const PurchaseItemBatchAdd = (props) => {
                   onKeyDown={handleKeyDown}
                   onChange={handleChangeTableItemBatch}
                   placeholder="Enter"
-                  name="c_barcode"
-                  value={tableItemBatch.c_barcode || ""}
+                  name="company_barcode"
+                  value={tableItemBatch.company_barcode || ""}
                   className="seriel-input"
                 />
               </td>
@@ -158,8 +226,8 @@ export const PurchaseItemBatchAdd = (props) => {
                   onKeyDown={handleKeyDown}
                   onChange={handleChangeTableItemBatch}
                   placeholder="Enter"
-                  name="qty"
-                  value={tableItemBatch.qty || ""}
+                  name="batch_qty"
+                  value={tableItemBatch.batch_qty || ""}
                   className="seriel-input"
                 />
               </td>
@@ -193,39 +261,66 @@ export const PurchaseItemBatchAdd = (props) => {
                   className="seriel-input"
                 />
               </td>
+              {/* <td>
+                <input
+                  onKeyDown={handleKeyDown}
+                  onChange={handleChangeTableItemBatch}
+                  placeholder="Enter"
+                  name="expiry"
+                  value={tableItemBatch.expiry || ""}
+                  className="seriel-input"
+                />
+              </td> */}
               <td>
+                {!batchEdit ?
                 <button
                   onClick={handleBatchAddBtn}
                   onKeyDown={handleBatchAddBtn}
                   className="seriel-input-button"
                 >
                   +
-                </button>
+                </button>:
+                <FaPencilAlt onClick={handleEditBatch} className="text-light cursor mx-2"/>
+                }
+              </td>
+              <td>
+                {!batchEdit ?
+                <div></div>:
+                <MdClear onClick={handleClearEdit} className="text-light cursor fs-5 mx-2"/>
+                }
               </td>
             </tr>
-            {batchList &&
-              batchList.map((data,i) => (
-                <tr key={i}>
+            {tableItemBatchList &&
+              tableItemBatchList?.map((data,i) => (
+                <tr className="batch-seriel-row" key={i}>
                   <td>
-                    <div>{data.batch}</div>
+                    <div>{data?.batch_or_serial}</div>
                   </td>
                   <td>
-                    <div className="seriel-data">{data.c_barcode || ""}</div>
+                    <div className="seriel-data">{data?.company_barcode || ""}</div>
                   </td>
                   <td>
-                    <div className="seriel-data">{data.qty || ""}</div>
+                    <div className="seriel-data">{data?.batch_qty || ""}</div>
                   </td>
                   <td>
-                    <div className="seriel-data">{data.company || ""}</div>
+                    <div className="seriel-data">{data?.company || ""}</div>
                   </td>
                   <td>
-                    <div className="seriel-data">{data.size || ""}</div>
+                    <div className="seriel-data">{data?.size || ""}</div>
                   </td>
                   <td>
-                    <div className="seriel-data">{data.color || ""}</div>
+                    <div className="seriel-data">{data?.color || ""}</div>
                   </td>
-                  <td>
-                    <div onClick={()=>handleRemoveBatch(i)} className="seriel-data-button">-</div>
+                  <td className="">
+                    <div>
+                    <AiOutlineArrowUp onClick={()=>handleMoveToEdit(data)}
+                     className="text-light cursor fs-5 mx-1"/>
+                    </div>
+                  </td>
+                  <td className="">
+                    <div onClick={()=>handleRemoveBatch(i)}>
+                    <MdDeleteForever className="text-light fs-5 cursor mx-1"/>
+                    </div>
                   </td>
                 </tr>
               ))}

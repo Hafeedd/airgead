@@ -24,7 +24,7 @@ const PaymentChequeDetails = ({handleChange, paymentAdd}) => {
                 Cheque Date
             </div>
             <div className='mx-0 px-0 col-6'>
-                <input onChange={handleChange} name='cheque_date' value={paymentAdd.cheque_date ? paymentAdd.cheque_date : ''} type='date' className='item_input names bg-dark text-light' />
+                <input onChange={handleChange} name='cheque_date' value={paymentAdd.cheque_date ? paymentAdd?.cheque_date?.slice(0,10) : ''} type='date' className='item_input names bg-dark text-light' />
             </div>
             <span className="col-3" />
         </div>

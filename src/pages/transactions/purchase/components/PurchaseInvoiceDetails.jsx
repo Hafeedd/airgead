@@ -6,14 +6,10 @@ import { Dropdown } from 'semantic-ui-react'
 import useOnKey from '../../../../onKeyFunct/onKeyFunct'
 
 const PurchaseInvoiceDetails = (props) => {
-    const {handleEdit,purchaseAdd,
-        handleChange} = props
+    const {handleEdit,purchaseAdd,handleChange,
+        supplierList, setSupplierList} = props
 
-    const [supplierList, setSupplierList] = useState(null)
     const [ref, setRef] = useState(null)
-
-
-
     const {getSupplier} = useCustomerServices()
 
     useEffect(()=>{
@@ -25,13 +21,24 @@ const PurchaseInvoiceDetails = (props) => {
     const getData = async () =>{
         let res = await getSupplier()
         if(!res?.success) return 0
-
         let tempList = []
         res.data.map(item=>{
-            let a = {value:item.code,text:item.code,key:item.id,name:item.name,description:item.name}
+            let a = {value:item.id,text:item.code,name:item.name,description:item.name}
             tempList.push(a)
         })
         setSupplierList(tempList)
+    }
+
+    const supplierNameFilter = () =>{
+        if(purchaseAdd.fk_supplier && supplierList?.length>0){
+            for (let i of supplierList){
+                if(i.value==purchaseAdd.fk_supplier){
+                    return i.name
+                }
+            }
+        }else{
+            return null
+        }
     }
     
     const search = (options, searchValue) => {
@@ -52,9 +59,9 @@ const PurchaseInvoiceDetails = (props) => {
                     onKeyDown={handleKeyDown}
                     onChange={handleChange}
                     className='pruchase-select d-flex align-items-center py-0 form-control'
-                    name="supplier_code"
+                    name="fk_supplier"
                     placeholder='select'
-                    value={purchaseAdd.supplier_code||''}
+                    value={purchaseAdd?.fk_supplier||''}
                     options={supplierList}
                     />
             </Form.Group>
@@ -62,9 +69,9 @@ const PurchaseInvoiceDetails = (props) => {
                 <Form.Label className='col-3 purchase-input-label'>Supplier</Form.Label>
                 <Form.Control
                     required
-                    name="fk_supplier" value={purchaseAdd.supplier_name||''}
+                    disabled
+                    name="fk_supplier" value={supplierNameFilter()||''}
                     onKeyDown={handleKeyDown}
-                    onChange={handleChange}
                     className='purchase-input-text'
                     placeholder='Name'
                     type='text'
@@ -116,7 +123,7 @@ const PurchaseInvoiceDetails = (props) => {
             <Form.Group className='col-3 ps-5 mx-0 d-flex align-items-center mt-1'>
                 <Form.Label className='col-3 purchase-input-label'>Bill Date</Form.Label>
                 <Form.Control
-                    name="bill_date" value={purchaseAdd.bill_date||''}
+                    name="bill_date" value={purchaseAdd.bill_date?.slice(0,10)||''}
                     onKeyDown={handleKeyDown}
                     onChange={handleChange}
                     className='purchase-input-text'
@@ -126,7 +133,7 @@ const PurchaseInvoiceDetails = (props) => {
             <Form.Group className='col-3 col-4 mx-0 d-flex align-items-center my-1'>
                 <Form.Label className='col-3 col-4 purchase-input-label'>Date</Form.Label>
                 <Form.Control
-                    name="date" value={purchaseAdd.date||''}
+                    name="created_at" value={purchaseAdd.created_at?.slice(0,10)||(new Date().toISOString().slice(0,10))}
                     onKeyDown={handleKeyDown}
                     onChange={handleChange}
                     className='purchase-input-text'
@@ -152,17 +159,17 @@ const PurchaseInvoiceDetails = (props) => {
             </div>
             <div className='col-4 col-5 d-flex align-items-center row mx-0 my-0 justify-content-end'>
                 <div className='mx-0 px-0 col-4 d-flex align-items-center justify-content-end'>
-                    <input type='checkbox' name="interstate" value={purchaseAdd.interstate||''}
+                    <input type='checkbox' name="interstate" checked={purchaseAdd?.interstate||''}
                     onKeyDown={handleKeyDown} onChange={handleChange}/>
                     <label for='Repeat' className='ps-2'>Interstate</label>
                 </div>
                 <div className='mx-0 px-0 col-5 d-flex align-items-center justify-content-end'>
-                    <input type='checkbox' name="reverse_charge" value={purchaseAdd.reverse_charge||''}
+                    <input type='checkbox' name="reverse_charge" checked={purchaseAdd.reverse_charge||''}
                     onKeyDown={handleKeyDown} onChange={handleChange} />
                     <label for='Blocked' className='ps-2'>Reverse Charge</label>
                 </div>
                 <div className='mx-0 px-0 col-3 d-flex align-items-center justify-content-end'>
-                    <input type='checkbox' name="tax_bill" value={purchaseAdd.tax_bill||''}
+                    <input type='checkbox' name="tax_bill" checked={purchaseAdd.tax_bill||''}
                     onKeyDown={handleKeyDown} onChange={handleChange} />
                     <label for='Blocked' className='ps-2'>Tax Bill</label>
                 </div>

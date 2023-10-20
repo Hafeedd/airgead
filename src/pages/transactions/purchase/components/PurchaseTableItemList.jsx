@@ -12,6 +12,7 @@ const PurchaseTableItemList = () => {
             <th>Readonly</th>
             <th>Skipping</th>
             <th style={{borderRight:'0px'}}>Breakpoint</th>
+            <th style={{borderRight:'0px', width:'2rem'}}></th>
             <th style={{borderRight:'0px', width:'2rem'}} className='end'></th>
           </tr>
         </thead>

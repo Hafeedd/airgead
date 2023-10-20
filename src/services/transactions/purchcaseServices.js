@@ -23,12 +23,12 @@ const usePurchaseServices = () => {
     //put requests ==================================
 
     // update full purchase data
-    const putPurchase = async (data,id) =>{
+    const putPurchase = async (id,data) =>{
         const response = await axiosPrivate.put('transactions/purchase/updated/'+id+'/',data)
         return response.data
     }
     // update purchase item
-    const putPurchaseItem = async (data,id) =>{
+    const putPurchaseItem = async (id,data) =>{
         const response = await axiosPrivate.put('transactions/purchase_item/updated/'+id+'/',data)
         return response.data
     }
