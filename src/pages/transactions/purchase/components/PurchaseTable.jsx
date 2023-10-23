@@ -4,7 +4,9 @@ import useItemServices from '../../../../services/master/itemServices'
 import useOnKey from '../../../../onKeyFunct/onKeyFunct'
 import { Dropdown } from 'semantic-ui-react'
 import { FiEdit } from 'react-icons/fi'
+import { BsTrashFill } from 'react-icons/bs'
 import Swal from 'sweetalert2'
+import usePurchaseServices from '../../../../services/transactions/purchcaseServices'
 
 const PurchaseTable = (props) => {
     const {setPurchaseItemModal,tableItem,
@@ -28,6 +30,8 @@ const PurchaseTable = (props) => {
     const {handleKeyDown,  formRef } = useOnKey(ref, setRef);
 
     const {getItemNameList,getProperty} = useItemServices()
+
+    const {deletePurchaseItem} = usePurchaseServices()
 
     const handleTableItemEdit = (data) =>{
         if(data?.batches){
@@ -140,13 +144,67 @@ const PurchaseTable = (props) => {
     }
 
     const AdjustHeightOfTable = () =>{
-        console.log("fdsf")
         let a = []
-        for(let i = 0;i<6-purchaseAdd.total_items;i++){
+        for(let i = 0;i<6-purchaseAdd.total_items||0;i++){
             a.push(<tr><td style={{ height: "",display: "" }} colSpan={17}></td></tr>)
         }
         return a
     }
+
+    const confirmDelete = async (data) =>{
+        Swal.fire({
+            title:"Delete Item",
+            text:"Do you want to delete Item ?",
+            showDenyButton:true,
+            showCancelButton:false,
+            denyButtonText:"Cancel",
+            showLoaderOnConfirm:true,
+            preConfirm:async()=>{await handleTableItemDelete(data)},
+            preDeny:()=>Swal.fire({
+                title:"Canceled",
+                showConfirmButton:false,
+                timer:1500
+            })
+        })
+    }
+
+    const handleTableItemDelete = async (data) =>{
+        if(!data.created_at){
+            let tempList = [...tableItemList]
+        let listAfterItemRem = []
+
+        let index = tempList.findIndex(x=>{
+            return x.id == data.id})
+
+        if(index>-1){
+            tempList.splice(index,1,)
+            listAfterItemRem = [...tempList]
+        }
+        handlePurchaseAllReset()
+        setTableItemList([...listAfterItemRem])}
+        try{
+            let response = await deletePurchaseItem(data.id)
+            if(response.success){
+                Swal.fire({
+                    title:'Item deleted successfully',
+                    icon:'success',
+                    showConfirmButton:false,
+                    timer:1500,                    
+                })
+            const data = getData()
+            setEdit(data)
+            }else{
+                Swal.fire(response.message,'','error')
+            }
+        }catch(err){
+            Swal.fire("Fialed to delete item",'please try again','warning')
+        }
+    }
+
+    const search =(options, searchValue) => {
+        searchValue = searchValue.toUpperCase()
+        return options.filter((option) => {return(option?.value.toString().includes(searchValue)||option.description.includes(searchValue))});
+      };
 
     return (
         <>
@@ -185,7 +243,7 @@ const PurchaseTable = (props) => {
                                 clearable
                                 selection
                                 required
-                                search
+                                search={search}
                                 placeholder='SELECT'
                                 className='purchase_search_drop border-0 w-100 ps-2'
                                 onKeyDown={handleKeyDown} name={'name'}
@@ -256,8 +314,8 @@ const PurchaseTable = (props) => {
                                 onFocus={handleFocus} onBlur={handleBlur} type='number' 
                                 className='purchase_input border-0 w-100 text-center' /></td>
                             <td>
-                                <input onKeyDown={handleKeyDown} name={'sale_rate'} onChange={handleChangeTableItem}
-                                 value={(tableItem.sale_rate==''||tableItem.sale_rate)?tableItem.sale_rate:''}
+                                <input onKeyDown={handleKeyDown} name={'sales_rate'} onChange={handleChangeTableItem}
+                                 value={(tableItem.sales_rate==''||tableItem.sales_rate)?tableItem.sales_rate:''}
                                 onFocus={handleFocus} onBlur={handleBlur} type='number' 
                                 className='purchase_input border-0 w-100 text-center' /></td>
                             <td>
@@ -321,14 +379,18 @@ const PurchaseTable = (props) => {
                                     <td>
                                         {data.margin}</td>
                                     <td>
-                                        {data.sale_rate}</td>
+                                        {data.sales_rate}</td>
                                     <td>
                                         <div onClick={()=>handleTableItemEdit(data)} 
                                         className='text-center'>
                                             <FiEdit className='mb-1 btn p-0' size={"16px"}/>
                                         </div>
                                     </td>
-                                    <td className=''>
+                                    <td className='p-0'>
+                                        <div onClick={()=>confirmDelete(data)}
+                                        className='text-start w-100'>
+                                            <BsTrashFill className='mb-1 btn p-0' size={"16px"}/>
+                                        </div>
                                     </td>
                                 </tr>
                                 ))

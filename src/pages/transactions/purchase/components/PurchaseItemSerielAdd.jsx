@@ -14,7 +14,7 @@ export const PurchaseItemBatchAdd = (props) => {
     tableItemList,setTableItemList,purchaseAdd,
     tebleItemKeys, setTableItemKeys,tableItem,
     handleCloseItemBatch,tableEdit, setTableEdit,
-    handleResetBatch,getData,
+    handleResetBatch,getData,setEdit,
     } = props;
 
   const [ref, setRef] = useState();
@@ -25,7 +25,7 @@ export const PurchaseItemBatchAdd = (props) => {
   const { handleKeyDown, formRef } = useOnKey(ref, setRef);
 
   const {postPurchaseItem,putPurchaseItem,postPurchaseItemBatch,
-    putPurchaseItemBatch} = usePurchaseServices()
+    putPurchaseItemBatch,deletePurchaseItemBatch} = usePurchaseServices()
 
   useEffect(()=>{
     if(!purchaseItemSerielModal){
@@ -72,11 +72,14 @@ export const PurchaseItemBatchAdd = (props) => {
   };
   
 
-  const handleRemoveBatch = (index) =>{
-    if(!edit && index>-1){
+  const handleRemoveBatch = async (index,data) =>{
+    if(index>-1){
         let tempList = [...tableItemBatchList]
         tempList.splice(index,1)
         setTableItemBatchList(tempList)
+        if(edit){
+          const response = await deletePurchaseItemBatch(data.id)
+        }
     }else{
       setTableEdit(false)
     }
@@ -128,7 +131,6 @@ export const PurchaseItemBatchAdd = (props) => {
         if(!tableEdit){
           response = await postPurchaseItem(submitData)
         }else{
-          console.log(tableEdit)
           response = await putPurchaseItem(tableEdit,submitData)
         }
         if(response?.success && !tableEdit){
@@ -136,8 +138,19 @@ export const PurchaseItemBatchAdd = (props) => {
           tempItemKeys.push({id:response?.data1?.id})
           ItemTempList.push(itemTemp)
           setTableItemKeys(tempItemKeys)
+          let tempItems = [...tableItemList]
+          tableItemList.map((x,i)=>{
+            if(x.cstm_id == purchaseItemSerielModal){
+              x.id = response.data1.id
+              tempItems.splice(i,1)
+              tempItems.push({...x})
+              console.log(tempItems)
+              setTableItemList(tempItems)
+            }
+          })
         }else{
-          getData()
+          const data = getData()
+          setEdit(data)
           setTableEdit(false)
         }
         setTableItemBatchList(ItemTempList)
@@ -318,7 +331,7 @@ export const PurchaseItemBatchAdd = (props) => {
                     </div>
                   </td>
                   <td className="">
-                    <div onClick={()=>handleRemoveBatch(i)}>
+                    <div onClick={()=>handleRemoveBatch(i,data)}>
                     <MdDeleteForever className="text-light fs-5 cursor mx-1"/>
                     </div>
                   </td>

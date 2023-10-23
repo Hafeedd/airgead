@@ -41,7 +41,7 @@ const PurchaseTransaction = () => {
         fk_supplier:null,
         supplier_name:null,
         documents_no:null,
-        patyment_type:null,
+        patyment_type:'CASH',
         order_no:null,
         bill_no:null,
         created_at:null,
@@ -79,7 +79,7 @@ const PurchaseTransaction = () => {
         unit:null,
         transaction_unit:null,
         rate:0.0,
-        sale_rate:0.0,
+        sales_rate:0.0,
         margin:0.0,
         cost:0.0,
         total:0.0,
@@ -122,8 +122,8 @@ const PurchaseTransaction = () => {
     useEffect(()=>{
         if(tableItemList.length>0){
             let netAmount = tableItemList?.reduce((a,b)=>{
-                return b.sale_rate ?
-                parseFloat(a)+parseFloat(b.sale_rate):0
+                return b.sales_rate ?
+                parseFloat(a)+parseFloat(b.sales_rate):0
             },0)
             let netMargin = tableItemList?.reduce((a,b)=>{
                 return b.margin ?
@@ -183,8 +183,6 @@ const PurchaseTransaction = () => {
             })
         }
     },[purchaseList])
-    
-    console.log(purchaseAdd)
 
     useEffect(()=>{
         getData()
@@ -245,7 +243,7 @@ const PurchaseTransaction = () => {
         fk_supplier:null,
         supplier_name:null,
         documents_no:null,
-        patyment_type:null,
+        patyment_type:'CASH',
         order_no:null,
         bill_no:null,
         created_at:null,
@@ -316,14 +314,18 @@ const PurchaseTransaction = () => {
                     value = {...value,['value']:(tempItem.quantity*tempItem.rate)}
             }
             if(name=='tax_gst'){
+                if( tempItem.tax_gst){
                     value = {...value,['total']:(value.value+(tempItem.tax_gst*(value.value/100))),
-                    ['cost']:(value.value+(tempItem.tax_gst*(value.value/100))),
+                    ['cost']:(tempItem.rate+(tempItem.tax_gst*(tempItem.rate/100))),
                     ['cgst_or_igst']:tempItem.tax_gst/2,['sgst']:tempItem.tax_gst/2}
+                }else{
+                    value = {...value,total:0,cost:0,cgst_or_igst:0,sgst:0}
                 }
+            }
             if(name=='margin' && tempItem.margin){
-                value = {...value,['sale_rate']:parseFloat(tempItem.total)+parseFloat(tempItem.total*(tempItem.margin/100))}
+                value = {...value,['sales_rate']:parseFloat(tempItem.cost)+parseFloat(tempItem.cost*(tempItem.margin/100))}
             }else{
-                value = {...value,['sale_rate']:0}
+                value = {...value,['sales_rate']:0}
             }
             }else{
                 tempItem = {...tempItem,value:0}
@@ -398,7 +400,7 @@ const PurchaseTransaction = () => {
         unit:null,
         transaction_unit:null,
         rate:0.0,
-        sale_rate:0.0,
+        sales_rate:0.0,
         margin:0.0,
         cost:0.0,
         total:0.0,

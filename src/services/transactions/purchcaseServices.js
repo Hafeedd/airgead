@@ -60,17 +60,17 @@ const usePurchaseServices = () => {
 
     // get all purchase data
     const deletePurchase = async (id) =>{
-        const response = await axiosPrivate.delete('transactions/purchase/created/')
+        const response = await axiosPrivate.delete('transactions/purchase/updated/')
         return response.data
     }
     // delete purchase item 
     const deletePurchaseItem = async (id) =>{
-        const response = await axiosPrivate.delete('transactions/purchase_item/created/'+id+'/')
+        const response = await axiosPrivate.delete('transactions/purchase_item/updated/'+id+'/')
         return response.data
     }
     // delete purchase item batch 
     const deletePurchaseItemBatch = async (id) =>{
-        const response = await axiosPrivate.delete('transactions/purchase_item/batch_qty/created/'+id+'/')
+        const response = await axiosPrivate.delete('transactions/purchase_item/batch_qty/updated/'+id+'/')
         return response.data
     }
 

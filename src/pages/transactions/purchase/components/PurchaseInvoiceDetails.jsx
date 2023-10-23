@@ -103,7 +103,7 @@ const PurchaseInvoiceDetails = (props) => {
                 <Form.Label className='col-3 purchase-input-label'>Cash/ Credit</Form.Label>
                 <div className='mx-0 col-9 px-0'>
                     <select onChange={handleChange} onKeyDown={handleKeyDown}
-                    value={purchaseAdd.patyment_type||''}
+                    value={purchaseAdd.payment_type||'CASH'}
                     name='payment_type' className='customer-select w-100'>
                         <option value="CASH">Cash</option>
                         <option value="CREDIT">Credit</option>

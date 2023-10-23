@@ -12,7 +12,7 @@ const PurchaseTableItemList = () => {
             <th>Readonly</th>
             <th>Skipping</th>
             <th style={{borderRight:'0px'}}>Breakpoint</th>
-            <th style={{borderRight:'0px', width:'2rem'}}></th>
+            {/* <th style={{borderRight:'0px', width:'2rem'}}></th> */}
             <th style={{borderRight:'0px', width:'2rem'}} className='end'></th>
           </tr>
         </thead>
@@ -24,12 +24,12 @@ const PurchaseTableItemList = () => {
             <td className='clr'>No</td>
             <td className='clr'>No</td>
             <td className='d-flex align-items-center justify-content-center'>
-              <div className="btn btn-outline-dark btn-sm me-1 d-flex justify-content-center align-items-center px-1">
+              {/* <div className="btn btn-outline-dark btn-sm me-1 d-flex justify-content-center align-items-center px-1">
                 <BiSolidUpArrow />
               </div>
               <div className="btn btn-outline-dark btn-sm me-1 d-flex justify-content-center align-items-center px-1">
                 <BiSolidDownArrow />
-              </div>
+              </div> */}
             </td>
           </tr>
           <tr>
@@ -39,12 +39,12 @@ const PurchaseTableItemList = () => {
             <td className='clr'>No</td>
             <td className='clr'>No</td>
             <td className='d-flex align-items-center justify-content-center'>
-              <div className="btn btn-outline-dark btn-sm me-1 d-flex justify-content-center align-items-center px-1">
+              {/* <div className="btn btn-outline-dark btn-sm me-1 d-flex justify-content-center align-items-center px-1">
                 <BiSolidUpArrow />
               </div>
               <div className="btn btn-outline-dark btn-sm me-1 d-flex justify-content-center align-items-center px-1">
                 <BiSolidDownArrow />
-              </div>
+              </div> */}
             </td>
           </tr>
           <tr>
@@ -54,12 +54,12 @@ const PurchaseTableItemList = () => {
             <td className='clr'>No</td>
             <td className='clr'>No</td>
             <td className='d-flex align-items-center justify-content-center'>
-              <div className="btn btn-outline-dark btn-sm me-1 d-flex justify-content-center align-items-center px-1">
+              {/* <div className="btn btn-outline-dark btn-sm me-1 d-flex justify-content-center align-items-center px-1">
                 <BiSolidUpArrow />
               </div>
               <div className="btn btn-outline-dark btn-sm me-1 d-flex justify-content-center align-items-center px-1">
                 <BiSolidDownArrow />
-              </div>
+              </div> */}
             </td>
           </tr>
           <tr>
@@ -69,12 +69,12 @@ const PurchaseTableItemList = () => {
             <td className='clr'>No</td>
             <td className='clr'>No</td>
             <td className='d-flex align-items-center justify-content-center'>
-              <div className="btn btn-outline-dark btn-sm me-1 d-flex justify-content-center align-items-center px-1">
+              {/* <div className="btn btn-outline-dark btn-sm me-1 d-flex justify-content-center align-items-center px-1">
                 <BiSolidUpArrow />
               </div>
               <div className="btn btn-outline-dark btn-sm me-1 d-flex justify-content-center align-items-center px-1">
                 <BiSolidDownArrow />
-              </div>
+              </div> */}
             </td>
           </tr>
           <tr>
@@ -84,12 +84,12 @@ const PurchaseTableItemList = () => {
             <td className='clr'>No</td>
             <td className='clr'>No</td>
             <td className='d-flex align-items-center justify-content-center'>
-              <div className="btn btn-outline-dark btn-sm me-1 d-flex justify-content-center align-items-center px-1">
+              {/* <div className="btn btn-outline-dark btn-sm me-1 d-flex justify-content-center align-items-center px-1">
                 <BiSolidUpArrow />
               </div>
               <div className="btn btn-outline-dark btn-sm me-1 d-flex justify-content-center align-items-center px-1">
                 <BiSolidDownArrow />
-              </div>
+              </div> */}
             </td>
           </tr>
           <tr>
@@ -99,12 +99,12 @@ const PurchaseTableItemList = () => {
             <td className='clr'>No</td>
             <td className='clr'>No</td>
             <td className='d-flex align-items-center justify-content-center'>
-              <div className="btn btn-outline-dark btn-sm me-1 d-flex justify-content-center align-items-center px-1">
+              {/* <div className="btn btn-outline-dark btn-sm me-1 d-flex justify-content-center align-items-center px-1">
                 <BiSolidUpArrow />
               </div>
               <div className="btn btn-outline-dark btn-sm me-1 d-flex justify-content-center align-items-center px-1">
                 <BiSolidDownArrow />
-              </div>
+              </div> */}
             </td>
           </tr>
           <tr>
@@ -114,12 +114,12 @@ const PurchaseTableItemList = () => {
             <td className='clr'>No</td>
             <td className='clr'>No</td>
             <td className='d-flex align-items-center justify-content-center'>
-              <div className="btn btn-outline-dark btn-sm me-1 d-flex justify-content-center align-items-center px-1">
+              {/* <div className="btn btn-outline-dark btn-sm me-1 d-flex justify-content-center align-items-center px-1">
                 <BiSolidUpArrow />
               </div>
               <div className="btn btn-outline-dark btn-sm me-1 d-flex justify-content-center align-items-center px-1">
                 <BiSolidDownArrow />
-              </div>
+              </div> */}
             </td>
           </tr>
           <tr>
@@ -129,12 +129,12 @@ const PurchaseTableItemList = () => {
             <td className='clr'>No</td>
             <td className='clr'>No</td>
             <td className='d-flex align-items-center justify-content-center'>
-              <div className="btn btn-outline-dark btn-sm me-1 d-flex justify-content-center align-items-center px-1">
+              {/* <div className="btn btn-outline-dark btn-sm me-1 d-flex justify-content-center align-items-center px-1">
                 <BiSolidUpArrow />
               </div>
               <div className="btn btn-outline-dark btn-sm me-1 d-flex justify-content-center align-items-center px-1">
                 <BiSolidDownArrow />
-              </div>
+              </div> */}
             </td>
           </tr>
           <tr>
@@ -144,12 +144,12 @@ const PurchaseTableItemList = () => {
             <td className='clr'>No</td>
             <td className='clr'>No</td>
             <td className='d-flex align-items-center justify-content-center'>
-              <div className="btn btn-outline-dark btn-sm me-1 d-flex justify-content-center align-items-center px-1">
+              {/* <div className="btn btn-outline-dark btn-sm me-1 d-flex justify-content-center align-items-center px-1">
                 <BiSolidUpArrow />
               </div>
               <div className="btn btn-outline-dark btn-sm me-1 d-flex justify-content-center align-items-center px-1">
                 <BiSolidDownArrow />
-              </div>
+              </div> */}
             </td>
           </tr>
           <tr>
@@ -159,21 +159,29 @@ const PurchaseTableItemList = () => {
             <td className='clr'>No</td>
             <td className='clr'>No</td>
             <td className='d-flex align-items-center justify-content-center'>
-              <div className="btn btn-outline-dark btn-sm me-1 d-flex justify-content-center align-items-center px-1">
+              {/* <div className="btn btn-outline-dark btn-sm me-1 d-flex justify-content-center align-items-center px-1">
                 <BiSolidUpArrow />
               </div>
               <div className="btn btn-outline-dark btn-sm me-1 d-flex justify-content-center align-items-center px-1">
                 <BiSolidDownArrow />
-              </div>
+              </div> */}
             </td>
           </tr>
         </tbody>
       </table>
-      <div className="col-12 row pe-5 my-2 mb-3">
-          <div className='mx-0 px-0 col-10 col-11' />
+      <div className="col-12 row pe-2 my-2 mb-3">
+          <div className='mx-0 px-0 col-9 col-10 mx-0 align-items-center h-100'/>
+          <div style={{height:"1.5rem"}} className='col-1 d-flex mt-1'>
+          <div className="btn btn-outline-dark btn-sm me-1 d-flex justify-content-center align-items-center px-1">
+                <BiSolidUpArrow />
+              </div>
+              <div className="btn btn-outline-dark btn-sm me-1 d-flex justify-content-center align-items-center px-1">
+                <BiSolidDownArrow />
+              </div>
           {/* <div className='mx-0 px-1 col-4'>
               <button type='reset' className='btn btn-sm btn-outline-dark w-100'>Clear</button>
           </div> */}
+          </div>
           <div className='mx-0 px-1 pe-0 col-1 col-2'>
               <button type='submit' className='btn btn-sm btn-dark w-100'>Save</button>
           </div>
