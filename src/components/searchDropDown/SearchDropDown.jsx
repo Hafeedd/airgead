@@ -88,7 +88,7 @@ const SearchDropDown = ({
     }
 
     return (
-        <Form.Group className={`search_container search-dropdown ${containerClass}`}>
+        <Form.Group className={`search_container search-dropdown h-100 ${containerClass}`}>
                     <Dropdown
                     placeholder='select'
                     onChange={handleChange}
@@ -116,7 +116,7 @@ const SearchDropDown = ({
                 <Modal.Body className='dropdown-body p-0 pb-2'>
                         <div className='dropdown-header'>Add Design</div>
                         <div className='px-4 pt-1 w-100'>
-                             <div className='position-relative align-items-center d-flex mt-2'>
+                             <div className='drop-input-cont position-relative align-items-center d-flex mt-2'>
                                 <input onChange={handleSearch} placeholder='Add category here' type='text'
                                  className='item_input height ms-0 position-relative' value={search||''}/>
                                 <div onClick={handleNewOption} className='btn drop-add-btn'>{edit!==false?"Edit":"Add"}</div>

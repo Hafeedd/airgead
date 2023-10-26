@@ -96,8 +96,9 @@ const CustomerTable = (props) => {
                                 </tr>
                                 )
                             }) :
-                            <tr className='fs-5 text-center' colSpan={5}>
-                                No Item Added Yet</tr>}
+                            <tr>
+                                <td className='fs-5 text-center' colSpan={9}>No Item Added Yet</td>
+                            </tr>}
                     </tbody>
                 </table>
             </div>

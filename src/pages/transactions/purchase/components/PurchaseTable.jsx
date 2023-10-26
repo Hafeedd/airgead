@@ -15,7 +15,7 @@ const PurchaseTable = (props) => {
         setCstm_id,tableItemList,setTableItemList,
         tableItemBatchList, setTableItemBatchList,
         tableEdit, setTableEdit,setEdit,
-        purchaseList, setPurchaseList,
+        purchaseList, setPurchaseList,getData,
         handlePurchaseAllReset,handleResetTable,
     } = props
 
@@ -24,7 +24,7 @@ const PurchaseTable = (props) => {
     const [unitList, setUnitList] = useState()
 
     useEffect(()=>{
-        getData()
+        getTableData()
     },[])
 
     const {handleKeyDown,  formRef } = useOnKey(ref, setRef);
@@ -54,7 +54,7 @@ const PurchaseTable = (props) => {
     //     setItemNameList(tempList)
     // }
 
-    const getData = async () => {
+    const getTableData = async () => {
         const minFunct = (data) => {
             let list = []
             data.map((x)=>{
@@ -94,16 +94,21 @@ const PurchaseTable = (props) => {
     }
 
     const handleAddBatchOpen = (e) =>{
-        if( !tableEdit && (!tableItem.item_name || !tableItem.quantity || !tableItem.rate)){
-            Swal.fire('please enter Essential details firs',
-            'Enter Rate , Quantity and Select Item First', 'warning' )
+        if(e.type === "keydown"){
+            if(e?.key !== "Enter")
+            return 0
+        }
+        if( !tableEdit && (!tableItem.item_name ||
+             !tableItem.quantity || !tableItem.rate)){
+            Swal.fire({
+                title:'please enter Essential details firs',
+                text:'Enter Rate , Quantity and Select Item First',
+                icon:'warning',
+                showConfirmButton:false,
+                timer:1500 })
             return 0
         }
         if(!tableEdit){
-        if(e.type === "keydown"){
-            if(e.key !== "Enter")
-            return 0
-        }
         let itemTemp= {...tableItem}
         let itemTempList = [...tableItemList]
         itemTemp = {...itemTemp,['cstm_id']:cstm_id}
@@ -116,6 +121,7 @@ const PurchaseTable = (props) => {
     }
 
     const handlePrev = () => {
+        if(purchaseList){
         if(!edit){
             setEdit(purchaseList[0])
         }else{
@@ -125,7 +131,7 @@ const PurchaseTable = (props) => {
             }else{
                 Swal.fire("No more purchase to edit",'go for next','warning')
             }
-        }
+        }}
     }
     const handleNext = () => {
         let i = purchaseList?.length -1
@@ -180,23 +186,29 @@ const PurchaseTable = (props) => {
             tempList.splice(index,1,)
             listAfterItemRem = [...tempList]
         }
-        handlePurchaseAllReset()
         setTableItemList([...listAfterItemRem])}
         try{
             let response = await deletePurchaseItem(data.id)
-            if(response.success){
+            if(response.success && data.created_at){
                 Swal.fire({
                     title:'Item deleted successfully',
                     icon:'success',
                     showConfirmButton:false,
-                    timer:1500,                    
+                    timer:1500,             
                 })
             const data = getData()
-            setEdit(data)
+            console.log(data)
+            data?.map(purchData=>{
+                if(purchData?.id === edit?.id){
+                    console.log(purchData)
+                    setEdit(purchData)
+                }
+            })
             }else{
                 Swal.fire(response.message,'','error')
             }
         }catch(err){
+            console.log(err)
             Swal.fire("Fialed to delete item",'please try again','warning')
         }
     }

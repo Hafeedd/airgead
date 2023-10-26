@@ -281,7 +281,7 @@ const PurchaseTransaction = () => {
             ['fk_supplier']:supplier_data?.value}))
         }
         else if(e.target.type === "checkbox"){
-            setPurchaseAdd(data=>({...data,[e.target.name]:!e.target.value}))
+            setPurchaseAdd(data=>({...data,[e.target.name]:!data[e.target.name]}))
         }
         else if(e.target.value == "")
             setPurchaseAdd(data=>({...data,[e.target.name]:null}))
@@ -316,7 +316,7 @@ const PurchaseTransaction = () => {
             if(name=='tax_gst'){
                 if( tempItem.tax_gst){
                     value = {...value,['total']:(value.value+(tempItem.tax_gst*(value.value/100))),
-                    ['cost']:(tempItem.rate+(tempItem.tax_gst*(tempItem.rate/100))),
+                    ['cost']:(parseInt(tempItem.rate)+(tempItem.tax_gst*(tempItem.rate/100))),
                     ['cgst_or_igst']:tempItem.tax_gst/2,['sgst']:tempItem.tax_gst/2}
                 }else{
                     value = {...value,total:0,cost:0,cgst_or_igst:0,sgst:0}
@@ -367,7 +367,7 @@ const PurchaseTransaction = () => {
     }
     
     const handleCloseItemBatch = () =>{
-        if(!edit){
+        if(!tableEdit){
         let tempList = [...tableItemList]
         let listAfterItemRem = []
 
@@ -417,8 +417,16 @@ const PurchaseTransaction = () => {
     const handleSubmit = async (e) =>{
         e.preventDefault()
         try{
+            if(tebleItemKeys?.length<1){
+            Swal.fire({
+            title:"Item not added",
+            icon:"warning",
+            text:"Please add an item before submitting purchase",
+            showConfirmButton:false,
+            timer:1500})
+            return 0}
+            formValidation(formRef.current)
             let submitData = {...purchaseAdd,items:tebleItemKeys}
-            formValidation(formRef)
             let response
             if(!edit){
                 response = await postPurchase(submitData)
@@ -500,7 +508,7 @@ const PurchaseTransaction = () => {
                         tableItemList,setTableItemList,edit,
                         tableItemBatchList, setTableItemBatchList,
                         tableEdit, setTableEdit,setEdit,
-                        purchaseList, setPurchaseList,
+                        purchaseList, setPurchaseList,getData,
                         handlePurchaseAllReset,handleResetTable
                     }}
                 />

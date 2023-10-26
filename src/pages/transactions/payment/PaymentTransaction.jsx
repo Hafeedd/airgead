@@ -18,8 +18,9 @@ const PaymentTransaction = ({types}) => {
     const [edit, setEdit] = useState(false)
     const [accountPayList, setAccountPayList] = useState([]) // account chash and bank payment filtered list 
     const [paymentAdd, setPaymentAdd] = useState({
+        id:null,
         method:'Payment',
-        voucher: null,
+        voucher_number: null,
         account_id: null,
         account_detail: null,
         account_code: null,
@@ -113,19 +114,97 @@ const PaymentTransaction = ({types}) => {
         }
     }
 
+    const confirmDelete = async (id) =>{
+        Swal.fire({
+            title:"Delete Item",
+            text:"Do you want to delete Item ?",
+            showDenyButton:true,
+            showCancelButton:false,
+            denyButtonText:"Cancel",
+            showLoaderOnConfirm:true,
+            preConfirm:async()=>{await handlDelete(id)},
+            preDeny:()=>Swal.fire({
+                title:"Canceled",
+                showConfirmButton:false,
+                timer:1500
+            })
+        })
+    }
+
+    const handlDelete = async (id) =>{
+        try{
+            let response
+            if(id){
+                response = await delPaymentReciept(id)          
+                if(response.success){
+                    Swal.fire({
+                        title:"Item deleted successfully",
+                        timer:1000,
+                        showConfirmButton:false
+                    })
+                }    
+            }
+        }catch(err){
+
+        }
+    }
+
+    const formatList = (data) =>{
+        if(!data) return 0
+        let tempList = []
+        data.map(item=>{
+            let tempData = {}
+            tempData = {
+            id:item.id,
+            voucher_number: item.voucher_number,
+            account_id: item?.daybook?.fk_account_master,
+            account_detail: item?.daybook[0]?.account_name,
+            account_code: item?.daybook[0]?.account_code,
+            narration: item?.narration,
+            cash_bank_account_name: item?.daybook[1]?.account?.code,
+            cash_bank_account: item?.daybook[1]?.account?.name,
+            amount: item?.daybook[0]?.amount,
+            amount_word: null,
+            date: item?.daybook[0].date,
+            project: item?.daybook[0]?.project,
+            cheque_no: item?.cheque_no,
+            draw_no: item?.draw_no,
+            cheque_date: item?.cheque_date,
+            salesman: item?.salesman,
+            commision: null,
+            discount: null,
+            tax_percent: null,
+            taxable: null,
+            tax_type: 'GST',
+            cgst: null,
+            sgst: null,
+            tax_amount: null,
+            print_style: null,
+            printer: null,
+            print_copies: null,
+            print_preview: false,
+            print: false,
+            op_balance: null,
+            cl_balance: null,  
+            }
+            tempList.push(tempData)
+        })
+        return tempList
+    }
+
     const getData2 = async () =>{
         try{
-            let a, response, response2
+            let a, response, response2, code
             if(location.pathname.match('receipt')) a = "Receipt"
             else a = "Payment"
             const param = {params:{method:a}}
             response = await getPaymentReciept(param)
             response2 = await getCode()
             if(response.success){
-                setPayRecieptList(response.data)
-            }
-            if(response2.success && !edit){
-                let code
+                const data = formatList(response.data)
+                    setPayRecieptList(data)
+                }
+            if(response2.success){
                 if(pathOfPage){
                     for(let i of response2.data){
                         let type
@@ -143,8 +222,9 @@ const PaymentTransaction = ({types}) => {
                     setPaymentAdd(data=>({...data,voucher_number:code}))
                 },300)
             }
+            return code
         }catch(err){
-            // console.log(err)
+            console.log(err)
         }
     }
     
@@ -265,6 +345,7 @@ const PaymentTransaction = ({types}) => {
             if(!formValidation()) return 0
             const submitData = handleToUpperCase(paymentAdd)
             let response
+            console.log(edit)
             if(!edit){
                 response = await postPaymentReciept(submitData)
             }else{
@@ -291,8 +372,8 @@ const PaymentTransaction = ({types}) => {
         }
     }
 
-    const handleReset = () => {
-        getData2()
+    const handleReset = async () => {
+        let codeData = await getData2()
         const {voucher_number,method,...others} = paymentAdd
         let key = Object.keys(others)
         let tempData = {...paymentAdd}
@@ -302,18 +383,21 @@ const PaymentTransaction = ({types}) => {
         tempData = {...tempData,tax_type:'GST',amount:0,
         cash_bank_account_name:accountPayList[0]?.value,
         cash_bank_account:accountPayList[0]?.text}
-        setPaymentAdd(tempData)
+        setPaymentAdd({...tempData,voucher_number:codeData})
         setEdit(false)
     }
     
     const handleEdit = (data) =>{
-        let tempPayRecAdd 
+        let tempPayRecAdd , tempMethod
+        if(location.pathname === '/payment-transaction')
+            tempMethod = "Payment"
+        else
+            tempMethod = "Receipt"
         if(data){
-            const {updated_at,created_at,daybook_part,account,...others} = data
-            tempPayRecAdd = {...others,...daybook_part,...account}
-            console.log(tempPayRecAdd)
+            tempPayRecAdd = {...data,
+            method:tempMethod}
             setPaymentAdd(tempPayRecAdd)
-            setEdit(tempPayRecAdd.id)
+            setEdit(data.id)
         }
     }
 
@@ -349,6 +433,7 @@ const PaymentTransaction = ({types}) => {
                     />
                     <PaymentListSection 
                         {...{
+                            confirmDelete,
                             payReciptList,
                             paymentAdd,
                             handleEdit

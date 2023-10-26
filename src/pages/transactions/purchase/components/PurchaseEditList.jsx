@@ -33,10 +33,10 @@ const PurchaseEditList = (props) => {
   }
 
   return (
-    <div className='p-0 row mx-0'>
+    <div style={{height:"75%"}} className='p-0 row mx-0'>
       <table className="table table-hover purchase-item-table">
-        <thead className=''>
-          <tr className=''>
+        <thead>
+          <tr>
             <th className='text-start ps-3 start'>Doc Number</th>
             <th>Date</th>
             <th>Supplier Name</th>
@@ -83,7 +83,7 @@ const PurchaseEditList = (props) => {
           }
         </tbody>
       </table>
-      <div className="col-12 row pe-5 my-2 mb-3">
+      <div className="col-12 row pe-5 my-2 mb-3 h-100 align-items-end">
           <div className='mx-0 px-0 col-10 col-11' />
           <div className='mx-0 px-1 pe-0 col-1 col-2 pb-3'>
             {/* <td></td> */}

@@ -11,12 +11,17 @@ import SalesDeliveryDetails from './components/SalesDeliveryDetails'
 import SalesPrintingDetails from './components/SalesPrintingDetails'
 import SalesTable from './components/SalesTable'
 import SalesDetailFooter from './components/SalesDetailFooter'
+import SalesItemBactch from './components/SalesItemBactch'
 
 const SalesTransaction = () => {
     const [salesItemModal, setSalesItemModal] = useState(false)
     const [salesEditModal, setSalesEditModal] = useState(false)
     const [pageHeadItem, setPageHeadItem] = useState(1)
+    const [salesBatchShow, setSalesBatchShow] = useState(false)
     const [salesHeader, setSalesHeader] = useState(1)
+    const [tableItem, setTableItem] = useState()
+    const [tableEdit, setTableEdit] = useState(false)
+
     const navigate = useNavigate()
     useEffect(() => {
         switch (pageHeadItem) {
@@ -117,7 +122,9 @@ const SalesTransaction = () => {
                 </div>
                 <SalesTable
                     {...{
-                        setSalesItemModal
+                salesBatchShow,setSalesBatchShow,
+                tableItem,setSalesItemModal,
+                setTableItem,tableEdit,setTableEdit
                     }}
                 />
                 <SalesDetailFooter />
@@ -137,6 +144,17 @@ const SalesTransaction = () => {
                 onHide={() => setSalesEditModal(false)}
             >
                 <PurchaseEditList />
+            </Modal>
+            <Modal
+                show={salesBatchShow}
+                size='lg'
+                centered
+                dialogClassName='sales-table-modal'
+                onHide={() => setSalesBatchShow(false)}
+            >
+                <SalesItemBactch {...{salesBatchShow,
+                setSalesBatchShow,tableItem,setSalesItemModal,
+                setTableItem,tableEdit,setTableEdit}}/>
             </Modal>
         </div>
     )

@@ -192,11 +192,10 @@ td.clr{
 }
 
 .table.purchase-item-table{
-    /* border-radius: 0.3125rem; */
+    border-radius: 0.3125rem;
     border-collapse: collapse;
     border-spacing: 0;
     width: 100%;
-    height: 100%;
     table-layout: fixed;
 }
 
@@ -255,10 +254,6 @@ td.clr{
     color: #2C2C2C;
 }
 
-.purchase-item-body{
-    height: 10rem !important;
-    overflow: hidden;
-}
 
 .btn-primary.purchase-add-btn{
     border-radius: 0.125rem;

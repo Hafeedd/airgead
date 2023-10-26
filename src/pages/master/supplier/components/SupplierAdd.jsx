@@ -305,11 +305,11 @@ const SupplierAdd = ({edit,refresh,setToEdit}) => {
                                 Op Balance
                                 </div>
                                     <div className='mx-0 px-0 col-6 col-7'>
-                                        <div className='item_input_with_drop row rounded-2 p-0 mx-0 align-items-center'>
+                                        <div className='item_input_with_drop row rounded-2 p-0 mx-0 align-items-center m-0 p-0'>
                                             <div className='col-6 col-7 mx-0 px-0 me-0'>
                                             <input required onBlur={handleValueNull} onKeyDown={handleKeyDown} onChange={handleChange} name='opening_balance' value={supplierAdd.opening_balance?supplierAdd.opening_balance:''} type='number' className='item_input names border-0' />
                                             </div>
-                                            <div className='col-6 col-5 m-0 p-0 d-flex '>
+                                            <div className='col-6 col-5 mx-0 px-0 d-flex align-items-center dropdown-btn-cont'>
                                             <select onKeyDown={handleKeyDown} onChange={handleChange} name='payment_type' value={supplierAdd.payment_type?supplierAdd.payment_type:''} className='pay-type-select ms-0 pe-0'>
                                                 <option value="TO_GIVE">To Give</option>
                                                 <option value="TO_RECEIVE">To Receive</option>
@@ -355,7 +355,7 @@ const SupplierAdd = ({edit,refresh,setToEdit}) => {
                             <div className='mx-0 px-0 col-4 me-0 '>
                                 District
                             </div>
-                            <div className='px-0 ps-2 col-8'>
+                            <div className='px-0 ps-2 col-8 drop-input'>
                                 {/* <input onKeyDown={handleKeyDown} type='text' className='item_input names' /> */}
                             <SearchDropDown containerClass="large w-100" id="district" addNew={true}  setNew={addNewOption} options={listItem}
                             {... { showDropdown, setShowDropdown, handleKeyDown}} setDataValue={setSupplierAdd} selectedValue={supplierAdd}/>
@@ -365,7 +365,7 @@ const SupplierAdd = ({edit,refresh,setToEdit}) => {
                             <div className='mx-0 px-0 col-4 me-0'>
                                 Company
                             </div>
-                            <div className='px-0 ps-2 col-8'>
+                            <div className='px-0 ps-2 col-8 drop-input'>
                                 {/* <input onKeyDown={handleKeyDown} type='text' className='item_input names' /> */}
                             <SearchDropDown containerClass="large w-100" id="company" addNew={true}  setNew={addNewOption} options={listItem}
                             {... { showDropdown, setShowDropdown, handleKeyDown}} setDataValue={setSupplierAdd} selectedValue={supplierAdd}/>
@@ -377,7 +377,8 @@ const SupplierAdd = ({edit,refresh,setToEdit}) => {
                                 Remarks
                             </div>
                             <div className='px-0 ps-2 col-8'>
-                                <textarea onKeyDown={handleKeyDown} onChange={handleChange} name='remark' value={supplierAdd.remark?supplierAdd.remark:''} rows={3} className='item_input names text-area  ms-0' />
+                                <textarea onKeyDown={handleKeyDown} onChange={handleChange} name='remark'
+                                value={supplierAdd.remark?supplierAdd.remark:''} rows={3} className='item_input names text-area  ms-0' />
                             </div>
                         </div>
                         <div className="d-flex align-items-center row mx-0 ps-4 pe-3 my-2">

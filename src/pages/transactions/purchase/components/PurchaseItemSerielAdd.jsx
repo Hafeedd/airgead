@@ -144,7 +144,6 @@ export const PurchaseItemBatchAdd = (props) => {
               x.id = response.data1.id
               tempItems.splice(i,1)
               tempItems.push({...x})
-              console.log(tempItems)
               setTableItemList(tempItems)
             }
           })

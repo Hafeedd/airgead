@@ -2,7 +2,7 @@ import React from 'react'
 import search from "../../../../assets/icons/search.png"
 
 const PaymentListSection = (props) => {
-    const { list, handleEdit, handleDelete,
+    const { list, handleEdit, handleDelete,confirmDelete,
         payReciptList, setPayRecieptList, toEdit, paymentAdd } = props
 
     const editBtn = (
@@ -17,6 +17,7 @@ const PaymentListSection = (props) => {
                 <table className='table table-light table-hover payment-table'>
                     <thead>
                         <tr>
+                            <th>SL</th>
                             <th className='ps-4' style={{ width: "10rem" }}>A/C Code</th>
                             <th style={{ width: "18rem" }}>A/C Name</th>
                             <th>Type</th>
@@ -37,6 +38,7 @@ const PaymentListSection = (props) => {
                                     Filter
                                 </div>
                             </th>
+                            <th></th>
                         </tr>
                     </thead>
                     <tbody>        
@@ -46,15 +48,21 @@ const PaymentListSection = (props) => {
                                 return (
                                     <tr>
                                         <td>{i + 1}</td>
-                                        <td className='text-start'>{data?.account_name}</td>
                                         <td className='text-start'>{data?.account_code}</td>
-                                        <td>{data?.daybook_part?.narration}</td>
+                                        <td className='text-start'>{data?.account_detail}</td>
+                                        <td className='text-start'>{paymentAdd?.method}</td>
+                                        <td>{data?.narration}</td>
                                         <td></td>
                                         <td>
-                                            <div className='button' onClick={e => handleEdit(data && data)}>
+                                            <div className='button' onClick={e => handleEdit(data)}>
                                                 {editBtn}
                                             </div>
                                         </td>
+                                        {/* <td>
+                                            <div className='button' onClick={e => confirmDelete(data.id)}>
+                                                {editBtn}
+                                            </div>
+                                        </td> */}
                                     </tr>
                                 )
                             }) :

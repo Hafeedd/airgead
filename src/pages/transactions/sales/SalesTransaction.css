@@ -77,3 +77,119 @@
     -webkit-appearance: textfield !important;
     appearance: textfield !important;
 }
+
+.sales-table-modal{
+    width: 90rem !important;
+}
+
+.sales-batch-table-cont{
+    height: 25rem;
+    background: #242424;
+}
+
+.sales-batch-table{
+    margin-bottom: 0;
+    padding-bottom: 0;
+    border: 0px solid #242424;
+}
+
+.sales-batch-table thead th:first-child{
+    border-top-left-radius: 0.2rem;
+}
+.sales-batch-table thead th:last-child{
+    border-top-right-radius: 0.2rem;
+}
+.sales-batch-table thead th:last-child .theadth{
+    border-right: 0;
+}
+
+.sales-batch-table thead th{
+    padding: 0.3rem 0;
+    background: black;
+}
+
+.sales-batch-table thead .theadth{
+    background: black;
+    color: #FFF;
+    font-size: 0.9375rem;
+    font-weight: 500;   
+    padding: 0.6rem 0.9rem;
+    border-right: 0.1rem solid #9A9A9A;
+}
+
+.sales-batch-table tbody tr:first-child td{
+    border-top: 0.4rem solid #242424;
+}
+
+.sales-batch-table tbody td{
+    border-bottom: 0.2rem solid #242424;
+    padding: 0;
+    background: #242424;
+    color: #FFF;
+    font-size: 0.875rem;
+    font-weight: 500;
+    text-align: center;
+}
+
+.sales-batch-table tbody td:first-child .tbodytd{
+    outline: none;
+    width:97% !important;
+    margin-left: 0.4rem;
+    border-top-left-radius: 0.4rem;
+    border-bottom-left-radius: 0.4rem;
+    border: none;
+}
+.sales-batch-table tbody td:last-child .tbodytd{
+    width:90% !important;
+    margin-right: 0.8rem;
+    border-top-right-radius: 0.4rem;
+    border-bottom-right-radius: 0.4rem;
+    border: none;
+}
+
+.sales-batch-table tbody .tbodytd{
+    background: #303030;
+    padding: 0.2rem 0.3rem;
+}
+
+.sales-batch-table tbody input{
+    border-radius: 0.3125rem;
+    padding: 0.3rem 0.4rem;
+    border: 0.5px solid #818181;
+    background: #191919!important;
+}
+
+.sales-batch-table input{
+    width: 100%;
+    color: white;
+    padding-left: 0.5rem;
+    background: #191919;
+    border: 0;
+}
+
+.sales-batch-table td:first-child input{
+    background: inherit !important;
+    border: 0 ;
+    padding: 0.35rem 0.4rem !important
+}
+
+.sales-batch-table tr:last-child td {
+    padding-bottom: 0.5rem;
+}
+
+.sales-batch-sbtn, .sales-batch-sbtn:hover{
+    color: white;
+    font-size: 0.9rem;
+    background: #373737;
+    margin-bottom: 0.3rem;
+}
+.sales-batch-cbtn, .sales-batch-cbtn:hover{
+    color: white;
+    font-size: 0.9rem;
+    background: black;
+    margin-bottom: 0.3rem;
+}
+
+.sales-batch-footer{
+    height: 100%;
+}

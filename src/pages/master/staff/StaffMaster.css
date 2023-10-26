@@ -4,3 +4,94 @@
     font-weight: 500;
     width: 100%;
 }
+
+.page-head{
+    background: #F5F5F5;
+}
+
+.supplier-add-cont{
+    margin: 0 1.5rem;
+    border-radius: 0.3125rem;
+    padding: 0.8875rem 1.7rem 0.6875rem 1.98rem;
+    background: #FFF;
+    font-size: 0.9375rem;
+    font-weight: 600;
+}
+
+.supplier-add-form-part1{
+    font-size: 0.8875rem;
+    font-weight: normal;
+    border-right: 1px solid grey;
+}
+
+.sup-input-cont{
+    padding: 0.3rem 0;
+}
+
+.supplier-add-form-part2{
+    font-size: 0.8975rem;
+    font-weight: normal;
+    display: block;    
+}
+
+.staff-table-cont{
+    font-size: 0.8rem;
+    padding: 1rem;
+    background: #F5F5F5;
+}
+
+.staff-table tbody td{
+    padding:0;
+    border: 1px solid white;
+}
+
+.staff-table thead th{
+    font-weight: normal;
+    padding: 0.6rem;
+}
+
+.staff-table tbody tr:first-child td{
+    padding-top: 1rem
+}
+
+.staff-table tbody td:first-child{
+    padding-left: 1.5rem;
+}
+.staff-table tbody td:last-child{
+    padding-right: 1.5rem;
+}
+
+.staff-table tbody .tbodytd{
+    font-weight: normal;
+    padding: 0.3rem;
+    background: #EEE;
+}
+
+.staff-table tbody tr:first-child td:first-child .tbodytd{
+    border-top-left-radius: 0.4rem;
+}
+.staff-table tbody tr:first-child td:last-child .tbodytd{
+    border-top-right-radius: 0.4rem;
+}
+.staff-table tbody tr:last-child td:first-child .tbodytd{
+    border-bottom-left-radius: 0.4rem;
+}
+.staff-table tbody tr:last-child td:last-child .tbodytd{
+    border-bottom-right-radius: 0.4rem;
+}
+
+.staff-table tbody tr:last-child td{
+    padding-bottom: 1.5rem ;
+}
+
+.staff-table {
+    border: 1.5px solid black
+}
+
+.staff-select{
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    text-indent: 1px;
+    text-overflow: '';
+}

@@ -105,8 +105,8 @@ const PurchaseInvoiceDetails = (props) => {
                     <select onChange={handleChange} onKeyDown={handleKeyDown}
                     value={purchaseAdd.payment_type||'CASH'}
                     name='payment_type' className='customer-select w-100'>
-                        <option value="CASH">Cash</option>
-                        <option value="CREDIT">Credit</option>
+                        <option value="CASH">CASH</option>
+                        <option value="BANK">BANK</option>
                     </select>
                 </div>
             </Form.Group>
@@ -159,19 +159,19 @@ const PurchaseInvoiceDetails = (props) => {
             </div>
             <div className='col-4 col-5 d-flex align-items-center row mx-0 my-0 justify-content-end'>
                 <div className='mx-0 px-0 col-4 d-flex align-items-center justify-content-end'>
-                    <input type='checkbox' name="interstate" checked={purchaseAdd?.interstate||''}
+                    <input type='checkbox' name="interstate" id="interstate" checked={purchaseAdd?.interstate||''}
                     onKeyDown={handleKeyDown} onChange={handleChange}/>
-                    <label for='Repeat' className='ps-2'>Interstate</label>
+                    <label htmlFor='interstate' className='ps-2'>Interstate</label>
                 </div>
                 <div className='mx-0 px-0 col-5 d-flex align-items-center justify-content-end'>
-                    <input type='checkbox' name="reverse_charge" checked={purchaseAdd.reverse_charge||''}
+                    <input type='checkbox' name="reverse_charge" id="reverse_charge" checked={purchaseAdd.reverse_charge||''}
                     onKeyDown={handleKeyDown} onChange={handleChange} />
-                    <label for='Blocked' className='ps-2'>Reverse Charge</label>
+                    <label htmlFor='reverse_charge' className='ps-2'>Reverse Charge</label>
                 </div>
                 <div className='mx-0 px-0 col-3 d-flex align-items-center justify-content-end'>
-                    <input type='checkbox' name="tax_bill" checked={purchaseAdd.tax_bill||''}
+                    <input type='checkbox' name="tax_bill" id="tax_bill" checked={purchaseAdd.tax_bill||''}
                     onKeyDown={handleKeyDown} onChange={handleChange} />
-                    <label for='Blocked' className='ps-2'>Tax Bill</label>
+                    <label htmlFor='tax_bill' className='ps-2'>Tax Bill</label>
                 </div>
             </div>
             <Form.Group className='col-3 col-4 mx-0 d-flex align-items-center my-1'>

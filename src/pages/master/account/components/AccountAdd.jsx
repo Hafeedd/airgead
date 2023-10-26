@@ -307,7 +307,7 @@ const AccountAdd = ({ edit, refresh, setEdit }) => {
                             </div>
                             <div className="col-2 pe-0 d-flex align-items-center">
                                 <div 
-                                    className="btn btn-sm btn-dark w-100 py-0"
+                                    className="btn btn-md btn-dark w-100 py-0"
                                     onClick={()=>setShowAccountGroup(!showAccountGroup)}
                                 >
                                     {showAccountGroup?'Hide':'Add'}
@@ -324,7 +324,7 @@ const AccountAdd = ({ edit, refresh, setEdit }) => {
                                         <input onChange={handleChange} onKeyDown={handleKeyDown}
                                          name='opening_balance' value={accountAdd.opening_balance ? accountAdd.opening_balance : ''} type='text' className='item_input names border-0' />
                                     </div>
-                                    <div className='col-6 col-5 mx-0 px-0 d-flex align-items-center h-100'>
+                                    <div className='col-6 col-5 mx-0 px-0 d-flex align-items-center dropdown-btn-cont'>
                                         <select onChange={handleChange} onKeyDown={handleKeyDown}
                                          name='debit_credit' value={accountAdd.debit_credit ? accountAdd.debit_credit : ''} className='pay-type-select ms-0 pe-0'>
                                             <option value="DEBIT">DEBIT</option>
