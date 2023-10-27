@@ -43,7 +43,7 @@ const PurchaseInvoiceDetails = (props) => {
     
     const search = (options, searchValue) => {
         searchValue = searchValue.toUpperCase()
-        return options.filter((option) => {return(option.value.includes(searchValue)||option.description.includes(searchValue))});
+        return options.filter((option) => {return(option?.value?.includes(searchValue)||option.description.includes(searchValue))});
       };
       
     return (

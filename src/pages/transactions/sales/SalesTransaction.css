@@ -193,3 +193,10 @@
 .sales-batch-footer{
     height: 100%;
 }
+
+.customer-select{
+    background: #eeeeee;
+    border: 1px solid #e2e5e8;
+    border-radius: 0.3rem;
+    padding: 0.2rem;
+}

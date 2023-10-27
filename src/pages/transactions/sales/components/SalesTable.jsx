@@ -33,7 +33,13 @@ const SalesTable = (props) => {
 
     let unitList
 
-
+    const AdjustHeightOfTable = () =>{
+        let a = []
+        for(let i = 0;i<7||0;i++){
+            a.push(<tr><td style={{ height: "",display: "" }} colSpan={17}></td></tr>)
+        }
+        return a
+    }
 
     return (
         <>
@@ -41,7 +47,7 @@ const SalesTable = (props) => {
                 <table ref={formRef} className='table table-secondary purchase-table mb-0'>
                     <thead className='purchase-table-header'>
                         <tr>
-                            <th className='text-start' colSpan={2}>Item Name</th>
+                            <th className='text-start' width="200">Item Name</th>
                             <th>Qty</th>
                             <th>Ut</th>
                             <th>Rate</th>
@@ -81,7 +87,7 @@ const SalesTable = (props) => {
                             <td></td>
                         </tr> */}
                         <tr>
-                         <td className='purchase_search_drop_td text-start ps-3' colSpan={2}>
+                         <td className='purchase_search_drop_td text-start ps-3'>
                                 <Dropdown
                                 clearable
                                 selection
@@ -177,6 +183,7 @@ const SalesTable = (props) => {
                                 className='table-item-add-btn2 text-start' value={"+"}/>}
                             </td>
                         </tr>
+                        <AdjustHeightOfTable/>
                     </tbody>
                 </table>
             </div>

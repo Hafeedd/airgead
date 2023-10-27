@@ -143,7 +143,7 @@ const SalesTransaction = () => {
                 centered
                 onHide={() => setSalesEditModal(false)}
             >
-                <PurchaseEditList />
+                <PurchaseEditList {...{setSalesEditModal}}/>
             </Modal>
             <Modal
                 show={salesBatchShow}

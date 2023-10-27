@@ -94,10 +94,10 @@ const PaymentTransaction = ({types}) => {
             if(response?.success){
                 response.data.map(item=>{
                     let b , a
-                    if(item.name == "CASH IN BANK" || item.name == "CASH IN HAND"){
+                    // if(item.name == "CASH IN BANK" || item.name == "CASH IN HAND"){
                         b = {id:item.id,text:item.name,value:item.code}
                         tempListPayment.push(b)
-                    }
+                    // }
                     if(item.name && item.code){
                         a = {key:item.id,value:item.code,text:item.name,description:item.code}
                         tempList.push(a)
@@ -109,6 +109,7 @@ const PaymentTransaction = ({types}) => {
                     setPaymentAdd({...paymentAdd,cash_bank_account_name:tempListPayment[0]?.value,
                         cash_bank_account:tempListPayment[0]?.text})
             }
+            return response.data
         }catch(err){
             throw err   
         }
@@ -139,10 +140,11 @@ const PaymentTransaction = ({types}) => {
                 if(response.success){
                     Swal.fire({
                         title:"Item deleted successfully",
-                        timer:1000,
+                        timer:1500,
                         showConfirmButton:false
                     })
                 }    
+                getData2()
             }
         }catch(err){
 
@@ -161,8 +163,8 @@ const PaymentTransaction = ({types}) => {
             account_detail: item?.daybook[0]?.account_name,
             account_code: item?.daybook[0]?.account_code,
             narration: item?.narration,
-            cash_bank_account_name: item?.daybook[1]?.account?.code,
-            cash_bank_account: item?.daybook[1]?.account?.name,
+            cash_bank_account_name: item?.daybook[1]?.account?.name,
+            cash_bank_account: item?.daybook[1]?.account?.code,
             amount: item?.daybook[0]?.amount,
             amount_word: null,
             date: item?.daybook[0].date,
@@ -247,8 +249,9 @@ const PaymentTransaction = ({types}) => {
     const handleChangePaymentCash = (e,data) =>{
         if(data){
             let payment_data = data.options.filter(x=>x.value===data.value)[0]
-            setPaymentAdd(data=>({...data,cash_bank_account_name:payment_data?.value,
-            cash_bank_account:payment_data?.text}))
+            console.log(payment_data)
+            setPaymentAdd(data=>({...data,cash_bank_account:payment_data?.value,
+            cash_bank_account_name:payment_data?.text}))
         }
     }
 
@@ -268,6 +271,7 @@ const PaymentTransaction = ({types}) => {
     const handleChange = (e,data) => {
         if(data){
             let payment_data = data.options.filter(x=>x.value===data.value)[0]
+            console.log(payment_data)
             setPaymentAdd(data=>({...data,account_detail:payment_data?.text,
             account_code:payment_data?.description,account_id:payment_data?.key}))
         }
@@ -436,7 +440,12 @@ const PaymentTransaction = ({types}) => {
                             confirmDelete,
                             payReciptList,
                             paymentAdd,
-                            handleEdit
+                            handleEdit,
+                            getData2,
+                            setPayRecieptList,
+                            location,
+                            getPaymentReciept,
+                            formatList
                         }}
                     />
                 </div>

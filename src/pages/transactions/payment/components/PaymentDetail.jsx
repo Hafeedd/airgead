@@ -97,6 +97,7 @@ const PaymentDetail = ({
                     </div>
                     <div className='mx-0 px-0 col-9 payment-select'>        
                         <Dropdown
+                        disabled={edit}
                         clearable
                         selection
                         search={search}
@@ -134,13 +135,14 @@ const PaymentDetail = ({
                     </div>
                     <div className='mx-0 px-0 col-9'>
                     <Dropdown
+                        disabled={edit}
                         selection
                         search={search}
                         onChange={(e,data)=>handleChangePaymentCash(e,data)}
                         className='payment-select item d-flex align-items-center py-0 form-control'
                         name="cash_bank_account_name"
                         placeholder='select'
-                        value={paymentAdd.cash_bank_account_name|| ''}
+                        value={ paymentAdd.cash_bank_account || '' }
                         options={accountPayList}
                         />
                     </div>

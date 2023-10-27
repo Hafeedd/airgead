@@ -1,9 +1,11 @@
 import React from 'react'
 import search from "../../../../assets/icons/search.png"
+import {MdDeleteForever} from 'react-icons/md'
 
 const PaymentListSection = (props) => {
     const { list, handleEdit, handleDelete,confirmDelete,
-        payReciptList, setPayRecieptList, toEdit, paymentAdd } = props
+        payReciptList, setPayRecieptList, toEdit, paymentAdd,
+        getData2,location, getPaymentReciept,formatList } = props
 
     const editBtn = (
         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
@@ -11,17 +13,49 @@ const PaymentListSection = (props) => {
         </svg>
     )
 
-    return (
+    const handleSearch = async (e) =>{
+        try{
+            let tempData,tempList
+            if(payReciptList){
+          let value = e.target.value.toLocaleLowerCase()
+          if(value != ""){
+              let a, response
+              if(location.pathname.match('receipt')) a = "Receipt"
+              else a = "Payment"
+              const param = {params:{method:a}}
+                response = await getPaymentReciept(param)
+                if(response.success){
+                    tempList = formatList(response.data)
+                }
+                if(tempList.length > 0){
+                    tempData = tempList?.filter(x=>{
+                        let searchInString = `${x.voucher_number?.toLocaleLowerCase()+' '+x.account_detail?.toLocaleLowerCase()}`
+              let search = searchInString?.includes(value)
+              if(search){
+                  return true
+                }
+            })
+            setPayRecieptList(tempData)
+        }
+        }else{
+            getData2()
+        }
+        }
+        }catch{}
+    }
+
+return (
         <div className='payment-table-container p-0 mt-1' style={{ borderRadius: "0.3125rem 0.3125rem 0rem 0rem" }}>
             <div className="payment-table-card">
                 <table className='table table-light table-hover payment-table'>
                     <thead>
                         <tr>
                             <th>SL</th>
-                            <th className='ps-4' style={{ width: "10rem" }}>A/C Code</th>
+                            <th style={{ width: "10rem" }}>Voucher</th>
                             <th style={{ width: "18rem" }}>A/C Name</th>
                             <th>Type</th>
                             <th style={{ width: "15rem" }}>Naration</th>
+                            <th></th>
                             <th style={{ borderRight: '0px', width: "10%" }} className='ps-1 pe-0'>
                                 <div className='item_seach_bar_cont rounded-2 px-0 pe-1 mx-0' style={{ height: "2.0625rem", width: "fit-content" }}>
                                     <img src={search} className='search_img ms-3 py-2' />
@@ -30,6 +64,7 @@ const PaymentListSection = (props) => {
                                         style={{ height: "2rem", }}
                                         placeholder='Search'
                                         type='text'
+                                        onChange={handleSearch}
                                     />
                                 </div>
                             </th>
@@ -38,7 +73,6 @@ const PaymentListSection = (props) => {
                                     Filter
                                 </div>
                             </th>
-                            <th></th>
                         </tr>
                     </thead>
                     <tbody>        
@@ -48,7 +82,7 @@ const PaymentListSection = (props) => {
                                 return (
                                     <tr>
                                         <td>{i + 1}</td>
-                                        <td className='text-start'>{data?.account_code}</td>
+                                        <td className='text-start'>{data?.voucher_number}</td>
                                         <td className='text-start'>{data?.account_detail}</td>
                                         <td className='text-start'>{paymentAdd?.method}</td>
                                         <td>{data?.narration}</td>
@@ -58,16 +92,16 @@ const PaymentListSection = (props) => {
                                                 {editBtn}
                                             </div>
                                         </td>
-                                        {/* <td>
+                                        <td>
                                             <div className='button' onClick={e => confirmDelete(data.id)}>
-                                                {editBtn}
+                                                {<MdDeleteForever size={26} className='p-0'/>}
                                             </div>
-                                        </td> */}
+                                        </td>
                                     </tr>
                                 )
                             }) :
                             <tr>
-                                <td className='fs-5 text-center' colspan={6}>No Purchase Added Yet</td>
+                                <td className='fs-5 text-center' colspan={8}>No Purchase Added Yet</td>
                             </tr>
                         }
                     </tbody>

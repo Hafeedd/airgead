@@ -3,7 +3,7 @@ import search from "../../../../assets/icons/search.png"
 
 const PurchaseEditList = (props) => {
   const {purchaseList,setPurchaseList,
-    setPurchaseEditModal,setEdit,edit,getData} = props
+    setSalesEditModal,setEdit,edit,getData} = props
   
   const handleSearch = async (e) =>{
     let tempData
@@ -29,7 +29,7 @@ const PurchaseEditList = (props) => {
 
   const handleEditClick = (data) => {
     setEdit(data)
-    setPurchaseEditModal(false)
+    setSalesEditModal(false)
   }
 
   return (
@@ -87,7 +87,7 @@ const PurchaseEditList = (props) => {
           <div className='mx-0 px-0 col-10 col-11' />
           <div className='mx-0 px-1 pe-0 col-1 col-2 pb-3'>
             {/* <td></td> */}
-            <button onClick={()=>setPurchaseEditModal(false)} type='submit' className='btn btn-sm btn-dark w-100'>close</button>
+            <button onClick={()=>setSalesEditModal(false)} type='submit' className='btn btn-sm btn-dark w-100'>close</button>
           </div>
       </div>
     </div>

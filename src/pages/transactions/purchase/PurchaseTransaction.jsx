@@ -14,6 +14,7 @@ import Swal from 'sweetalert2'
 import usePurchaseServices from '../../../services/transactions/purchcaseServices'
 import useOnKey from '../../../onKeyFunct/onKeyFunct'
 import {formValidation} from '../../../formValidation/formValidation'
+import useItemServices from '../../../services/master/itemServices'
 
 const PurchaseTransaction = () => {
     const [purchaseItemModal, setPurchaseItemModal] = useState(false)
@@ -103,21 +104,7 @@ const PurchaseTransaction = () => {
         color:null,
     })
 
-// const handleRmFk = (data) =>{
-//     let tempData = {...data}
-//     let tempKeys = Object.keys(data)
-//         tempKeys?.map(item=>{
-//             if(item.match(/^fk_/)){
-//                 let fkRomoved = item.split('')
-//                 // console.log(fkRomoved)
-//                 fkRomoved.splice(0,3)
-//                 fkRomoved = fkRomoved.join('')
-//                 tempData[fkRomoved] = tempData[item]
-//                 delete tempData[item]
-//             }
-//         })
-//      console.log(tempData)
-// }
+    const {getCode} = useItemServices()
 
     useEffect(()=>{
         if(tableItemList.length>0){
@@ -172,6 +159,62 @@ const PurchaseTransaction = () => {
         }
     },[tableItemList])
 
+    // calculation of table item 
+
+    const handleAmountCalculation = (tempItem,e) =>{
+        let name = e.target.name
+        let value = {}
+        if(tempItem.rate&&tempItem.quantity){
+                value = {['value']:(tempItem.quantity*tempItem.rate)}
+                if(name=='discount_1_percentage'  && tempItem.discount_1_percentage){
+                    value = {...value,['discount_1_amount']:value.value-(value.value-(tempItem.discount_1_percentage*(value.value/100)))}
+                }
+                else if(name=='discount_1_percentage'){
+                    value = {...value,['discount_1_amount']:0}
+                }
+                if(name=='discount_1_amount' && tempItem.discount_1_amount){
+                    value = {...value,['discount_1_percentage']:(tempItem.discount_1_amount/value.value)*100}
+                }else if(name=='discount_1_amount'){
+                    value = {...value,['discount_1_percentage']:0}
+                }
+                
+                tempItem = {...tempItem,...value}
+                if(value.value && tempItem.discount_1_amount){
+                    tempItem.discount_1_amount = parseFloat(tempItem.discount_1_amount)
+                    value = {...value,['value']:(parseFloat(tempItem.quantity*tempItem.rate)-parseFloat(tempItem.discount_1_amount))}
+                }else{
+                    value = {...value,['value']:(tempItem.quantity*tempItem.rate)}
+            }
+            if(name=='tax_gst'){
+                if( tempItem.tax_gst){
+                    value = {...value,['total']:(value.value+(tempItem.tax_gst*(value.value/100))),
+                    ['cost']:(parseInt(tempItem.rate)+(tempItem.tax_gst*(tempItem.rate/100))),
+                    ['cgst_or_igst']:tempItem.tax_gst/2,['sgst']:tempItem.tax_gst/2}
+                }else{
+                    value = {...value,total:0,cost:0,cgst_or_igst:0,sgst:0}
+                }
+            }
+            if(name=='margin' && tempItem.margin){
+                value = {...value,['sales_rate']:parseFloat(tempItem.cost)+parseFloat(tempItem.cost*(tempItem.margin/100))}
+            }else{
+                value = {...value,['sales_rate']:0}
+            }
+            }else{
+                tempItem = {...tempItem,value:0}
+            }
+            tempItem = {...tempItem,...value}
+            let tempItemKeys = Object.keys(tempItem)
+            tempItemKeys?.map(key=>{
+                let number = parseFloat(tempItem[key])
+                if(number?.toFixed(2) && !Number.isInteger(number)  && number){
+                tempItem = {...tempItem,[key]:parseFloat(number?.toFixed(2))}
+                }
+            })
+        tempItem = {...tempItem}
+        setTableItem(tempItem)
+    }
+
+
     useEffect(()=>{
         if(purchaseList){
             purchaseList?.map(item=>{
@@ -211,11 +254,22 @@ const PurchaseTransaction = () => {
 
     const getData = async () => {
         try{
-            const response = await getPurchase()
+            let code , response, response2
+            response = await getPurchase()
             if(response?.success){
                 setPurchaseList(response?.data)
-                return response?.data
             }
+            response2 = await getCode()
+            if(response2.success && !edit){
+                for(let i of response2.data){
+                    let type = "PUR"
+                    if(i.sub_id == type){
+                        code = i.next_code
+                    }
+                    setPurchaseAdd({...purchaseAdd,documents_no:code})
+                }
+            }
+            return response?.data
         }catch(err){
             console.log(err)
         }
@@ -272,6 +326,7 @@ const PurchaseTransaction = () => {
         setTableItemList([])
         setTableItemBatchList([])
         setEdit()
+        getData()
     }
     
     const handleChange = (e,data) =>{
@@ -289,58 +344,6 @@ const PurchaseTransaction = () => {
             setPurchaseAdd(data=>({...data,[e.target.name]:e.target.value}))
     }
     
-    const handleAmountCalculation = (tempItem,e) =>{
-        let name = e.target.name
-        let value = {}
-        if(tempItem.rate&&tempItem.quantity){
-                value = {['value']:(tempItem.quantity*tempItem.rate)}
-                if(name=='discount_1_percentage'  && tempItem.discount_1_percentage){
-                    value = {...value,['discount_1_amount']:value.value-(value.value-(tempItem.discount_1_percentage*(value.value/100)))}
-                }
-                else if(name=='discount_1_percentage'){
-                    value = {...value,['discount_1_amount']:0}
-                }
-                if(name=='discount_1_amount' && tempItem.discount_1_amount){
-                    value = {...value,['discount_1_percentage']:(tempItem.discount_1_amount/value.value)*100}
-                }else if(name=='discount_1_amount'){
-                    value = {...value,['discount_1_percentage']:0}
-                }
-                
-                tempItem = {...tempItem,...value}
-                if(value.value && tempItem.discount_1_amount){
-                    tempItem.discount_1_amount = parseFloat(tempItem.discount_1_amount)
-                    value = {...value,['value']:(parseFloat(tempItem.quantity*tempItem.rate)-parseFloat(tempItem.discount_1_amount))}
-                }else{
-                    value = {...value,['value']:(tempItem.quantity*tempItem.rate)}
-            }
-            if(name=='tax_gst'){
-                if( tempItem.tax_gst){
-                    value = {...value,['total']:(value.value+(tempItem.tax_gst*(value.value/100))),
-                    ['cost']:(parseInt(tempItem.rate)+(tempItem.tax_gst*(tempItem.rate/100))),
-                    ['cgst_or_igst']:tempItem.tax_gst/2,['sgst']:tempItem.tax_gst/2}
-                }else{
-                    value = {...value,total:0,cost:0,cgst_or_igst:0,sgst:0}
-                }
-            }
-            if(name=='margin' && tempItem.margin){
-                value = {...value,['sales_rate']:parseFloat(tempItem.cost)+parseFloat(tempItem.cost*(tempItem.margin/100))}
-            }else{
-                value = {...value,['sales_rate']:0}
-            }
-            }else{
-                tempItem = {...tempItem,value:0}
-            }
-            tempItem = {...tempItem,...value}
-            let tempItemKeys = Object.keys(tempItem)
-            tempItemKeys?.map(key=>{
-                let number = parseFloat(tempItem[key])
-                if(number?.toFixed(2) && !Number.isInteger(number)  && number){
-                tempItem = {...tempItem,[key]:parseFloat(number?.toFixed(2))}
-                }
-            })
-        tempItem = {...tempItem}
-        setTableItem(tempItem)
-    }
     
     const handleChangeTableItem = (e,data) =>{
         let tempItem = {...tableItem}
@@ -351,7 +354,9 @@ const PurchaseTransaction = () => {
         }
         if(e.target.value === ""){
             tempItem = {...tempItem,[e.target.name]:''}
-        }else{
+        }else if(e.target.type === "number"){
+            tempItem = {...tempItem,[e.target.name]:parseFloat(e.target.value)}
+        }else {
             tempItem = {...tempItem,[e.target.name]:e.target.value}
         }
         handleAmountCalculation(tempItem,e)
