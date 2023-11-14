@@ -88,7 +88,7 @@ return (
                                         <td>{data?.narration}</td>
                                         <td></td>
                                         <td>
-                                            <div className='button' onClick={e => handleEdit(data)}>
+                                            <div className='button text-end pe-3' onClick={e => handleEdit(data)}>
                                                 {editBtn}
                                             </div>
                                         </td>

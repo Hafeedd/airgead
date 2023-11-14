@@ -2,8 +2,8 @@ import React from 'react'
 import search from "../../../../assets/icons/search.png"
 
 const PurchaseEditList = (props) => {
-  const {purchaseList,setPurchaseList,
-    setSalesEditModal,setEdit,edit,getData} = props
+  const {purchaseList,setPurchaseList,from,
+    closeEditModal,setEdit,edit,getData} = props
   
   const handleSearch = async (e) =>{
     let tempData
@@ -29,17 +29,17 @@ const PurchaseEditList = (props) => {
 
   const handleEditClick = (data) => {
     setEdit(data)
-    setSalesEditModal(false)
+    closeEditModal(false)
   }
 
   return (
-    <div style={{height:"75%"}} className='p-0 row mx-0'>
-      <table className="table table-hover purchase-item-table">
+    <div style={{height:"100%"}} className='p-0 row mx-0'>
+      <table className="table table-hover purchase-item-table mb-0" style={{height:"0%"}}>
         <thead>
           <tr>
             <th className='text-start ps-3 start'>Doc Number</th>
             <th>Date</th>
-            <th>Supplier Name</th>
+            <th>{from?"Customer Name":"Supplier Name"}</th>
             <th style={{borderRight:'0px'}}>NET Amount</th>
             <th style={{borderRight:'0px', width:"23%"}} className='ps-1 pe-0'>
                 <div className='item_seach_bar_cont rounded-2 px-0 pe-1 mx-0' style={{height: "2.0625rem",width:"fit-content"}}>
@@ -76,18 +76,18 @@ const PurchaseEditList = (props) => {
                 </svg>
               </div>
             </td>
-          </tr>))
+          </tr>
+          ))
           :<tr>
             <td colSpan={6} className='text-center py-3 fs-4 ps-3'>No Items</td>
           </tr>
           }
         </tbody>
       </table>
-      <div className="col-12 row pe-5 my-2 mb-3 h-100 align-items-end">
-          <div className='mx-0 px-0 col-10 col-11' />
-          <div className='mx-0 px-1 pe-0 col-1 col-2 pb-3'>
-            {/* <td></td> */}
-            <button onClick={()=>setSalesEditModal(false)} type='submit' className='btn btn-sm btn-dark w-100'>close</button>
+      <div className="col-12 row pe-3 my-0 mt-3 w-100 justify-content-end mb-2 mx-0 align-items-end"
+      style={{MinHeight:"inherit"}}>
+          <div className='mx-0 px-1 pe-0 col-1 col-2 pb-0 position-sticky' style={{bottom:"5px"}}>
+            <button onClick={()=>closeEditModal(false)} className='btn btn-sm btn-dark w-100'>close</button>
           </div>
       </div>
     </div>

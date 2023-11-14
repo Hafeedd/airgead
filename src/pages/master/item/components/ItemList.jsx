@@ -1,4 +1,5 @@
-import search from "../../../../assets/icons/search.png"
+
+import searchIcon from "../../../../assets/icons/search.png"
 import deleteBtn from "../../../../assets/icons/delete.svg"
 
 const ItemList = (props) => {
@@ -15,7 +16,7 @@ const ItemList = (props) => {
     <div className="row mx-0 px-4 my-2">
         <div className="col-2 col-3 px-0">
             <div className='item_seach_bar_cont rounded-2'>
-                <img src={search} className='search_img me-3 ms-2 py-2'/>
+                <img src={searchIcon} className='search_img me-3 ms-2 py-2'/>
                 <input
                     value={search}
                     onChange={(e)=>setSearch(e.target.value)}

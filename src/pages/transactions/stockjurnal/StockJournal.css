@@ -1,0 +1,145 @@
+.stock-jdetails-cont{
+    box-shadow: 0px 0px 5px 3px rgb(231, 231, 231);
+    font-weight: 700;
+}
+
+.stock-jdetails-cont .stock-entry{
+    font-weight: 500;
+    font-size: 0.975rem;
+    color: #5B5B5B;
+}
+
+.text-small{
+    font-size: 11px;
+    font-weight: normal;
+}
+
+.stock-journal-table thead th{
+    text-align: center;
+    background: black;
+    color: white;
+    font-size: 14px;
+    padding: 0.7rem 0;
+    font-weight: 500;
+}
+
+.stock-journal-table tbody td input:focus{
+    border:1px solid black !important;
+    outline: 0;
+    box-shadow: none;
+}
+.stock-journal-table tbody td input{
+    font-size: 13px !important;
+    font-weight: 500;
+}
+.stock-journal-table tbody td{
+    padding-top: 0;
+    background: white;
+    padding-bottom: 0;
+    text-align: center;
+    font-size: 11px !important;
+}
+
+.stock-journal-table tbody td:first-child{
+    padding-top: 0;
+}
+
+.stock-journal-table tbody td:first-child .item-search-drop{
+    padding: 0.7rem 2rem;
+    
+}
+
+.stock-journal-table{
+    position: relative !important;
+    border: 1px solid #D8D8D8;
+}
+
+.stock-journal-table tbody tr:last-child th{
+    background: #DEDEDE;
+}
+.stock-journal-table thead th{
+    z-index: 4;
+    position: sticky;
+    top: 0;
+}
+.stock-journal-table tbody tr:last-child th{
+    z-index: 4;
+    position: sticky;
+    bottom: 0;
+}
+
+.purchase-input-text.drop{
+    height: 1.8rem;
+    width: 100%;
+    background: #EEE !important;
+    border-radius: 0.2325rem;
+    border: 1px solid #A7A7A7;
+}
+
+purchase-input-text.drop.table{
+    height: 1.5rem;
+}
+
+.stock-next-prev-btn,.stock-next-prev-btn:hover{
+    color: white;
+    background: #4A00A8;
+    padding: 0.2rem 0.625rem;
+}
+
+.purchase-input-text.drop.shadows{
+    box-shadow: 0px 0px 5px 1px rgb(184, 184, 184) !important;
+    border: 1px solid #BEBEBE !important;
+}
+
+.stock-jsave-btn,.stock-jsave-btn:hover{
+    background: black;
+    padding: 0.1rem 3rem;
+    color: white;
+}
+
+.stock-journal-table-cont{
+    height: 26rem;
+    overflow: hidden;
+    overflow-y: scroll;
+}
+
+.stockJ-edit{
+    background: #000;
+    color: white;
+    font-size: 14px;
+}
+
+.stockJ-edit-table{
+    position: relative;
+    border: 1px solid #C9C9C9;
+}
+
+.stockJ-edit-table thead th{
+    position: sticky;
+    top: 0;
+    background: #A4A1A1;
+    padding: 0.7rem 0;
+}
+
+.stockJ-edit-table tbody td{
+    padding: 0.6rem 0;
+}
+
+.stockJ-edit-table-cont{
+    height: 20rem !important;
+    overflow: hidden;
+    overflow-y: scroll;
+}
+
+.add-less-btn{
+    border: 0;
+    border-radius: 0.3rem;
+    background: #A4A1A1;
+    padding: 0.3rem 1.6rem !important;
+    font-weight: 500;
+    font-size: 14px;
+}
+
+.stockJadj-table{
+    padding: 1.55rem !important;
+}

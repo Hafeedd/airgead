@@ -1,0 +1,85 @@
+.op-stock-det{
+    background: #ffff;
+    border-radius: 0.2rem;
+    padding: 0.4rem 1rem;
+    box-shadow: 0px 0px 5px 2px lightgray !important;
+}
+
+.op-stock-apply-btn{
+    background: #6D6D6D;
+    height: 1.7rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color:white;
+}
+.op-stock-apply-btn:hover{
+    background: #000;
+    color: white;
+}
+
+.op-stock-apply-btn.blck{
+    background: black;
+}
+.op-stock-apply-btn.blck:hover{
+    background: #6D6D6D;
+}
+
+.op-stock.table thead th{
+    position: sticky;
+    top: 0;
+    background: black;
+    border: 1px solid black;
+    color: white;
+    padding: 0.4rem 0.4rem;
+    font-size: 14px;
+    text-align: center;
+}
+.op-stock.table tbody td input{
+    border: none;
+    font-size: 13px;
+    text-align: start;
+    text-align: center;
+    padding: 0.3rem 0.4rem;
+    border-radius: 0.2rem;
+    width: 100%;
+}
+
+.op-stock.table tbody td input:focus{
+    outline:1px solid #000;
+}
+
+.op-stock-table-cont{
+    height: 20rem;
+    overflow: hidden;
+    overflow-y: scroll;
+}
+
+.op-stock.table{
+    position: relative;
+    border: 1px solid gray;
+}
+
+.purchase-input-text.op-stock-dropdown .search-dropdown .dropdown{
+    padding: 0 !important;
+    display: flex !important;
+    align-items: center !important;
+}
+
+.purchase-input-text.op-stock-dropdown{
+    height: 1.7rem !important;
+    padding: 0 !important;
+}
+
+.purchase-input-text.op-stock-dropdown .search-dropdown .dropdown .icon{
+    right: 2rem;
+}
+.purchase-input-text.op-stock-dropdown .search-dropdown .dropdown .text{
+    padding: 0 0.7rem 0 0.7rem !important;
+}
+.purchase-input-text.op-stock-dropdown .search-dropdown .dropdown input.search{
+    background-color: #EEE !important;
+    border: 1px solid #dcdcdc !important; 
+    height: 1.7rem !important;
+    padding: 0 0.7rem 0 0.7rem !important;
+}

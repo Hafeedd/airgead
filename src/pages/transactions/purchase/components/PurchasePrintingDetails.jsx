@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { Form } from 'react-bootstrap'
 import { FiEdit } from 'react-icons/fi'
-import useOnKey from '../../../../onKeyFunct/onKeyFunct'
+import useOnKey from '../../../../hooks/onKeyFunct/onKeyFunct'
 
 const PurchasePrintingDetails = (props) => {
     const {handleEdit,purchaseAdd,handleChange} = props

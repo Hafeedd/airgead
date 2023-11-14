@@ -6,7 +6,6 @@ import './AccountMaster.css'
 import useAccountServices from '../../../services/master/accountServices'
 
 const AccountMaster = () => {
-    const [pageHeadItem, setPageHeadItem] = useState(1)
     const [toEdit, setToEdit] = useState(false)
     const [listItem, setListItem] = useState([])
     const navigate = useNavigate()
@@ -40,7 +39,7 @@ const AccountMaster = () => {
                     <div>
                         <div className='fw-600 fs-5'>Master Account</div>
                         <div className='page_head_items mb-3'>
-                            <div onClick={() => navigate('/account-master')} className={`page_head_item ${pageHeadItem === 1 && "active"}`}>Master List</div>
+                            <div onClick={() => navigate('/account-master')} className={`page_head_item active`}>Master List</div>
                         </div>
                     </div>
                     <div className="col-1 col-2 d-flex px-1 align-items-center">

@@ -38,6 +38,12 @@ const useAccountServices = () => {
     return response.data
   }
 
+  // Account List
+  const getAllAccountList = async() =>{
+    const response = await axiosPrivate.get('master/all_user/accounts')
+    return response.data
+  }
+
 
 // DELETE Services--------------------------------------------------------------
   // Account Group
@@ -55,6 +61,7 @@ const useAccountServices = () => {
     putAccountEdit,
 
     // GET APIS
+    getAllAccountList,
     getAccountGroup,
     getAccountList,
     

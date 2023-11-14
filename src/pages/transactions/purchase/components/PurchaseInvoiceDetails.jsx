@@ -3,7 +3,8 @@ import { Form } from 'react-bootstrap'
 import { FiEdit } from 'react-icons/fi'
 import useCustomerServices from '../../../../services/master/customerServices'
 import { Dropdown } from 'semantic-ui-react'
-import useOnKey from '../../../../onKeyFunct/onKeyFunct'
+import { useNavigate } from 'react-router'
+import useOnKey from '../../../../hooks/onKeyFunct/onKeyFunct'
 
 const PurchaseInvoiceDetails = (props) => {
     const {handleEdit,purchaseAdd,handleChange,
@@ -11,6 +12,8 @@ const PurchaseInvoiceDetails = (props) => {
 
     const [ref, setRef] = useState(null)
     const {getSupplier} = useCustomerServices()
+    
+    const navigate = useNavigate()
 
     useEffect(()=>{
         getData()
@@ -43,7 +46,10 @@ const PurchaseInvoiceDetails = (props) => {
     
     const search = (options, searchValue) => {
         searchValue = searchValue.toUpperCase()
-        return options.filter((option) => {return(option?.value?.includes(searchValue)||option.description.includes(searchValue))});
+        return options.filter((option) => 
+        {return(
+            option?.value?.toString().includes(searchValue)||
+            option.description?.toString()?.includes(searchValue))});
       };
       
     return (
@@ -99,7 +105,7 @@ const PurchaseInvoiceDetails = (props) => {
                 />
             </Form.Group>
 {/* Row 2 -------------------------------------------------------------------------------------------------------- */}
-            <Form.Group className='col-2 col-3 mx-0 d-flex align-items-center mt-1'>
+            {/* <Form.Group className='col-2 col-3 mx-0 d-flex align-items-center mt-1'>
                 <Form.Label className='col-3 purchase-input-label'>Cash/ Credit</Form.Label>
                 <div className='mx-0 col-9 px-0'>
                     <select onChange={handleChange} onKeyDown={handleKeyDown}
@@ -109,8 +115,12 @@ const PurchaseInvoiceDetails = (props) => {
                         <option value="BANK">BANK</option>
                     </select>
                 </div>
-            </Form.Group>
-            <Form.Group className='col-3 ps-4 mx-0 d-flex align-items-center mt-1'>
+            </Form.Group> */}
+            <div className='col-3 col-2' onClick={()=>navigate("/supplier-add")}>
+            <div className='btn btn-sm btn-dark rounded-2 w-100 p-0 mt-2'>Add Supplier</div>
+            </div>
+            <span className='col-3'/>
+            {/* <Form.Group className='col-3 ps-4 mx-0 d-flex align-items-center mt-1'>
                 <Form.Label className='col-3 purchase-input-label'>Due Date</Form.Label>
                 <Form.Control
                     name="change_due" value={purchaseAdd.change_due||''}
@@ -119,7 +129,7 @@ const PurchaseInvoiceDetails = (props) => {
                     className='purchase-input-date'
                     type='date'
                 />
-            </Form.Group>
+            </Form.Group> */}
             <Form.Group className='col-3 ps-5 mx-0 d-flex align-items-center mt-1'>
                 <Form.Label className='col-3 purchase-input-label'>Bill Date</Form.Label>
                 <Form.Control
@@ -133,7 +143,7 @@ const PurchaseInvoiceDetails = (props) => {
             <Form.Group className='col-3 col-4 mx-0 d-flex align-items-center my-1'>
                 <Form.Label className='col-3 col-4 purchase-input-label'>Date</Form.Label>
                 <Form.Control
-                    name="created_at" value={purchaseAdd.created_at?.slice(0,10)||(new Date().toISOString().slice(0,10))}
+                    name="created_at" value={purchaseAdd?.created_at?.slice(0,10)||(new Date().toISOString().slice(0,10))}
                     onKeyDown={handleKeyDown}
                     onChange={handleChange}
                     className='purchase-input-text'

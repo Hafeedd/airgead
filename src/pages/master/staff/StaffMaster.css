@@ -46,25 +46,45 @@
 }
 
 .staff-table thead th{
+    background: #212529;
+    position: sticky;
+    top: 0;
     font-weight: normal;
     padding: 0.6rem;
 }
 
 .staff-table tbody tr:first-child td{
-    padding-top: 1rem
+    padding-top: 0.5rem
+}
+.staff-table tbody tr:hover td .tbodytd{
+    background: rgb(133, 130, 130) !important;
+    color: white !important;
+}
+.staff-table tbody tr:first-child td .tbodytd{
+    background: #EEE !important;
+    color: black !important;
 }
 
 .staff-table tbody td:first-child{
-    padding-left: 1.5rem;
+    padding-left: 1rem;
 }
 .staff-table tbody td:last-child{
     padding-right: 1.5rem;
 }
 
 .staff-table tbody .tbodytd{
+    width: 100%;
+    text-transform: uppercase;
+    border: none;
+    text-align: center;
     font-weight: normal;
-    padding: 0.3rem;
+    padding: 0.2rem;
     background: #EEE;
+}
+.staff-table tbody .tbodytd:focus{
+    border:none;
+    box-shadow: none !important;
+    outline: 1px solid black;
 }
 
 .staff-table tbody tr:first-child td:first-child .tbodytd{
@@ -81,11 +101,7 @@
 }
 
 .staff-table tbody tr:last-child td{
-    padding-bottom: 1.5rem ;
-}
-
-.staff-table {
-    border: 1.5px solid black
+    padding-bottom: 1rem ;
 }
 
 .staff-select{
@@ -94,4 +110,15 @@
     -moz-appearance: none;
     text-indent: 1px;
     text-overflow: '';
+}
+
+.staff-table-container{
+    background: inherit;
+    border: 0.14rem solid #212529;
+    padding: 0 !important;
+    /* border: 1px solid black; */
+    max-height: 14rem;
+    overflow: hidden;
+    overflow-y: scroll;
+    margin-bottom: 0.4rem;
 }

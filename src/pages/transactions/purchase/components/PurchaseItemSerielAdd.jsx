@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
-import useOnKey from "../../../../onKeyFunct/onKeyFunct";
 import usePurchaseServices from "../../../../services/transactions/purchcaseServices";
 import Swal from "sweetalert2";
 import {FaPencilAlt} from 'react-icons/fa'
 import {MdClear,MdDeleteForever} from 'react-icons/md'
 import {AiOutlineArrowUp} from 'react-icons/ai'
+import useOnKey from "../../../../hooks/onKeyFunct/onKeyFunct";
 
 export const PurchaseItemBatchAdd = (props) => {
   const { tableItemBatch, setTableItemBatch,edit,
@@ -119,9 +119,11 @@ export const PurchaseItemBatchAdd = (props) => {
   }
 
   const handleBatchSubmit = async (e) => {
-    let ItemTempList = [...tableItemBatchList] , itemTemp = {}
-    if(tableItemBatchList){
-      tableItemBatchList?.map(data=>{
+    try{
+
+      let ItemTempList = [...tableItemBatchList] , itemTemp = {}
+      if(tableItemBatchList){
+        tableItemBatchList?.map(data=>{
         let itemTemp = {...data}
         itemTemp = {...itemTemp,['cstm_id']:purchaseItemSerielModal}
       })
@@ -135,13 +137,13 @@ export const PurchaseItemBatchAdd = (props) => {
         }
         if(response?.success && !tableEdit){
           let tempItemKeys = [...tebleItemKeys]
-          tempItemKeys.push({id:response?.data1?.id})
+          tempItemKeys.push({id:response?.data?.data1?.id})
           ItemTempList.push(itemTemp)
           setTableItemKeys(tempItemKeys)
           let tempItems = [...tableItemList]
           tableItemList.map((x,i)=>{
             if(x.cstm_id == purchaseItemSerielModal){
-              x.id = response.data1.id
+              x.id = response?.data?.data1?.id
               tempItems.splice(i,1)
               tempItems.push({...x})
               setTableItemList(tempItems)
@@ -159,13 +161,16 @@ export const PurchaseItemBatchAdd = (props) => {
       setPurchaseItemSerielModal(false)
       handleTableItemReset()
     }
+  }catch(err){
+    console.log(err)
   }
-
+  }
+  
   const handleMoveToEdit = (data) =>{
     setTableItemBatch(data)
     setBatchEdit(data)
   }
-
+  
   const handleClearEdit = () =>{
     setBatchEdit(false)
     handleResetBatch()

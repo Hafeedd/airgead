@@ -46,8 +46,8 @@ const usePurchaseServices = () => {
         return response.data
     }
     // get purchase item 
-    const getPurchaseItem = async (id) =>{
-        const response = await axiosPrivate.get('purchase/purchase_item/created/'+id+'/')
+    const getPurchaseItem = async () =>{
+        const response = await axiosPrivate.get('purchase/purchase_item/created/')
         return response.data
     }
     // get purchase item batch 
@@ -74,6 +74,7 @@ const usePurchaseServices = () => {
         return response.data
     }
 
+    
     return{
         //post
         postPurchase,

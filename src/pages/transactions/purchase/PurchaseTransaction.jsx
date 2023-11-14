@@ -12,9 +12,9 @@ import PurchaseEditList from './components/PurchaseEditList'
 import { PurchaseItemBatchAdd } from './components/PurchaseItemSerielAdd'
 import Swal from 'sweetalert2'
 import usePurchaseServices from '../../../services/transactions/purchcaseServices'
-import useOnKey from '../../../onKeyFunct/onKeyFunct'
-import {formValidation} from '../../../formValidation/formValidation'
+import {formValidation} from '../../../hooks/formValidation/formValidation'
 import useItemServices from '../../../services/master/itemServices'
+import useOnKey from '../../../hooks/onKeyFunct/onKeyFunct'
 
 const PurchaseTransaction = () => {
     const [purchaseItemModal, setPurchaseItemModal] = useState(false)
@@ -42,7 +42,7 @@ const PurchaseTransaction = () => {
         fk_supplier:null,
         supplier_name:null,
         documents_no:null,
-        patyment_type:'CASH',
+        payment_type:'CASH',
         order_no:null,
         bill_no:null,
         created_at:null,
@@ -147,6 +147,7 @@ const PurchaseTransaction = () => {
             let tempPurchaseAdd = {...purchaseAdd,
                 total_margin:netMargin?.toFixed(0),
                 total_amount:netAmount?.toFixed(2),
+                paid_cash:netAmount?.toFixed(2),
                 total_CTC:totalCTC?.toFixed(2),
                 total_qty:totalQty?.toFixed(0),
                 total_disc:total_disc?.toFixed(0),
@@ -154,10 +155,49 @@ const PurchaseTransaction = () => {
                 total_total:total_total?.toFixed(2),
                 total_scGst:total_scGst?.toFixed(0),
                 total_items:totalItem,
+                discount:total_disc?.toFixed(2)
             }
             setPurchaseAdd({...tempPurchaseAdd})
+        }else{
+            setPurchaseAdd({
+                ...purchaseAdd,
+                otal_margin:0,
+                total_amount:0,
+                paid_cash:0,
+                total_CTC:0,
+                total_qty:0,
+                total_disc:0,
+                total_value:0,
+                total_total:0,
+                total_scGst:0,
+                total_items:0,
+            })
         }
     },[tableItemList])
+
+    useEffect(()=>{
+        let tempPurhase = {...purchaseAdd}
+        if(purchaseAdd.total_amount){
+            let balance = parseFloat(purchaseAdd.total_amount) -parseFloat(purchaseAdd.paid_cash?purchaseAdd.paid_cash:0)
+            if(balance >= 0){
+                tempPurhase = {...tempPurhase,change_due:balance}
+            }else{
+                tempPurhase = {...tempPurhase,change_due:0}
+            }
+        if(balance > 0){
+            tempPurhase = {...tempPurhase,payment_type:"CREDIT"}
+        }else{
+            tempPurhase = {...tempPurhase,payment_type:"CASH"}
+        }
+        setPurchaseAdd(tempPurhase)
+    }
+    },[purchaseAdd.paid_cash, ])
+
+    useEffect(()=>{
+        if(purchaseAdd?.change_due>=0 && purchaseAdd.change_due <= purchaseAdd.total_amount){
+            setPurchaseAdd({...purchaseAdd,paid_cash:purchaseAdd.total_amount-purchaseAdd.change_due})
+        }
+    },[purchaseAdd.change_due])
 
     // calculation of table item 
 
@@ -165,7 +205,14 @@ const PurchaseTransaction = () => {
         let name = e.target.name
         let value = {}
         if(tempItem.rate&&tempItem.quantity){
-                value = {['value']:(tempItem.quantity*tempItem.rate)}
+            let total = tempItem.total, cost = tempItem.cost
+            total = tempItem.quantity*tempItem.rate
+            cost = tempItem.rate
+            if(tempItem.discount_1_amount || tempItem.tax_gst){
+            }
+                value = {['value']:(tempItem.quantity*tempItem.rate),
+                        ['total']:total,
+                        ['cost']:cost}
                 if(name=='discount_1_percentage'  && tempItem.discount_1_percentage){
                     value = {...value,['discount_1_amount']:value.value-(value.value-(tempItem.discount_1_percentage*(value.value/100)))}
                 }
@@ -181,27 +228,45 @@ const PurchaseTransaction = () => {
                 tempItem = {...tempItem,...value}
                 if(value.value && tempItem.discount_1_amount){
                     tempItem.discount_1_amount = parseFloat(tempItem.discount_1_amount)
-                    value = {...value,['value']:(parseFloat(tempItem.quantity*tempItem.rate)-parseFloat(tempItem.discount_1_amount))}
+                    value = {...value,['value']:(parseFloat(tempItem.quantity*tempItem.rate)-parseFloat(tempItem.discount_1_amount)),
+                            ['total']:(parseFloat(tempItem.quantity*tempItem.rate)-parseFloat(tempItem.discount_1_amount)),
+                            ['cost']:(parseFloat(tempItem.rate)-parseFloat(tempItem.discount_1_amount)),
+                        }
                 }else{
-                    value = {...value,['value']:(tempItem.quantity*tempItem.rate)}
+                    value = {...value,['value']:(tempItem.quantity*tempItem.rate),
+                    ['total']:(tempItem.quantity*tempItem.rate),['cost']:(tempItem.rate)}
             }
             if(name=='tax_gst'){
                 if( tempItem.tax_gst){
                     value = {...value,['total']:(value.value+(tempItem.tax_gst*(value.value/100))),
-                    ['cost']:(parseInt(tempItem.rate)+(tempItem.tax_gst*(tempItem.rate/100))),
+                    ['cost']:(parseInt((parseFloat(tempItem.rate)-parseFloat(tempItem.discount_1_amount)))+(tempItem.tax_gst*(tempItem.rate/100))),
                     ['cgst_or_igst']:tempItem.tax_gst/2,['sgst']:tempItem.tax_gst/2}
                 }else{
-                    value = {...value,total:0,cost:0,cgst_or_igst:0,sgst:0}
+                    value = {...value,cgst_or_igst:0,sgst:0}
                 }
             }
-            if(name=='margin' && tempItem.margin){
-                value = {...value,['sales_rate']:parseFloat(tempItem.cost)+parseFloat(tempItem.cost*(tempItem.margin/100))}
-            }else{
-                value = {...value,['sales_rate']:0}
+            if(name=='margin'){
+                if(tempItem.margin){
+
+                    value = {...value,['sales_rate']:parseFloat(tableItem.cost)+parseFloat(tableItem.cost*(tempItem.margin/100))}
+                }
+                else{
+                    value = {...value,['sales_rate']:0}
+                }
+            }
+            if(name=='sales_rate'){
+                if(tempItem.sales_rate){
+
+                    value = {...value,['margin']:parseFloat(((tempItem.sales_rate-value.cost)/tempItem.cost)*100)}
+                }
+                else{
+                    value = {...value,['margin']:0}
+                }
             }
             }else{
                 tempItem = {...tempItem,value:0}
             }
+            console.log(value.margin)
             tempItem = {...tempItem,...value}
             let tempItemKeys = Object.keys(tempItem)
             tempItemKeys?.map(key=>{
@@ -214,14 +279,18 @@ const PurchaseTransaction = () => {
         setTableItem(tempItem)
     }
 
-
+    // the purchase data is selected from purchase list when the edit state is set
     useEffect(()=>{
         if(purchaseList){
             purchaseList?.map(item=>{
-                if(item.id == edit?.id){
+                if(item.id == edit?.id){ // checking the purchase id by edit id
                 let {items,updated_at,...others} = item
-                setPurchaseAdd({...others})
-                setTableItemList([...items])
+                setPurchaseAdd({...purchaseAdd,...others})
+                if(items){
+                    setTimeout(()=>{
+                        setTableItemList([...items])
+                    },100)
+                }
             }
             })
         }
@@ -234,16 +303,16 @@ const PurchaseTransaction = () => {
     useEffect(() => {
         switch (pageHeadItem) {
             case 1: setPurchaseHeader(<PurchaseInvoiceDetails {...{handleEdit,purchaseAdd,
-                handleKeyDown,handleChange,supplierList, setSupplierList}} />)
+                handleChange,supplierList, setSupplierList}} />)
             break
             case 2: setPurchaseHeader(<PurchasePrintingDetails {...{handleEdit,purchaseAdd,
-                handleKeyDown,handleChange}} />)
+                handleChange}} />)
             break
             case 3: setPurchaseHeader(<PurchaseDeliveryDetails {...{handleEdit,purchaseAdd,
-                handleKeyDown,handleChange}} />)
+                handleChange}} />)
             break
             case 4: setPurchaseHeader(<PurchaseInvoiceDetails {...{handleEdit,purchaseAdd,
-                handleKeyDown,handleChange,supplierList, setSupplierList}} />)
+                handleChange,supplierList, setSupplierList}} />)
                 break
             default: break;
         }
@@ -266,7 +335,7 @@ const PurchaseTransaction = () => {
                     if(i.sub_id == type){
                         code = i.next_code
                     }
-                    setPurchaseAdd({...purchaseAdd,documents_no:code})
+                    setPurchaseAdd(data=>({...data,documents_no:code}))
                 }
             }
             return response?.data
@@ -350,7 +419,7 @@ const PurchaseTransaction = () => {
         if(data){
             let Item_data = data.options.filter(x=>x?.value===data?.value)[0]
             tempItem = {...tempItem,item_name:Item_data?.text,code:Item_data?.description,
-            fk_items:Item_data?.value}
+            fk_items:Item_data?.value,unit:Item_data?.unit}
         }
         if(e.target.value === ""){
             tempItem = {...tempItem,[e.target.name]:''}
@@ -370,7 +439,7 @@ const PurchaseTransaction = () => {
             e.target.value = e.target.value.toUpperCase()
         setTableItemBatch(data=>({...data,[e.target.name]:e.target.value}))
     }
-    
+
     const handleCloseItemBatch = () =>{
         if(!tableEdit){
         let tempList = [...tableItemList]
@@ -436,7 +505,8 @@ const PurchaseTransaction = () => {
             if(!edit){
                 response = await postPurchase(submitData)
             }else{
-                response = await putPurchase(edit?.id,submitData) 
+                const {documents_no, ...others} = submitData
+                response = await putPurchase(edit?.id,others) 
             }
             if(response?.success){
                 handlePurchaseAllReset()
@@ -519,7 +589,7 @@ const PurchaseTransaction = () => {
                 />
                 <PurchaseDetailFooter {...{
                     handleEdit,purchaseAdd,handleChange,
-                    handleKeyDown,handlePurchaseAllReset}} />
+                    handleKeyDown,handlePurchaseAllReset,edit}} />
             </form>
             <Modal
                 show={purchaseItemModal}
@@ -536,10 +606,12 @@ const PurchaseTransaction = () => {
                 contentClassName='purchase-table-container'
                 onHide={()=>setPurchaseEditModal(false)}
             >
-                <PurchaseEditList {...{
+                <PurchaseEditList
+                closeEditModal={setPurchaseEditModal} 
+                {...{
                     purchaseList,setEdit,
                     edit,setPurchaseList,
-                    getData,setPurchaseEditModal}}/>
+                    getData}}/>
             </Modal>
             <Modal
             show={purchaseItemSerielModal}

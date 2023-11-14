@@ -1,12 +1,12 @@
 import React, { useCallback, useEffect, useState } from 'react'
 import PurchaseTableItemList from './PurchaseTableItemList'
 import useItemServices from '../../../../services/master/itemServices'
-import useOnKey from '../../../../onKeyFunct/onKeyFunct'
 import { Dropdown } from 'semantic-ui-react'
 import { FiEdit } from 'react-icons/fi'
 import { BsTrashFill } from 'react-icons/bs'
 import Swal from 'sweetalert2'
 import usePurchaseServices from '../../../../services/transactions/purchcaseServices'
+import useOnKey from '../../../../hooks/onKeyFunct/onKeyFunct'
 
 const PurchaseTable = (props) => {
     const {setPurchaseItemModal,tableItem,
@@ -67,7 +67,7 @@ const PurchaseTable = (props) => {
         const handleDataNameList= (data) => {
             let tempList = []
             data?.map((x)=>{
-                tempList.push({text:x.name,description:x.code,value:x.id})
+                tempList.push({text:x.name,description:x.code,value:x.id,unit:x.fk_unit})
             })
             setItemNameList([...tempList])
         }
@@ -116,8 +116,8 @@ const PurchaseTable = (props) => {
         setTableItemList(itemTempList)
         setCstm_id(cstm_id+1)
         setPurchaseItemSerielModal(cstm_id)
-    }
-    setPurchaseItemSerielModal(tableEdit||true)
+    }else
+        setPurchaseItemSerielModal(tableEdit||true)
     }
 
     const handlePrev = () => {
@@ -127,12 +127,15 @@ const PurchaseTable = (props) => {
         }else{
             let ind = purchaseList?.findIndex((x)=>edit.id == x.id)
             if(ind !== purchaseList?.length-1){
+                handlePurchaseAllReset()
+                setTableItemList([])
                 setEdit(purchaseList[ind+1])
             }else{
                 Swal.fire("No more purchase to edit",'go for next','warning')
             }
         }}
     }
+
     const handleNext = () => {
         let i = purchaseList?.length -1
         if(!edit){
@@ -140,6 +143,7 @@ const PurchaseTable = (props) => {
         }else if(edit?.id == purchaseList[0].id){
             handlePurchaseAllReset()
         }else{
+            handlePurchaseAllReset()
             let ind = purchaseList?.findIndex((x)=>edit.id == x.id)
             if(ind !== purchaseList[0]){
                 setEdit(purchaseList[ind-1])
@@ -151,8 +155,8 @@ const PurchaseTable = (props) => {
 
     const AdjustHeightOfTable = () =>{
         let a = []
-        for(let i = 0;i<6-purchaseAdd.total_items||0;i++){
-            a.push(<tr><td style={{ height: "",display: "" }} colSpan={17}></td></tr>)
+        for(let i = 0;i<8-purchaseAdd.total_items||0;i++){
+            a.push(<tr key={i}><td style={{ height: "1.8rem",display: ""}} colSpan={17}></td></tr>)
         }
         return a
     }
@@ -196,15 +200,23 @@ const PurchaseTable = (props) => {
                     showConfirmButton:false,
                     timer:1500,             
                 })
-            const data = getData()
-            console.log(data)
-            data?.map(purchData=>{
-                if(purchData?.id === edit?.id){
-                    console.log(purchData)
-                    setEdit(purchData)
-                }
-            })
-            }else{
+                const data = await getData()
+                console.log(data)
+                data?.map(purchData=>{
+                        if(purchData?.id === edit?.id){
+                                console.log(purchData)
+                                setEdit(purchData)
+                            }
+                        })
+            }else if(response.success && !data.created_at){                
+                Swal.fire({
+                    title:'Item deleted successfully',
+                    icon:'success',
+                    showConfirmButton:false,
+                    timer:1500,             
+                })
+            }
+            else{
                 Swal.fire(response.message,'','error')
             }
         }catch(err){
@@ -215,7 +227,7 @@ const PurchaseTable = (props) => {
 
     const search =(options, searchValue) => {
         searchValue = searchValue.toUpperCase()
-        return options.filter((option) => {return(option?.value.toString().includes(searchValue)||option.description.includes(searchValue))});
+        return options.filter((option) => {return(option?.text.toString().includes(searchValue)||option.description.includes(searchValue))});
       };
 
     return (
@@ -249,12 +261,75 @@ const PurchaseTable = (props) => {
                         </tr>
                     </thead>
                     <tbody className='purchase-table-body' ref={formRef}>
+                    {tableItemList?.length>0&&
+                        tableItemList.map(data=>(
+
+                                <tr>
+                                    <td className='text-start ps-3' colSpan={2}>
+                                        <select disabled
+                                            value={data.fk_items}
+                                            className='purchase_input border-0 w-100'>
+                                            <option value={null}>Select</option>
+                                            {itemNameList?.length>0&&
+                                            itemNameList.map((item,index)=>
+                                            <option key={index} value={item.value}>{item.text}</option>)}
+                                        </select>
+                                    </td>
+                                    <td>
+                                        {data.quantity}
+                                    </td>
+                                    <td>
+                                            <select value={data.unit} 
+                                                style={{"WebkitAppearance":"none",fontSize:'10px',padding:'3.5px 1px'}} 
+                                                className='purchase_input border-0 w-100 text-center'>
+                                                {unitList&&unitList.map((x,i)=>
+                                                <option key={i} value={x.value}>{x.text}</option>)}
+                                            </select></td>
+                                    <td>
+                                        {data.rate}</td>
+                                    <td>
+                                        {data.discount_1_percentage}%</td>
+                                    <td>
+                                        {data.discount_1_amount}</td>
+                                    <td>
+                                        {data.value}</td>
+                                    <td>
+                                        {data.tax_gst}%</td>
+                                    <td>
+                                        {data.cgst_or_igst}%</td>
+                                    <td>
+                                        {data.sgst}%</td>
+                                    <td>
+                                        {data.total}</td>
+                                    <td>
+                                        {data.cost}</td>
+                                    <td>
+                                        {data.margin}</td>
+                                    <td>
+                                        {data.sales_rate}</td>
+                                    <td>
+                                        <div onClick={()=>handleTableItemEdit(data)} 
+                                        className='text-center'>
+                                            <FiEdit className='mb-1 btn p-0' size={"16px"}/>
+                                        </div>
+                                    </td>
+                                    <td className='p-0'>
+                                        <div onClick={()=>confirmDelete(data)}
+                                        className='text-start w-100'>
+                                            <BsTrashFill className='mb-1 btn p-0' size={"16px"}/>
+                                        </div>
+                                    </td>
+                                </tr>
+                                ))
+                            }
                         <tr>
                             <td className='purchase_search_drop_td text-start ps-3' colSpan={2}>
                                 <Dropdown
                                 clearable
                                 selection
                                 required
+                                upward={purchaseAdd.total_items>4?true:false}
+                                // scrolling
                                 search={search}
                                 placeholder='SELECT'
                                 className='purchase_search_drop border-0 w-100 ps-2'
@@ -270,7 +345,7 @@ const PurchaseTable = (props) => {
                                 type='number' className='purchase_input border-0 w-100 text-center' /></td>
                             <td>
                                 <select onKeyDown={handleKeyDown} name={'unit'} onChange={handleChangeTableItem} value={(tableItem.unit==''||tableItem.unit)?tableItem.unit:''} 
-                                style={{"-webkit-appearance":"none",fontSize:'10px',padding:'3.5px 1px'}} 
+                                style={{"WebkitAppearance":"none",fontSize:'10px',padding:'3.5px 1px'}} 
                                 className='purchase_input border-0 w-100 text-center'>
                                 {unitList&&unitList.map((x,i)=>
                                 <option key={i} value={x.value}>{x.text}</option>)}
@@ -346,67 +421,7 @@ const PurchaseTable = (props) => {
                                 className='table-item-add-btn2 text-start' value={"+"}/>}
                             </td>
                         </tr>
-                        {tableItemList?.length>0&&
-                        tableItemList.map(data=>(
-
-                                <tr>
-                                    <td className='text-start ps-3' colSpan={2}>
-                                        <select disabled
-                                            value={data.fk_items}
-                                            className='purchase_input border-0 w-100'>
-                                            <option value={null}>Select</option>
-                                            {itemNameList?.length>0&&
-                                            itemNameList.map((item,index)=>
-                                            <option key={index} value={item.value}>{item.text}</option>)}
-                                        </select>
-                                    </td>
-                                    <td>
-                                        {data.quantity}
-                                    </td>
-                                    <td>
-                                            <select value={data.unit} 
-                                                style={{"-webkit-appearance":"none",fontSize:'10px',padding:'3.5px 1px'}} 
-                                                className='purchase_input border-0 w-100 text-center'>
-                                                {unitList&&unitList.map((x,i)=>
-                                                <option key={i} value={x.value}>{x.text}</option>)}
-                                            </select></td>
-                                    <td>
-                                        {data.rate}</td>
-                                    <td>
-                                        {data.discount_1_percentage}%</td>
-                                    <td>
-                                        {data.discount_1_amount}</td>
-                                    <td>
-                                        {data.value}</td>
-                                    <td>
-                                        {data.tax_gst}%</td>
-                                    <td>
-                                        {data.cgst_or_igst}%</td>
-                                    <td>
-                                        {data.sgst}%</td>
-                                    <td>
-                                        {data.total}</td>
-                                    <td>
-                                        {data.cost}</td>
-                                    <td>
-                                        {data.margin}</td>
-                                    <td>
-                                        {data.sales_rate}</td>
-                                    <td>
-                                        <div onClick={()=>handleTableItemEdit(data)} 
-                                        className='text-center'>
-                                            <FiEdit className='mb-1 btn p-0' size={"16px"}/>
-                                        </div>
-                                    </td>
-                                    <td className='p-0'>
-                                        <div onClick={()=>confirmDelete(data)}
-                                        className='text-start w-100'>
-                                            <BsTrashFill className='mb-1 btn p-0' size={"16px"}/>
-                                        </div>
-                                    </td>
-                                </tr>
-                                ))
-                            }
+                        
                         {
                             <AdjustHeightOfTable/>
                         }

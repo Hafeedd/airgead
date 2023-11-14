@@ -232,8 +232,6 @@ const useCustomerServices = () => {
         const response = await axiosPrivate.delete(`master/set_rate/updated/${id}/`)
         return response.data
     }
-    
-
 
   return{
     // post
@@ -280,8 +278,7 @@ const useCustomerServices = () => {
     deleteTypes,
     deleteSupplier,
     deleteCustomer,
-    deleteSetRate
-
+    deleteSetRate,
   }
 }
 

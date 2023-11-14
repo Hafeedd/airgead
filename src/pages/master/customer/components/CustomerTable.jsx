@@ -1,5 +1,3 @@
-
-import { useState } from "react"
 import deleteBtn from "../../../../assets/icons/delete.svg"
 import searchIcon from "../../../../assets/icons/search.png"
 import { OverlayTrigger, ButtonToolbar, Popover } from "react-bootstrap"

@@ -3,7 +3,7 @@ import { Form } from 'react-bootstrap'
 import useAccountServices from '../../../../services/master/accountServices'
 import Swal from 'sweetalert2'
 import { useNavigate } from 'react-router'
-import useOnKey from '../../../../onKeyFunct/onKeyFunct'
+import useOnKey from '../../../../hooks/onKeyFunct/onKeyFunct'
 
 const AccountAdd = ({ edit, refresh, setEdit }) => {
     const [showAccountGroup, setShowAccountGroup] = useState(false)

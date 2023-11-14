@@ -1,0 +1,75 @@
+.acc-journal-details{
+    background: white;
+}
+
+.acc-journal-table-cont{
+    height: 25.5rem;
+    overflow: hidden;
+    overflow-y: scroll;
+}
+
+.acc-journal.table {
+    box-shadow: 0px 0px 15.83738px 0px rgba(0, 0, 0, 0.20);
+}
+
+.acc-journal.table thead th{
+    position: sticky;
+    top: 0;
+}
+.acc-journal.table tbody tr:last-child td{
+    position: sticky;
+    bottom: 0;
+}
+
+.acc-journal-footer textarea:focus{
+    outline: 1px solid black;
+    border:none !important;
+    box-shadow: 0 !important;
+}
+
+.acc-journal-footer textarea{
+    border-radius: 0.3125rem;
+    border: 1px solid #A7A7A7;
+    background: #EEE;
+}
+
+.acc-journal.table thead th{
+    vertical-align: middle;
+    background: #000;
+    color: white;
+    text-align: center;
+}
+
+.acc-journal.table tbody td{
+    text-align: center;
+    font-size: .9625rem;
+    padding: 0.4rem 0.4rem;
+    border-bottom: 1px solid rgb(196, 196, 196) !important;
+}
+
+.acc-journal.table .acc-journal-input{
+    border-radius: 0.3125rem;
+    border: 1px solid #BEBEBE;
+    background: #EEE;
+    padding: 0.5rem 0 ;
+}
+
+.acc-journal.table tbody tr:last-child td{
+    font-size: 12px;
+    font-weight: normal;
+    background: #DEDEDE;
+}
+
+.acc-journal.table tbody td input{
+    text-align: center;
+    border-radius: 0.4rem;
+    width: 100%;
+    padding: 0.2rem;
+    border: 0;
+}
+.acc-journal.table tbody td input:focus{
+    outline:  1px solid black !important;
+    /* border-right:  1px solid black !important; */
+    border: 0;
+    box-shadow: 0;
+}

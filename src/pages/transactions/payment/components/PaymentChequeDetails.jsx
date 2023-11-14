@@ -5,7 +5,7 @@ const PaymentChequeDetails = ({handleChange, paymentAdd}) => {
     <div className="col-12 row mx-0 p-5 py-3 payment-detail-container">
         <div className="col-12 row mx-0 mb-1 px-0">
             <div className='mx-0 px-0 col-3'>
-                Cheque No 
+                Cheque No
             </div>
             <div className='mx-0 px-0 col-9'>
                 <input required onChange={handleChange} name='cheque_no' value={paymentAdd.cheque_no ? paymentAdd.cheque_no : ''} type='text' className='item_input names' />

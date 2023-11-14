@@ -99,8 +99,6 @@ export const ItemAddForm = ({edit,refresh,setToEdit}) =>{
         gate_pass:false,
         barcode:null,
     })
-
-    console.log(itemadd)
     
     useEffect(()=>{
         if(listItem?.unit?.length>0 && listItem?.transaction_unit?.length>0 && !edit){
@@ -554,7 +552,7 @@ export const ItemAddForm = ({edit,refresh,setToEdit}) =>{
                     <input onKeyDown={handleKeyDown} value={itemadd.mrp_rate?itemadd.mrp_rate:''}  type='number' className='item_input col-6 col-7'
                     name='mrp_rate' onChange={handleChange}/>
                     </div>
-                    <div className='item_inputs right d-flex px-0 col-6 '>Ret. Rate
+                    <div className='item_inputs right d-flex px-0 col-6 '>Sales. Rate
                     <input onKeyDown={handleKeyDown} value={itemadd.retail_rate?itemadd.retail_rate:''}  type='number' className='item_input col-6 col-7'
                     name='retail_rate' onChange={handleChange}/>
                     </div>

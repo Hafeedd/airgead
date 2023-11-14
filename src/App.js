@@ -9,6 +9,11 @@ import StaffMaster from './pages/master/staff/StaffMaster';
 import AccountMaster from './pages/master/account/AccountMaster';
 import PaymentTransaction from './pages/transactions/payment/PaymentTransaction';
 import SalesTransaction from './pages/transactions/sales/SalesTransaction';
+import { StockJournal } from './pages/transactions/stockjurnal/StockJournal';
+import { StockLedger } from './pages/reports/stockLedger/StockLedger';
+import { AccountLedger } from './pages/reports/accountLedger/AccountLedger';
+import { OpStock } from './pages/master/opStock/OpStock';
+import { AccJournal } from './pages/transactions/accJournal/AccJournal';
 
 function App() {
   return (
@@ -24,11 +29,18 @@ function App() {
             <Route path="/supplier-add" element={<SupplierMaster/>}/>
             <Route path="/account-master" element={<AccountMaster/>}/>
             <Route path="/account-add" element={<AccountMaster/>}/>
+            <Route path="/staff-list" element={<StaffMaster/>}/>
+            <Route path="/staff-pay-scale" element={<StaffMaster/>}/>
             <Route path="/staff-master" element={<StaffMaster/>}/>
             <Route path="/purchase-transaction" element={<PurchaseTransaction/>}/>
             <Route path="/sales-transaction" element={<SalesTransaction/>}/>
             <Route path="/payment-transaction" element={<PaymentTransaction types={'Payment'} />}/>
             <Route path="/receipt-transaction" element={<PaymentTransaction types={'Receipt'} />}/>
+            <Route path="/stock-journal" element={<StockJournal/>}/>
+            <Route path="/stock-reports" element={<StockLedger/>}/>
+            <Route path="/account-reports" element={<AccountLedger/>}/>
+            <Route path="/opening-stock" element={<OpStock/>}/>
+            <Route path="/account-journal" element={<AccJournal/>}/>
           </Route>
         </Route>
       </Routes>

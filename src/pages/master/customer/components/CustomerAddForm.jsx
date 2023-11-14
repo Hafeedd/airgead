@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react'
 import Swal from 'sweetalert2'
 import deleteBtn from "../../../../assets/icons/delete-white.svg"
 import { Modal } from 'react-bootstrap'
-import useOnKey from '../../../../onKeyFunct/onKeyFunct'
+import useOnKey from '../../../../hooks/onKeyFunct/onKeyFunct'
 import useCustomerServices from '../../../../services/master/customerServices'
 import SearchDropDown from '../../../../components/searchDropDown/SearchDropDown'
 import useItemServices from '../../../../services/master/itemServices'
@@ -29,7 +29,10 @@ const CustomerAddForm = ({edit,refresh,setToEdit}) =>{
         city:[],
         town:[],
         types:[],
-        rate_types:[{text:"MRP",value:"MRP"},{text:"RET_RATE",value:"RET_RATE"},{text:"WS_RATE",value:"WS_RATE"},{text:"SWS_RATE",value:"SWS_RATE"},{text:"QTN_RATE",value:"QTN_RATE"},{text:"RENT_RATE",value:"RENT_RATE"}],
+        rate_types:[{text:"MRP",value:"MRP"},{text:"RET_RATE",value:"RET_RATE"},
+        {text:"WS_RATE",value:"WS_RATE"},
+        {text:"SUPER_WHOLESALE_RATE",value:"SUPER_WHOLESALE_RATE"}
+        ,{text:"QUOTATION_RATE",value:"QUOTATION_RATE"},{text:"RENT_RATE",value:"RENT_RATE"}],
         bill_types:[],
     })
 
@@ -168,9 +171,15 @@ const CustomerAddForm = ({edit,refresh,setToEdit}) =>{
             const keys = Object.keys(listItem)
             data.map((x)=>{
                 if(keys.indexOf(x.property_type)>-1){
-                    list[x.property_type] = []
+                    if(!list[x.property_type]?.length>0){
+                        list[x.property_type] = []
+                        if(x.property_type === 'unit'){
+                            list['transaction_unit'] = []
+                        }
+                    }
                 list[x?.property_type].push({value:x['id'],text:x['property_value']})}
                 })
+                console.log(list)
         }
         try{
             let res = await getProperty()
@@ -208,10 +217,24 @@ const CustomerAddForm = ({edit,refresh,setToEdit}) =>{
         }
         }
         
+    const handleToUpperCase = (data) =>{
+        let keysOfData , tempData = {...data}
+        if(typeof data == 'object')
+            keysOfData = Object.keys(data)
+        if(!keysOfData?.length>0) return 0
+        keysOfData.map(item=>{
+            if(typeof data[item] == 'string' && !item.match(/email|R_item/)){
+            let itemTemp = data[item]?.toUpperCase()
+            tempData = {...tempData,[item]:itemTemp}}
+        })
+        return tempData
+    }
+
+        
     const handleSubmit = async (e) =>{
         e.preventDefault()
         try{
-            let submitData = {...customerAdd}
+            let submitData = handleToUpperCase(customerAdd)
             const names = ['district','route','city','town','bill_types','types']
             let data =  handleChangeFk(names,submitData)
             console.log(data)
@@ -273,8 +296,6 @@ const CustomerAddForm = ({edit,refresh,setToEdit}) =>{
     }
     
     const handleChange = (e) =>{
-        if(typeof e.target.value === 'string' && (e.target.name !== 'email' && e.target.name != "R_item"))
-                e.target.value = e.target.value.toUpperCase()
         if(e.target.name.match(/^R_/)){
             if(e.target.value === '' || (e.target.name === 'R_item' && e.target.value.length<0)){ 
                 setRates(data => ( {...data,  [e.target.name] : null} ))

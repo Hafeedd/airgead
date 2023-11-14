@@ -13,7 +13,7 @@ const useOnKey = (ref, setRef) =>{
     let newList = []
     if(data.length>0){
         data.map(x=>
-            newList.push(...x.querySelectorAll('input:not([disabled]), select, textarea, button'))
+            newList.push(...x.querySelectorAll('input:not([disabled]), select:not([disabled]), textarea, button'))
             )
     }
     newList[0]?.focus()
@@ -21,14 +21,13 @@ const useOnKey = (ref, setRef) =>{
     }
 
     const handleKeyDown = (e) => {
-        if (e.keyCode == 13 && e.shiftKey) { 
-            e.target.value += '\n';
-            e.preventDefault()
-        }
-        else if(e.key === "Enter") {
-            e.preventDefault();
-            if (e.target && ref?.length>0) {
-                let a = ref?.indexOf(e.target)
+            if(e.key === "Enter") {
+                if (e.keyCode == 13 && e.shiftKey) {
+                    return 0
+                }
+                e.preventDefault();
+                if (e.target && ref?.length>0) {
+                    let a = ref?.indexOf(e.target)
                     if(a===ref.length-1){
                         ref[0]?.focus()
                     }
@@ -36,9 +35,9 @@ const useOnKey = (ref, setRef) =>{
                         ref[a]?.blur()
                         ref[a+1]?.focus();
                     }
+                }
             }
         }
-    }
 
     return{handleKeyDown,formRef}
 }

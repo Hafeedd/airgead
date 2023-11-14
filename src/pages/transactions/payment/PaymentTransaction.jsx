@@ -7,11 +7,10 @@ import Swal from 'sweetalert2'
 import { toWords } from 'number-to-words'
 import usePaymentRecieptServices from '../../../services/transactions/paymentRecieptServices'
 import useAccountServices from '../../../services/master/accountServices'
-import { formValidation } from '../../../formValidation/formValidation'
 import useItemServices from '../../../services/master/itemServices'
+import { formValidation } from '../../../hooks/formValidation/formValidation'
 
 const PaymentTransaction = ({types}) => {
-    const [pageHeadItem, setPageHeadItem] = useState(1)
     const [accountList, setAccountList] = useState([])
     const [payReciptList, setPayRecieptList] = useState([])
     const [pathOfPage, setPathOfPage] = useState()
@@ -95,7 +94,7 @@ const PaymentTransaction = ({types}) => {
                 response.data.map(item=>{
                     let b , a
                     // if(item.name == "CASH IN BANK" || item.name == "CASH IN HAND"){
-                        b = {id:item.id,text:item.name,value:item.code}
+                        b = {key:item.id,value:item.code,text:item.name,description:item.code}
                         tempListPayment.push(b)
                     // }
                     if(item.name && item.code){
@@ -249,7 +248,6 @@ const PaymentTransaction = ({types}) => {
     const handleChangePaymentCash = (e,data) =>{
         if(data){
             let payment_data = data.options.filter(x=>x.value===data.value)[0]
-            console.log(payment_data)
             setPaymentAdd(data=>({...data,cash_bank_account:payment_data?.value,
             cash_bank_account_name:payment_data?.text}))
         }
@@ -412,7 +410,7 @@ const PaymentTransaction = ({types}) => {
                     <div>
                         <div className='fw-600 fs-5'>Transaction {pathOfPage=="/payment-transaction"?'payment':'receipt'}</div>
                         <div className='page_head_items mb-3'>
-                            <div onClick={() => navigate('/account-master')} className={`page_head_item ${pageHeadItem === 1 && "active"}`}>
+                            <div onClick={()=>handleReset()} className={`page_head_item active`}>
                                 {pathOfPage=="/payment-transaction"?'payment':'receipt'} Details</div>
                         </div>
                     </div>
