@@ -100,41 +100,41 @@ const SupplierOutstandingDetails = (props) => {
           <table className='col-12 px-0 mx-0 outstanding-table' style={{ background: "#000" }}>
             <thead className='text-light' >
               <tr>
-                {columnVisibility.code && <th>Code</th>}
-                {columnVisibility.customer && <th>Customer</th>}
-                {columnVisibility.address && <th>Address</th>}
-                {columnVisibility.mobile && <th>Mobile</th>}
-                {columnVisibility.opbal && <th>Op.Balance</th>}
-                {columnVisibility.debit && <th>Debit</th>}
-                {columnVisibility.credit && <th>Credit</th>}
-                {columnVisibility.clbal && <th>Cl.Balance</th>}
+                {columnVisibility?.code && <th>Code</th>}
+                {columnVisibility?.customer && <th>Customer</th>}
+                {columnVisibility?.address && <th>Address</th>}
+                {columnVisibility?.mobile && <th>Mobile</th>}
+                {columnVisibility?.opbal && <th>Op.Balance</th>}
+                {columnVisibility?.debit && <th>Debit</th>}
+                {columnVisibility?.credit && <th>Credit</th>}
+                {columnVisibility?.clbal && <th>Cl.Balance</th>}
               </tr>
             </thead>
             <tbody className='bg-light'>
               {supOutstanding?.length > 0 &&
                 supOutstanding?.user_array?.map((data, i) => (
                   <tr key={i} >
-                    <td>{data?.data1.user_code}</td>
-                    <td>{data?.data1.user_name}</td>
-                    <td>{data?.data1.user_address}</td>
-                    <td>{data?.data1.user_mobile}</td>
-                    <td>{data?.opening_balance_new}</td>
-                    <td>{data?.sum_debit}</td>
-                    <td>{data?.sum_credit}</td>
-                    <td>{data?.closing_balance}</td>
+                    {columnVisibility?.code &&<td>{data?.data1.user_code}</td>}
+                    {columnVisibility?.customer &&<td>{data?.data1.user_name}</td>}
+                    {columnVisibility?.address &&<td>{data?.data1.user_address}</td>}
+                    {columnVisibility?.mobile &&<td>{data?.data1.user_mobile}</td>}
+                    {columnVisibility?.opbal &&<td>{data?.opening_balance_new}</td>}
+                    {columnVisibility?.debit &&<td>{data?.sum_debit}</td>}
+                    {columnVisibility?.credit &&<td>{data?.sum_credit}</td>}
+                    {columnVisibility?.clbal &&<td>{data?.closing_balance}</td>}
                   </tr>))}
             </tbody>
 
             <tfoot style={{ position: 'sticky', bottom: '0', zIndex: 4, background: "#CECECE" }}>
               <tr>
-                {columnVisibility.code && <td>Cl Bal</td>}
-                <td></td>
-                <td></td>
-                <td></td>
-                <td>{supOutstanding?.total_user_debit}</td>
-                <td>{supOutstanding?.total_user_credit}</td>
-                <td>{supOutstanding?.total_opening_balance}</td>
-                <td>{supOutstanding?.total_closing_balance}</td>
+                  {columnVisibility?.code && <td>Cl Bal</td>}
+                  {columnVisibility?.customer &&<td></td>}
+                  {columnVisibility?.address &&<td></td>}
+                  {columnVisibility?.mobile &&<td></td>}
+                  {columnVisibility?.opbal &&<td>{supOutstanding?.total_user_debit}</td>}
+                  {columnVisibility?.debit &&<td>{supOutstanding?.total_user_credit}</td>}
+                  {columnVisibility?.credit &&<td>{supOutstanding?.total_opening_balance}</td>}
+                  {columnVisibility?.clbal &&<td>{supOutstanding?.total_closing_balance}</td>}
               </tr>
             </tfoot>
           </table>

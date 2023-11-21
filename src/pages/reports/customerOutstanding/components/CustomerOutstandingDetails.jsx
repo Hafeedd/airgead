@@ -8,7 +8,7 @@ import { GrRefresh } from 'react-icons/gr'
 const CustomerOutstandingDetails = (props) => {
 
     const { custOutstanding, setCustOutstanding,
-        paramsToReport, setParamsToReport } = props
+        paramsToReport, setParamsToReport,columnVisibility } = props
 
 
     const handleChange = (e) => {
@@ -100,41 +100,41 @@ const CustomerOutstandingDetails = (props) => {
                     <table className='col-12 px-0 mx-0 outstanding-table' style={{ background: "#000" }}>
                         <thead className='text-light' >
                             <tr>
-                                <th>Code</th>
-                                <th>Customer</th>
-                                <th>Address</th>
-                                <th>Mobile</th>
-                                <th>Op.Balance</th>
-                                <th>Debit</th>
-                                <th>Credit</th>
-                                <th>Cl.Balance</th>
+                                {columnVisibility?.code &&<th>Code</th>}
+                                {columnVisibility?.customer &&<th>Customer</th>}
+                                {columnVisibility?.address &&<th>Address</th>}
+                                {columnVisibility?.mobile &&<th>Mobile</th>}
+                                {columnVisibility?.opbal &&<th>Op.Balance</th>}
+                                {columnVisibility?.debit &&<th>Debit</th>}
+                                {columnVisibility?.credit &&<th>Credit</th>}
+                                {columnVisibility?.clbal &&<th>Cl.Balance</th>}
                             </tr>
                         </thead>
                         <tbody className='bg-light'>
                             {custOutstanding?.length > 0 &&
                                 custOutstanding?.user_array?.map((data, i) => (
                                     <tr key={i} >
-                                        <td>{data?.data1.user_code}</td>
-                                        <td>{data?.data1.user_name}</td>
-                                        <td>{data?.data1.user_address}</td>
-                                        <td>{data?.data1.user_mobile}</td>
-                                        <td>{data?.opening_balance_new}</td>
-                                        <td>{data?.sum_debit}</td>
-                                        <td>{data?.sum_credit}</td>
-                                        <td>{data?.closing_balance}</td>
+                                        {columnVisibility?.code &&<td>{data?.data1.user_code}</td>}
+                                        {columnVisibility?.customer &&<td>{data?.data1.user_name}</td>}
+                                        {columnVisibility?.address &&<td>{data?.data1.user_address}</td>}
+                                        {columnVisibility?.mobile &&<td>{data?.data1.user_mobile}</td>}
+                                        {columnVisibility?.opbal &&<td>{data?.opening_balance_new}</td>}
+                                        {columnVisibility?.debit &&<td>{data?.sum_debit}</td>}
+                                        {columnVisibility?.credit &&<td>{data?.sum_credit}</td>}
+                                        {columnVisibility?.clbal &&<td>{data?.closing_balance}</td>}
                                     </tr>))}
                         </tbody>
 
                         <tfoot style={{ position: 'sticky', bottom: '0', zIndex: 4, background: "#CECECE" }}>
                             <tr>
-                                <td>Cl Bal</td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td>{custOutstanding?.total_user_debit}</td>
-                                <td>{custOutstanding?.total_user_credit}</td>
-                                <td>{custOutstanding?.total_opening_balance}</td>
-                                <td>{custOutstanding?.total_closing_balance}</td>
+                                {columnVisibility?.code &&<td>Cl Bal</td>}
+                                {columnVisibility?.customer &&<td></td>}
+                                {columnVisibility?.address &&<td></td>}
+                                {columnVisibility?.mobile &&<td></td>}
+                                {columnVisibility?.opbal &&<td>{custOutstanding?.total_user_debit}</td>}
+                                {columnVisibility?.debit &&<td>{custOutstanding?.total_user_credit}</td>}
+                                {columnVisibility?.credit &&<td>{custOutstanding?.total_opening_balance}</td>}
+                                {columnVisibility?.clbal &&<td>{custOutstanding?.total_closing_balance}</td>}
                             </tr>
                         </tfoot>
                     </table>

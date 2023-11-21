@@ -12,7 +12,7 @@ const FilterAccounts = () => {
     return (
         <div>
             <label className='row bg-dark text-light mx-0 p-3 rounded-top-2' style={{ position: 'sticky', top: 0 }}>Filter Accounts</label>
-            <div style={{ height: '24rem', overflow: 'hidden', overflowY: 'scroll'}} className='p-2'>
+            <div style={{ height: '24rem', overflow: 'hidden', overflowY: 'scroll'}} className='rounded-bottom-2 border m-3'>
                 <table className='w-100 mx-0' >
                     <thead style={{ position: 'sticky', top: 0}}>
                         <tr className='text-light bg-secondary '>

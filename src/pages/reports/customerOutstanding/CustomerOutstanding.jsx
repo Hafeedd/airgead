@@ -27,6 +27,24 @@ const CustomerOutstanding = () => {
       console.log(err)
     }
   }
+  
+  const [columnVisibility, setColumnVisibility] = useState({
+    code: true,
+    customer: true,
+    address: true,
+    mobile: true,
+    opbal: true,
+    debit: true,
+    credit: true,
+    clbal: true,
+  })
+
+  const handleToggleCol = (column) => {
+    setColumnVisibility((visible) => ({
+      ...visible,
+      [column]: !visible[column],
+    }));
+  };
 
   useEffect(()=>{
     getData()
@@ -61,7 +79,7 @@ const CustomerOutstanding = () => {
             <div className="row mt-3 mx-0">
                 <div className="w-100 mb-3">
                     <CustomerOutstandingDetails {
-                      ...{custOutstanding,setCustOutstanding,paramsToReport,setParamsToReport,}
+                      ...{custOutstanding,setCustOutstanding,paramsToReport,setParamsToReport,columnVisibility}
                     }/>
                 </div>
                 {/* <div className="btn btn-dark col-1 col-2 py-0 px-0 ">Exit</div> */}
@@ -73,7 +91,7 @@ const CustomerOutstanding = () => {
       </Modal>
 
       <Modal show={colshow} centered size='md' onHide={()=>setColShow(false)}>
-              <ColumnSettings/>
+              <ColumnSettings  handleToggleCol={handleToggleCol} columnVisibility={columnVisibility} />
       </Modal>
     </div>
 

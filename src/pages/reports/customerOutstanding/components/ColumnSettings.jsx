@@ -5,7 +5,7 @@ const ColumnSettings = ({ columnVisibility, handleToggleCol }) => {
     return (
         <div>
             <label className='row bg-dark text-light mx-0 p-3 rounded-top-2' style={{ position: 'sticky', top: 0 }}>Column Settings</label>
-            <div style={{ height: '24rem', overflow: 'hidden', overflowY: 'scroll' }} className='rounded-bottom-2 p-2 border'>
+            <div style={{ height: '24rem', overflow: 'hidden', overflowY: 'scroll' }} className='rounded-bottom-2 m-3 border'>
                 <table className='w-100 mx-0'>
                     <thead style={{ position: 'sticky', top: 0, zIndex: 4 }}>
                         <tr className='text-light bg-secondary' >
@@ -17,7 +17,7 @@ const ColumnSettings = ({ columnVisibility, handleToggleCol }) => {
                         {Object.keys(columnVisibility).map((columnName) => (
                             <tr key={columnName}>
                                 <td>{columnName}</td>
-                                <td><div class="ui fitted toggle checkbox">
+                                <td><div className="ui fitted toggle checkbox">
                                     <input
                                         type='checkbox'
                                         checked={columnVisibility[columnName]}
