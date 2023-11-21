@@ -4,7 +4,53 @@ import search from "../../../../assets/icons/search.png"
 
 const ItemAdd = () =>{
     const [pageHeadItem,setPageHeadItem] = useState(1)
+    const [itemadd,setItemAdd] = useState({
+        code:'',
+        hsn:'',
+        name:'',
+        fk_second_name:'',
+        type:'',
+        fk_category:'',
+        fk_sub_category:'',
+        fk_company:'',
+        fk_size:'',
+        fk_color:'',
+        fk_group:'',
+        fk_tax_group:'',
+        fk_godown_rack:'',
+        fk_stock_unit:'',
+        transaction_unit:'',
+        mrp_rate:'',
+        retail_rate:'',
+        wholesale_rate:'',
+        super_wholesale_rate:'',
+        quotation_rate:'',
+        rent:'',
+        rent_type:'',
+        purchase_rate:'',
+        cost:'',
+        margin:'',
+        tax_gst:'',
+        cess_1:'',
+        cess_2:'',
+        purchase_discount:'',
+        sale_discount:'',
+        unload_charge:'',
+        load_charge:'',
+        point:'',
+        commission:'',
+        damage:'',
+        damge_cost:'',
+        blocked:false,
+        tax_inclusive:false,
+        manuel_qty_in_bc:false,
+        rent_item:false,
+        gate_pass:false,
+        fk_barcode:'',
+    })
 
+
+    
 
     return(
         <div className='item_add'>
@@ -105,82 +151,82 @@ const ItemAdd = () =>{
                         </div>
                         </div>
                     <div className="item_add_first_row px-0 row mx-0 pt-2">
+                        <div className='item_inputs right d-flex mx-0 px-0 col-6'>Rent
+                        <input type='text' className='item_input col-6 col-7'/>
+                        </div>
+                        <div className='item_inputs right d-flex px-0 col-6 '>Rent Type
+                        <input type='text' className='item_input col-6 col-7'/>
+                        </div>
+                        </div>
+                    <div className="item_add_first_row px-0 row mx-0 pt-2">
                         <div className='item_inputs right d-flex mx-0 px-0 col-6'>QTN
                         <input type='text' className='item_input col-6 col-7'/>
                         </div>
-                        <div className='item_inputs right d-flex px-0 col-6 '>Rent
+                        <div className='item_inputs right d-flex px-0 col-6 '>P.Rate
                         <input type='text' className='item_input col-6 col-7'/>
                         </div>
                         </div>
                     <div className="item_add_first_row px-0 row mx-0 pt-2">
-                        <div className='item_inputs right d-flex mx-0 px-0 col-6'>P.Rate
+                        <div className='item_inputs right d-flex mx-0 px-0 col-6'>Cost
                         <input type='text' className='item_input col-6 col-7'/>
                         </div>
-                        <div className='item_inputs right d-flex px-0 col-6 '>Cost
-                        <input type='text' className='item_input col-6 col-7'/>
-                        </div>
-                        </div>
-                    <div className="item_add_first_row px-0 row mx-0 pt-2">
-                        <div className='item_inputs right d-flex mx-0 px-0 col-6'>Margin %
-                        <input type='text' className='item_input col-6 col-7'/>
-                        </div>
-                        <div className='item_inputs right d-flex px-0 col-6 '>Tax/ GST 
+                        <div className='item_inputs right d-flex px-0 col-6 '> Margin %
                         <input type='text' className='item_input col-6 col-7'/>
                         </div>
                         </div>
                     <div className="item_add_first_row px-0 row mx-0 pt-2">
-                        <div className='item_inputs right d-flex mx-0 px-0 col-6'>Cess1
+                        <div className='item_inputs right d-flex mx-0 px-0 col-6'>Tax/ GST
                         <input type='text' className='item_input col-6 col-7'/>
                         </div>
-                        <div className='item_inputs right d-flex px-0 col-6 '>Cess2
-                        <input type='text' className='item_input col-6 col-7'/>
-                        </div>
-                        </div>
-                    <div className="item_add_first_row px-0 row mx-0 pt-2">
-                        <div className='item_inputs right d-flex mx-0 px-0 col-6'>P.Disc
-                        <input type='text' className='item_input col-6 col-7'/>
-                        </div>
-                        <div className='item_inputs right d-flex px-0 col-6 '>S.Disc
+                        <div className='item_inputs right d-flex px-0 col-6 '>Cess1
                         <input type='text' className='item_input col-6 col-7'/>
                         </div>
                         </div>
                     <div className="item_add_first_row px-0 row mx-0 pt-2">
-                        <div className='item_inputs right d-flex mx-0 px-0 col-6'>UnLd. Charge
+                        <div className='item_inputs right d-flex mx-0 px-0 col-6'>Cess2
                         <input type='text' className='item_input col-6 col-7'/>
                         </div>
-                        <div className='item_inputs right d-flex px-0 col-6 '>Point
-                        <input type='text' className='item_input col-6 col-7'/>
-                        </div>
-                        </div>
-                    <div className="item_add_first_row px-0 row mx-0 pt-2">
-                        <div className='item_inputs right d-flex mx-0 px-0 col-6'>Ld. Charge
-                        <input type='text' className='item_input col-6 col-7'/>
-                        </div>
-                        <div className='item_inputs right d-flex px-0 col-6 '>Cmsn %
+                        <div className='item_inputs right d-flex px-0 col-6 '>P.Disc
                         <input type='text' className='item_input col-6 col-7'/>
                         </div>
                         </div>
                     <div className="item_add_first_row px-0 row mx-0 pt-2">
-                        <div className='item_inputs right d-flex mx-0 px-0 col-6'>Qty in Box
+                        <div className='item_inputs right d-flex mx-0 px-0 col-6'>S.Disc
                         <input type='text' className='item_input col-6 col-7'/>
                         </div>
-                        <div className='item_inputs right d-flex px-0 col-6 '>Op. Stock
-                        <input type='text' className='item_input col-6 col-7'/>
-                        </div>
-                        </div>
-                    <div className="item_add_first_row px-0 row mx-0 pt-2">
-                        <div className='item_inputs right d-flex mx-0 px-0 col-6'>Dmge
-                        <input type='text' className='item_input col-6 col-7'/>
-                        </div>
-                        <div className='item_inputs right d-flex px-0 col-6 '>Dmg. Cost
+                        <div className='item_inputs right d-flex px-0 col-6 '>UnLd. Charge
                         <input type='text' className='item_input col-6 col-7'/>
                         </div>
                         </div>
                     <div className="item_add_first_row px-0 row mx-0 pt-2">
-                        <div className='item_inputs right d-flex mx-0 px-0 col-6'>Role
+                        <div className='item_inputs right d-flex mx-0 px-0 col-6'>Point
                         <input type='text' className='item_input col-6 col-7'/>
                         </div>
-                        <div className='item_inputs right d-flex px-0 col-6 '>Mcv
+                        <div className='item_inputs right d-flex px-0 col-6 '>Ld. Charge
+                        <input type='text' className='item_input col-6 col-7'/>
+                        </div>
+                        </div>
+                    <div className="item_add_first_row px-0 row mx-0 pt-2">
+                        <div className='item_inputs right d-flex mx-0 px-0 col-6'>Cmsn %
+                        <input type='text' className='item_input col-6 col-7'/>
+                        </div>
+                        <div className='item_inputs right d-flex px-0 col-6 '>Qty in Box
+                        <input type='text' className='item_input col-6 col-7'/>
+                        </div>
+                        </div>
+                    <div className="item_add_first_row px-0 row mx-0 pt-2">
+                        <div className='item_inputs right d-flex mx-0 px-0 col-6'>Op. Stock
+                        <input type='text' className='item_input col-6 col-7'/>
+                        </div>
+                        <div className='item_inputs right d-flex px-0 col-6 '>Dmge
+                        <input type='text' className='item_input col-6 col-7'/>
+                        </div>
+                        </div>
+                    <div className="item_add_first_row px-0 row mx-0 pt-2">
+                        <div className='item_inputs right d-flex mx-0 px-0 col-6'>Dmg. Cost
+                        <input type='text' className='item_input col-6 col-7'/>
+                        </div>
+                        <div className='item_inputs right d-flex px-0 col-6 '>Role
                         <input type='text' className='item_input col-6 col-7'/>
                         </div>
                         </div>
