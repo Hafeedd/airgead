@@ -1,0 +1,23 @@
+th,td{
+    padding: 1rem 0rem;
+    text-align: center;
+    font-size: 14px;
+    font-weight: 300;
+}
+
+
+.outstanding-table thead th{
+    z-index: 4;
+    position: sticky !important;
+    background-color: black;
+    top: 0 !important;
+}
+
+.outstanding-table tbody td{
+    z-index: 3;
+}
+
+/* .toggle_data tbody td{
+    z-index: 4 !important;
+} */
+

@@ -1,0 +1,116 @@
+.btn-secondary.payment-nav-btn{
+    border-radius: 0.125rem;
+    background: #8F8F8F;
+    font-size: 0.75rem;
+    font-weight: 600;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+}
+
+.btn-secondary.active{
+    background: #373737;
+}
+
+.payment-detail-container{
+    border-radius: 0.3125rem;
+    background: #EEE;
+    
+}
+
+.item_input.arrow[type="number"]{
+    -moz-appearance: none !important;
+    appearance: none !important;
+}
+
+.form-control.words{
+    color: #4D872A;
+    font-size: 0.875rem;
+    font-weight: 700;
+    border: 1px solid #4D872A;
+    text-transform: capitalize;
+}
+
+.payment-balance-container{
+    background: #E6E6E6;
+    border-radius: 0.3125rem;
+    box-shadow: 0px 0px 3px 0px rgba(0, 0, 0, 0.25) inset;
+    color: #2C2C2C;
+    font-weight: 500;
+}
+
+.payment-table-container{
+    height: 12.125rem; 
+    overflow: hidden;
+    border: 1.056px solid #EEE;
+}
+
+.payment-table-card{
+    overflow-y: auto;
+    height: 12rem;
+}
+
+.table-light.payment-table th{
+    background: #000;
+    color: #FFF;
+    font-size: 0.92388rem;
+    font-weight: 600;
+    vertical-align: middle;
+    position: -webkit-sticky;
+    position: sticky;
+    top: 0;
+}
+
+
+.table-light.payment-table td{
+    background: #FFF;
+    color: #4E4E4E;
+    font-size: 0.92388rem;
+    font-weight: 400;
+    vertical-align: middle;
+}
+
+.ui.search.selection.dropdown.payment-select{
+    border-radius: 0.3rem !important;
+    background: #f0f2f4 !important;
+    min-height: 1.8em !important;
+    text-transform: uppercase;
+    padding-left: 0.4rem;
+    color: black;
+    min-width: 0.3rem;
+    font-size: 12px !important;
+    font-weight: normal;
+    border: 1px solid #c4c4c4 !important;
+    padding-left: 1rem;
+}
+
+.payment-select input{
+    background: #eeeeee !important;
+    color: #55585b;
+    border-radius: inherit;
+    font-size: 12px;
+    left: 0px !important;
+    text-transform: uppercase;
+    width: inherit;
+    height: inherit !important;
+    padding: 0.2rem !important;
+    padding-left: 1rem !important;
+}
+
+.payment-select input:focus{
+    outline : 1px solid black !important
+}
+
+.purchase-select> input> .divider{
+    top: 0.1em;
+}
+.ui.active.visible.selection.search.dropdown.payment-select .menu{
+    width:max-content !important ;
+}
+
+.payment-select.selection .dropdown.icon{
+    /* display: none; */
+    height: 5px;
+    top: 0.18rem !important;
+}

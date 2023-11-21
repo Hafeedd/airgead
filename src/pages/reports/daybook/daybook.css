@@ -1,0 +1,7 @@
+.daybook-table.table thead th{
+    background: #000;
+    color: white;
+    padding: 0.6rem 0.9rem;
+    font-weight: 500;
+}
+
