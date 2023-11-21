@@ -16,6 +16,7 @@ const PaymentTransaction = ({types}) => {
     const [pathOfPage, setPathOfPage] = useState()
     const [edit, setEdit] = useState(false)
     const [accountPayList, setAccountPayList] = useState([]) // account chash and bank payment filtered list 
+    const location = useLocation()
     const [paymentAdd, setPaymentAdd] = useState({
         id:null,
         method:'Payment',
@@ -50,8 +51,6 @@ const PaymentTransaction = ({types}) => {
         op_balance: null,
         cl_balance: null,
     })
-
-    const location = useLocation()
 
     const {getCode} = useItemServices()
 
@@ -210,9 +209,9 @@ const PaymentTransaction = ({types}) => {
                     for(let i of response2.data){
                         let type
                         if(pathOfPage == '/payment-transaction'){
-                            type = "VPC"
+                            type = "PAY"
                         }else{
-                            type = "VRC"
+                            type = "RES"
                         }
                         if(i.sub_id == type){
                             code = i.next_code

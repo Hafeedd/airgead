@@ -16,6 +16,7 @@ const AccountMaster = () => {
         getAccountList
     } = useAccountServices()
 
+    
     const loadAccountList = async() => {
         const response = await getAccountList()
         if (response?.success){
@@ -23,7 +24,7 @@ const AccountMaster = () => {
             // console.log(response?.data)
         }
     }
-
+    
     useEffect(()=>{
         loadAccountList()
     },[])

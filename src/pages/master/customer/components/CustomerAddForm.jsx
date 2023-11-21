@@ -71,11 +71,7 @@ const CustomerAddForm = ({edit,refresh,setToEdit}) =>{
         deleteCustomer,
     } = useCustomerServices()
 
-    const {getProperty,postProperty,getCode} = useItemServices()
-
-    const {
-        getItemNameList,
-    } = useItemServices()
+    const {getProperty,postProperty,getCode,getItemNameList} = useItemServices()
 
     useEffect(()=>{
         getData()
@@ -190,7 +186,7 @@ const CustomerAddForm = ({edit,refresh,setToEdit}) =>{
         if(!edit){
             let res2 = await getCode() 
             if(res2?.success){
-                let cod = res2?.data?.filter(x=>x.sub_id === "CUST")
+                let cod = res2?.data?.filter(x=>x.sub_id === "CUS")
                 setCustomerAdd(data=>({...data,['code']:cod[0]?.next_value}))
             }
         }
