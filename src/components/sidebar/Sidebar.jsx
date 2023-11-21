@@ -77,7 +77,12 @@ const Sidebar = () => {
                     <span className='SidebarSpan d-flex ms-5 ps-3'>
                         <div className='SidebarItemText' onClick={()=>navigate('/day-book')}>Day Book</div>
                     </span>
-                   
+                    <span className='SidebarSpan d-flex ms-5 ps-3'>
+                        <div className='SidebarItemText' onClick={()=>navigate('/customer-outstandings')}>Cust Outstanding</div>
+                    </span>
+                    <span className='SidebarSpan d-flex ms-5 ps-3'>
+                        <div className='SidebarItemText' onClick={()=>navigate('/supplier-outstandings')}>Sup Outstanding</div>
+                    </span>
                 </div>
 
             </div>

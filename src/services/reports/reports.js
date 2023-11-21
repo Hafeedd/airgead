@@ -13,8 +13,14 @@ export const useReportsServices = () =>{
         return response?.data
     }
 
+    const getOutstanding = async (params) =>{
+        const response = await axiosPrivate.get('/reports/user/outstanding_report/',{params:params})
+        return response?.data
+    }
+
     return{
         getStockLedger,
         getAccLedger,
+        getOutstanding,
     }
 }
