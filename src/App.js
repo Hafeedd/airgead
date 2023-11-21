@@ -14,7 +14,8 @@ import { StockLedger } from './pages/reports/stockLedger/StockLedger';
 import { AccountLedger } from './pages/reports/accountLedger/AccountLedger';
 import { OpStock } from './pages/master/opStock/OpStock';
 import { AccJournal } from './pages/transactions/accJournal/AccJournal';
-
+import CustomerOutstanding from './pages/reports/customerOutstanding/CustomerOutstanding';
+import SupplierOutstanding from './pages/reports/supplierOutstanding/SupplierOutstanding';
 function App() {
   return (
     <BrowserRouter>
@@ -39,6 +40,8 @@ function App() {
             <Route path="/stock-journal" element={<StockJournal/>}/>
             <Route path="/stock-reports" element={<StockLedger/>}/>
             <Route path="/account-reports" element={<AccountLedger/>}/>
+            <Route path="/customer-outstandings" element={<CustomerOutstanding/>}/>
+            <Route path="/supplier-outstandings" element={<SupplierOutstanding/>}/>
             <Route path="/opening-stock" element={<OpStock/>}/>
             <Route path="/account-journal" element={<AccJournal/>}/>
           </Route>
