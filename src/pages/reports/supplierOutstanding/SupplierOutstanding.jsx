@@ -73,7 +73,7 @@ const SupplierOutstanding = () => {
 
         </div>
       </div>
-      <div className="p-3">
+      <div className="p-3 py-0">
         <div className="stock-jdetails-cont col-12 p-1 pt-0 ps-2 rounded-1 w-100 bg-light h-100 pe-2">
           <div className="row mt-3 mx-0">
             <div className="w-100 mb-3">

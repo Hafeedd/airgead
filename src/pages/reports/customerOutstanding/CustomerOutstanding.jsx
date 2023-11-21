@@ -5,6 +5,7 @@ import { useReportsServices } from '../../../services/reports/reports'
 import { Modal } from 'react-bootstrap'
 import FilterAccounts from './components/FilterAccounts'
 import ColumnSettings from './components/ColumnSettings'
+import { useLocation } from 'react-router'
 
 const CustomerOutstanding = () => {
   const [custOutstanding,setCustOutstanding] = useState([])
@@ -17,6 +18,7 @@ const CustomerOutstanding = () => {
   })
   const {getOutstanding}=useReportsServices()
   
+  const location =useLocation().pathname
   const getData =async()=>{
     try{
       const response = await getOutstanding(paramsToReport)
@@ -56,8 +58,16 @@ const CustomerOutstanding = () => {
       <div className="itemList_header row mx-0">
         <div className="page_head ps-4 d-flex justify-content-between">
           <div className="d-flex align-items-center">
+          
             <div>
-              <div className="fw-600 fs-5">Customer Outstanding</div>
+              {
+              location === '/customer-outstandings' ?
+              <div className="fw-600 fs-5">Customer Outstanding</div> : 
+              location === '/staff-outstandings' ? 
+              <div className="fw-600 fs-5">Staff Outstanding</div>:
+              location === '/supplier-outstandings' ? 
+              <div className="fw-600 fs-5">Supplier Outstanding</div>: <div></div>
+              }
               <div className="page_head_items mb-2 mt-2">
                 <div className={`page_head_customer active`}>
                   Outstanding Balance
@@ -74,7 +84,7 @@ const CustomerOutstanding = () => {
         </div>
       </div>
 
-      <div className="p-3">
+      <div className="p-3 py-0">
         <div className="stock-jdetails-cont col-12 p-1 pt-0 ps-2 rounded-1 w-100 bg-light h-100 pe-2">
             <div className="row mt-3 mx-0">
                 <div className="w-100 mb-3">

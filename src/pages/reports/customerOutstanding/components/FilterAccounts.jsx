@@ -41,8 +41,8 @@ const FilterAccounts = () => {
 
                             <td>
                                 <select name="" id="" className='btn btn-md rounded-2 border border-dark bg-secondary text-light'>
-                                    <option value="">kozhikode</option>
-                                    <option value="">Nilambur</option>
+                                    <option value="">check1</option>
+                                    <option value="">check2</option>
                                 </select>
                             </td>
                             <td><img src={minus} alt="" onClick={removeRow} /></td>
@@ -67,8 +67,8 @@ const FilterAccounts = () => {
 
                             <td>
                                 <select name="" id="" className='btn btn-md rounded-2 border border-dark bg-secondary text-light'>
-                                    <option value="">kozhikode</option>
-                                    <option value="">Nilambur</option>
+                                    <option value="">check1</option>
+                                    <option value="">check2</option>
                                 </select>
                             </td>
                             <td><img src={minus} alt="" onClick={removeRow} /></td>
@@ -93,8 +93,8 @@ const FilterAccounts = () => {
 
                             <td>
                                 <select name="" id="" className='btn btn-md rounded-2 border border-dark bg-secondary text-light'>
-                                    <option value="">kozhikode</option>
-                                    <option value="">Nilambur</option>
+                                    <option value="">check1</option>
+                                    <option value="">check2</option>
                                 </select>
                             </td>
                             <td><img src={minus} alt="" onClick={removeRow} /></td>
