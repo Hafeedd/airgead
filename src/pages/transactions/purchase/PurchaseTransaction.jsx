@@ -15,6 +15,7 @@ import usePurchaseServices from '../../../services/transactions/purchcaseService
 import {formValidation} from '../../../hooks/formValidation/formValidation'
 import useItemServices from '../../../services/master/itemServices'
 import useOnKey from '../../../hooks/onKeyFunct/onKeyFunct'
+import { StockPop } from './components/StockPop'
 
 const PurchaseTransaction = () => {
     const [purchaseItemModal, setPurchaseItemModal] = useState(false)
@@ -28,6 +29,8 @@ const PurchaseTransaction = () => {
     const [itemBatchStore, setItemBatchStore] = useState()
     const [ref, setRef] = useState(null)
     const [edit, setEdit] = useState(null)
+    const [showStock, setShowStock] = useState(false)
+    const [itemNameList, setItemNameList] = useState([])
     const [calcChange, setCalcChange] = useState(true)
     const [tableEdit, setTableEdit] = useState(false)
     const navigate = useNavigate({})
@@ -576,7 +579,8 @@ const PurchaseTransaction = () => {
                 <PurchaseTable
                     {...{
                         setPurchaseItemModal,
-                        tableItem,setTableItem,
+                        tableItem,setTableItem,setShowStock,
+                        itemNameList, setItemNameList,
                         handleChangeTableItem,purchaseAdd,
                         setPurchaseItemSerielModal,
                         handleChange,cstm_id, setCstm_id,
@@ -631,6 +635,15 @@ const PurchaseTransaction = () => {
                     tableItem,handleCloseItemBatch,getData,
                     tableEdit, setTableEdit,handleResetBatch,
                     }}/>
+            </Modal>
+
+            <Modal
+            show={showStock}
+            centered
+            size='lg'
+            onHide={()=>setShowStock(false)}
+            >
+                <StockPop {...{itemNameList,setTableItem, tableItem,setShowStock}}/>
             </Modal>
         </div>
     )

@@ -17,6 +17,16 @@ export const OpStockTable = (props) => {
     setItemList([...tempList])
   }
 
+  const AdjustTableHeight = () =>{
+    let a = []
+    for(let i = 0 ; i<5 - itemList.length||0; i++){
+      a.push(
+        <tr><td colSpan={10} className="border-0 " style={{height:"3.3rem"}}></td></tr>
+      )
+    }
+    return a
+  }
+
   return (
     <div className="mt-4">
       <div
@@ -160,6 +170,7 @@ export const OpStockTable = (props) => {
               </td>
             </tr>)):
             <tr><td className="fs-5 py-2 text-center" colSpan={9}>No Items Added Yet</td></tr>}
+            <AdjustTableHeight/>
           </tbody>
         </table>
       </div>

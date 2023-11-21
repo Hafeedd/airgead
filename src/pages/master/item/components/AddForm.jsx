@@ -4,6 +4,7 @@ import deleteBtn from "../../../../assets/icons/delete-white.svg"
 import { Modal } from 'react-bootstrap'
 import SearchDropDown from '../../../../components/searchDropDown/SearchDropDown'
 import useItemServices from '../../../../services/master/itemServices'
+import useOnKey from '../../../../hooks/onKeyFunct/onKeyFunct'
 
 const editBtn = (
     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
@@ -20,7 +21,6 @@ export const ItemAddForm = ({edit,refresh,setToEdit}) =>{
     const [barcodeShow, setBarcodeShow] = useState(false)
     const [unitConvTempList, setUnitConvTempList] = useState([])
     const [ref, setRef] = useState()
-    const formRef = useRef(null)
     const [unitConv, setUnitConv] = useState({
         U_id:null,
         U_unit:null,
@@ -51,6 +51,8 @@ export const ItemAddForm = ({edit,refresh,setToEdit}) =>{
         transaction_unit:[],
         rent_type:[]
     })
+
+    const {formRef , handleKeyDown} = useOnKey(ref, setRef)
 
     const [itemadd,setItemAdd] = useState({
         code:null,
@@ -113,33 +115,6 @@ export const ItemAddForm = ({edit,refresh,setToEdit}) =>{
         putItemAdd,deleteItem,deleteUnitConvertion,
         postItemAdd,postUnitConvertion} = useItemServices()
         
-
-    useEffect(()=>{
-        if(formRef.current) getRefValue(formRef,setRef)
-        }
-      ,[formRef])
-
-    const getRefValue = (ref,set) =>{
-    const data = [...ref.current.children]
-    const newList = [...data[0].querySelectorAll('input, select, textarea')]
-    newList[0].focus()
-        set(newList)
-    }
-
-    const handleKeyDown = (e) => {
-        if (e.key === "Enter") {
-            e.preventDefault();
-            if (e.target && ref.length>0) {
-                let a = ref.indexOf(e.target)
-                if(a===ref.length-1){
-                    ref[0].focus()
-                }else{
-                ref[a].blur()
-                ref[a+1].focus();
-            }
-            }
-        }
-    };
     useEffect(()=>{
         getData();
     },[])
@@ -229,11 +204,13 @@ export const ItemAddForm = ({edit,refresh,setToEdit}) =>{
         }
         list.types=typesOptions
         list.rent_type=rentOptions
-        setListItem(list)
+        setListItem({...listItem,...list})
         }catch(err){
             // console.log(err)
         }
     }
+
+    console.log(listItem)
 
     const handleUnitClear = () =>{
         let x = Object.keys(unitConv)
@@ -715,7 +692,7 @@ export const ItemAddForm = ({edit,refresh,setToEdit}) =>{
                     <button type='submit' className='save_btn btn'>{edit?"Update":"Submit"}</button>
                 </div>
                 <Modal
-                contentClassName="unit_modal px-3 bg-dark"
+                contentClassName="unit_modal px-0 bg-dark"
                 dialogClassName='d-flex justify-content-center'
                 show={unitConvShow || barcodeShow}
                 size='lg'
@@ -725,8 +702,8 @@ export const ItemAddForm = ({edit,refresh,setToEdit}) =>{
                     <Modal.Body>
                         <div className='text-light pb-2'>
                            { barcodeShow?"Barcode":"Unit Conversion"}
-                            <div className='unit_modal_body mt-2 px-3 pb-2'>
-                                <table className='custom-table-2 names ms-2 position-relative'>
+                            <div className='unit_modal_body mt-2 px-3 pb-2 px-0'>
+                                <table className='custom-table-2 position-relative'>
                                     <thead className='tabel-head'>
                                         <tr>
                                             <th>{barcodeShow?"C.Barcode":"Qty"}</th>
@@ -736,7 +713,7 @@ export const ItemAddForm = ({edit,refresh,setToEdit}) =>{
                                             <th></th>
                                         </tr>
                                     </thead>
-                                    <tbody className='rounded-3 '>
+                                    <tbody className='rounded-2 '>
                                         <tr className='table-head-input'>
                                             <td><input onKeyDown={handleKeyDown} onChange={handleChange} name={barcodeShow?'B_code':'U_qty'} value={barcodeShow?barcode.B_code:unitConv.U_qty||''} type='text' className='w-100 text-light'/></td>
                                             {/* <td><input onKeyDown={handleKeyDown} onChange={handleChange} name='unit' value={unitConv.unit} type='text' className='w-100'/></td> */}

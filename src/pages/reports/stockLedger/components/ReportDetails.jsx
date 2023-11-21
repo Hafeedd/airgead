@@ -3,7 +3,6 @@ import { Form } from "react-bootstrap";
 import { TfiEmail, TfiPrinter } from "react-icons/tfi";
 import { BsWhatsapp, BsFiletypePdf } from "react-icons/bs";
 import { RiFileExcel2Line } from "react-icons/ri";
-import { StockTable } from "./StockTable";
 
 export const ReportDetails = (props) => {
   const {stockList, setStockList,from,

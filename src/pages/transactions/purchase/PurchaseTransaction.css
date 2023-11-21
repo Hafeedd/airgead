@@ -522,3 +522,33 @@ td.clr{
 .seriel-input.color-trnsp{
     background: transparent !important;
 }
+
+.stock-body{
+    height: 30rem;
+    overflow: hidden;
+    overflow-y: scroll;
+}
+
+.stock-pop.table thead th{
+    background: #000;
+    color: white;
+    padding: 0.7rem 0.3rem;
+    font-size: 17px;
+}
+
+.stock-pop.table tbody td{
+    font-size: 15px;
+    font-weight: 500;
+}
+.stock-pop.table thead{
+    outline: 1px solid black;
+}
+
+.stock-pop.table tbody{
+    outline: 1px solid black;
+}
+
+.stock-pop.table tbody tr.tr-with-data:hover td{
+    background: rgb(204, 204, 204) !important;
+}
+

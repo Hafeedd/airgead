@@ -296,6 +296,7 @@ input[type=number] {
 }
 
 .unit_modal{
+    width: 51rem;
     display: flex;
     align-items: center;
 }

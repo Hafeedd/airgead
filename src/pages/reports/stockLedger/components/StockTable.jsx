@@ -10,18 +10,18 @@ export const StockTable = (props) => {
     for(let i = 0 ; i<6 - stockList?.length ; i++){
       a.push(
         <tr>
-          <td className="text-start">{'...'}</td>
-          <td width="110" className="text-start">{'...'}</td>
-          <td className="prple_td">{'...'}</td>
-          <td className="grn_td">{'...'}</td>
-          <td className="grn_td">{'...'}</td>
-          <td className="grn_td">{'...'}</td>
-          <td className="brn_td">{'...'}</td>
-          <td className="brn_td">{'...'}</td>
-          <td className="brn_td">{'...'}</td>
-          <td className="brn_td">{'...'}</td>
-          <td className="grey_td">{'...'}</td>
-          <td className="prple_td" width="70">{'...'}</td>
+          <td className="border-0 text-start" style={{height:"4rem"}}></td>
+          <td width="110" className="border-0 text-start"></td>
+          <td className="border-0 prple_td"></td>
+          <td className="border-0 grn_td"></td>
+          <td className="border-0 grn_td"></td>
+          <td className="border-0 grn_td"></td>
+          <td className="border-0 brn_td"></td>
+          <td className="border-0 brn_td"></td>
+          <td className="border-0 brn_td"></td>
+          <td className="border-0 brn_td"></td>
+          <td className="border-0 grey_td"></td>
+          <td className="border-0 prple_td" width="70"></td>
       </tr>
       )
     }

@@ -346,7 +346,7 @@ const SalesTransaction = () => {
                     })
                     setBillType(list)
                     if(!edit)
-                    setSalesAdd(data=>({...data,fk_bill_type:list[0].value}))
+                    setSalesAdd(data=>({...data,fk_bill_type:list[0]?.value}))
                 }
                 if(response2.success){
                     setCodeWithBillTypeList(response2.data)
@@ -535,17 +535,6 @@ const SalesTransaction = () => {
                 setPurchaseList={setSalesList} closeEditModal={setSalesEditModal}
                 {...{setSalesEditModal,getData,setEdit,edit}}/>
             </Modal>
-            {/* <Modal
-                show={salesBatchShow}
-                size='lg'
-                centered
-                dialogClassName='sales-table-modal'
-                onHide={() => setSalesBatchShow(false)}
-            >
-                <SalesItemBactch {...{setSalesBatchShow,salesBatchShow,
-                tableItemBatch,tableItemBatchList,purchaseItemList,
-                salesAdd,setSalesAdd}}/>
-            </Modal> */}
         </div>
     )
 }

@@ -39,7 +39,7 @@ export const StockLedger = () => {
             <div>
             <div className='fw-600 fs-5'>Stock Ledger</div>
             <div className='page_head_items mb-2 mt-2'>
-                <div onClick={()=>navigate("/stock-reports")} className={`page_head_customer active}`}>Details</div>
+                <div onClick={()=>navigate("/stock-reports")} className={`page_head_customer active`}>Details</div>
                
             </div>
             </div>
@@ -56,7 +56,7 @@ export const StockLedger = () => {
             <StockTable {...{
             stockList, setStockList,
             paramsToReport, setParamsToReport,
-        }}/>    
+        }}/>
         </div>
         </div>
 </div>

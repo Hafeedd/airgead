@@ -199,7 +199,7 @@ export const StaffProfEducTable = (props) => {
     let tr = [];
     for (let i = 0; i < 4 - list?.length; i++)
       tr.push(
-        <tr>
+        <tr className='border-0'>
           <td>
             <div className="tbodytd">{"..."}</div>
           </td>

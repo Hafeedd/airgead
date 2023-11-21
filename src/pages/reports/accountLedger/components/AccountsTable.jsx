@@ -43,7 +43,7 @@ export const AccountsTable = (props) => {
           </tr>
         </thead>
         <tbody>
-            {reportList?.length>0 &&
+            {reportList?.length>0 ?
             reportList.map((data,i)=>{
               let tempBalance = data?.opening_balance
             return(<>
@@ -78,7 +78,7 @@ export const AccountsTable = (props) => {
               </div>
             </th>
             </tr>
-           {data.ledger_report.length?
+           {data.ledger_report.length>0?
            data.ledger_report.map((item,i)=>{
              let balance
              if(!item.debit)
@@ -102,7 +102,10 @@ export const AccountsTable = (props) => {
               <td style={{background:"#CECECE"}} className="" colSpan={1}>Closing balance</td>
               <td style={{background:"#CECECE"}} className="text-end" colSpan={6}>{data.closing_balance}</td>
             </tr>
-            </>)})}
+            </>)})
+            :
+            <tr><td className="fs-4 text-center" colSpan={7}>No reports yet</td></tr>
+            }
         {/* <AdjustTableHeight/> */}
         </tbody>
       </table>

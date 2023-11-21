@@ -15,12 +15,13 @@ const PurchaseTable = (props) => {
         setCstm_id,tableItemList,setTableItemList,
         tableItemBatchList, setTableItemBatchList,
         tableEdit, setTableEdit,setEdit,
+        itemNameList, setItemNameList,setShowStock,
         purchaseList, setPurchaseList,getData,
         handlePurchaseAllReset,handleResetTable,
     } = props
 
     const [ref, setRef] = useState()
-    const [itemNameList, setItemNameList] = useState([])
+    // const [itemNameList, setItemNameList] = useState([])
     const [unitList, setUnitList] = useState()
 
     useEffect(()=>{
@@ -67,7 +68,7 @@ const PurchaseTable = (props) => {
         const handleDataNameList= (data) => {
             let tempList = []
             data?.map((x)=>{
-                tempList.push({text:x.name,description:x.code,value:x.id,unit:x.fk_unit})
+                tempList.push({...x,text:x.name,description:x.code,value:x.id,unit:x.fk_unit})
             })
             setItemNameList([...tempList])
         }
@@ -156,7 +157,7 @@ const PurchaseTable = (props) => {
     const AdjustHeightOfTable = () =>{
         let a = []
         for(let i = 0;i<8-purchaseAdd.total_items||0;i++){
-            a.push(<tr key={i}><td style={{ height: "1.8rem",display: ""}} colSpan={17}></td></tr>)
+            a.push(<tr key={i}><td className='border-0' style={{ height: "1.8rem",display: ""}} colSpan={17}></td></tr>)
         }
         return a
     }
@@ -326,6 +327,7 @@ const PurchaseTable = (props) => {
                             <td className='purchase_search_drop_td text-start ps-3' colSpan={2}>
                                 <Dropdown
                                 clearable
+                                onClick={()=>setShowStock(data=>!data)}
                                 selection
                                 required
                                 upward={purchaseAdd.total_items>4?true:false}

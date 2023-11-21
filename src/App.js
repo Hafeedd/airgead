@@ -14,6 +14,7 @@ import { StockLedger } from './pages/reports/stockLedger/StockLedger';
 import { AccountLedger } from './pages/reports/accountLedger/AccountLedger';
 import { OpStock } from './pages/master/opStock/OpStock';
 import { AccJournal } from './pages/transactions/accJournal/AccJournal';
+import { Daybook } from './pages/reports/daybook/Daybook';
 
 function App() {
   return (
@@ -41,6 +42,7 @@ function App() {
             <Route path="/account-reports" element={<AccountLedger/>}/>
             <Route path="/opening-stock" element={<OpStock/>}/>
             <Route path="/account-journal" element={<AccJournal/>}/>
+            <Route path="/day-book" element={<Daybook/>}/>
           </Route>
         </Route>
       </Routes>

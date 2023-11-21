@@ -3,21 +3,24 @@
 }
 
 .acc-journal-table-cont{
-    height: 25.5rem;
+    margin-bottom: 0;
+    height: 26.5rem;
     overflow: hidden;
     overflow-y: scroll;
 }
 
-.acc-journal.table {
+/* .acc-journal.table {
     box-shadow: 0px 0px 15.83738px 0px rgba(0, 0, 0, 0.20);
-}
+} */
 
 .acc-journal.table thead th{
     position: sticky;
+    z-index: 3;
     top: 0;
 }
 .acc-journal.table tbody tr:last-child td{
     position: sticky;
+    z-index: 4;
     bottom: 0;
 }
 
@@ -43,15 +46,9 @@
 .acc-journal.table tbody td{
     text-align: center;
     font-size: .9625rem;
+    font-weight: 500;
     padding: 0.4rem 0.4rem;
-    border-bottom: 1px solid rgb(196, 196, 196) !important;
-}
-
-.acc-journal.table .acc-journal-input{
-    border-radius: 0.3125rem;
-    border: 1px solid #BEBEBE;
-    background: #EEE;
-    padding: 0.5rem 0 ;
+    border-bottom: 1px solid rgb(196, 196, 196);
 }
 
 .acc-journal.table tbody tr:last-child td{
@@ -60,7 +57,8 @@
     background: #DEDEDE;
 }
 
-.acc-journal.table tbody td input{
+.acc-journal.table tbody .acc-jnl-input-tr td input{
+    text-transform: uppercase;
     text-align: center;
     border-radius: 0.4rem;
     width: 100%;
@@ -72,4 +70,30 @@
     /* border-right:  1px solid black !important; */
     border: 0;
     box-shadow: 0;
+}
+
+.acc-journal.table .acc-journal-input{
+    border-radius: 0.3125rem;
+    border: 1px solid #BEBEBE;
+    background: #EEE;
+    padding: 0.5rem 0;
+}
+
+.acc-journal-search input{
+    width: 100%;
+    height: 100%;
+    text-align: start !important;
+    padding: 0rem !important;
+    padding-left: 0.5rem !important;
+}
+.acc-journal-search{
+    min-height: 1.7rem !important;
+    width: 100%;
+}
+.acc-journal-search .icon.dropdown{
+    margin-right: 0.1rem !important;
+    height: 100% !important;
+    display: flex !important;
+    align-items: center !important;
+    padding: 0 !important;
 }

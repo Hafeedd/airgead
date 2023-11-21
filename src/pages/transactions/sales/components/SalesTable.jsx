@@ -106,8 +106,8 @@ const SalesTable = (props) => {
     let a = [];
     for (let i = 0; i < 8 - salesAdd.total_items || 0; i++) {
       a.push(
-        <tr key={i}>
-          <td style={{ height: "1.7rem", display: "" }} colSpan={18}></td>
+        <tr className='border-0' key={i}>
+          <td className="border-0" style={{ height: "1.7rem", display: "" }} colSpan={18}></td>
         </tr>
       );
     }

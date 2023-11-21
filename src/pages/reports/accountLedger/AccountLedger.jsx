@@ -90,7 +90,7 @@ export const AccountLedger = () => {
               <div className="page_head_items mb-2 mt-2">
                 <div
                   onClick={() => navigate("/stock-reports")}
-                  className={`page_head_customer active}`}
+                  className={`page_head_customer active`}
                 >
                   Details
                 </div>

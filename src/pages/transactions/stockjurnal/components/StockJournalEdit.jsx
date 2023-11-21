@@ -3,7 +3,7 @@ import searchIcon from "../../../../assets/icons/search.png"
 import { useEffect, useState } from "react"
 
 export const StockJournalEdit = (props) => {
-    const {stockJList,setShowJournalFilter,
+    const {list,setShow,from,
         edit,setEdit,handleClearAll} = props
 
     const [tempStockJList, setTempStockJList] = useState([])
@@ -16,7 +16,7 @@ export const StockJournalEdit = (props) => {
     const handleEditClick = (data) =>{
         handleClearAll()
         setEdit(data)
-        setShowJournalFilter(false)
+        setShow(false)
     }
 
     useEffect(()=>{
@@ -25,7 +25,7 @@ export const StockJournalEdit = (props) => {
         // if(tempStockJList?.length>0){
         //     filterList = tempStockJList
         // }else{
-            filterList = stockJList
+            filterList = list
         // }
         if(date.start && date.end){
         let startDate = new Date(date.start.slice(0,10))
@@ -50,11 +50,13 @@ export const StockJournalEdit = (props) => {
         // if(tempStockJList?.length>0){
         //     filterList = tempStockJList
         // }else{
-            filterList = stockJList
+            filterList = list
         // }
-        if(stockJList?.length>0){
+        if(list?.length>0){
              tempList = filterList?.filter(x=>{
-                if(x?.code?.toLowerCase().toString()?.includes(search?.toLowerCase())){
+                let a = 'code'
+                if(from == 'acc') a = 'voucher_number'
+                if(x?.[a]?.toLowerCase().toString()?.includes(search?.toLowerCase())){
                     return true
                 }
             })
@@ -112,17 +114,17 @@ export const StockJournalEdit = (props) => {
                 <thead>
                     <th width="150" className="ps-4">Date</th>
                     <th width="150" className="ps-4">Doc No.</th>
-                    <th className="text-center">Items</th>
+                    {!from&&<th className="text-center">Items</th>}
                     <th className="text-center">Narration</th>
-                    <th width="80" className="text-end pe-4"></th>
+                    <th width="60" className="text-end pe-4"></th>
                 </thead>
                 <tbody>
                     {tempStockJList?.length>0&&
                     tempStockJList?.map((data,i)=>
                     (<tr key={i?i:0}>
-                        <td width="150" className="text-start ps-2">{data?.date?.slice(0,10)}</td>
-                        <td width="150" className="text-start ps-3">{data?.code}</td>
-                        <td className="text-center">{data?.total_items}</td>
+                        <td width="150" className="text-start ps-2">{!from?data?.date?.slice(0,10):data?.created_at.slice(0,10)}</td>
+                        <td width="150" className="text-start ps-3">{from?data?.voucher_number:data?.code}</td>
+                        {!from&&<td className="text-center">{data?.total_items}</td>}
                         <td className="text-center">{data?.narration}</td>
                         <td className="ps-2">
                             <div className='btn p-0' onClick={()=>handleEditClick(data)}>
@@ -135,7 +137,7 @@ export const StockJournalEdit = (props) => {
                 </tbody>
             </table>
         </div>
-        <span className="col-10"/><div onClick={()=>setShowJournalFilter(false)} 
+        <span className="col-10"/><div onClick={()=>setShow(false)} 
         className="btn col-2 btn-dark py-1 px-5">Close</div>
         </div>
     </div>

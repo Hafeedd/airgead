@@ -64,28 +64,28 @@
 
 .stock-ledger tbody .grey_td{
     background: rgba(132, 143, 146,0.2);
-    height: inherit;
+    height: 1.4rem !important;
     padding: 1rem 0rem;
     color: black;
     font-weight: 500;
 }
 .stock-ledger tbody .prple_td{
     background: rgba(75, 0, 173,0.4);
-    height: inherit;
+    height: 1.4rem !important;
     padding: 1rem 0rem;
     color: black;
     font-weight: 500;
 }
 .stock-ledger tbody .grn_td{
     background: rgba(32, 158, 0,0.2);
-    height: inherit;
+    height: 1.4rem !important;
     padding: 1rem 0rem;
     color: black;
     font-weight: 500;
 }
 .stock-ledger tbody .brn_td{
     background: rgba(243, 136, 136,0.2);
-    height: inherit;
+    height: 1.4rem !important;
     padding: 1rem 0rem;
     color: black;
     font-weight: 500;
