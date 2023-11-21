@@ -5,6 +5,7 @@ import PaymentDiscountDetails from "./PaymentDiscountDetails";
 import PaymentTaxDetails from "./PaymentTaxDetails";
 import PaymentPrintDetails from "./PaymentPrintDetails";
 import { Dropdown } from "semantic-ui-react";
+import { useLocation } from "react-router";
 
 const PaymentDetail = ({
   edit,
@@ -19,6 +20,7 @@ const PaymentDetail = ({
   handleChangePaymentCash,
 }) => {
   const [paymentNav, setPaymentNav] = useState(paymentAdd.cash_bank_account_name == "CASH IN BANK"?1:2);
+  const location = useLocation().pathname
   const [paymentContent, setPaymentContent] = useState("");
   const formRef = useRef(null);
 
@@ -93,7 +95,7 @@ const PaymentDetail = ({
             <div className="mx-0 px-0 col-7">
               <select
                 onChange={handleChange}
-                value={paymentAdd?.type}
+                value={location.match('/pay')?'Payment':'Receipt'}
                 name="method"
                 className="account-select-dropdown ms-0 pe-0"
               >

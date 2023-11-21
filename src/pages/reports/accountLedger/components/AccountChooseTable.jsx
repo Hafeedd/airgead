@@ -48,7 +48,7 @@ export const AccountChooseTable = (props) => {
         <div className='col-9'/>
         <div className='mx-0 px-1 pe-0 col-1 col-2 pb-0 d-flex'>
             <button onClick={()=>setChooseAccountModalShow(false)} 
-            className='btn btn-sm btn-dark me-2'>close</button>
+            className='btn btn-sm btn-dark me-2'>Close</button>
             <button onClick={()=>handleAccountChooseSearch()} 
             className='btn btn-sm btn-dark'>Apply</button>
           </div>
