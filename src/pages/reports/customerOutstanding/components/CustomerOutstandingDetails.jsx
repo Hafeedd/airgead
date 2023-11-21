@@ -23,7 +23,7 @@ const CustomerOutstandingDetails = (props) => {
 
     return (
         <>
-            <div className='mb-4'>
+            <div className='mb-2'>
                 <div style={{ background: '#4B4B4B' }}
                     className="btn rounded-1 text-light col-1 col-2 py-0 mt-3 me-4">
                     <BsFiletypePdf className="me-2 mb-1" size={18} />PDF</div>
@@ -41,7 +41,7 @@ const CustomerOutstandingDetails = (props) => {
                     <TfiPrinter size={18} className="me-2 mb-1" />Print</div>
             </div>
 
-            <div className='d-flex justify-content-start align-items-center '>
+            <div className='d-flex justify-content-start align-items-center'>
                 <Form.Group className='col-4 pe-4 ps-0 mx-0 d-flex align-items-start mt-1'>
                     <Form.Label className='col-2 purchase-input-label align-middle'>From</Form.Label>
                     <Form.Control
