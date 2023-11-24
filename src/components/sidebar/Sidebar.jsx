@@ -57,7 +57,7 @@ const Sidebar = () => {
                         <div className='SidebarItemText' onClick={()=>navigate('/receipt-transaction')}>Receipt</div>
                     </span>
                     <span className='SidebarSpan d-flex ms-5 ps-3'>
-                        <div className='SidebarItemText' onClick={()=>navigate('/stock-journal')}>Stcok Journal</div>
+                        <div className='SidebarItemText' onClick={()=>navigate('/stock-journal')}>Stock Journal</div>
                     </span>
                     <span className='SidebarSpan d-flex ms-5 ps-3'>
                         <div className='SidebarItemText' onClick={()=>navigate('/account-journal')}>Account Journal</div>
