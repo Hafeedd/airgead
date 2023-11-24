@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Form } from 'react-bootstrap'
 import { BsFiletypePdf, BsWhatsapp } from 'react-icons/bs'
 import { RiFileExcel2Line } from 'react-icons/ri'
@@ -18,7 +18,41 @@ const CustomerOutstandingDetails = (props) => {
             setParamsToReport({ ...paramsToReport, [e.target.name]: e.target.value })
         }
     }
+    const [searchedList, setSearchedList] = useState([]);
 
+    useEffect(() => {
+      setSearchedList(custOutstanding.user_array);
+    }, [custOutstanding.user_array]);
+  
+    const handleSearch = async (e) => {
+      try {
+        let tempData,
+          tempList = custOutstanding.user_array;
+        if (custOutstanding.user_array) {
+          let value = e.target.value.toLocaleLowerCase();
+          if (value != "") {
+            if (custOutstanding.user_array.length > 0) {
+              tempData = tempList?.filter((x) => {
+                console.log(x)
+                let searchInString = `${
+                  x.data1[0].user_code?.toLocaleLowerCase() +
+                  x.data1[0].user_name?.toLocaleLowerCase() +
+                  " " +
+                  x.data1[0].user_mobile?.toLocaleLowerCase()
+                }`;
+                let search = searchInString?.includes(value);
+                if (search) {
+                  return true;
+                }
+              });
+              setSearchedList(tempData);
+            }
+          } else {
+            setSearchedList(custOutstanding.user_array);
+          }
+        }
+      }catch{}
+    };
 
 
     return (
@@ -78,7 +112,7 @@ const CustomerOutstandingDetails = (props) => {
                                 <option value=''>All</option>
                                 <option value="to_receive">Receivable Only</option>
                                 <option value="to_give">Payable Only</option>
-                                <option value=''>With Balance Only</option>
+                                <option value="with_balance_only">With Balance Only</option>
                             </select>
                         </div>
                         <div className="col-3 p-2 stock-ledger-search d-flex align-items-center me-1">
@@ -87,7 +121,7 @@ const CustomerOutstandingDetails = (props) => {
                                 <img src={searchIcon} className="search_img me-3 ms-2 py-2" />
                                 <input
                                     // value={search}
-                                    // onChange={(e)=>setSearch(e.target.value)}
+                                    onChange={handleSearch}
                                     className="item_search_bar rounded-2 border-0 py-1"
                                     placeholder="Search"
                                     type="text"
@@ -111,18 +145,20 @@ const CustomerOutstandingDetails = (props) => {
                             </tr>
                         </thead>
                         <tbody className='bg-light'>
-                            {custOutstanding?.length > 0 &&
-                                custOutstanding?.user_array?.map((data, i) => (
+                            {searchedList?.length > 0 &&
+                                searchedList?.map((data, i) => {
+                                    console.log(data)
+                                    return (
                                     <tr key={i} >
-                                        {columnVisibility?.code &&<td>{data?.data1.user_code}</td>}
-                                        {columnVisibility?.customer &&<td>{data?.data1.user_name}</td>}
-                                        {columnVisibility?.address &&<td>{data?.data1.user_address}</td>}
-                                        {columnVisibility?.mobile &&<td>{data?.data1.user_mobile}</td>}
-                                        {columnVisibility?.opbal &&<td>{data?.opening_balance_new}</td>}
+                                        {columnVisibility?.code &&<td>{data?.data1[0].user_code}</td>}
+                                        {columnVisibility?.customer &&<td>{data?.data1[0].user_name}</td>}
+                                        {columnVisibility?.address &&<td>{data?.data1[0].user_address}</td>}
+                                        {columnVisibility?.mobile &&<td>{data?.data1[0].user_mobile}</td>}
+                                        {columnVisibility?.opbal &&<td>{data?.opening_balance_new<0?data?.opening_balance_new+' Cr':data?.opening_balance_new>0?data?.opening_balance_new+' Db':0}</td>}
                                         {columnVisibility?.debit &&<td>{data?.sum_debit}</td>}
                                         {columnVisibility?.credit &&<td>{data?.sum_credit}</td>}
-                                        {columnVisibility?.clbal &&<td>{data?.closing_balance}</td>}
-                                    </tr>))}
+                                        {columnVisibility?.clbal &&<td>{data?.closing_balance<0?data?.closing_balance+' Cr':data?.closing_balance>0?data?.closing_balance+' Db':0}</td>}
+                                    </tr>)})}
                         </tbody>
 
                         <tfoot style={{ position: 'sticky', bottom: '0', zIndex: 4, background: "#CECECE" }}>
@@ -131,10 +167,10 @@ const CustomerOutstandingDetails = (props) => {
                                 {columnVisibility?.customer &&<td></td>}
                                 {columnVisibility?.address &&<td></td>}
                                 {columnVisibility?.mobile &&<td></td>}
-                                {columnVisibility?.opbal &&<td>{custOutstanding?.total_user_debit}</td>}
-                                {columnVisibility?.debit &&<td>{custOutstanding?.total_user_credit}</td>}
-                                {columnVisibility?.credit &&<td>{custOutstanding?.total_opening_balance}</td>}
-                                {columnVisibility?.clbal &&<td>{custOutstanding?.total_closing_balance}</td>}
+                                {columnVisibility?.opbal &&<td>{custOutstanding?.total_opening_balance<0?custOutstanding?.total_opening_balance+' Cr':custOutstanding?.total_opening_balance>0?custOutstanding?.total_opening_balance+' Db':0}</td>}
+                                {columnVisibility?.debit &&<td>{custOutstanding?.total_user_debit}</td>}
+                                {columnVisibility?.credit &&<td>{custOutstanding?.total_user_credit}</td>}
+                                {columnVisibility?.clbal &&<td>{custOutstanding?.total_closing_balance<0?custOutstanding?.total_closing_balance+' Cr':custOutstanding?.total_closing_balance>0?custOutstanding?.total_closing_balance+' Db':0}</td>}
                             </tr>
                         </tfoot>
                     </table>

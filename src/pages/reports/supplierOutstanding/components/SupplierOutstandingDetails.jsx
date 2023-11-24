@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { Form } from 'react-bootstrap'
 import { BsFiletypePdf, BsWhatsapp } from 'react-icons/bs'
 import { GrRefresh } from 'react-icons/gr'
@@ -9,7 +9,7 @@ import searchIcon from "../../../../assets/icons/search.png"
 const SupplierOutstandingDetails = (props) => {
 
   const { supOutstanding, setSupOutstanding,
-    paramsToReport, setParamsToReport, columnVisibility } = props
+    paramsToReport, setParamsToReport, columnVisibility ,staffOutstanding,setStaffOutstanding,location} = props
 
   const handleChange = (e) => {
     if (e.target.value === "") {
@@ -18,6 +18,43 @@ const SupplierOutstandingDetails = (props) => {
       setParamsToReport({ ...paramsToReport, [e.target.name]: e.target.value })
     }
   }
+
+  const [searchedList, setSearchedList] = useState([]);
+
+  useEffect(() => { location==='/supplier-outstandings'? setSearchedList(supOutstanding.user_array) : setSearchedList(staffOutstanding.user_array) 
+  }, [supOutstanding.user_array,staffOutstanding.user_array]);
+ console.log('checking',searchedList)
+  const handleSearch = async (e) => {
+    try {
+      let tempData,
+        tempList = location === '/supplier-outstandings'? supOutstanding.user_array:staffOutstanding.user_array
+        console.log(tempList)
+      if (location==='/supplier-outstandings'? supOutstanding.user_array:staffOutstanding.user_array) {
+        let value = e.target.value.toLocaleLowerCase();
+        if (value != "") {
+          if (location==='/supplier-outstandings'? supOutstanding.user_array.length > 0:staffOutstanding.user_array.length > 0) {
+            tempData = tempList?.filter((x) => {
+              console.log(x)
+              let searchInString = `${
+                x.data1[0].user_code?.toLocaleLowerCase() +
+                x.data1[0].user_name?.toLocaleLowerCase() +
+                " " +
+                x.data1[0].user_mobile?.toLocaleLowerCase()
+              }`;
+              let search = searchInString?.includes(value);
+              if (search) {
+                return true;
+              }
+            });
+            setSearchedList(tempData);
+          }
+        } else {
+          setSearchedList(location==='/supplier-outstandings'? supOutstanding.user_array:staffOutstanding.user_array);
+        }
+      }
+    }catch{}
+  };
+
 
 
   return (
@@ -78,7 +115,7 @@ const SupplierOutstandingDetails = (props) => {
                 <option value=''>All</option>
                 <option value="to_receive">Receivable Only</option>
                 <option value="to_give">Payable Only</option>
-                <option value=''>With Balance Only</option>
+                <option value="with_balance_only">With Balance Only</option>
               </select>
             </div>
             <div className="col-3 p-2 stock-ledger-search d-flex align-items-center me-1">
@@ -87,7 +124,7 @@ const SupplierOutstandingDetails = (props) => {
                 <img src={searchIcon} className="search_img me-3 ms-2 py-2" />
                 <input
                   // value={search}
-                  // onChange={(e)=>setSearch(e.target.value)}
+                  onChange={handleSearch}
                   className="item_search_bar rounded-2 border-0 py-1"
                   placeholder="Search"
                   type="text"
@@ -111,31 +148,55 @@ const SupplierOutstandingDetails = (props) => {
               </tr>
             </thead>
             <tbody className='bg-light'>
-              {supOutstanding?.length > 0 &&
-                supOutstanding?.user_array?.map((data, i) => (
+              {/* {location ==='/supplier-outstandings' ? */}
+             { searchedList?.length > 0 &&
+                searchedList?.map((data, i) => (
                   <tr key={i} >
-                    {columnVisibility?.code &&<td>{data?.data1.user_code}</td>}
-                    {columnVisibility?.customer &&<td>{data?.data1.user_name}</td>}
-                    {columnVisibility?.address &&<td>{data?.data1.user_address}</td>}
-                    {columnVisibility?.mobile &&<td>{data?.data1.user_mobile}</td>}
-                    {columnVisibility?.opbal &&<td>{data?.opening_balance_new}</td>}
+                    {columnVisibility?.code &&<td>{data?.data1[0].user_code}</td>}
+                    {columnVisibility?.customer &&<td>{data?.data1[0].user_name}</td>}
+                    {columnVisibility?.address &&<td>{data?.data1[0].user_address}</td>}
+                    {columnVisibility?.mobile &&<td>{data?.data1[0].user_mobile}</td>}
+                    {columnVisibility?.opbal &&<td>{data?.opening_balance_new<0?data?.opening_balance_new+' Cr':data?.opening_balance_new>0?data?.opening_balance_new+' Db':0}</td>}
                     {columnVisibility?.debit &&<td>{data?.sum_debit}</td>}
                     {columnVisibility?.credit &&<td>{data?.sum_credit}</td>}
-                    {columnVisibility?.clbal &&<td>{data?.closing_balance}</td>}
-                  </tr>))}
+                    {columnVisibility?.clbal &&<td>{data?.closing_balance<0?data?.closing_balance+' Cr':data?.closing_balance>0?data?.closing_balance+' Db':0}</td>}
+                  </tr>))
+                    // : staffOutstanding?.user_array?.length > 0 &&
+                    //   staffOutstanding?.user_array?.map((data, i) => (
+                    //   <tr key={i} >
+                    //     {columnVisibility?.code &&<td>{data?.data1[0].user_code}</td>}
+                    //     {columnVisibility?.customer &&<td>{data?.data1[0].user_name}</td>}
+                    //     {columnVisibility?.address &&<td>{data?.data1[0].user_address}</td>}
+                    //     {columnVisibility?.mobile &&<td>{data?.data1[0].user_mobile}</td>}
+                    //     {columnVisibility?.opbal &&<td>{data?.opening_balance_new<0?data?.opening_balance_new+' Cr':data?.opening_balance_new>0?data?.opening_balance_new+' Db':0}</td>}
+                    //     {columnVisibility?.debit &&<td>{data?.sum_debit}</td>}
+                    //     {columnVisibility?.credit &&<td>{data?.sum_credit}</td>}
+                    //     {columnVisibility?.clbal &&<td>{data?.closing_balance<0?data?.closing_balance+' Cr':data?.closing_balance>0?data?.closing_balance+' Db':0}</td>}
+                    //   </tr>))
+                      }
             </tbody>
 
             <tfoot style={{ position: 'sticky', bottom: '0', zIndex: 4, background: "#CECECE" }}>
-              <tr>
+              { location==='/supplier-outstandings' ? <tr>
                   {columnVisibility?.code && <td>Cl Bal</td>}
                   {columnVisibility?.customer &&<td></td>}
                   {columnVisibility?.address &&<td></td>}
                   {columnVisibility?.mobile &&<td></td>}
-                  {columnVisibility?.opbal &&<td>{supOutstanding?.total_user_debit}</td>}
-                  {columnVisibility?.debit &&<td>{supOutstanding?.total_user_credit}</td>}
-                  {columnVisibility?.credit &&<td>{supOutstanding?.total_opening_balance}</td>}
-                  {columnVisibility?.clbal &&<td>{supOutstanding?.total_closing_balance}</td>}
-              </tr>
+                  {columnVisibility?.opbal &&<td>{supOutstanding?.total_opening_balance<0?supOutstanding?.total_opening_balance+' Cr':supOutstanding?.total_opening_balance>0?supOutstanding?.total_opening_balance+' Db':0}</td>}
+                  {columnVisibility?.debit &&<td>{supOutstanding?.total_user_debit||0}</td>}
+                  {columnVisibility?.credit &&<td>{supOutstanding?.total_user_credit||0}</td>}
+                  {columnVisibility?.clbal &&<td>{supOutstanding?.total_closing_balance<0?supOutstanding?.total_closing_balance+' Cr':supOutstanding?.total_closing_balance>0?supOutstanding?.total_closing_balance+' Db':0}</td>}
+              </tr> : <tr>
+                  {columnVisibility?.code && <td>Cl Bal</td>}
+                  {columnVisibility?.customer &&<td></td>}
+                  {columnVisibility?.address &&<td></td>}
+                  {columnVisibility?.mobile &&<td></td>}
+                  {columnVisibility?.opbal &&<td>{staffOutstanding?.total_opening_balance<0?staffOutstanding?.total_opening_balance+' Cr':staffOutstanding?.total_opening_balance>0?staffOutstanding?.total_opening_balance+' Db':0}</td>}
+                  {columnVisibility?.debit &&<td>{staffOutstanding?.total_user_debit||0}</td>}
+                  {columnVisibility?.credit &&<td>{staffOutstanding?.total_user_credit||0}</td>}
+                  {columnVisibility?.clbal &&<td>{staffOutstanding?.total_closing_balance<0?staffOutstanding?.total_closing_balance+' Cr':staffOutstanding?.total_closing_balance>0?staffOutstanding?.total_closing_balance+' Db':0}</td>}
+              </tr> }
+              
             </tfoot>
           </table>
         </div>

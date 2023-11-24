@@ -43,7 +43,7 @@ function App() {
             <Route path="/account-reports" element={<AccountLedger/>}/>
             <Route path="/customer-outstandings" element={<CustomerOutstanding/>}/>
             <Route path="/supplier-outstandings" element={<SupplierOutstanding/>}/>
-            <Route path="/staff-outstandings" element={<CustomerOutstanding/>}/>
+            <Route path="/staff-outstandings" element={<SupplierOutstanding/>}/>
             <Route path="/opening-stock" element={<OpStock/>}/>
             <Route path="/account-journal" element={<AccJournal/>}/>
             <Route path="/day-book" element={<Daybook/>}/>
