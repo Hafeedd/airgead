@@ -18,6 +18,7 @@ import CustomerOutstanding from './pages/reports/customerOutstanding/CustomerOut
 import SupplierOutstanding from './pages/reports/supplierOutstanding/SupplierOutstanding';import { Daybook } from './pages/reports/daybook/Daybook';
 import SalesBook from './pages/reports/salesBook/SalesBook';
 import { TaxReport } from './pages/reports/taxReport/TaxReport';
+import CashBook from './pages/reports/cashbook/CashBook';
 
 function App() {
   return (
@@ -52,6 +53,9 @@ function App() {
             <Route path="/sales-book" element={<SalesBook/>}/>
             <Route path="/sale-register" element={<SalesBook/>}/>
             <Route path="/tax-report" element={<TaxReport/>}/>
+            <Route path="/cashbook-report" element={<CashBook/>}/>
+
+            
           </Route>
         </Route>
       </Routes>

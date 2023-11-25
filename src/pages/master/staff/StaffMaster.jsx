@@ -28,33 +28,33 @@ const StaffMaster = () => {
     }
   };
 
-  const handleDelete = (id,e)=>{
+  const handleDelete = (id, e) => {
     Swal.fire({
-        title: 'Are you sure?',
-        text: "You won't be able to revert this!",
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: '#3085d6',
-        cancelButtonColor: '#d33',
-        confirmButtonText: 'Yes, delete it!'
-      }).then((result) => {
-        if (result.isConfirmed) {
-            handleDeleteConfirm(id,e)
-        }
-      })
-}
+      title: 'Are you sure?',
+      text: "You won't be able to revert this!",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes, delete it!'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        handleDeleteConfirm(id, e)
+      }
+    })
+  }
 
-const handleDeleteConfirm = async (id,e) =>{
+  const handleDeleteConfirm = async (id, e) => {
     e.preventDefault()
-    try{
-        let res = await deleteStaff(id)    
-        if(res.success) Swal.fire('Staff deleted Successfully','','success')
-        else Swal.fire(res.message,'','error')
-    getData()
-    }catch(err){
-        Swal.fire('Failed to delete Staff please try again','','error')
+    try {
+      let res = await deleteStaff(id)
+      if (res.success) Swal.fire('Staff deleted Successfully', '', 'success')
+      else Swal.fire(res.message, '', 'error')
+      getData()
+    } catch (err) {
+      Swal.fire('Failed to delete Staff please try again', '', 'error')
     }
-}
+  }
 
 
   const getData = async () => {
@@ -82,12 +82,12 @@ const handleDeleteConfirm = async (id,e) =>{
             <div className="fs-5 py-0">Staff Master</div>
             <div className="page_head_items">
               <div
-                onClick={() => {setEdit();
+                onClick={() => {
+                  setEdit();
                   navigate("/staff-list");
                 }}
-                className={`page_head_item ${
-                  location.pathname == "/staff-list" && "active"
-                }`}
+                className={`page_head_item ${location.pathname == "/staff-list" && "active"
+                  }`}
               >
                 Staff List
               </div>
@@ -95,9 +95,8 @@ const handleDeleteConfirm = async (id,e) =>{
                 onClick={() => {
                   navigate("/staff-master");
                 }}
-                className={`page_head_item ${
-                  location.pathname == "/staff-master" && "active"
-                }`}
+                className={`page_head_item ${location.pathname == "/staff-master" && "active"
+                  }`}
               >
                 General
               </div>
@@ -105,9 +104,8 @@ const handleDeleteConfirm = async (id,e) =>{
                 onClick={() => {
                   navigate("/staff-pay-scale");
                 }}
-                className={`page_head_item ${
-                  location.pathname == "/staff-pay-scale" && "active"
-                }`}
+                className={`page_head_item ${location.pathname == "/staff-pay-scale" && "active"
+                  }`}
               >
                 Detail Pay-Scale
               </div>
@@ -121,16 +119,18 @@ const handleDeleteConfirm = async (id,e) =>{
       </div>
       {location.pathname == "/staff-list" && (
         <div className="px-4"><StaffTable
-          {...{ search, setSearch, staffList, setStaffList, handleEdit, handleDelete,
-            searchList, setSearchList }}
+          {...{
+            search, setSearch, staffList, setStaffList, handleEdit, handleDelete,
+            searchList, setSearchList
+          }}
         /></div>
       )}
       {location.pathname == "/staff-master" && (
         <AddStaff getMasetData={getData} {...{ edit, setEdit }} />
       )}
-      {location.pathname == "/staff-pay-scale"&&
-      <StaffPayScale
-      {...{search, setSearch, staffList, setStaffList, handleEdit,getData}} />}
+      {location.pathname == "/staff-pay-scale" &&
+        <StaffPayScale
+          {...{ search, setSearch, staffList, setStaffList, handleEdit, getData }} />}
     </div>
   );
 };

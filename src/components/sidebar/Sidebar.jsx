@@ -10,6 +10,7 @@ const Sidebar = () => {
     const [ArrowActive, setArrowActive] = useState(false)
     const [ReportsActive, setReportsActive] = useState(false)
     const [roughActive, setRoughActive] = useState(false)
+    
 
     const navigate = useNavigate()
     return(
@@ -93,8 +94,11 @@ const Sidebar = () => {
                     <span className='SidebarSpan d-flex ms-5 ps-3'>
                         <div className='SidebarItemText' onClick={()=>navigate('/tax-report')}>Tax Reports</div>
                     </span>
+                    <span className='SidebarSpan d-flex ms-5 ps-3'>
+                        <div className='SidebarItemText' onClick={()=>navigate('/cashbook-report')}>Cash Book</div>
+                    </span>
+
                 </div>
-            
 
             </div>
         </div>
