@@ -18,9 +18,15 @@ export const useReportsServices = () =>{
         return response?.data
     }
 
+    const getCashBook = async (params)=>{
+        const response = await axiosPrivate.get('/reports/cashbook/report/',{params:params})
+        return response?.data
+    }
+
     return{
         getStockLedger,
         getAccLedger,
         getOutstanding,
+        getCashBook,
     }
 }

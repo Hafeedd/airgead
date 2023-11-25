@@ -16,6 +16,7 @@ import { OpStock } from './pages/master/opStock/OpStock';
 import { AccJournal } from './pages/transactions/accJournal/AccJournal';
 import CustomerOutstanding from './pages/reports/customerOutstanding/CustomerOutstanding';
 import SupplierOutstanding from './pages/reports/supplierOutstanding/SupplierOutstanding';import { Daybook } from './pages/reports/daybook/Daybook';
+import CashBook from './pages/reports/cashbook/CashBook';
 
 function App() {
   return (
@@ -46,6 +47,9 @@ function App() {
             <Route path="/opening-stock" element={<OpStock/>}/>
             <Route path="/account-journal" element={<AccJournal/>}/>
             <Route path="/day-book" element={<Daybook/>}/>
+            <Route path="/cashbook-report" element={<CashBook/>}/>
+
+            
           </Route>
         </Route>
       </Routes>
