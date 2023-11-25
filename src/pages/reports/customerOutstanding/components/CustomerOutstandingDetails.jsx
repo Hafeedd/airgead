@@ -8,7 +8,7 @@ import { GrRefresh } from 'react-icons/gr'
 const CustomerOutstandingDetails = (props) => {
 
     const { custOutstanding, setCustOutstanding,
-        paramsToReport, setParamsToReport,columnVisibility } = props
+        paramsToReport, setParamsToReport, columnVisibility } = props
 
 
     const handleChange = (e) => {
@@ -134,14 +134,14 @@ const CustomerOutstandingDetails = (props) => {
                     <table className='col-12 px-0 mx-0 outstanding-table' style={{ background: "#000" }}>
                         <thead className='text-light' >
                             <tr>
-                                {columnVisibility?.code &&<th>Code</th>}
-                                {columnVisibility?.customer &&<th>Customer</th>}
-                                {columnVisibility?.address &&<th>Address</th>}
-                                {columnVisibility?.mobile &&<th>Mobile</th>}
-                                {columnVisibility?.opbal &&<th>Op.Balance</th>}
-                                {columnVisibility?.debit &&<th>Debit</th>}
-                                {columnVisibility?.credit &&<th>Credit</th>}
-                                {columnVisibility?.clbal &&<th>Cl.Balance</th>}
+                                {columnVisibility?.code && <th>Code</th>}
+                                {columnVisibility?.customer && <th>Customer</th>}
+                                {columnVisibility?.address && <th>Address</th>}
+                                {columnVisibility?.mobile && <th>Mobile</th>}
+                                {columnVisibility?.opbal && <th>Op.Balance</th>}
+                                {columnVisibility?.debit && <th>Debit</th>}
+                                {columnVisibility?.credit && <th>Credit</th>}
+                                {columnVisibility?.clbal && <th>Cl.Balance</th>}
                             </tr>
                         </thead>
                         <tbody className='bg-light'>

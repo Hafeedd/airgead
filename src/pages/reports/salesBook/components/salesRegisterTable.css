@@ -1,0 +1,10 @@
+.table-hd{
+    background: #BD93F3; 
+}
+
+.daybook-table thead tr th{
+    border: 0 !important;
+}
+.table-btm{
+    background-color: rgba(0, 0, 0, 0.445);
+}

@@ -18,6 +18,16 @@ export const useReportsServices = () =>{
         return response?.data
     }
 
+    const getSalesBook = async (params) =>{
+        const response = await axiosPrivate.get('/reports/sales_report/view/',{params:params})
+        return response?.data
+    }
+
+    const getSaleRegister = async (params)=>{
+        const response = await axiosPrivate.get('/report/sales_register/report/view/',{params:params})
+        return response?.data
+    }
+
     const getDayBook = async (params) =>{
         const response = await axiosPrivate.get('/reports/daybook_report/view/',{params:params})
         return response?.data
@@ -32,8 +42,9 @@ export const useReportsServices = () =>{
         getStockLedger,
         getAccLedger,
         getOutstanding,
+        getSalesBook,
+        getSaleRegister,
         getDayBook,
         getTaxReport,
     }
 }
- 

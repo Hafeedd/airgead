@@ -216,7 +216,7 @@ const SalesTable = (props) => {
       else response = await putSalesItem(tableEdit, {...tableItem,fk_units:tableItem.unit});
 
       if (response?.success && !tableEdit) {
-        console.log("first");
+        // console.log("first");
         let tempItemKeys = [...tableItemKeys];
         tempItemKeys.push({ id: response?.data?.id });
         setTableItemKeys(tempItemKeys);
