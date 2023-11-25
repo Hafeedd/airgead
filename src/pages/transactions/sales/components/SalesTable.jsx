@@ -249,7 +249,7 @@ const SalesTable = (props) => {
 
   const handleChangeTableItem = (e, data) => {
     let tempItem = { ...tableItem };
-    if (data) {
+    if (data.value) {
       var item_data =
         data.options.filter((x) => x?.value === data?.value)[0] || {};
       var newObj = Object.fromEntries(
@@ -266,10 +266,10 @@ const SalesTable = (props) => {
       } = newObj;
         others.cgst_or_igst = others.tax_gst/2 || 0
         others.sgst =  others.tax_gst/2 || 0
-        if(!purchase_rate){
-            others = {}
-            retail_rate = 0
-        }
+        // if(!purchase_rate){
+        //     others = {}
+        //     retail_rate = 0
+        // }
         tempItem =
           {
             ...tempItem,
@@ -282,6 +282,9 @@ const SalesTable = (props) => {
             ...others,
             quantity: 1,
           };
+    }else{
+      handleTableItemReset()
+      return 0
     }
     if (e.target.value === "") {
       tempItem = { ...tempItem, [e.target.name]: "" };
@@ -478,9 +481,9 @@ const SalesTable = (props) => {
               <th>CGST/IGST</th>
               <th>SGST</th>
               <th>Total</th>
-              <th>Cost</th>
-              <th>Margin%</th>
-              <th>S.Rate</th>
+              {/* <th>Cost</th>
+              <th>Margin%</th> */}
+              <th>P.Rate</th>
               <th className="py-1 text-end">
                 <div
                   className="btn btn-primary purchase-add-btn my-0"
@@ -694,7 +697,7 @@ const SalesTable = (props) => {
                   className="purchase_input border-0 w-100 text-center"
                 />
               </td>
-              <td>
+              {/* <td>
                 <input
                   disabled
                   onKeyDown={handleKeyDown}
@@ -726,7 +729,7 @@ const SalesTable = (props) => {
                   type="number"
                   className="purchase_input border-0 w-100 text-center"
                 />
-              </td>
+              </td> */}
               <td>
                 <input
                   onKeyDown={handleKeyDown}
