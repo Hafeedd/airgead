@@ -8,6 +8,7 @@ import SalesRegisterTable from './components/SalesRegisterTable';
 
 const SalesBook = () => {
     const [salesBookList, setSalesBookList] = useState([])
+    const [saleRegisterList, setSaleRegisterList] = useState([])
     const [show, setShow] = useState(false)
     const [colshow, setColShow] = useState(false)
     const [paramsToReport, setParamsToReport] = useState({
@@ -40,6 +41,21 @@ const SalesBook = () => {
     }
 
     console.log(salesBookList)
+
+    useEffect(()=>{
+        getSalesRegisterData()
+    }, [])
+
+    const getSalesRegisterData = async ()=>{
+        try{
+            const response = await getSaleRegister(paramsToReport)
+            if (response.sucess){
+                setSaleRegisterList(response.data)
+            }
+        }catch(err){
+            console.log(err)
+        }
+    }
 
 
     return (
@@ -79,7 +95,13 @@ const SalesBook = () => {
             </div>
             <div className="p-3 mt-3">
                 <div className="p-2 bg-light rounded-1">
-                    {location.pathname == "/sale-register" && "active" ? <><SalesBookEntry /><SalesRegisterTable /></> :
+                    {location.pathname == "/sale-register" && "active" ?
+                        <>
+                            <SalesBookEntry />
+                            <SalesRegisterTable {...{
+                                saleRegisterList
+                            }} />
+                        </> :
                         <><SalesBookEntry {...{
                             paramsToReport, setParamsToReport
                         }}
@@ -87,9 +109,6 @@ const SalesBook = () => {
                             <SalesBookTable {...{
                                 salesBookList
                             }} /></>}
-
-                    {/* <SalesBookEntry />
-                    <SalesBookTable /> */}
 
                     <div className="row mt-3">
                         <div className="w-100 d-flex justify-content-end mb-3">

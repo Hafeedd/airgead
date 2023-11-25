@@ -4,7 +4,11 @@ import { GrRefresh } from 'react-icons/gr'
 import './salesRegisterTable.css'
 
 
-const SalesRegisterTable = () => {
+const SalesRegisterTable = (props) => {
+
+    const {saleRegisterList} = props
+
+
     return (
         <div className="row mx-0 mt-3">
             <div className="daybook-cont">
@@ -46,7 +50,9 @@ const SalesRegisterTable = () => {
                         </tr>
                     </thead>
                     <tbody>
-                        
+                        { saleRegisterList?.length>0 ? 
+                        saleRegisterList.map((data, i) => (
+                        <>
                         <tr>
                             <th colSpan={12} className='w-100 m-0 p-0 border-0'>
                                 <div className='table-hd p-2 border-0'>
@@ -55,6 +61,20 @@ const SalesRegisterTable = () => {
                                     </div>
                                 </div>
                             </th>
+                        </tr>
+                        <tr key={i}>
+                            <td>{data?.created_at}</td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
                         </tr>
                         <tr>
                             <td colSpan={8} className='w-100 m-0 p-0 py-4 bg-secondary'>
@@ -71,6 +91,14 @@ const SalesRegisterTable = () => {
                                 </div>
                             </td>
                         </tr>
+                        </>
+                        ))
+    :
+    <tr>
+        <td colSpan={12} className='fs-4 text-center'> No Reports yet</td>
+    </tr>
+    
+    }
                     </tbody>
                 </table>
             </div>

@@ -24,7 +24,7 @@ export const useReportsServices = () =>{
     }
 
     const getSaleRegister = async (params)=>{
-        const response = await axiosPrivate.get('/report/sales_register/report/view/',{params:params})
+        const response = await axiosPrivate.get('/reports/sales_register/report/view/',{params:params})
         return response?.data
     }
 
