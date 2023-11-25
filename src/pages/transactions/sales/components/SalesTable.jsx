@@ -213,7 +213,7 @@ const SalesTable = (props) => {
       }
       let response;
       if (!tableEdit) response = await postSalesItem({...tableItem,fk_units:tableItem.unit});
-      else response = await putSalesItem(tableEdit, tableItem);
+      else response = await putSalesItem(tableEdit, {...tableItem,fk_units:tableItem.unit});
 
       if (response?.success && !tableEdit) {
         console.log("first");
