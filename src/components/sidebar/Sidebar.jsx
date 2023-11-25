@@ -83,6 +83,9 @@ const Sidebar = () => {
                     <span className='SidebarSpan d-flex ms-5 ps-3'>
                         <div className='SidebarItemText' onClick={()=>navigate('/supplier-outstandings')}>Sup Outstanding</div>
                     </span>
+                    <span className='SidebarSpan d-flex ms-5 ps-3'>
+                        <div className='SidebarItemText' onClick={()=>navigate('/tax-report')}>Tax Reports</div>
+                    </span>
                 </div>
 
             </div>

@@ -22,6 +22,7 @@
 .acc-ledger thead tr:first-child th{
     position: sticky;
     top: 0;
+    z-index: 54;
 }
 .acc-ledger thead tr:nth-child(2) th{
     position: sticky;

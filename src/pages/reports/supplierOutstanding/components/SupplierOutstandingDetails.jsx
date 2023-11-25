@@ -19,6 +19,7 @@ const SupplierOutstandingDetails = (props) => {
     }
   }
 
+  
 
   return (
     <div>
@@ -60,7 +61,7 @@ const SupplierOutstandingDetails = (props) => {
             onChange={handleChange}
             required
             name="to_date"
-            value={paramsToReport.to_date || (new Date().toISOString.slice(0, 10))}
+            value={paramsToReport.to_date || (new Date().toISOString?.slice(0, 10))}
             className='purchase-input-text me-2'
             placeholder='Document number'
             type='date'

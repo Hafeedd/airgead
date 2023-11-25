@@ -192,7 +192,7 @@ export const AddStaff = (props) => {
         let res2 = await getCode() 
         if(res2?.success){
             let cod = res2?.data?.filter(x=>x.sub_id === "STF")
-            setStaffAdd(data=>({...data,['code']:cod[0]?.next_value}))
+            setStaffAdd(data=>({...data,['code']:cod[0].sub_id+cod[0]?.next_value}))
         }
     }
     } catch (err) {}
@@ -237,6 +237,7 @@ export const AddStaff = (props) => {
     setProfIdList([])
     setstaffEducList([])
     setstaffProfList([])
+    getData()
   }
 
   return (

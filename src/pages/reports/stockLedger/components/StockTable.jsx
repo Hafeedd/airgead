@@ -1,9 +1,17 @@
+import { useEffect, useState } from "react";
 import searchIcon from "../../../../assets/icons/search.png";
 import {GrRefresh} from 'react-icons/gr'
 
 export const StockTable = (props) => {
-  const {stockList, setStockList,
-    paramsToReport, setParamsToReport,} = props
+  const {stockList} = props
+
+  // console.log(stockList)
+
+    const [searchedList , setSearchedList] = useState([])
+
+    useEffect(()=>{
+      setSearchedList(stockList)
+    },[stockList,])
     
   const AdjustTableHeight = () =>{
     let a = []
@@ -28,16 +36,46 @@ export const StockTable = (props) => {
     return a
   }
 
+  const handleSearch = async (e) => {
+    try {
+      let tempData,
+        tempList = stockList;
+      if (stockList) {
+        let value = e.target.value.toLocaleLowerCase();
+        if (value != "") {
+          if (stockList.length > 0) {
+            tempData = tempList?.filter((x) => {
+              console.log(x)
+              let searchInString = `${
+                x.item_code?.toLocaleLowerCase() +
+                " " +
+                x.item_name?.toLocaleLowerCase()
+              }`;
+              let search = searchInString?.includes(value);
+              if (search) {
+                return true;
+              }
+            });
+            setSearchedList(tempData);
+          }
+        } else {
+          setSearchedList(stockList);
+        }
+      }
+    } catch {}
+  };
+
   return (
     <div className="mt-3">
       <div style={{background:"#000"}} className="w-100 d-flex justify-content-end">
         <div className="col-3 p-2 stock-ledger-search d-flex align-items-center">
-            <div className="col-1 me-2"><GrRefresh className="bg-light m-1 p-1 rounded-1" size={20}/></div>
+            <div className="col-1 me-2">
+              <GrRefresh onClick={()=>setSearchedList(stockList)} className="bg-light m-1 p-1 rounded-1" size={20}/></div>
           <div className="item_seach_bar_cont rounded-2 col-11 col-10">
             <img src={searchIcon} className="search_img me-3 ms-2 py-2" />
             <input
               // value={search}
-              // onChange={(e)=>setSearch(e.target.value)}
+              onChange={handleSearch}
               className="item_search_bar rounded-2 border-0 py-1"
               placeholder="Search"
               type="text"
@@ -63,8 +101,8 @@ export const StockTable = (props) => {
             <th width="70"><div className="prple_th rounded-top-2">Cl.stock</div></th>
         </thead>
         <tbody>
-        {stockList?.length>0 &&
-          stockList.map((data,i)=>(
+        {searchedList?.length>0 &&
+          searchedList.map((data,i)=>(
           <tr key={i}>
             <td className="text-start">{data?.item_code||"..."}</td>
             <td width="110" className="text-start">{data?.item_name||"..."}</td>

@@ -122,3 +122,7 @@
     overflow-y: scroll;
     margin-bottom: 0.4rem;
 }
+
+.table-scroller.payscale{
+    height: 16rem;
+}

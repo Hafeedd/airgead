@@ -1,11 +1,32 @@
-import React from "react";
-import { useNavigate } from "react-router";
+import './daybook.css'
+import React, { useEffect, useState } from "react";
 import { DaybookEntry } from "./components/DaybookEntry";
 import { DayBookTable } from "./components/DayBookTable";
-import './daybook.css'
+import { useReportsServices } from "../../../services/reports/reports";
 
 export const Daybook = () => {
-  const navigate = useNavigate();
+  const [dayBookList, setDayBookList] = useState([])
+  const [params, setParams] = useState({
+    from_date:null,
+    to_date:null,
+  })
+
+  const {getDayBook} = useReportsServices()
+
+  useEffect(()=>{
+    getData()
+  },[params, ])
+
+  const getData = async () =>{
+    try{
+      const response = await getDayBook(params) 
+      if(response.success){
+        setDayBookList(response.data)
+      }
+    }catch(err){
+      console.log(err)
+    }
+  }
 
   return (
     <div className="item_add">
@@ -28,8 +49,8 @@ export const Daybook = () => {
       </div>
       <div className="p-3">
         <div className="p-2 bg-light rounded-1">
-            <DaybookEntry/>
-            <DayBookTable/>
+            <DaybookEntry {...{params,setParams}}/>
+            <DayBookTable {...{dayBookList}}/>
         </div>
       </div>
     </div>

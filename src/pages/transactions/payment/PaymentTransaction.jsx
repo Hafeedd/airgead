@@ -92,10 +92,10 @@ const PaymentTransaction = ({types}) => {
             if(response?.success){
                 response.data.map(item=>{
                     let b , a
-                    // if(item.name == "CASH IN BANK" || item.name == "CASH IN HAND"){
+                    if(item.name == "CASH IN BANK" || item.name == "CASH IN HAND"){
                         b = {key:item.id,value:item.code,text:item.name,description:item.code}
                         tempListPayment.push(b)
-                    // }
+                    }
                     if(item.name && item.code){
                         a = {key:item.id,value:item.code,text:item.name,description:item.code}
                         tempList.push(a)
@@ -104,8 +104,9 @@ const PaymentTransaction = ({types}) => {
                 setAccountPayList(tempListPayment)
                 setAccountList(tempList)
                 if(tempListPayment?.length>0)
-                    setPaymentAdd({...paymentAdd,cash_bank_account_name:tempListPayment[0]?.value,
-                        cash_bank_account:tempListPayment[0]?.text})
+                console.log(tempListPayment[0])
+                    setPaymentAdd({...paymentAdd,cash_bank_account_name:tempListPayment[0]?.name,
+                        cash_bank_account:tempListPayment[0]?.value})
             }
             return response.data
         }catch(err){

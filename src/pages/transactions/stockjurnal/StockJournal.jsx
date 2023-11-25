@@ -167,6 +167,7 @@ export const StockJournal = () => {
         let tempList = [];
         response2.data.map((item) => {
           let a = {
+            ...item,
             value: item.code,
             text: item.name,
             name: item.name,
@@ -175,7 +176,6 @@ export const StockJournal = () => {
           };
           tempList.push(a);
         });
-        console.log(tempList)
         setItemNameList(tempList);
       }
       if (response3.success) {
@@ -297,7 +297,7 @@ export const StockJournal = () => {
         <div className="page_head my-1 ps-4 d-flex justify-content-between">
           <div>
             <div className="fw-600 fs-5">Stock Journal</div>
-            <div className="page_head_items mb-3">
+            <div className="page_head_items mb-2">
               <div className={`page_head_item active`}>Journal</div>
             </div>
           </div>

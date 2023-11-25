@@ -130,7 +130,7 @@ const PurchaseInvoiceDetails = (props) => {
                     type='date'
                 />
             </Form.Group> */}
-            <Form.Group className='col-3 ps-5 mx-0 d-flex align-items-center mt-1'>
+            <Form.Group className='col-3 ps-5 mx-0 d-flex align-items-center mt-2'>
                 <Form.Label className='col-3 purchase-input-label'>Bill Date</Form.Label>
                 <Form.Control
                     name="bill_date" value={purchaseAdd.bill_date?.slice(0,10)||''}
@@ -140,7 +140,7 @@ const PurchaseInvoiceDetails = (props) => {
                     type='date'
                 />
             </Form.Group>
-            <Form.Group className='col-3 col-4 mx-0 d-flex align-items-center my-1'>
+            <Form.Group className='col-3 col-4 mx-0 d-flex align-items-center my-1 mt-2'>
                 <Form.Label className='col-3 col-4 purchase-input-label'>Date</Form.Label>
                 <Form.Control
                     name="created_at" value={purchaseAdd?.created_at?.slice(0,10)||(new Date().toISOString().slice(0,10))}
@@ -151,7 +151,7 @@ const PurchaseInvoiceDetails = (props) => {
                 />
             </Form.Group>
 {/* Row 3 -------------------------------------------------------------------------------------------------------- */}
-            <div className='col-3 d-flex align-items-end justify-content-start ps-1'>
+            <div className='col-3 col-2 pe-0 d-flex align-items-end justify-content-start ps-1'>
                 <div className='px-1'>
                     <div className='btn btn-sm btn-secondary px-3'>Purchase</div>
                 </div>
@@ -162,12 +162,25 @@ const PurchaseInvoiceDetails = (props) => {
                     <div className='btn btn-sm btn-secondary px-3'>Other</div>
                 </div>
             </div>
-            <div className='col-1 d-flex align-items-end'>
+            <div className='col-1 d-flex align-items-end ps-0'>
                 <div className='btn btn-dark btn-sm purchase-edit-btn' onClick={handleEdit}>
                     <FiEdit size={'1rem'} />Edit
                 </div>
             </div>
-            <div className='col-4 col-5 d-flex align-items-center row mx-0 my-0 justify-content-end'>
+            <div className="mx-0 px-0 col-1 d-flex align-items-center justify-content-start">
+            <input
+              type="checkbox"
+              name="isBatch"
+              id="isBatch"
+              checked={purchaseAdd.isBatch || ""}
+              onKeyDown={handleKeyDown}
+              onChange={handleChange}
+            />
+            <label htmlFor="isBatch" className="ps-2">
+              Batch
+            </label>
+          </div>
+            <div className='col-4 d-flex align-items-center row mx-0 my-0 justify-content-end'>
                 <div className='mx-0 px-0 col-4 d-flex align-items-center justify-content-end'>
                     <input type='checkbox' name="interstate" id="interstate" checked={purchaseAdd?.interstate||''}
                     onKeyDown={handleKeyDown} onChange={handleChange}/>

@@ -72,7 +72,7 @@
 
 .purchase-table-header th{
     background: #191A19 !important;
-    height: 1.5rem;
+    height: 0.4rem;
     text-align: center;
     font-size: 0.875rem;
     color: #FFF;
@@ -231,7 +231,7 @@ td.clr{
 
 .purchase-table-item-container{
     background: #e2e3e5;
-    max-height: 24rem;
+    height: 23.3rem;
     overflow: hidden;
     overflow-y: scroll;
 }
@@ -267,7 +267,7 @@ td.clr{
 .btn-primary.purchase-add-btn{
     border-radius: 0.125rem;
     background: #4A00A8;
-    font-size: 2rem;
+    font-size: 1.64rem;
     font-weight: 900;
     padding: 0 0.5rem;
 }

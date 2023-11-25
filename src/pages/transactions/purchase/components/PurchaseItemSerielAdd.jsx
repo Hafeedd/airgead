@@ -14,13 +14,13 @@ export const PurchaseItemBatchAdd = (props) => {
     tableItemList,setTableItemList,purchaseAdd,
     tebleItemKeys, setTableItemKeys,tableItem,
     handleCloseItemBatch,tableEdit, setTableEdit,
-    handleResetBatch,getData,setEdit,
+    handleResetBatch,getData,setEdit,handleBatchSubmit,
+    batchKeys, setBatchKeys,showBatch, setShowBatch,
     } = props;
 
   const [ref, setRef] = useState();
   // const [batchList, setTableItemBatchList] = useState([]);
   const [batchEdit, setBatchEdit] = useState(false);
-  const [batchKeys, setBatchKeys] = useState([]);
 
   const { handleKeyDown, formRef } = useOnKey(ref, setRef);
 
@@ -32,7 +32,7 @@ export const PurchaseItemBatchAdd = (props) => {
         handleResetBatch()
         setTableItemBatchList([])
     }
-  },[purchaseItemSerielModal])
+  },[showBatch])
 
   const addToBatchList = async () => {
     if(!tableItemBatch?.batch_or_serial){
@@ -88,6 +88,7 @@ export const PurchaseItemBatchAdd = (props) => {
   const handleClose = () =>{
     handleCloseItemBatch()
     setPurchaseItemSerielModal(false)
+    setShowBatch(false)
     handleTableItemReset()
     setTableItemBatchList()
     setTableEdit(false)
@@ -118,53 +119,6 @@ export const PurchaseItemBatchAdd = (props) => {
     }
   }
 
-  const handleBatchSubmit = async (e) => {
-    try{
-
-      let ItemTempList = [...tableItemBatchList] , itemTemp = {}
-      if(tableItemBatchList){
-        tableItemBatchList?.map(data=>{
-        let itemTemp = {...data}
-        itemTemp = {...itemTemp,['cstm_id']:purchaseItemSerielModal}
-      })
-      try{
-        const submitData = {...tableItem,batch_items:batchKeys}
-        let response
-        if(!tableEdit){
-          response = await postPurchaseItem(submitData)
-        }else{
-          response = await putPurchaseItem(tableEdit,submitData)
-        }
-        if(response?.success && !tableEdit){
-          let tempItemKeys = [...tebleItemKeys]
-          tempItemKeys.push({id:response?.data?.data1?.id})
-          ItemTempList.push(itemTemp)
-          setTableItemKeys(tempItemKeys)
-          let tempItems = [...tableItemList]
-          tableItemList.map((x,i)=>{
-            if(x.cstm_id == purchaseItemSerielModal){
-              x.id = response?.data?.data1?.id
-              tempItems.splice(i,1)
-              tempItems.push({...x})
-              setTableItemList(tempItems)
-            }
-          })
-        }else{
-          const data = getData()
-          setEdit(data)
-          setTableEdit(false)
-        }
-        setTableItemBatchList(ItemTempList)
-      }catch(err){
-
-      }
-      setPurchaseItemSerielModal(false)
-      handleTableItemReset()
-    }
-  }catch(err){
-    console.log(err)
-  }
-  }
   
   const handleMoveToEdit = (data) =>{
     setTableItemBatch(data)

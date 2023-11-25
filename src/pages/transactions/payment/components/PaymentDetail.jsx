@@ -199,14 +199,6 @@ const PaymentDetail = ({
               />
             </div>
           </div>
-          {/* <div className="col-6 row ps-4 mx-0 px-0">
-                        <div className='mx-0 px-0 col-5'>
-                            Project
-                        </div>
-                        <div className='mx-0 px-0 col-7'>
-                            <input onChange={handleChange} name='project' value={paymentAdd.project ? paymentAdd.project : ''} type='text' className='item_input names' />
-                        </div>
-                    </div> */}
         </div>
         <div className="d-flex align-items-center px-0 ps-2 row mx-0 mt-3">
           <div className="col-12 row mx-0 px-0">

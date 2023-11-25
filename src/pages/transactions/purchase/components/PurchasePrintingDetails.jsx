@@ -72,30 +72,31 @@ const PurchasePrintingDetails = (props) => {
                 <Form.Label className='col-3 col-4 purchase-input-label'>Date</Form.Label>
                 <Form.Control
                     onKeyDown={handleKeyDown}
-                    name="bill_date" value={purchaseAdd.bill_date||''}
+                    name="bill_date" 
+                    value={purchaseAdd?.created_at?.slice(0,10)||(new Date().toISOString().slice(0,10))}
                     onChange={handleChange}
                     className='purchase-input-text'
-                    type='text'
+                    type='date'
                 />
             </Form.Group>
 {/* Row 3 -------------------------------------------------------------------------------------------------------- */}
-            <div className='col-3 d-flex align-items-end justify-content-start ps-1'>
+            <div className='col-3 col-2 d-flex align-items-end justify-content-start ps-1 pe-0'>
                 <div className="px-1">
                     <div className="btn btn-sm btn-secondary px-3">Purchase</div>
                 </div>
-                <div className="">
+                <div>
                     <div className="btn btn-sm btn-secondary px-3">P.Return</div>
                 </div>
                 <div className="ps-1">
                     <div className="btn btn-sm btn-secondary px-3">Other</div>
                 </div>
             </div>
-            <div className="col-1 d-flex align-items-end">
+            <div className="col-1 d-flex align-items-end ps-0 ">
                 <div className="btn btn-dark btn-sm purchase-edit-btn" onClick={handleEdit}>
                     <FiEdit size={'1rem'} />Edit
                 </div>
             </div>
-            <span className="col-4 col-5" />
+            <span className="col-5" />
             <Form.Group className='col-3 col-4 mx-0 d-flex align-items-center my-1'>
                 <Form.Label className='col-3 col-4 purchase-input-label'>Order No</Form.Label>
                 <Form.Control

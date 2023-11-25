@@ -68,8 +68,7 @@
 }
 
 .table-scroller{
-    min-height: 20rem;
-    max-height: 25rem;
+    height: 35rem;
     overflow-y: scroll;
     overflow-x: visible;
 }
@@ -158,17 +157,19 @@
 }
 
 .item_search_bar{
+    text-transform: uppercase;
+    line-height: 0 !important;
+    display: flex;
+    align-items: center;
     outline: none;
     position: relative;
     background: white;
-    width: 9rem;
+    width: 100%;
     padding-left: 1rem !important;
-    padding-bottom: 0.3rem !important;
     color: #4E4E4E;
 }
 
 .item_add_cont{
-    /* position: relative; */
     width: inherit;
     background-color: white;
     border-radius: 0.2rem;

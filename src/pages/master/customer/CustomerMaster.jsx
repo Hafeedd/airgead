@@ -14,7 +14,7 @@ const CustomerList = () => {
     // const [showCustomerAdd,setShowCustomerAdd] = useState(false)
     const {getCustomer,deleteCustomer} = useCustomerServices()
 
-    const location = useLocation()
+    const location = useLocation().pathname
     const navigate = useNavigate()
 
     useEffect(()=>{
@@ -89,7 +89,7 @@ const CustomerList = () => {
     return(
         <div className='item_add'>
                 <div className="itemList_header row mx-0">
-                    <div className="page_head ps-4 d-flex justify-content-between">
+                    <div className="page_head my-1 ps-4 d-flex justify-content-between">
                         <div>
                         <div className='fw-600 fs-5'>Master List</div>
                         <div className='page_head_items mb-3'>
@@ -97,12 +97,12 @@ const CustomerList = () => {
                            
                         </div>
                         </div>
-                        <div className="d-flex px-0 align-items-center customer-add-btn">
+                        <div className={`d-flex px-0 align-items-center customer-add-btn  ${location === "/customer-add" && "d-none"}`}>
                             <div onClick={()=>{navigate("/customer-add");setToEdit(false)}} className="btn btn-primary add-btn px-0">+ &nbsp; Add Customer</div>
                         </div>
                     </div>
                 </div>
-                {/* toEdit||showCustomerAdd */ location.pathname === '/customer-add'?
+                {/* toEdit||showCustomerAdd */ location === '/customer-add'?
                 <CustomerAddForm refresh={getData} edit={toEdit} setToEdit={setToEdit}/>:
                     <CustomerTable list={listCustomer} {...{getData,search,setSearch,navigate,handleEdit,handleDelete,toEdit}}/>
                 }

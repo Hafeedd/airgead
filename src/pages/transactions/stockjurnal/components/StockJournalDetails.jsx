@@ -38,7 +38,7 @@ export const StockJournalDetails = (props) => {
 
   const AdjustTableHeight = () => {
     let a = [];
-    for (let i = 0; i < 5 - stockTableItemList.length; i++) {
+    for (let i = 0; i < 7 - stockTableItemList.length; i++) {
       a.push(
         <tr className="border-0">
           <th colSpan={10} className="stockJadj-table border-0"></th>
@@ -81,6 +81,8 @@ export const StockJournalDetails = (props) => {
         ["code"]: item_data?.value,
         unit: item_data?.unit,
         name: item_data?.name,
+        cost: item_data?.cost,
+        value: item_data?.retail_rate
       }));
     } else if (e.target.value === "")
       setStockTableItem((data) => ({ ...data, [e.target.name]: null }));
@@ -116,7 +118,7 @@ export const StockJournalDetails = (props) => {
   };
 
   const handlePrev = () => {
-    if (stockJList) {
+    if (stockJList?.length>0) {
       if (!edit) {
         setEdit(stockJList[0]);
       } else {
@@ -129,6 +131,8 @@ export const StockJournalDetails = (props) => {
           Swal.fire("No more stock to edit", "go for next", "warning");
         }
       }
+    }else{
+      Swal.fire("No more stock to edit", "go for next", "warning");
     }
   };
 
@@ -250,8 +254,8 @@ export const StockJournalDetails = (props) => {
           </div>
         </div>
       </div>
-      <div className="pe-4 stock-journal-table-cont mt-3">
-        <table className=" table stock-journal-table w-100">
+      <div className="pe-4 stock-journal-table-cont mt-2">
+        <table className=" table mb-0 stock-journal-table w-100">
           <thead>
             <th colSpan={2} className="ps-4">
               Item Name
@@ -343,14 +347,14 @@ export const StockJournalDetails = (props) => {
                   <option value="less">Less</option>
                 </select>
               </td>
+                {tableEdit && !edit &&
               <td className="align-middle ps-0 text-start">
-                {tableEdit && !edit && (
                   <BiSolidTrashAlt
                     size={20}
                     onClick={() => handleTrashButton()}
                   />
-                )}
               </td>
+                }
             </tr>
             {stockTableItemList?.length > 0 &&
               stockTableItemList?.map((data, i) => (
@@ -428,7 +432,7 @@ export const StockJournalDetails = (props) => {
               ))}
             <AdjustTableHeight />
             <tr>
-              <th className="p-2">
+              <th className="p-2 text-start">
                 <div
                   onClick={handlePrev}
                   className="btn stock-next-prev-btn me-2"
@@ -440,19 +444,19 @@ export const StockJournalDetails = (props) => {
                 </div>
               </th>
               <th className="p-2 text-center align-middle">Total</th>
-              <th>
+              <th className="align-middle">
                 <div className="purchase-input-text drop shadows text-center">
                   {stockJAdd?.total_qty || ""}
                 </div>
               </th>
               <th></th>
               <th></th>
-              <th>
+              <th className="align-middle">
                 <div className="purchase-input-text drop shadows text-center">
                   {stockJAdd?.total_value || ""}
                 </div>
               </th>
-              <th colSpan={3}>
+              <th className="align-middle" colSpan={3}>
                 <div className="row">
                   <div
                     onClick={handleClearAll}
@@ -472,7 +476,7 @@ export const StockJournalDetails = (props) => {
           </tbody>
         </table>
       </div>
-      <Form.Group className="col-3 col-4 pe-4 ps-0 mx-0 d-flex align-items-start mt-3 pb-5">
+      <Form.Group className="col-3 col-4 pe-4 ps-0 mx-0 d-flex align-items-start mt-3 pb-2">
         <Form.Label className="col-3 purchase-input-label pb-1">
           Narration
         </Form.Label>

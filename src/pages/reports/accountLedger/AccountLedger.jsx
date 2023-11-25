@@ -42,7 +42,7 @@ export const AccountLedger = () => {
         }
       const response = await getAccLedger(paramsToReport,code);
         if (response.success) {
-          setReportList(response.data);
+          setReportList([...response?.data]);
         }
     } catch (err) {
       console.log(err);
@@ -114,11 +114,7 @@ export const AccountLedger = () => {
             }}
           />
           <AccountsTable
-            {...{              
-              reportList,
-              paramsToReport,
-              setParamsToReport,
-            }}
+            list = {reportList}
           />
           <div className="row mt-3">
             <div className="w-100 d-flex justify-content-end mb-3">

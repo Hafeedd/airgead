@@ -10,7 +10,7 @@ const AccountMaster = () => {
     const [listItem, setListItem] = useState([])
     const navigate = useNavigate()
 
-    const location = useLocation()
+    const location = useLocation().pathname
 
     const {
         getAccountList
@@ -43,14 +43,14 @@ const AccountMaster = () => {
                             <div onClick={() => navigate('/account-master')} className={`page_head_item active`}>Master List</div>
                         </div>
                     </div>
-                    <div className="col-1 col-2 d-flex px-1 align-items-center">
+                    <div className={`col-1 col-2 d-flex px-1 align-items-center ${location === "/account-add" && "d-none"}`}>
                         <div onClick={() => { setToEdit(false); navigate('/account-add') }} className="btn btn-primary add-btn px-0">+ &nbsp; Add Account</div>
                     </div>
                 </div>
             </div>
 
             {
-                location.pathname === "/account-add" ?
+                location === "/account-add" ?
                     <AccountAdd edit={toEdit} refresh={loadAccountList} setEdit={setToEdit} /> :
                     <AccountList {...{ handleEdit, toEdit, listItem }} />
             }

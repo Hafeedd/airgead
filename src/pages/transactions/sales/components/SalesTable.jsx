@@ -212,7 +212,7 @@ const SalesTable = (props) => {
         return 0;
       }
       let response;
-      if (!tableEdit) response = await postSalesItem(tableItem);
+      if (!tableEdit) response = await postSalesItem({...tableItem,fk_units:tableItem.unit});
       else response = await putSalesItem(tableEdit, tableItem);
 
       if (response?.success && !tableEdit) {
@@ -252,7 +252,6 @@ const SalesTable = (props) => {
     if (data) {
       var item_data =
         data.options.filter((x) => x?.value === data?.value)[0] || {};
-        console.log(item_data)
       var newObj = Object.fromEntries(
         Object.entries(item_data)?.filter(([key, value]) => value !== null)
       );

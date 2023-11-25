@@ -1,0 +1,25 @@
+.tax-report-cont{
+    height: 34.4rem;
+    overflow: hidden;
+    overflow-y: scroll;
+}
+
+.tax-report.table thead tr th{
+    background: #000;
+    border: 1px solid black !important;
+    color: white;
+    outline: none;
+    padding: 0.7rem 0.2rem;
+}
+
+.tax-report.table thead tr td{
+    padding: 0.4rem 0.7rem;
+}
+
+.tax-report.table{
+    border: 1px solid #dfdfdf;
+}
+
+.purchase-input-text.select-drop{
+    line-height: 0;
+}

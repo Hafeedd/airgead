@@ -63,6 +63,8 @@ const SupplierAdd = ({edit,refresh,setToEdit}) => {
                     a = b.join("")
                 }
                 tempSupplierAdd = {...tempSupplierAdd,['opening_balance']:a}
+            }else{
+                tempSupplierAdd = {...tempSupplierAdd,['opening_balance']:'0.00'} 
             }
         }else
             handleReset()
@@ -115,7 +117,7 @@ const SupplierAdd = ({edit,refresh,setToEdit}) => {
             let res2 = await getCode() 
             if(res2?.success){
                 let cod = res2?.data?.filter(x=>x.sub_id === "SUP")
-                setSupplierAdd(data=>({...data,['code']:cod[0]?.next_value}))
+                setSupplierAdd(data=>({...data,['code']:cod[0].sub_id+cod[0]?.next_value}))
             }
         }
         setListItem(list)

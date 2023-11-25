@@ -18,9 +18,7 @@ export const StaffTable = (props) => {
     setSearchList,
     handleSelectAll,
     staffPayList,
-    handleSubmit,
     filter,
-    setFilter,
   } = props;
 
   const location = useLocation();
@@ -122,11 +120,9 @@ export const StaffTable = (props) => {
         </div>
       </div>
       <div
-        className="item_add_cont p-0 table-scroller mx-0"
+        className={`item_add_cont p-0 table-scroller mx-0 ${location.pathname == "/staff-pay-scale" && "payscale"}`}
         style={{
           borderRadius: "0.3125rem 0.3125rem 0rem 0rem",
-          minHeight: location.pathname == "/staff-list" ? "34rem" : "15rem",
-          maxHeight: location.pathname == "/staff-list" ? "34rem" : "15rem",
         }}
       >
         <table className="table table-light custom-table">
@@ -244,12 +240,13 @@ export const StaffTable = (props) => {
           </tbody>
         </table>
       </div>
+      {location.pathname=="/staff-pay-scale"&&
       <div className="row mt-3">
         <div className="col-10 col-11" />
         <button className="col-1 btn btn-dark">
           Add
         </button>
-      </div>
+      </div>}
     </div>
   );
 };

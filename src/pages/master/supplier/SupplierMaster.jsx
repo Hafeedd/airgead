@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react'
 import SupplierAdd from './components/SupplierAdd'
 import SupplierList from './components/SupplierList'
 import { useNavigate , useLocation } from 'react-router'
-import useItemServices from '../../../services/master/itemServices'
 import Swal from 'sweetalert2'
 import useCustomerServices from '../../../services/master/customerServices'
 
@@ -15,7 +14,7 @@ const SupplierMaster = () => {
     const navigate = useNavigate()
     const {getSupplier,deleteSupplier} = useCustomerServices()
 
-    const location = useLocation()
+    const location = useLocation().pathname
 
     useEffect(()=>{
         getData()
@@ -92,14 +91,14 @@ const SupplierMaster = () => {
                             <div onClick={()=>navigate('/supplier-master')} className={`page_head_item ${pageHeadItem === 1 && "active"}`}>Supplier List</div>
                         </div>
                         </div>
-                        <div className="col-1 col-2 d-flex px-1 align-items-center">
-                            <div onClick={()=>{setToEdit(false);navigate('/supplier-add')}} className="btn btn-primary add-btn px-0">+ &nbsp; Add Item</div>
+                        <div className={`col-1 col-2 d-flex px-1 align-items-center ${location === "/supplier-add" && "d-none"}`}>
+                            <div onClick={()=>{setToEdit(false);navigate('/supplier-add')}} className="btn btn-primary add-btn px-0">+ &nbsp; Add Supplier</div>
                         </div>
                     </div>
                 </div>
                 
                 {
-                    /* toEdit||showAddItem */ location.pathname === "/supplier-add"?
+                    /* toEdit||showAddItem */ location === "/supplier-add"?
                     <SupplierAdd refresh={getData} edit={toEdit} setToEdit={setToEdit}/>:
                     <SupplierList list={listItem} {...{search,setSearch,getData,handleEdit,handleDelete,toEdit}}/>
                 }

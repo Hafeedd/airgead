@@ -199,7 +199,7 @@ export const ItemAddForm = ({edit,refresh,setToEdit}) =>{
             let res2 = await getCode() 
             if(res2?.success){
                 let cod = res2?.data?.filter(x=>x.sub_id === "ITM")
-                setItemAdd(data=>({...data,['code']:cod[0]?.next_value}))
+                setItemAdd(data=>({...data,['code']:cod[0].sub_id+cod[0]?.next_value}))
             }
         }
         list.types=typesOptions
