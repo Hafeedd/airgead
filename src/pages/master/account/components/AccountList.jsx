@@ -50,6 +50,7 @@ const AccountList = ({
                         {
                             listItem?.length > 0 ?
                                 listItem?.map((data, i) => {
+                                    if(i>14)
                                     return (
                                         <tr key={i}>
                                             <td>{i + 1}</td>

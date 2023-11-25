@@ -26,22 +26,22 @@ export const DayBookTable = () => {
           </div>
         </div>
         <table className="table daybook-table">
-            <thead>
-                <tr>
-                    <th>A/c Name</th>
-                    <th>Description</th>
-                    <th>Debit</th>
-                    <th>Credit</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                </tr>
-            </tbody>
+          <thead>
+            <tr>
+              <th>A/c Name</th>
+              <th>Description</th>
+              <th>Debit</th>
+              <th>Credit</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+            </tr>
+          </tbody>
         </table>
       </div>
     </div>
