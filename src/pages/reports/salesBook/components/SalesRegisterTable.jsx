@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import searchIcon from "../../../../assets/icons/search.png";
 import { GrRefresh } from "react-icons/gr";
 import "./salesRegisterTable.css";
@@ -19,25 +19,34 @@ const SalesRegisterTable = (props) => {
   //   }
   //   return a;
   // };
+
+  useEffect(()=>{
+    setSearchedList(saleRegisterList)
+  },[saleRegisterList])
+
   const handlesearch = async(e)=>{
     try{
       let tempData, tempList = saleRegisterList;
       if(saleRegisterList){
         let value = e.target.value.toLowerCase()
-        if(value !=""){
-          if(saleRegisterList.length>0){
-            tempData = tempList?.filter((x)=>{
-              console.log(x)
-              let searchInString = `${
-                x.sales_item?.item?.item_name?.toLowerCase()
-              }`
-              let search = searchInString?.includes(value)
-              if(search){
+        if (value != "") {
+          if (saleRegisterList.length > 0) {
+            tempData = tempList?.filter((x) => {
+              let search
+              x.sales_item.map(data=>{
+                let searchInString = `${data?.item?.item_name?.toLowerCase()}`;
+                search = searchInString?.includes(value);
+                if(search)
                 return true
+              })
+              if (search) {
+                return true;
               }
-            })
-            setSearchedList(tempData)
+            });
+            setSearchedList(tempData);
           }
+        } else {
+          setSearchedList(tempList);
         }
       }else{
         setSearchedList(tempList);
@@ -47,7 +56,7 @@ const SalesRegisterTable = (props) => {
 
   const handleDrop = (i) =>{
     let tempList = saleRegisterList
-    let newList = tempList[i] 
+    let newList = tempList[i]
     if(newList.drop){
       newList.drop = false;
     }else
@@ -66,14 +75,14 @@ const SalesRegisterTable = (props) => {
         >
           <div className="col-3 p-2 stock-ledger-search d-flex align-items-center">
             <div className="col-1 me-2">
-              <GrRefresh className="bg-light m-1 p-1 rounded-1" size={20} />
+              <GrRefresh onClick={()=>setSearchedList(saleRegisterList)} className="bg-light m-1 p-1 rounded-1" size={20} />
             </div>
             <div className="item_seach_bar_cont rounded-2 col-11 col-10">
               <img src={searchIcon} className="search_img me-3 ms-2 py-2" />
               <input
                 // value={search}
                 // onChange={(e)=>setSearch(e.target.value)}
-                onChange={handlesearch}
+                onChange={handlesearch}S
                 className="item_search_bar rounded-2 border-0 py-1"
                 placeholder="Search"
                 type="text"
@@ -81,7 +90,8 @@ const SalesRegisterTable = (props) => {
             </div>
           </div>
         </div>
-        <table className="table daybook-table table-fixed">
+        <div className="stick-table table-scroll-sale">
+        <table className="table daybook-table">
           <thead>
             <tr>
               <th>Item Name</th>
@@ -99,8 +109,8 @@ const SalesRegisterTable = (props) => {
             </tr>
           </thead>
           <tbody>
-            {saleRegisterList?.length > 0 ? (
-              saleRegisterList.map((data, i) => {
+            {searchedList?.length > 0 ? (
+              searchedList.map((data, i) => {
                 let total = 0;
                 let per = 0;
                 return (
@@ -135,7 +145,7 @@ const SalesRegisterTable = (props) => {
                         </div>
                       </td>
                     </tr>
-                    {data.drop &&
+                    {!data.drop &&
                       data.sales_item.length > 0 &&
                       data.sales_item.map((item, i) => {
                         total = parseFloat(item.item?.total) + total;
@@ -202,6 +212,7 @@ const SalesRegisterTable = (props) => {
             )}
           </tbody>
         </table>
+        </div>
       </div>
     </div>
   );

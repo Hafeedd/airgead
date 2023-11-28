@@ -1,28 +1,27 @@
-import React, { useState } from 'react'
-import { Navigate, useLocation, useNavigate } from 'react-router';
+import React, { useState } from "react";
+import { Navigate, useLocation, useNavigate } from "react-router";
+import PurchaseBookEntry from "./components/PurchaseBookEntry";
+import PurchaseBookTable from "./components/PurchaseBookTable";
+import PurchaseRegisterTable from "./components/PurchaseRegisterTable";
 
 const PurchaseBook = () => {
-
-    
   const [show, setShow] = useState(false);
   const [colshow, setColShow] = useState(false);
 
-  
   const navigate = useNavigate();
   const location = useLocation();
-
 
   return (
     <div className="item_add">
       <div className="itemList_header row mx-0">
         <div className="page_head ps-4 d-flex justify-content-between">
           <div>
-            <div className="fs-5 py-2">
+            <div className="fs-5 fw-600">
               {location.pathname == "/purchase-register" && "active"
                 ? "Purchase Register"
                 : "Purchase Book"}
             </div>
-            <div className="page_head_items">
+            <div className="page_head_items mb-2 mt-2">
               <div
                 onClick={() => {
                   navigate("/purchase-book");
@@ -64,9 +63,19 @@ const PurchaseBook = () => {
       </div>
       <div className="p-3 mt-3">
         <div className="p-2 bg-light rounded-1">
-        
-          <div className="row mt-5">
-            <div className="w-100 d-flex justify-content-end mb-3">
+          {location.pathname == "/purchase-register" && "active" ? (
+            <>
+              <PurchaseBookEntry />
+              <PurchaseRegisterTable />
+            </>
+          ) : (
+            <>
+              <PurchaseBookEntry />
+              <PurchaseBookTable />
+            </>
+          )}
+          <div className="row mt-2">
+            <div className="w-100 d-flex justify-content-end mb-2 ">
               <div className="btn btn-dark col-1 col-2 py-0 me-2">Exit</div>
             </div>
           </div>
@@ -74,6 +83,6 @@ const PurchaseBook = () => {
       </div>
     </div>
   );
-}
+};
 
-export default PurchaseBook
+export default PurchaseBook;

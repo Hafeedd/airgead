@@ -21,7 +21,7 @@ const SalesBookEntry = (props) => {
     return (
 
         <div className='row mx-0'>
-            <div className="col-12 mt-1 d-flex justify-content-start mt-3">
+            <div className="col-12 mt-1 d-flex justify-content-start mt-1">
                 <div
                     style={{ background: "#4B4B4B" }}
                     className="reports-btn btn rounded-1 col-1 col-2 py-0 me-3"

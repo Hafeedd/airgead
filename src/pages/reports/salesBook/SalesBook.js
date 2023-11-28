@@ -12,7 +12,7 @@ const SalesBook = () => {
   const [show, setShow] = useState(false);
   const [colshow, setColShow] = useState(false);
   const [params, setParams] = useState({
-    from_date: new Date("01-02-2000").toISOString().slice(0, 10),
+    from_date: new Date().toISOString().slice(0, 10),
     to_date: new Date().toISOString().slice(0, 10),
     salesman: null,
     billtype: null,
@@ -34,6 +34,8 @@ const SalesBook = () => {
       const response = await getSalesBook(params);
       if (response.success) {
         setSalesBookList(response.data);
+      }else{
+        
       }
       const response1 = await getSaleRegister(params);
       if (response1.success) {
@@ -49,7 +51,7 @@ const SalesBook = () => {
       <div className="itemList_header row mx-0">
         <div className="page_head ps-4 d-flex justify-content-between">
           <div>
-            <div className="fs-5 py-2">
+            <div className="fs-5 fw-600">
               {location.pathname == "/sale-register" && "active"
                 ? "Sale Register"
                 : "Sales Book"}
@@ -106,8 +108,7 @@ const SalesBook = () => {
               />
               <SalesRegisterTable
                 {...{
-                  saleRegisterList,
-                  setSaleRegisterList,
+                  saleRegisterList,setSaleRegisterList
                 }}
               />
             </>
@@ -127,7 +128,7 @@ const SalesBook = () => {
             </>
           )}
 
-          <div className="row mt-5">
+          <div className="row mt-3">
             <div className="w-100 d-flex justify-content-end mb-3">
               <div className="btn btn-dark col-1 col-2 py-0 me-2">Exit</div>
             </div>

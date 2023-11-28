@@ -76,6 +76,7 @@ const SalesBookTable = (props) => {
             </div>
           </div>
         </div>
+        <div className="stick-table table-scroll-sale">
         <table className="table daybook-table">
           <thead>
             <tr>
@@ -137,6 +138,7 @@ const SalesBookTable = (props) => {
             )}
           </tbody>
         </table>
+        </div>
       </div>
     </div>
   );
