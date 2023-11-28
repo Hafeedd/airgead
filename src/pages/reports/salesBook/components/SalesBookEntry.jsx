@@ -6,13 +6,14 @@ import { Form } from 'react-bootstrap'
 
 const SalesBookEntry = (props) => {
 
-    const {paramsToReport, setParamsToReport} = props
+    const {params, setParams} = props
 
     const handleChange = (e)=>{
         if(e.target.value === ""){
-            setParamsToReport({ ...paramsToReport,[e.target.name]:null})
+            setParams({ ...params,[e.target.name]:null})
+            console.log(params)
         }else{
-            setParamsToReport({ ...paramsToReport,[e.target.name]:e.target.value})
+            setParams({ ...params,[e.target.name]:e.target.value})
         }
 
     }
@@ -65,9 +66,9 @@ const SalesBookEntry = (props) => {
                         </Form.Label>
                         <Form.Control
                             onChange={handleChange}
-                            // required
-                            name="item_code"
-                            // value = {paramsToReport.from_date || (new Date().toISOString(0,10))}
+                            required
+                            name="from_date"
+                            value = {params.from_date || (new Date().toISOString(0,10))}
                             className="purchase-input-text me-2 text-start"
                             type="date"
                         />
@@ -78,9 +79,9 @@ const SalesBookEntry = (props) => {
                         </Form.Label>
                         <Form.Control
                             onChange={handleChange}
-                            // required
-                            name="item_code"
-                            // value = {paramsToReport.to_date || (new Date().toISOString(0,10))}
+                            required
+                            name="to_date"
+                            value = {params.to_date || (new Date().toISOString(0,10))}
                             className="purchase-input-text me-2 text-start"
                             type="date"
                         />

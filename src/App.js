@@ -19,43 +19,62 @@ import SupplierOutstanding from './pages/reports/supplierOutstanding/SupplierOut
 import SalesBook from './pages/reports/salesBook/SalesBook';
 import { TaxReport } from './pages/reports/taxReport/TaxReport';
 import CashBook from './pages/reports/cashbook/CashBook';
+import PurchaseBook from './pages/reports/purchaseBook/PurchaseBook';
 
 function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<Layout/>}> 
-          <Route element={<Outlet/>}>
-            <Route index element={<ItemMaster/>}/>
-            <Route path='/add' element={<ItemMaster/>}/>
-            <Route path="/customer-master" element={<CustomerMaster/>}/>
-            <Route path="/customer-add" element={<CustomerMaster/>}/>
-            <Route path="/supplier-master" element={<SupplierMaster/>}/>
-            <Route path="/supplier-add" element={<SupplierMaster/>}/>
-            <Route path="/account-master" element={<AccountMaster/>}/>
-            <Route path="/account-add" element={<AccountMaster/>}/>
-            <Route path="/staff-list" element={<StaffMaster/>}/>
-            <Route path="/staff-pay-scale" element={<StaffMaster/>}/>
-            <Route path="/staff-master" element={<StaffMaster/>}/>
-            <Route path="/purchase-transaction" element={<PurchaseTransaction/>}/>
-            <Route path="/sales-transaction" element={<SalesTransaction/>}/>
-            <Route path="/payment-transaction" element={<PaymentTransaction types={'Payment'} />}/>
-            <Route path="/receipt-transaction" element={<PaymentTransaction types={'Receipt'} />}/>
-            <Route path="/stock-journal" element={<StockJournal/>}/>
-            <Route path="/stock-reports" element={<StockLedger/>}/>
-            <Route path="/account-reports" element={<AccountLedger/>}/>
-            <Route path="/customer-outstandings" element={<CustomerOutstanding/>}/>
-            <Route path="/supplier-outstandings" element={<SupplierOutstanding/>}/>
-            <Route path="/staff-outstandings" element={<SupplierOutstanding/>}/>
-            <Route path="/opening-stock" element={<OpStock/>}/>
-            <Route path="/account-journal" element={<AccJournal/>}/>
-            <Route path="/day-book" element={<Daybook/>}/>
-            <Route path="/sales-book" element={<SalesBook/>}/>
-            <Route path="/sale-register" element={<SalesBook/>}/>
-            <Route path="/tax-report" element={<TaxReport/>}/>
-            <Route path="/cashbook-report" element={<CashBook/>}/>
-
-            
+        <Route path="/" element={<Layout />}>
+          <Route element={<Outlet />}>
+            <Route index element={<ItemMaster />} />
+            <Route path="/add" element={<ItemMaster />} />
+            <Route path="/customer-master" element={<CustomerMaster />} />
+            <Route path="/customer-add" element={<CustomerMaster />} />
+            <Route path="/supplier-master" element={<SupplierMaster />} />
+            <Route path="/supplier-add" element={<SupplierMaster />} />
+            <Route path="/account-master" element={<AccountMaster />} />
+            <Route path="/account-add" element={<AccountMaster />} />
+            <Route path="/staff-list" element={<StaffMaster />} />
+            <Route path="/staff-pay-scale" element={<StaffMaster />} />
+            <Route path="/staff-master" element={<StaffMaster />} />
+            <Route
+              path="/purchase-transaction"
+              element={<PurchaseTransaction />}
+            />
+            <Route path="/sales-transaction" element={<SalesTransaction />} />
+            <Route
+              path="/payment-transaction"
+              element={<PaymentTransaction types={"Payment"} />}
+            />
+            <Route
+              path="/receipt-transaction"
+              element={<PaymentTransaction types={"Receipt"} />}
+            />
+            <Route path="/stock-journal" element={<StockJournal />} />
+            <Route path="/stock-reports" element={<StockLedger />} />
+            <Route path="/account-reports" element={<AccountLedger />} />
+            <Route
+              path="/customer-outstandings"
+              element={<CustomerOutstanding />}
+            />
+            <Route
+              path="/supplier-outstandings"
+              element={<SupplierOutstanding />}
+            />
+            <Route
+              path="/staff-outstandings"
+              element={<SupplierOutstanding />}
+            />
+            <Route path="/opening-stock" element={<OpStock />} />
+            <Route path="/account-journal" element={<AccJournal />} />
+            <Route path="/day-book" element={<Daybook />} />
+            <Route path="/sales-book" element={<SalesBook />} />
+            <Route path="/sale-register" element={<SalesBook />} />
+            <Route path="/tax-report" element={<TaxReport />} />
+            <Route path="/cashbook-report" element={<CashBook />} />
+            <Route path="/purchase-book" element={<PurchaseBook />} />
+            <Route path="/purchase-register" element={<PurchaseBook />} />
           </Route>
         </Route>
       </Routes>
