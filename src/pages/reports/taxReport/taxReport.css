@@ -5,6 +5,8 @@
 }
 
 .tax-report.table thead tr th{
+    position: sticky;
+    top: 0;
     background: #000;
     border: 1px solid black !important;
     color: white;
@@ -22,4 +24,10 @@
 
 .purchase-input-text.select-drop{
     line-height: 0;
+}
+
+.tax-report-table-cont{
+    height: 33rem;
+    overflow: hidden;
+    overflow-y: scroll;
 }

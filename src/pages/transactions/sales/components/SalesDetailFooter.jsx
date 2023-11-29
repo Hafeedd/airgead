@@ -12,9 +12,9 @@ const SalesDetailFooter = (props) => {
   return (
     <div className='row mx-0 my-1 me-0'>
         <div className="col-5 col-6 ms-2 purchase-supplier-container row mx-0 mt-1 p-2">
-            <div className={`${salseReturn?"col-5 col-6":"col-11"} col-6 p-0 pe-1`}>
-                <div className="col-12 sales-value-container px-0 row mx-0 my-0">
-                    <Form.Group className='col-12 mx-0 d-flex align-items-center mt-1'>
+            <div className={`${salseReturn?"col-5 col-6":"col-12"} col-6 p-0 pe-1`}>
+                <div className="col-12 sales-value-container px-0 row mx-0 my-0 align-items-center d-flex py-3">
+                    <Form.Group className='col-12 mx-0 d-flex align-items-center'>
                         <Form.Label className='col-4 purchase-input-label'>Sales Value</Form.Label>
                         <Form.Control
                             disabled
@@ -41,7 +41,6 @@ const SalesDetailFooter = (props) => {
                             type='text'
                         />
                     </Form.Group>
-                    <span className="col-12 mt-3" />
                 </div>
             </div>
             {salseReturn&&<div className="col-6 p-0 ps-1">

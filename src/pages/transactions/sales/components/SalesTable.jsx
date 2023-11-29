@@ -47,6 +47,10 @@ const SalesTable = (props) => {
     getTableData();
   }, []);
 
+  // useEffect(()=>{
+  //   handleAmountCalculation(tableItem,e)
+  // },[tableItem.quantity])
+
   const minFunct = (data) => {
     let list = [];
     data.map((x) => {
@@ -106,8 +110,12 @@ const SalesTable = (props) => {
     let a = [];
     for (let i = 0; i < 8 - salesAdd.total_items || 0; i++) {
       a.push(
-        <tr className='border-0' key={i}>
-          <td className="border-0" style={{ height: "1.7rem", display: "" }} colSpan={18}></td>
+        <tr className="border-0" key={i}>
+          <td
+            className="border-0"
+            style={{ height: "1.7rem", display: "" }}
+            colSpan={18}
+          ></td>
         </tr>
       );
     }
@@ -212,8 +220,16 @@ const SalesTable = (props) => {
         return 0;
       }
       let response;
-      if (!tableEdit) response = await postSalesItem({...tableItem,fk_units:tableItem.unit});
-      else response = await putSalesItem(tableEdit, {...tableItem,fk_units:tableItem.unit});
+      if (!tableEdit)
+        response = await postSalesItem({
+          ...tableItem,
+          fk_units: tableItem.unit,
+        });
+      else
+        response = await putSalesItem(tableEdit, {
+          ...tableItem,
+          fk_units: tableItem.unit,
+        });
 
       if (response?.success && !tableEdit) {
         // console.log("first");
@@ -249,7 +265,7 @@ const SalesTable = (props) => {
 
   const handleChangeTableItem = (e, data) => {
     let tempItem = { ...tableItem };
-    if (data.value) {
+    if (data?.value) {
       var item_data =
         data.options.filter((x) => x?.value === data?.value)[0] || {};
       var newObj = Object.fromEntries(
@@ -262,29 +278,44 @@ const SalesTable = (props) => {
         fk_unit,
         retail_rate,
         purchase_rate,
+        tax_inclusive,
+        tax_gst,
         ...others
       } = newObj;
-        others.cgst_or_igst = others.tax_gst/2 || 0
-        others.sgst =  others.tax_gst/2 || 0
-        // if(!purchase_rate){
-        //     others = {}
-        //     retail_rate = 0
-        // }
-        tempItem =
-          {
-            ...tempItem,
-            item_name: newObj?.text,
-            code: newObj?.description,
-            fk_items: newObj?.value,
-            unit: newObj?.unit,
-            sales_rate: retail_rate||0,
-            rate: purchase_rate||0,
-            ...others,
-            quantity: 1,
-          };
-    }else{
-      handleTableItemReset()
-      return 0
+      others.cgst_or_igst = tax_gst / 2 || 0;
+      others.sgst = tax_gst / 2 || 0;
+      if (!purchase_rate) {
+        others = {};
+        retail_rate = 0;
+      }
+      let gross = purchase_rate;
+      if (tax_gst && !tax_inclusive) {
+        gross = purchase_rate + tax_gst * (purchase_rate / 100);
+      }
+      if (others.discount_1_percentage) {
+        others.discount_1_amount =
+          gross - (gross - others.discount_1_percentage * (gross / 100));
+      }
+      if (others.purchase_rate) {
+        others.value = gross;
+      }
+
+      tempItem = {
+        ...tempItem,
+        ...others,
+        item_name: newObj?.text,
+        code: newObj?.description,
+        fk_items: newObj?.value,
+        unit: newObj?.unit,
+        sales_rate: retail_rate || 0,
+        rate: purchase_rate || 0,
+        gross: gross || 0,
+        tax_gst: tax_gst,
+        quantity: 1,
+      };
+    } else if (data?.value == "") {
+      handleTableItemReset();
+      return 0;
     }
     if (e.target.value === "") {
       tempItem = { ...tempItem, [e.target.name]: "" };
@@ -312,13 +343,12 @@ const SalesTable = (props) => {
         ["total"]: total,
         ["cost"]: cost,
       };
-      if (name == "discount_1_percentage" && tempItem.discount_1_percentage) {
+      tempItem = { ...tempItem, ...value };
+      if (name != "discount_1_amount" && tempItem.discount_1_percentage) {
         value = {
           ...value,
           ["discount_1_amount"]:
-            value.value -
-            (value.value -
-              tempItem.discount_1_percentage * (value.value / 100)),
+            tempItem.discount_1_percentage * (value.value / 100),
         };
       } else if (name == "discount_1_percentage") {
         value = { ...value, ["discount_1_amount"]: 0 };
@@ -332,28 +362,40 @@ const SalesTable = (props) => {
       } else if (name == "discount_1_amount") {
         value = { ...value, ["discount_1_percentage"]: 0 };
       }
-
       tempItem = { ...tempItem, ...value };
-      if (
-        value.value &&
-        tempItem.discount_1_amount &&
-        name != "margin" &&
-        name != "sales_rate"
-      ) {
-        console.log(tempItem.tax_gst);
-        tempItem.discount_1_amount = parseFloat(tempItem.discount_1_amount);
+
+      if (tempItem.discount_1_percentage) {
         value = {
-          ...value,
-          ["value"]:
-            parseFloat(tempItem.quantity * tempItem.rate) -
-            parseFloat(tempItem.discount_1_amount),
-          ["total"]:
-            parseFloat(tempItem.quantity * tempItem.rate) -
-            parseFloat(tempItem.discount_1_amount),
-          ["cost"]:
-            parseFloat(tempItem.rate) - parseFloat(tempItem.discount_1_amount),
+          ["discount_amnt_per_item"]:
+            tempItem.discount_1_percentage * (tempItem.rate / 100),
+        };
+      }else{
+        value = {
+          ["discount_amnt_per_item"]:0
         };
       }
+
+      tempItem = { ...tempItem, ...value };
+      // if (
+      //   value.value &&
+      //   tempItem.discount_1_amount &&
+      //   name != "margin" &&
+      //   name != "sales_rate"
+      // ) {
+
+      //   tempItem.discount_1_amount = parseFloat(tempItem.discount_1_amount);
+      //   value = {
+      //     ...value,
+      //     ["value"]:
+      //       parseFloat(tempItem.quantity * tempItem.rate) -
+      //       parseFloat(tempItem.discount_1_amount),
+      //     ["total"]:
+      //       parseFloat(tempItem.quantity * tempItem.rate) -
+      //       parseFloat(tempItem.discount_1_amount),
+      //     ["cost"]:
+      //       parseFloat(tempItem.rate) - parseFloat(tempItem.discount_1_amount),
+      //   };
+      // }
       // else{
       //     value = {...value,['value']:(tempItem.quantity*tempItem.rate),
       //     ['total']:(tempItem.quantity*tempItem.rate),['cost']:(tempItem.rate)}
@@ -362,7 +404,10 @@ const SalesTable = (props) => {
         if (tempItem.tax_gst) {
           value = {
             ...value,
-            ["total"]: value.value + tempItem.tax_gst * (value.value / 100),
+            ["total"]:
+              value.value -
+              value.discount_1_amount +
+              tempItem.tax_gst * (value.value / 100),
             ["cost"]:
               parseInt(
                 parseFloat(tempItem.rate) -
@@ -376,32 +421,65 @@ const SalesTable = (props) => {
           value = { ...value, cgst_or_igst: 0, sgst: 0 };
         }
       }
-      if (name == "margin") {
-        if (tempItem.margin) {
-          value = {
-            ...value,
-            ["sales_rate"]:
-              parseFloat(tableItem.cost) +
-              parseFloat(tableItem.cost * (tempItem.margin / 100)),
-          };
-        } else {
-          value = { ...value, ["sales_rate"]: 0 };
-        }
+      // if (name == "margin") {
+      //   if (tempItem.margin) {
+      //     value = {
+      //       ...value,
+      //       ["sales_rate"]:
+      //         parseFloat(tableItem.cost) +
+      //         parseFloat(tableItem.cost * (tempItem.margin / 100)),
+      //     };
+      //   } else {
+      //     value = { ...value, ["sales_rate"]: 0 };
+      //   }
+      // }
+      // if (name == "sales_rate") {
+      //   if (tempItem.sales_rate) {
+      //     value = {
+      //       ...value,
+      //       ["margin"]: parseFloat(
+      //         ((tempItem.sales_rate - value.cost) / tempItem.cost) * 100
+      //       ),
+      //     };
+      //   } else {
+      //     value = { ...value, ["margin"]: 0 };
+      //   }
+      // }
+      tempItem = { ...tempItem, ...value };
+      if (tempItem.tax_gst) {
+        value = {
+          ...value,
+          ["tax_amount"]: tempItem.tax_gst * (tempItem.value / 100),
+        };
       }
-      if (name == "sales_rate") {
-        if (tempItem.sales_rate) {
-          value = {
-            ...value,
-            ["margin"]: parseFloat(
-              ((tempItem.sales_rate - value.cost) / tempItem.cost) * 100
-            ),
-          };
-        } else {
-          value = { ...value, ["margin"]: 0 };
-        }
+      tempItem = { ...tempItem, ...value };
+      if (tempItem.tax_gst) {
+        console.log(tempItem.discount_amnt_per_item)
+        value = {
+          ...value,
+          ["gross"]:
+            (tempItem.rate - tempItem.discount_amnt_per_item || 0) +
+            (tempItem.rate - tempItem.discount_amnt_per_item || 0) *
+              (tempItem.tax_gst / 100),
+        };
+      } else {
+        value = { ...value, ["gross"]: 0 };
+      }
+      tempItem = { ...tempItem, ...value };
+      if (tempItem.gross && tempItem.quantity) {
+        value = {
+          ...value,
+          ["value"]:
+            tempItem.rate * tempItem.quantity - tempItem.discount_1_amount || 0,
+          ["total"]:
+            (tempItem.rate * tempItem.quantity - tempItem.discount_1_amount ||
+              0) + tempItem.tax_amount,
+          ["cgst_or_igst"]: tempItem.tax_amount / 2,
+          ["sgst"]: tempItem.tax_amount / 2,
+        };
       }
     } else {
-      tempItem = { ...tempItem, value: 0 };
+      tempItem = { ...tempItem, value: 0, total: 0, gross: 0 };
     }
     tempItem = { ...tempItem, ...value };
     let tempItemKeys = Object.keys(tempItem);
@@ -474,6 +552,7 @@ const SalesTable = (props) => {
               <th>Qty</th>
               <th>Ut</th>
               <th>Rate</th>
+              <th>Net Rate</th>
               <th>Disc%</th>
               <th>Disc</th>
               <th>Value</th>
@@ -483,7 +562,7 @@ const SalesTable = (props) => {
               <th>Total</th>
               {/* <th>Cost</th>
               <th>Margin%</th> */}
-              <th>P.Rate</th>
+              {/* <th>P.Rate</th> */}
               <th className="py-1 text-end">
                 <div
                   className="btn btn-primary purchase-add-btn my-0"
@@ -571,6 +650,22 @@ const SalesTable = (props) => {
                   value={
                     tableItem?.rate == "" || tableItem?.rate
                       ? tableItem?.rate
+                      : ""
+                  }
+                  onFocus={handleFocus}
+                  onBlur={handleBlur}
+                  type="number"
+                  className="purchase_input border-0 w-100 text-center"
+                />
+              </td>
+              <td>
+                <input
+                  onKeyDown={handleKeyDown}
+                  name={"gross"}
+                  onChange={handleChangeTableItem}
+                  value={
+                    tableItem?.gross == "" || tableItem?.gross
+                      ? tableItem?.gross
                       : ""
                   }
                   onFocus={handleFocus}
@@ -730,7 +825,7 @@ const SalesTable = (props) => {
                   className="purchase_input border-0 w-100 text-center"
                 />
               </td> */}
-              <td>
+              {/* <td>
                 <input
                   onKeyDown={handleKeyDown}
                   name={"sales_rate"}
@@ -745,7 +840,7 @@ const SalesTable = (props) => {
                   type="number"
                   className="purchase_input border-0 w-100 text-center"
                 />
-              </td>
+              </td> */}
               <td>
                 {tableEdit ? (
                   <button onClick={handleAddSalesItem} className="text-center">
@@ -814,6 +909,7 @@ const SalesTable = (props) => {
                     </select>
                   </td>
                   <td>{data.rate}</td>
+                  <td>{data.total}</td>
                   <td>{data.discount_1_percentage}%</td>
                   <td>{data.discount_1_amount}</td>
                   <td>{data.value}</td>
@@ -821,9 +917,9 @@ const SalesTable = (props) => {
                   <td>{data.cgst_or_igst}%</td>
                   <td>{data.sgst}%</td>
                   <td>{data.total}</td>
-                  <td>{data.cost}</td>
+                  {/* <td>{data.cost}</td>
                   <td>{data.margin}</td>
-                  <td>{data.sales_rate}</td>
+                  <td>{data.sales_rate}</td> */}
                   <td>
                     <div
                       onClick={() => handleTableItemEdit(data)}

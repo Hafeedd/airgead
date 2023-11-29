@@ -96,6 +96,7 @@ const SalesTransaction = () => {
         code:null,
         quantity:0.0,
         unit:null,
+        gross:0.0,
         transaction_unit:null,
         rate:0.0,
         sales_rate:0.0,

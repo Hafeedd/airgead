@@ -9,7 +9,7 @@ export const Layout = () => {
         <div className="sidebarCont">
           <Sidebar />
         </div>
-          <div className="main_content w-100">
+          <div className="main_content w-100" style={{userSelect:'none'}}>
             <Header/>
             <Outlet/>
           </div>

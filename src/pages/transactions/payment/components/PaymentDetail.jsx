@@ -158,6 +158,7 @@ const PaymentDetail = ({
           <div className="mx-0 px-0 col-9">
             <input
               onChange={handleChange}
+              required={true}
               name="narration"
               value={paymentAdd.narration ? paymentAdd.narration : ""}
               type="text"

@@ -23,7 +23,7 @@ export const TaxReport = () => {
     try {
       const response = await getTaxReport(params);
       if (response.success) {
-        setReportList(response.success);
+        setReportList(response.data);
       }
     } catch (err) {}
   };
@@ -50,7 +50,7 @@ export const TaxReport = () => {
       <div className="p-3">
         <div className="p-3 pt-2 bg-light rounded-1">
           <TaxDetails {...{ params, setParams }} />
-          <TaxTable {...{params}}/>
+          <TaxTable {...{params, reportList}}/>
         </div>
       </div>
     </div>

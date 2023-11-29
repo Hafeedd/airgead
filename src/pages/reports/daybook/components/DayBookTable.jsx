@@ -41,14 +41,18 @@ export const DayBookTable = (props) => {
 
   return (
     <div className="row mx-0 mt-3">
-      <div className="daybook-cont">
+      <div className="daybook-cont px-0">
         <div
           style={{ background: "#000" }}
           className="w-100 d-flex justify-content-end rounded-top-1"
         >
           <div className="col-3 p-2 stock-ledger-search d-flex align-items-center">
             <div className="col-1 me-2">
-              <GrRefresh onClick={()=>setSearchedList(dayBookList)} className="bg-light m-1 p-1 rounded-1" size={20} />
+              <GrRefresh
+                onClick={() => setSearchedList(dayBookList)}
+                className="bg-light m-1 p-1 rounded-1"
+                size={20}
+              />
             </div>
             <div className="item_seach_bar_cont rounded-2 col-11 col-10">
               <img src={searchIcon} className="search_img me-3 ms-2 py-2" />
@@ -87,11 +91,12 @@ export const DayBookTable = (props) => {
                             style={{ width: "fit-content" }}
                           >
                             {"Date: " +
-                              data.account_data[0]?.date?.slice(0, 10)}
+                              new Date(
+                                data.account_data[0]?.date
+                              ).toLocaleDateString()}
                           </div>
                           <div style={{ width: "fit-content" }}>
-                            {"Doc: " +
-                              data.account_data[0]?.document_no?.slice(0, 10)}
+                            {"Doc: " + data.account_data[0]?.document_no}
                           </div>
                         </div>
                       </td>
@@ -101,7 +106,7 @@ export const DayBookTable = (props) => {
                         return (
                           <tr>
                             <td>{daybookData?.account_name}</td>
-                            <td>{daybookData?.desc}</td>
+                            <td>{daybookData?.narrations}</td>
                             <td className="text-center">
                               {daybookData?.debit}
                             </td>
@@ -116,12 +121,12 @@ export const DayBookTable = (props) => {
                       <td></td>
                       <td>
                         <dvi className="daybook-foot-data text-center">
-                          {data?.account_total?.total_debit}
+                          {data?.account_total?.total_debit?.toFixed(2)}
                         </dvi>
                       </td>
                       <td>
                         <dvi className="daybook-foot-data text-center">
-                          {data?.account_total?.total_credit}
+                          {data?.account_total?.total_credit?.toFixed(2)}
                         </dvi>
                       </td>
                     </tr>

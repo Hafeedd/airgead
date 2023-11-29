@@ -106,7 +106,7 @@ export const AccountLedger = () => {
         </div>
       </div>
       <div className="p-3">
-        <div className="stock-jdetails-cont col-12 p-1 ps-4 rounded-1 w-100 bg-light h-100 pe-4">
+        <div className="stock-jdetails-cont col-12 p-1 ps-3 rounded-1 w-100 bg-light h-100 pe-4">
           <ReportDetails
             {...{
               paramsToReport,

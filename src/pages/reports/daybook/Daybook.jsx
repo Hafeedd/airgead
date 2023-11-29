@@ -48,7 +48,7 @@ export const Daybook = () => {
         </div>
       </div>
       <div className="p-3">
-        <div className="p-2 bg-light rounded-1">
+        <div className="p-2 bg-light rounded-1 px-3">
             <DaybookEntry {...{params,setParams}}/>
             <DayBookTable {...{dayBookList}}/>
         </div>
