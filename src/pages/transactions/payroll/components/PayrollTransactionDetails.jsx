@@ -60,9 +60,39 @@ const PayrollTransactionDetails = () => {
             />
             </Form.Group>
         </div>
-        <div className='mt-3'>Salary Date Allocation</div>
+        <div className='my-3'>Salary Date Allocation</div>
         <div>
-            
+            <div className='d-flex justify-content-start align-items-center '>
+                <Form.Group className='col-4 pe-4 ps-0 mx-0 d-flex align-items-start mt-1'>
+                <Form.Label className='col-2 purchase-input-label align-middle'>From</Form.Label>
+                <Form.Control
+                    // onChange={handleChange}
+                    required
+                    name="from_date"
+                    // value={paramsToReport.from_date || (new Date().toISOString.slice(0, 10))}
+                    className='purchase-input-text me-2'
+                    placeholder='Document number'
+                    type='date'
+                />
+                </Form.Group>
+                <Form.Group className='col-4 pe-4 ps-0 mx-0 d-flex align-items-start mt-1'>
+                <Form.Label className='col-2 purchase-input-label align-middle'>To</Form.Label>
+                <Form.Control
+                    // onChange={handleChange}
+                    required
+                    name="to_date"
+                    // value={paramsToReport.to_date || (new Date().toISOString.slice(0, 10))}
+                    className='purchase-input-text me-2'
+                    placeholder='Document number'
+                    type='date'
+                />
+                </Form.Group>
+                <div className='col-4 d-flex justify-content-center'>
+                    <div className='col-4 col-5 p-0 rounded-1 btn py-0 text-light w-100' style={{backgroundColor:'#4A00A8'}}>Allocate</div>
+                    <span className='col-3 col-4'></span>
+                    <div className="col-4 col-5 p-0 rounded-1 btn py-0 text-light d-flex justify-content-evenly align-items-center w-100" style={{backgroundColor:'#4A00A8'}}> Edit<MdMovieEdit size={18} className="mb-1 mx-2" /></div>
+                </div>
+            </div>
         </div>
 
     </div>
