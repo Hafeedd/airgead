@@ -16,6 +16,8 @@ import { OpStock } from './pages/master/opStock/OpStock';
 import { AccJournal } from './pages/transactions/accJournal/AccJournal';
 import CustomerOutstanding from './pages/reports/customerOutstanding/CustomerOutstanding';
 import SupplierOutstanding from './pages/reports/supplierOutstanding/SupplierOutstanding';import { Daybook } from './pages/reports/daybook/Daybook';
+import StaffAttendance from './pages/transactions/staffAttendance/StaffAttendance';
+import PayrollTransaction from './pages/transactions/payroll/PayrollTransaction';
 
 function App() {
   return (
@@ -38,6 +40,8 @@ function App() {
             <Route path="/sales-transaction" element={<SalesTransaction/>}/>
             <Route path="/payment-transaction" element={<PaymentTransaction types={'Payment'} />}/>
             <Route path="/receipt-transaction" element={<PaymentTransaction types={'Receipt'} />}/>
+            <Route path="/staff-attendance" element={<StaffAttendance/>}/>
+            <Route path="/pay-roll" element={<PayrollTransaction/>}/>
             <Route path="/stock-journal" element={<StockJournal/>}/>
             <Route path="/stock-reports" element={<StockLedger/>}/>
             <Route path="/account-reports" element={<AccountLedger/>}/>

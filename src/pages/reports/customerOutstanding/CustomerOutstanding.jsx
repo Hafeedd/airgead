@@ -14,7 +14,8 @@ const CustomerOutstanding = () => {
   const [paramsToReport,setParamsToReport] = useState({
     from_date:(new Date().toISOString().slice(0,10)),
     to_date:(new Date().toISOString().slice(0,10)),
-    type:"CUSTOMER",payment_type:null
+    type:"CUSTOMER",
+    payment_type:null
   })
   const {getOutstanding}=useReportsServices()
   
