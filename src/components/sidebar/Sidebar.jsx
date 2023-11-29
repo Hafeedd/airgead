@@ -64,7 +64,13 @@ const Sidebar = () => {
                     <span className='SidebarSpan d-flex ms-5 ps-3'>
                         <div className='SidebarItemText' onClick={()=>navigate('/account-journal')}>Account Journal</div>
                     </span>
-
+                    <span className='SidebarSpan d-flex ms-5 ps-3'>
+                        <div className='SidebarItemText' onClick={()=>navigate('/staff-attendance')}>Staff Attendance</div>
+                    </span>
+                    <span className='SidebarSpan d-flex ms-5 ps-3'>
+                        <div className='SidebarItemText' onClick={()=>navigate('/pay-roll')}>Pay Roll</div>
+                    </span>
+                    
                 </div>
                 
                 <div onClick={()=>setArrowActive(!ArrowActive)} className={`SidebarItem mt-3 mb-1 ${ArrowActive && "active"}`}>

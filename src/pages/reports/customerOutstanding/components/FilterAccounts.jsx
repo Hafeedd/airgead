@@ -7,6 +7,10 @@ const FilterAccounts = () => {
 
     const location = useLocation().pathname
     const [dropSelect, SetDropSelect] = useState()
+    const [editSelect, SetEditSelect] = useState({
+        index: 0,
+        property_type: 'route' ,
+    })
     const { getProperty } = useItemServices()
     const [property, setProperty] = useState([])
     const [arrayProperty, setArrayProperty] = useState([])
@@ -37,6 +41,7 @@ const FilterAccounts = () => {
     const handleAdd = () => {
         let a = [...arrayProperty]
         a.push({property_type:dropSelect,property_value:filterbySelect})
+        console.log(a)
         setArrayProperty(a)
     }
     console.log('array',arrayProperty)
@@ -49,9 +54,26 @@ const FilterAccounts = () => {
                     {data.property_value}
                 </option>
             ));
-
         return [<option key={null} value={null}>Select</option>, ...filteredOptions];
     };
+
+    const EditCustOption = () => {
+        const filteredOptions = property
+            .filter(data => data.property_type === editSelect.property_type)
+            .map(data => (
+                <option key={data.property_value} value={data.property_value}>
+                    {data.property_value}
+                </option>
+            ));
+        return [<option key={null}  value={null}>Select</option>, ...filteredOptions];
+    };
+    
+    const handleEditSelect =(newindex,selected_property) =>{
+        SetEditSelect({
+            index:newindex,
+            property_type:selected_property
+        })
+    }
 
     return (
         <div>
@@ -72,7 +94,7 @@ const FilterAccounts = () => {
                         {
                             return location === '/customer-outstandings' ?
                                 <tr className='text-dark bg-light '>
-                                    <td> <select value={dropSelect} className='btn btn-md rounded-2 border border-dark' onChange={(e) => SetDropSelect(e.target.value)}>
+                                    <td> <select value={data?.property_type} className='btn btn-md rounded-2 border border-dark' onChange={(e)=>handleEditSelect(i,e.target.value)}>
                                         <option value="route">Route</option>
                                         <option value="city">City</option>
                                         <option value="town">Town</option>
@@ -82,8 +104,8 @@ const FilterAccounts = () => {
                                         <option value="blocked">Blocked</option>
                                     </select></td>
                                     <td>
-                                        <select  value={filterbySelect} className='btn btn-md rounded-2 border border-dark bg-secondary text-light' onChange={(e)=>setFilterBySelect(e.target.value)}>
-                                            <CustOption />
+                                        <select  value={data?.property_value} className='btn btn-md rounded-2 border border-dark bg-secondary text-light' onChange={(e)=>setFilterBySelect(e.target.value)}>
+                                            <EditCustOption />
                                         </select>
                                     </td>
                                     <td><img src={minus} alt="" onClick={()=>removeRow(i)} /></td>

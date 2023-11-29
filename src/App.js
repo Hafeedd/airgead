@@ -20,6 +20,8 @@ import SalesBook from './pages/reports/salesBook/SalesBook';
 import { TaxReport } from './pages/reports/taxReport/TaxReport';
 import CashBook from './pages/reports/cashbook/CashBook';
 import { StockJournalReport } from './pages/reports/stockJournalReport/StockJournalReport';
+import StaffAttendance from './pages/transactions/staffAttendance/StaffAttendance';
+import PayrollTransaction from './pages/transactions/payroll/PayrollTransaction';
 
 function App() {
   return (
@@ -42,6 +44,8 @@ function App() {
             <Route path="/sales-transaction" element={<SalesTransaction/>}/>
             <Route path="/payment-transaction" element={<PaymentTransaction types={'Payment'} />}/>
             <Route path="/receipt-transaction" element={<PaymentTransaction types={'Receipt'} />}/>
+            <Route path="/staff-attendance" element={<StaffAttendance/>}/>
+            <Route path="/pay-roll" element={<PayrollTransaction/>}/>
             <Route path="/stock-journal" element={<StockJournal/>}/>
             <Route path="/stock-reports" element={<StockLedger/>}/>
             <Route path="/account-reports" element={<AccountLedger/>}/>

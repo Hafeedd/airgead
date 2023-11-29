@@ -8,23 +8,23 @@ import ColumnSettings from "./components/ColumnSettings";
 import { useLocation } from "react-router";
 
 const CustomerOutstanding = () => {
-  const [custOutstanding, setCustOutstanding] = useState([]);
-  const [show, setShow] = useState(false);
-  const [colshow, setColShow] = useState(false);
-  const [paramsToReport, setParamsToReport] = useState({
-    from_date: new Date().toISOString().slice(0, 10),
-    to_date: new Date().toISOString().slice(0, 10),
-    type: "CUSTOMER",
-    payment_type: null,
-  });
-  const { getOutstanding } = useReportsServices();
-
-  const location = useLocation().pathname;
-  const getData = async () => {
-    try {
-      const response = await getOutstanding(paramsToReport);
-      if (response?.success) {
-        setCustOutstanding(response.data);
+  const [custOutstanding,setCustOutstanding] = useState([])
+  const [show,setShow]=useState(false)
+  const [colshow,setColShow]=useState(false)
+  const [paramsToReport,setParamsToReport] = useState({
+    from_date:(new Date().toISOString().slice(0,10)),
+    to_date:(new Date().toISOString().slice(0,10)),
+    type:"CUSTOMER",
+    payment_type:null
+  })
+  const {getOutstanding}=useReportsServices()
+  
+  const location =useLocation().pathname
+  const getData =async()=>{
+    try{
+      const response = await getOutstanding(paramsToReport)
+      if (response?.success){
+        setCustOutstanding(response.data)
       }
     } catch (err) {
       console.log(err);

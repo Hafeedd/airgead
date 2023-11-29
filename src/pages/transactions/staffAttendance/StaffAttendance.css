@@ -1,0 +1,45 @@
+.StaffTable thead th:first-child{
+    color: black;
+    width:20rem;
+    position: sticky;
+    left:0;
+    z-index: 2;
+}
+
+.StaffTable tbody td:first-child{
+    color: black;
+    width:20rem;
+    position: sticky;
+    left:0;
+    z-index: 1;
+    background-color: rgb(253, 180, 180);
+}
+
+.StaffTable thead tr th {
+    background-color: rgb(253, 115, 115);
+    width: 3.75rem;
+    height: 3.75rem;
+    border: 2px solid black;
+}
+
+.StaffTable tbody tr td {
+    width: 3.75rem;
+    height: 3.75rem;
+    border: 2px solid black;
+    padding-left: .5rem;
+}
+
+.StaffTable {
+    border-collapse: separate;
+    border-spacing: .25rem;
+}
+
+.StaffTable thead tr th{
+    position: sticky;
+    top: 0;
+}
+
+.staffModal{
+    width: 30rem;
+    height: 36rem;
+}
