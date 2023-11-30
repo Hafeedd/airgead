@@ -1,33 +1,30 @@
 import React, { useEffect, useState } from 'react'
-import CashBookEntry from './components/CashBookEntry'
-import CashBookTable from './components/CashBookTable'
-import { useLocation, useNavigate } from "react-router";
-import { Button } from 'react-bootstrap'
-import './cashbook.css'
-import { useReportsServices } from '../../../services/reports/reports';
+// import CashBookEntry from '../cashbook/components/CashBookEntry'
+import ProfitWiseEntry from './components/ProfitWiseEntry'
+import ProfitWiseTable from './components/ProfitWiseTable'
+import './itemProfitWise.css'
+import {useReportsServices} from '../../../services/reports/reports';
 
-const CashBook = () => {
+const ItemProfitWise = () => {
 
-    const [cashBookList, setCashBookList] = useState([])
+    const [itemWiseProfit, setItemWiseProfit] = useState([])
+
     const [params, setParams] = useState({
         from_date: (new Date().toISOString().slice(0, 10)),
-        to_date: (new Date().toISOString().slice(0, 10)),
+        to_date: (new Date().toISOString().slice(0,10)),
     })
 
-    const navigate = useNavigate();
-    const location = useLocation();
+    const {getItemWiseProfit} = useReportsServices()
 
-    const { getCashBook } = useReportsServices()
-
-    useEffect(() => {
+    useEffect(()=>{
         getData()
-    }, [params,])
+    },[params,])
 
     const getData = async () => {
-        try {
-            const response = await getCashBook(params)
-            if (response.success) {
-                setCashBookList(response.data)
+        try{
+            const response = await getItemWiseProfit(params)
+            if (response.success){
+                setItemWiseProfit(response.data)
             }
         }
         catch (err) {
@@ -35,26 +32,17 @@ const CashBook = () => {
         }
     }
 
-    console.log(cashBookList)
-
+    console.log(itemWiseProfit)
+    
     return (
         <div className="item_add">
             <div className="itemList_header row mx-0">
                 <div className="page_head ps-4 d-flex justify-content-between">
                     <div>
-                        <div className="fw-600 fs-5">Cash Book</div>
+                        <div className="fw-600 fs-5">Item Wise Profit Report</div>
                         <div className="page_head_items mb-2 mt-2">
                             <div
                 /* onClick={()=>navigate("/stock-reports")}  */ className={`page_head_customer active`}
-                            >
-                                Details
-                            </div>
-
-                            <div
-                                onClick={() => {
-                                    navigate("/cashbook-details");
-                                }}
-                                className={`page_head_item ${location.pathname == "/cashbook-details" && "active"}`}
                             >
                                 Details
                             </div>
@@ -75,12 +63,12 @@ const CashBook = () => {
                     </div>
                 </div>
             </div>
-                <div className="p-2 m-3 bg-light rounded-1">
-                    <CashBookEntry {...{params, setParams}}/>
-                    <CashBookTable {...{cashBookList, params}}/>
-                </div>
+            <div className="p-2 m-3 bg-light rounded-1">
+                <ProfitWiseEntry {...{params, setParams}} />
+                <ProfitWiseTable {...{itemWiseProfit, params}}/>
+            </div>
         </div>
     )
 }
 
-export default CashBook
+export default ItemProfitWise

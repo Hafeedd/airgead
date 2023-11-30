@@ -17,6 +17,7 @@ import { AccJournal } from './pages/transactions/accJournal/AccJournal';
 import CustomerOutstanding from './pages/reports/customerOutstanding/CustomerOutstanding';
 import SupplierOutstanding from './pages/reports/supplierOutstanding/SupplierOutstanding';import { Daybook } from './pages/reports/daybook/Daybook';
 import CashBook from './pages/reports/cashbook/CashBook';
+import ItemProfitWise from './pages/reports/profitReport/ItemProfitWise';
 
 function App() {
   return (
@@ -48,8 +49,7 @@ function App() {
             <Route path="/account-journal" element={<AccJournal/>}/>
             <Route path="/day-book" element={<Daybook/>}/>
             <Route path="/cashbook-report" element={<CashBook/>}/>
-
-            
+            <Route path="/profit-report" element={<ItemProfitWise/>}/>
           </Route>
         </Route>
       </Routes>
