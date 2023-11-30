@@ -219,33 +219,26 @@ const PurchaseTransaction = () => {
       cost = tempItem.cost;
       total = tempItem.quantity * tempItem.rate;
       cost = tempItem.rate;
-      // if (tempItem.tax_gst) {
-      //   console.log(total)
-      //   total = total + tempItem.tax_gst * (total / 100)
-      //   cost = 
-      //   parseInt(
-      //     parseFloat(tempItem.rate)||0 -
-      //     parseFloat(tempItem.discount_1_amount)||0
-      //     ) +
-      //     tempItem.tax_gst||0 * (tempItem.rate||0 / 100)
-      //   }
-      //   // console.log(total)
         value = {
         ["value"]: tempItem.quantity * tempItem.rate,
         ["total"]: total,
         ["cost"]: cost,
       };
-      // console.log(tempItem)
-      if (name == "discount_1_percentage" || name == 'margin' || name == 'sales_rate' && tempItem.discount_1_percentage) {
+      tempItem = {...tempItem,...value}
+      if (name !== "discount_1_amount" && tempItem.discount_1_percentage) {
         value = {
           ...value,
           ["discount_1_amount"]:
             value.value -
             (value.value -
               tempItem.discount_1_percentage * (value.value / 100)),
+          ["discount_1_amount_per_item"]:
+            tempItem.rate -
+            (tempItem.rate -
+              tempItem.discount_1_percentage * (tempItem.rate / 100)),
         };
-      } else if (name == "discount_1_percentage" || name == 'margin' || name == 'sales_rate' ) {
-        value = { ...value, ["discount_1_amount"]: 0 };
+      } else if (name !== "discount_1_amount") {
+        value = { ...value, ["discount_1_amount"]: 0 ,['discount_1_amount_per_item']:0};
       }
       if (name == "discount_1_amount" && tempItem.discount_1_amount) {
         value = {
@@ -257,7 +250,7 @@ const PurchaseTransaction = () => {
         value = { ...value, ["discount_1_percentage"]: 0 };
       }
       tempItem = {...tempItem,...value}
-      if (value.value && tempItem.discount_1_amount ) {
+      if (tempItem.value && tempItem.discount_1_amount) {
         tempItem.discount_1_amount = parseFloat(tempItem.discount_1_amount);
         value = {
           ...tempItem,
@@ -279,38 +272,38 @@ const PurchaseTransaction = () => {
         };
       }
       tempItem = {...tempItem, ...value}
-      if (name == 'tax_gst' || name == 'sales_rate' || name == 'margin') {
+      // if (name == 'tax_gst' || name == 'sales_rate' || name == 'margin') {
         if (tempItem.tax_gst) {
+          console.log(tempItem.value)
           value = {
             ...value,
-            ["total"]: value.value + tempItem.tax_gst * (value.value / 100),
+            ["total"]: tempItem.value + tempItem.tax_gst * (tempItem.value / 100),
             ["cost"]:
-              parseInt(
-                parseFloat(tempItem.rate) -
-                  parseFloat(tempItem.discount_1_amount)
-              ) +
-              tempItem.tax_gst * (tempItem.rate / 100),
+                (tempItem.rate-tempItem.discount_1_amount_per_item)
+              +
+              (tempItem.tax_gst * ((tempItem.rate - tempItem.discount_1_amount_per_item) / 100)),
             ["cgst_or_igst"]: tempItem.tax_gst / 2,
             ["sgst"]: tempItem.tax_gst / 2,
           };
         } else {
           value = { ...value, cgst_or_igst: 0, sgst: 0 };
         }
-      }
+      // }
       tempItem = { ...tempItem, ...value };
-      if (name == "margin") {
+      if (name !== "sales_rate") {
         if (tempItem.margin) {
           value = {
             ...tempItem,
             ["sales_rate"]:
-              parseFloat(tableItem.cost) +
-              parseFloat(tableItem.cost * (tempItem.margin / 100)),
+            parseFloat(tableItem.cost) +
+            parseFloat(tableItem.cost * (tempItem.margin / 100)),
           };
         } else {
           value = { ...value, ["sales_rate"]: 0 };
         }
       }
-      if (name == "sales_rate") {
+      tempItem = { ...tempItem, ...value };
+      if (name !== "margin") {
         if (tempItem.sales_rate) {
           value = {
             ...value,
@@ -560,6 +553,8 @@ const PurchaseTransaction = () => {
       discount_1_percentage: 0.0,
       discount_1_amount: 0.0,
     });
+    setTableEdit(false)
+    setEdit(false)
   };
 
   const handleSubmit = async (e) => {
@@ -653,7 +648,7 @@ const PurchaseTransaction = () => {
                         setTableItemList(tempItems);
                     }
                 })
-          } else {
+          } else if(edit){
             try{
             const data = getData();
             setEdit(data);
@@ -667,6 +662,8 @@ const PurchaseTransaction = () => {
                 })
             }catch(err){console.log(err)}
             setTableEdit(false);
+          }else{
+            setEdit(false)
           }
           setTableItemBatchList(ItemTempList);
         } catch (err) {}

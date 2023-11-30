@@ -71,7 +71,7 @@ export const StockJournalEdit = (props) => {
     <div className="p-0">
         <div className="stockJ-edit rounded-top-2 py-2 ps-3">Journal Details</div>
         <div className="row mx-0 p-2 px-3">
-            <Form.Group className='col-4 pe-4 ps-0 mx-0 d-flex align-items-start mt-1'>
+            <Form.Group className='col-4 col-3 pe-4 ps-0 mx-0 d-flex align-items-start mt-1'>
                 <Form.Label className='col-2 purchase-input-label align-middle'>To</Form.Label>
                 <Form.Control
                     required
@@ -83,7 +83,7 @@ export const StockJournalEdit = (props) => {
                     value={date.start}
                     />
             </Form.Group>
-            <Form.Group className='col-4 pe-4 ps-0 mx-0 d-flex align-items-start mt-1'>
+            <Form.Group className='col-4 col-3 pe-4 ps-0 mx-0 d-flex align-items-start mt-1'>
                 <Form.Label className='col-2 purchase-input-label align-middle'>From</Form.Label>
                 <Form.Control
                     required

@@ -1,20 +1,13 @@
-import React from "react";
+import React from 'react'
+import { Form } from 'react-bootstrap'
 import { TfiEmail, TfiPrinter } from "react-icons/tfi";
 import { BsWhatsapp, BsFiletypePdf } from "react-icons/bs";
 import { RiFileExcel2Line } from "react-icons/ri";
-import { Form } from "react-bootstrap";
 
-export const DaybookEntry = (props) => {
-  const { params, setParams } = props;
-
-  const handleChange = (e) => {
-    if (e.target.value == "") {
-      setParams({ ...params, [e.target.name]: null });
-    } else setParams({ ...params, [e.target.name]: e.target.value });
-  };
-
+export const StockJournalReportDetails = () => {
   return (
-    <div className="row mx-0">
+    <div>
+        <div className="row mx-0">
       <div className="col-12 px-0 mt-1 d-flex justify-content-start">
         <div
           style={{ background: "#4B4B4B" }}
@@ -60,8 +53,8 @@ export const DaybookEntry = (props) => {
             </Form.Label>
             <Form.Control
               name="from_date"
-              onChange={handleChange}
-              value={params.from_date || ""}
+            //   onChange={handleChange}
+            //   value={params.from_date || ""}
               className="purchase-input-text me-2 text-start"
               type="date"
             />
@@ -73,13 +66,14 @@ export const DaybookEntry = (props) => {
             </Form.Label>
             <Form.Control
               name="to_date"
-              value={params.to_date || new Date()?.toISOString()?.slice(0, 10)}
-              onChange={handleChange}
+            //   value={params.to_date || new Date()?.toISOString()?.slice(0, 10)}
+            //   onChange={handleChange}
               className="purchase-input-text me-2 text-start"
               type="date"
             />
           </Form.Group>
         </div>
     </div>
-  );
-};
+    </div>
+  )
+}

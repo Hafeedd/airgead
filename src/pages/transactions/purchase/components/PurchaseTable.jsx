@@ -54,7 +54,6 @@ const PurchaseTable = (props) => {
   const { deletePurchaseItem } = usePurchaseServices();
 
   const handleTableItemEdit = (data) => {
-    console.log(data);
     let { batches, ...others } = data;
     if (data?.batches) {
       setTableItemBatchList([...data?.batches]);
@@ -297,7 +296,7 @@ const PurchaseTable = (props) => {
               </th>
               <th>Qty</th>
               <th>Ut</th>
-              <th>Rate</th>
+              <th width="65">P. Rate</th>
               <th>Disc%</th>
               <th>Disc</th>
               <th>Value</th>

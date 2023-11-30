@@ -157,7 +157,7 @@ export const StockJournalDetails = (props) => {
     <div className="stock-jdetails-cont p-1 ps-4 rounded-1 w-100 bg-light h-100">
       Stock Journal
       <div className="stock-entry row mx-0 px-0 pt-1">
-        <Form.Group className="col-4 pe-4 ps-0 mx-0 d-flex align-items-start mt-1">
+        <Form.Group className="col-4 col-3 pe-4 ps-0 mx-0 d-flex align-items-start mt-1">
           <Form.Label className="col-2 purchase-input-label pb-1">
             Doc no.
           </Form.Label>
@@ -177,7 +177,7 @@ export const StockJournalDetails = (props) => {
             <MdMovieEdit size={18} className="mb-1" />
           </div>
         </Form.Group>
-        <Form.Group className="col-4 pe-4 ps-0 mx-0 d-flex align-items-start mt-1">
+        <Form.Group className="col-4 col-3 pe-4 ps-0 mx-0 d-flex align-items-start mt-1">
           <Form.Label className="col-2 purchase-input-label pb-1">
             Date
           </Form.Label>
@@ -195,7 +195,7 @@ export const StockJournalDetails = (props) => {
             type="date"
           />
         </Form.Group>
-        <Form.Group className="col-3 col-4 pe-4 ps-0 mx-0 d-flex align-items-start mt-1">
+        <Form.Group className="col-3 col-4 col-3 pe-4 ps-0 mx-0 d-flex align-items-start mt-1">
           <Form.Label className="col-2 purchase-input-label pb-1">
             Staff
           </Form.Label>
@@ -476,7 +476,7 @@ export const StockJournalDetails = (props) => {
           </tbody>
         </table>
       </div>
-      <Form.Group className="col-3 col-4 pe-4 ps-0 mx-0 d-flex align-items-start mt-3 pb-2">
+      <Form.Group className="col-3 col-4 col-3 pe-4 ps-0 mx-0 d-flex align-items-start mt-3 pb-2">
         <Form.Label className="col-3 purchase-input-label pb-1">
           Narration
         </Form.Label>

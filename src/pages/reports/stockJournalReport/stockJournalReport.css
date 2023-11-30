@@ -1,0 +1,26 @@
+.stock-journal-report-table-cont table tbody tr td{
+    background: white;
+    color: black;
+}
+
+.stock-journal-report-table-cont .table thead tr th{
+    background: #000;
+    color: white;
+    padding: 0.5rem 0.6rem;
+}
+
+.stock-journal-report-table-cont{
+    height: 26.9rem;
+    overflow: hidden;
+    overflow-y: scroll;
+}
+
+.stock-journal-report-table-cont .table tbody tr td.top-tr{
+    background: #BD93F3;
+    color: #FFF;
+    
+}
+
+.stock-journal-report-table-cont .table tbody tr td.bottom-tr{
+    background: #B1B1B1;
+}

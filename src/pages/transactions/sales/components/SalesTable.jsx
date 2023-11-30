@@ -207,8 +207,7 @@ const SalesTable = (props) => {
       if (
         !tableItem.fk_items ||
         !tableItem.quantity ||
-        !tableItem.rate ||
-        !tableItem.sales_rate
+        !tableItem.rate
       ) {
         Swal.fire({
           title: "Please Enter essential details first",

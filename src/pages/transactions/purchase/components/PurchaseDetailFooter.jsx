@@ -80,8 +80,6 @@ const PurchaseDetailFooter = (props) => {
                         <div className="row col-12">Net:
                         <span className='col-11 text-danger fs-3 align-items-center text-center'>
                             {purchaseAdd.total_amount||"0.00"}</span></div>
-                        {/* <div className="col-1">:</div>
-                        <div className="col-10"></div> */}
                     </div>
                 </div>
                 <div className="col-12 row px-0 mx-0 mt-3">

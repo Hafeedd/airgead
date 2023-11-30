@@ -7,7 +7,7 @@ const PayrollTransactionDetails = () => {
     <div>
         <div>Payroll</div>
         <div className='col-12 d-flex justify-content-between align-items-center px-0 mx-0'>
-            <Form.Group className="col-4 pe-4 ps-0 mx-0 d-flex align-items-start mt-1">
+            <Form.Group className="col-4 col-3 pe-4 ps-0 mx-0 d-flex align-items-start mt-1">
             <Form.Label className="col-2 purchase-input-label pb-1">
                 Doc no.
             </Form.Label>
@@ -27,7 +27,7 @@ const PayrollTransactionDetails = () => {
                 <MdMovieEdit size={18} className="mb-1" />
             </div>
             </Form.Group>
-            <Form.Group className="col-4 pe-4 ps-0 mx-0 d-flex align-items-start mt-1">
+            <Form.Group className="col-4 col-3 pe-4 ps-0 mx-0 d-flex align-items-start mt-1">
             <Form.Label className="col-2 purchase-input-label pb-1">
                 Date
             </Form.Label>
@@ -45,7 +45,7 @@ const PayrollTransactionDetails = () => {
                 type="date"
             />
             </Form.Group>
-            <Form.Group className="col-4 pe-4 ps-0 mx-0 d-flex align-items-start mt-1">
+            <Form.Group className="col-4 col-3 pe-4 ps-0 mx-0 d-flex align-items-start mt-1">
             <Form.Label className="col-2 purchase-input-label pb-1">
                 Staff
             </Form.Label>

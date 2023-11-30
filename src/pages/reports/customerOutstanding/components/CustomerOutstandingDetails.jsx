@@ -98,7 +98,7 @@ const CustomerOutstandingDetails = (props) => {
           </div>
         </div>
         <div className="row mt-2 col-12 mx-0 px-0">
-          <Form.Group className="col-3 pe-4 ps-0 mx-0 d-flex align-items-start mt-1">
+          <Form.Group className="col-4 col-3 pe-4 ps-0 mx-0 d-flex align-items-start mt-1">
             <Form.Label className="col-2 purchase-input-label align-middle">
               From
             </Form.Label>
@@ -114,7 +114,7 @@ const CustomerOutstandingDetails = (props) => {
               type="date"
             />
           </Form.Group>
-          <Form.Group className="col-3 pe-4 ps-0 mx-0 d-flex align-items-start mt-1">
+          <Form.Group className="col-4 col-3 pe-4 ps-0 mx-0 d-flex align-items-start mt-1">
             <Form.Label className="col-2 purchase-input-label align-middle">
               Upto
             </Form.Label>

@@ -9,16 +9,15 @@ const Sidebar = () => {
     const [masterActive, setMasterActive] = useState(false)
     const [ArrowActive, setArrowActive] = useState(false)
     const [ReportsActive, setReportsActive] = useState(false)
-    const [roughActive, setRoughActive] = useState(false)
     
 
     const navigate = useNavigate()
     return(
-        <div className="sidebar pt-2">
-            <div className="CompanyLogo rounded-5 py-2 mb-5">
-                
+        <div className="sidebar pb-5">
+            <div className="company-logo-cont mb-4">
+                <div className='company-logo rounded-5 py-2 mb-5'></div>
             </div>
-            <div style={{userSelect:'none'}}  className='SidebarItems mt-0 mt-5'>
+            <div style={{userSelect:'none'}}  className='SidebarItems mt-0 mt-5 mx-0 px-0'>
                 <div onClick={()=>setMasterActive(!masterActive)} className={`SidebarItem mb-1 ${masterActive && "active"}`}>
                     <img src={User} className='sidebar_icon' width={"25px"}/>Master</div>
                 <div className={`sidebar_span_cont ${!masterActive && "d-none"}`}>
