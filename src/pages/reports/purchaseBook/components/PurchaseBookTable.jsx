@@ -3,7 +3,9 @@ import { GrRefresh } from "react-icons/gr";
 import searchIcon from "../../../../assets/icons/search.png";
 import "./purchaseRegisterTable.css";
 
-const PurchaseBookTable = () => {
+const PurchaseBookTable = (props) => {
+  const { purchaseBookList, setPurchaseBookList } = props;
+
   return (
     <div className="row mx-0 mt-3">
       <div className="daybook-cont">
@@ -45,231 +47,52 @@ const PurchaseBookTable = () => {
               </tr>
             </thead>
             <tbody>
-              <tr>
-                <td>Doc No</td>
-                <td>Date</td>
-                <td>Party</td>
-                <td>Gross</td>
-                <td>CGST</td>
-                <td>SGST</td>
-                <td>Cess1</td>
-                <td>Cess2</td>
-                <td>Total</td>
-                <td>P.Returnn</td>
-                <td>Netamt</td>
-                <td>Paidamt</td>
-                <td>Balance</td>
-              </tr>
-              <tr>
-                <td>Doc No</td>
-                <td>Date</td>
-                <td>Party</td>
-                <td>Gross</td>
-                <td>CGST</td>
-                <td>SGST</td>
-                <td>Cess1</td>
-                <td>Cess2</td>
-                <td>Total</td>
-                <td>P.Returnn</td>
-                <td>Netamt</td>
-                <td>Paidamt</td>
-                <td>Balance</td>
-              </tr>
-              <tr>
-                <td>Doc No</td>
-                <td>Date</td>
-                <td>Party</td>
-                <td>Gross</td>
-                <td>CGST</td>
-                <td>SGST</td>
-                <td>Cess1</td>
-                <td>Cess2</td>
-                <td>Total</td>
-                <td>P.Returnn</td>
-                <td>Netamt</td>
-                <td>Paidamt</td>
-                <td>Balance</td>
-              </tr>
-              <tr>
-                <td>Doc No</td>
-                <td>Date</td>
-                <td>Party</td>
-                <td>Gross</td>
-                <td>CGST</td>
-                <td>SGST</td>
-                <td>Cess1</td>
-                <td>Cess2</td>
-                <td>Total</td>
-                <td>P.Returnn</td>
-                <td>Netamt</td>
-                <td>Paidamt</td>
-                <td>Balance</td>
-              </tr>
-              <tr>
-                <td>Doc No</td>
-                <td>Date</td>
-                <td>Party</td>
-                <td>Gross</td>
-                <td>CGST</td>
-                <td>SGST</td>
-                <td>Cess1</td>
-                <td>Cess2</td>
-                <td>Total</td>
-                <td>P.Returnn</td>
-                <td>Netamt</td>
-                <td>Paidamt</td>
-                <td>Balance</td>
-              </tr>
-              <tr>
-                <td>Doc No</td>
-                <td>Date</td>
-                <td>Party</td>
-                <td>Gross</td>
-                <td>CGST</td>
-                <td>SGST</td>
-                <td>Cess1</td>
-                <td>Cess2</td>
-                <td>Total</td>
-                <td>P.Returnn</td>
-                <td>Netamt</td>
-                <td>Paidamt</td>
-                <td>Balance</td>
-              </tr>
-              <tr>
-                <td>Doc No</td>
-                <td>Date</td>
-                <td>Party</td>
-                <td>Gross</td>
-                <td>CGST</td>
-                <td>SGST</td>
-                <td>Cess1</td>
-                <td>Cess2</td>
-                <td>Total</td>
-                <td>P.Returnn</td>
-                <td>Netamt</td>
-                <td>Paidamt</td>
-                <td>Balance</td>
-              </tr>
-              <tr>
-                <td>Doc No</td>
-                <td>Date</td>
-                <td>Party</td>
-                <td>Gross</td>
-                <td>CGST</td>
-                <td>SGST</td>
-                <td>Cess1</td>
-                <td>Cess2</td>
-                <td>Total</td>
-                <td>P.Returnn</td>
-                <td>Netamt</td>
-                <td>Paidamt</td>
-                <td>Balance</td>
-              </tr>
-              <tr>
-                <td>Doc No</td>
-                <td>Date</td>
-                <td>Party</td>
-                <td>Gross</td>
-                <td>CGST</td>
-                <td>SGST</td>
-                <td>Cess1</td>
-                <td>Cess2</td>
-                <td>Total</td>
-                <td>P.Returnn</td>
-                <td>Netamt</td>
-                <td>Paidamt</td>
-                <td>Balance</td>
-              </tr>
-              <tr>
-                <td>Doc No</td>
-                <td>Date</td>
-                <td>Party</td>
-                <td>Gross</td>
-                <td>CGST</td>
-                <td>SGST</td>
-                <td>Cess1</td>
-                <td>Cess2</td>
-                <td>Total</td>
-                <td>P.Returnn</td>
-                <td>Netamt</td>
-                <td>Paidamt</td>
-                <td>Balance</td>
-              </tr>
-              <tr>
-                <td>Doc No</td>
-                <td>Date</td>
-                <td>Party</td>
-                <td>Gross</td>
-                <td>CGST</td>
-                <td>SGST</td>
-                <td>Cess1</td>
-                <td>Cess2</td>
-                <td>Total</td>
-                <td>P.Returnn</td>
-                <td>Netamt</td>
-                <td>Paidamt</td>
-                <td>Balance</td>
-              </tr>
-              <tr>
-                <td>Doc No</td>
-                <td>Date</td>
-                <td>Party</td>
-                <td>Gross</td>
-                <td>CGST</td>
-                <td>SGST</td>
-                <td>Cess1</td>
-                <td>Cess2</td>
-                <td>Total</td>
-                <td>P.Returnn</td>
-                <td>Netamt</td>
-                <td>Paidamt</td>
-                <td>Balance</td>
-              </tr>
-              <tr>
-                <td>Doc No</td>
-                <td>Date</td>
-                <td>Party</td>
-                <td>Gross</td>
-                <td>CGST</td>
-                <td>SGST</td>
-                <td>Cess1</td>
-                <td>Cess2</td>
-                <td>Total</td>
-                <td>P.Returnn</td>
-                <td>Netamt</td>
-                <td>Paidamt</td>
-                <td>Balance</td>
-              </tr>
-              <tr>
-                <td>Doc No</td>
-                <td>Date</td>
-                <td>Party</td>
-                <td>Gross</td>
-                <td>CGST</td>
-                <td>SGST</td>
-                <td>Cess1</td>
-                <td>Cess2</td>
-                <td>Total</td>
-                <td>P.Returnn</td>
-                <td>Netamt</td>
-                <td>Paidamt</td>
-                <td>Balance</td>
-              </tr>
-              <tr>
-                <td>Doc No</td>
-                <td>Date</td>
-                <td>Party</td>
-                <td>Gross</td>
-                <td>CGST</td>
-                <td>SGST</td>
-                <td>Cess1</td>
-                <td>Cess2</td>
-                <td>Total</td>
-                <td>P.Returnn</td>
-                <td>Netamt</td>
-                <td>Paidamt</td>
-                <td>Balance</td>
-              </tr>
+              {purchaseBookList?.length > 0 ? (
+                purchaseBookList.map((data, i) => {
+                  let gross = 0;
+                  gross =
+                    (data?.total_amount ||
+                    0) - (data?.total_sgst || 0 + data?.total_cgst || 0);
+                  let total = 0;
+                  total =
+                    gross + (data?.total_sgst || 0 + data?.total_cgst || 0);
+                  let netAmount = 0;
+                  netAmount = total - (data?.purchase_return || 0);
+                  let balance = 0;
+                  balance = netAmount - data?.payment_amount || 0;
+
+                  return (
+                    <tr key={i}>
+                      <td>{data?.documents_no || "..."}</td>
+                      <td>
+                        {data?.created_at
+                          .slice(0, 10)
+                          .split("-")
+                          .reverse()
+                          .join("/") || "..."}
+                      </td>
+                      <td>{data?.fk_supplier?.name || ""}</td>
+                      <td>{gross.toFixed(2) || 0}</td>
+                      <td>{data.total_cgst || 0}</td>
+                      <td>{data.total_sgst || 0}</td>
+                      <td>{data.total_cess1 || 0}</td>
+                      <td>{data.total_cess2 || 0}</td>
+                      <td>{total.toFixed(2) || 0}</td>
+                      <td>{data?.purchase_return || 0}</td>
+                      <td>{netAmount.toFixed(2) || 0}</td>
+                      <td>{data?.payment_amount || 0}</td>
+                      <td>{balance.toFixed(2) || 0}</td>
+                    </tr>
+                  );
+                })
+              ) : (
+                <tr>
+                  <td colSpan={13} className="fs-4 text-center">
+                    {" "}
+                    No Reports yet
+                  </td>
+                </tr>
+              )}
             </tbody>
           </table>
         </div>

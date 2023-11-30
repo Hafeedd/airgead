@@ -11,7 +11,6 @@ const SalesBookEntry = (props) => {
     const handleChange = (e)=>{
         if(e.target.value === ""){
             setParams({ ...params,[e.target.name]:null})
-            console.log(params)
         }else{
             setParams({ ...params,[e.target.name]:e.target.value})
         }

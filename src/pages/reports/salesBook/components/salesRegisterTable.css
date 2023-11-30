@@ -1,63 +1,63 @@
-.table-hd{
-    background: #BD93F3 !important; 
+.table-hd {
+  background: #bd93f3 !important;
 }
 
-.daybook-table thead tr th{
-    border: 0 !important;
+.daybook-table thead tr th {
+  border: 0 !important;
 }
-.table-btm{
-    background-color: rgba(0, 0, 0, 0.445);
-}
-
-.drop.active{
-    transform: rotate(270deg);
-    font-size: 30px;
-    font-weight: 500;
-    cursor: pointer;
-}
-.drop.notActive{
-    transform: rotate(90deg);
-    font-size: 30px;
-    font-weight: 500;
-    cursor: pointer;
+.table-btm {
+  background-color: rgba(0, 0, 0, 0.445);
 }
 
-.daybook-table thead tr th{
-    padding: 0.3rem 0.6rem;
+.drop.active {
+  transform: rotate(270deg);
+  font-size: 30px;
+  font-weight: 500;
+  cursor: pointer;
 }
-.daybook-table tbody tr td{
-    padding: 1rem;
-    position: sticky;
-}
-.sales-mas{
-    text-align: right;
-}
-.sales-btm{
-    width: 5.6rem;
-    height: 1.4rem;
-    background-color: white;
-    display: inline-block;
-    text-align: center;
-    border-radius: 4px;
-}
-h5{
-    margin: 8px;
-    padding: 0;
+.drop.notActive {
+  transform: rotate(90deg);
+  font-size: 30px;
+  font-weight: 500;
+  cursor: pointer;
 }
 
-.sale-fir{
-    margin-right: 300px;
+.daybook-table thead tr th {
+  padding: 0.3rem 0.6rem;
 }
-.sale-sec{
-    margin-right: 35px;
+.daybook-table tbody tr td {
+  padding: 1rem;
+  position: sticky;
 }
-.table-scroll-sale{
-    height: 22rem;
-    overflow-y: auto;
+.sales-mas {
+  text-align: right;
+}
+.sales-btm {
+  width: 5.6rem;
+  height: 1.4rem;
+  background-color: white;
+  display: inline-block;
+  text-align: center;
+  border-radius: 4px;
+}
+h5 {
+  margin: 8px;
+  padding: 0;
 }
 
-.stick-table table thead tr th{
-    position: sticky;
-    top: 0;
-    z-index: 1;
+.sale-fir {
+  margin-right: 300px;
+}
+.sale-sec {
+  margin-right: 35px;
+}
+.table-scroll-sale {
+  height: 22rem;
+  overflow-y: auto;
+}
+
+.stick-table table thead tr th {
+  position: sticky;
+  top: 0;
+  z-index: 1;
 }

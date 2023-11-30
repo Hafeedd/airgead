@@ -4,7 +4,18 @@ import { BsFiletypePdf, BsWhatsapp } from 'react-icons/bs'
 import { RiFileExcel2Line } from 'react-icons/ri'
 import { TfiEmail, TfiPrinter } from 'react-icons/tfi'
 
-const PurchaseBookEntry = () => {
+const PurchaseBookEntry = (props) => {
+
+  const {params, setParams} = props
+
+  const handleChange = (e)=>{
+    if(e.target.value === ""){
+      setParams({ ...params,[e.target.name]:null})
+    }else{
+      setParams({ ...params,[e.target.name]:e.target.value})
+    }
+  }
+
   return (
     <div className="row mx-0">
       <div className="col-12 mt-1 d-flex justify-content-start mt-1">
@@ -51,7 +62,10 @@ const PurchaseBookEntry = () => {
               From
             </Form.Label>
             <Form.Control
+              onChange={handleChange}
+              required
               name="from_date"
+              value={params.from_date || (new Date().toISOString(0,10))}
               className="purchase-input-text me-2 text-start"
               type="date"
             ></Form.Control>
@@ -61,7 +75,10 @@ const PurchaseBookEntry = () => {
               To
             </Form.Label>
             <Form.Control
+              onChange={handleChange}
+              required
               name="to_date"
+              value={params.to_date || (new Date().toISOString(0,10))}
               className="purchase-input-text me-2 text-start"
               type="date"
             ></Form.Control>

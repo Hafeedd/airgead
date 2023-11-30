@@ -1,8 +1,20 @@
-import React from 'react'
-import { GrRefresh } from 'react-icons/gr'
+import React from "react";
+import { GrRefresh } from "react-icons/gr";
 import searchIcon from "../../../../assets/icons/search.png";
 
-const PurchaseRegisterTable = () => {
+const PurchaseRegisterTable = (props) => {
+  const { purchaseRegisterList, setPurchaseRegisterList } = props;
+
+  const handleDrop = (i) => {
+    let tempList = purchaseRegisterList;
+    let newList = tempList[i];
+    if (newList.drop) {
+      newList.drop = false;
+    } else newList.drop = true;
+    tempList.splice(i, 1, newList);
+    setPurchaseRegisterList([...tempList]);
+  };
+
   return (
     <div className="row mx-0 mt-3">
       <div className="daybook-cont">
@@ -41,157 +53,79 @@ const PurchaseRegisterTable = () => {
               </tr>
             </thead>
             <tbody>
-              <tr>
-                <td colSpan={10} className="w-100 m-0 p-0 border-0">
-                  <div className="table-hd p-2 border-0">
-                    <div className="d-flex ms-4 py-1 px-0 justify-content-between align-items-center">
-                      Deatils : B2B/000002 &emsp;&emsp;&emsp;&emsp; Date :
-                      07/10/2023 Sales (5 items) 
-                      <div>
-                        {">"}
-                      </div>
-                    </div>
-                  </div>
-                </td>
-              </tr>
-              <tr>
-                <td>Item Name</td>
-                <td>Qty</td>
-                <td>Ut</td>
-                <td>Free</td>
-                <td>Rate</td>
-                <td>Gross</td>
-                <td>Disc</td>
-                <td>Disc Tax%</td>
-                <td>Tax</td>
-                <td>Total</td>
-              </tr>
-              <tr>
-                <td>Item Name</td>
-                <td>Qty</td>
-                <td>Ut</td>
-                <td>Free</td>
-                <td>Rate</td>
-                <td>Gross</td>
-                <td>Disc</td>
-                <td>Disc Tax%</td>
-                <td>Tax</td>
-                <td>Total</td>
-              </tr>
-              <tr>
-                <td>Item Name</td>
-                <td>Qty</td>
-                <td>Ut</td>
-                <td>Free</td>
-                <td>Rate</td>
-                <td>Gross</td>
-                <td>Disc</td>
-                <td>Disc Tax%</td>
-                <td>Tax</td>
-                <td>Total</td>
-              </tr>
-              <tr>
-                <td>Item Name</td>
-                <td>Qty</td>
-                <td>Ut</td>
-                <td>Free</td>
-                <td>Rate</td>
-                <td>Gross</td>
-                <td>Disc</td>
-                <td>Disc Tax%</td>
-                <td>Tax</td>
-                <td>Total</td>
-              </tr>
-              <tr>
-                <td>Item Name</td>
-                <td>Qty</td>
-                <td>Ut</td>
-                <td>Free</td>
-                <td>Rate</td>
-                <td>Gross</td>
-                <td>Disc</td>
-                <td>Disc Tax%</td>
-                <td>Tax</td>
-                <td>Total</td>
-              </tr>
-              <tr>
-                <td>Item Name</td>
-                <td>Qty</td>
-                <td>Ut</td>
-                <td>Free</td>
-                <td>Rate</td>
-                <td>Gross</td>
-                <td>Disc</td>
-                <td>Disc Tax%</td>
-                <td>Tax</td>
-                <td>Total</td>
-              </tr>
-              <tr>
-                <td>Item Name</td>
-                <td>Qty</td>
-                <td>Ut</td>
-                <td>Free</td>
-                <td>Rate</td>
-                <td>Gross</td>
-                <td>Disc</td>
-                <td>Disc Tax%</td>
-                <td>Tax</td>
-                <td>Total</td>
-              </tr>
-              <tr>
-                <td>Item Name</td>
-                <td>Qty</td>
-                <td>Ut</td>
-                <td>Free</td>
-                <td>Rate</td>
-                <td>Gross</td>
-                <td>Disc</td>
-                <td>Disc Tax%</td>
-                <td>Tax</td>
-                <td>Total</td>
-              </tr>
-              <tr>
-                <td>Item Name</td>
-                <td>Qty</td>
-                <td>Ut</td>
-                <td>Free</td>
-                <td>Rate</td>
-                <td>Gross</td>
-                <td>Disc</td>
-                <td>Disc Tax%</td>
-                <td>Tax</td>
-                <td>Total</td>
-              </tr>
-              <tr>
-                <td>Item Name</td>
-                <td>Qty</td>
-                <td>Ut</td>
-                <td>Free</td>
-                <td>Rate</td>
-                <td>Gross</td>
-                <td>Disc</td>
-                <td>Disc Tax%</td>
-                <td>Tax</td>
-                <td>Total</td>
-              </tr>
-              <tr>
-                <td>Item Name</td>
-                <td>Qty</td>
-                <td>Ut</td>
-                <td>Free</td>
-                <td>Rate</td>
-                <td>Gross</td>
-                <td>Disc</td>
-                <td>Disc Tax%</td>
-                <td>Tax</td>
-                <td>Total</td>
-              </tr>
+              {purchaseRegisterList?.length > 0 ? (
+                purchaseRegisterList.map((data, i) => {
+                  return (
+                    <>
+                      <tr key={i}>
+                        <td colSpan={10} className="w-100 m-0 p-0 border-0">
+                          <div className="table-hd p-2 border-0">
+                            <div className="d-flex ms-4 py-1 px-0 justify-content-between align-items-center">
+                              Deatils : {data?.documents_no}{" "}
+                              &emsp;&emsp;&emsp;&emsp; Date :{" "}
+                              {data?.created_at
+                                .slice(0, 10)
+                                .split("-")
+                                .reverse()
+                                .join("/")}{" "}
+                              ({data?.purchase_item?.length}items)
+                              <div
+                                className={`drop me-3 ${
+                                  data.drop ? "active" : "notActive"
+                                }`}
+                                onClick={() => {
+                                  handleDrop(i);
+                                }}
+                              >
+                                {">"}
+                              </div>
+                            </div>
+                          </div>
+                        </td>
+                      </tr>
+                      {!data.drop && data?.purchase_item.length > 0 ? (
+                        data?.purchase_item.map((item, i) => {
+                          let gross = (item?.item.total )-(item?.item.tax_gst) 
+                          return (
+                            <tr key={i}>
+                              <td>{item?.item.item_name || " "}</td>
+                              <td>{item?.item.quantity}</td>
+                              <td>Ut</td>
+                              <td>{item?.item.free}</td>
+                              <td>{item?.item.rate}</td>
+                              <td>{gross || 0}</td>
+                              <td>{item?.item.discount_1_amount}</td>
+                              <td>{item?.item.discount_1_percentage}</td>
+                              <td>{item?.item.tax_gst}</td>
+                              <td>{item?.item.total}</td>
+                            </tr>
+                          );
+                        })
+                      ) : (
+                        <tr>
+                          <td colSpan={10} className="fs-4 text-center">
+                            {" "}
+                            No Reports yet
+                          </td>
+                        </tr>
+                      )}
+                    </>
+                  );
+                })
+              ) : (
+                <tr>
+                  <td colSpan={10} className="fs-4 text-center">
+                    {" "}
+                    No Reports yet
+                  </td>
+                </tr>
+              )}
             </tbody>
           </table>
         </div>
       </div>
     </div>
   );
-}
+};
 
-export default PurchaseRegisterTable
+export default PurchaseRegisterTable;

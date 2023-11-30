@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router";
 import { useReportsServices } from "../../../services/reports/reports";
-import SalesBookList from "./components/SalesBookEntry";
 import SalesBookEntry from "./components/SalesBookEntry";
 import SalesBookTable from "./components/SalesBookTable";
 import SalesRegisterTable from "./components/SalesRegisterTable";
@@ -27,15 +26,13 @@ const SalesBook = () => {
 
   useEffect(() => {
     getData();
-  }, [params, ]);
+  }, [params]);
 
   const getData = async () => {
     try {
       const response = await getSalesBook(params);
       if (response.success) {
         setSalesBookList(response.data);
-      }else{
-        
       }
       const response1 = await getSaleRegister(params);
       if (response1.success) {
@@ -52,7 +49,7 @@ const SalesBook = () => {
         <div className="page_head ps-4 d-flex justify-content-between">
           <div>
             <div className="fs-5 fw-600">
-              {location.pathname == "/sale-register" && "active"
+              {location.pathname === "/sale-register" && "active"
                 ? "Sale Register"
                 : "Sales Book"}
             </div>
@@ -62,7 +59,7 @@ const SalesBook = () => {
                   navigate("/sales-book");
                 }}
                 className={`page_head_item ${
-                  location.pathname == "/sales-book" && "active"
+                  location.pathname === "/sales-book" && "active"
                 }`}
               >
                 Sales Book
@@ -72,7 +69,7 @@ const SalesBook = () => {
                   navigate("/sale-register");
                 }}
                 className={`page_head_item ${
-                  location.pathname == "/sale-register" && "active"
+                  location.pathname === "/sale-register" && "active"
                 }`}
               >
                 Sale Register
@@ -98,7 +95,7 @@ const SalesBook = () => {
       </div>
       <div className="p-3 mt-3">
         <div className="p-2 bg-light rounded-1">
-          {location.pathname == "/sale-register" && "active" ? (
+          {location.pathname === "/sale-register" && "active" ? (
             <>
               <SalesBookEntry
                 {...{
@@ -108,7 +105,8 @@ const SalesBook = () => {
               />
               <SalesRegisterTable
                 {...{
-                  saleRegisterList,setSaleRegisterList
+                  saleRegisterList,
+                  setSaleRegisterList,
                 }}
               />
             </>
