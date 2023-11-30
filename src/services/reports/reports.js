@@ -43,6 +43,11 @@ export const useReportsServices = () =>{
         return response?.data
     }
 
+    const getItemWiseProfit = async (params)=>{
+        const response = await axiosPrivate.get('/reports/item_wise/profit/report/',{params:params})
+        return response?.data
+    }
+
     return{
         getStockLedger,
         getAccLedger,
@@ -52,5 +57,6 @@ export const useReportsServices = () =>{
         getDayBook,
         getTaxReport,
         getCashBook,
+        getItemWiseProfit,
     }
 }

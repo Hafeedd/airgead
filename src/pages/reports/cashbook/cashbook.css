@@ -40,12 +40,27 @@
 .cash-table-head{
     border-radius: 0.375rem 0.375rem 0rem 0rem;
     color: white;
+    padding: .8rem;
+    margin: .01rem;
     background-color:black;
-    height: 6.25rem;
+    position: sticky;
+    top: 0;
+    
+    
+}
+.cashbook-col div{
+    background-color: #4B4B4B;
+}
+.cashbook-col div:hover{
+    background-color: #4B4B4B !important;
+}
+.cashbook-table-main{
+    margin-top: -4px;
 }
 
 .cashbook-ser-img{
     position: absolute;
+    
 }
 .cash-search-input{
     width: 15.8125rem;
@@ -58,8 +73,20 @@
     border: none;
 }
 
+.cashbook-table-thead-th th{
+    text-align: start;
+    background-color: black;
+    color: white;
+    position: sticky;
+    top: 3.56rem;
+   
+}
+
+
+
 .cash-table-top{
     width: 100%;
+
 }
 .cashbook-table-bottom{
     background-color: #BD93F3;
@@ -80,6 +107,11 @@
 
 .cashbook-table-row{
     border: solid #D8D8D8 2px;
+    
+}
+
+.cashbook-table-row td{
+    text-align: left;
 }
 
 .cashbook-table-row li{
@@ -90,10 +122,6 @@
     font-weight: 700;
 }
 
-.cashbook-table-data li{
-    list-style-type: none;
-    color: black;
-}
 
 .cashbook-accordion-tr{
     width: 100%;
@@ -126,7 +154,19 @@ Accordion button{
 
 .cashbook-down-box{
     height: 1rem;
-    width: 90%;
+    width: 5rem;
     background-color: white;
     border-radius: 5px;
+}
+.cashbook-table-row  input{
+    text-align: start !important;
+}
+.table-head-scroll{
+    /* width: 100%; */
+    margin: 0;
+    padding: 0;
+    height: 35rem;
+    /* overflow: auto; */
+    overflow-y: auto;
+    overflow-x: hidden;
 }

@@ -6,40 +6,40 @@ import '../cashbook.css'
 
 const CashBookTable = (props) => {
 
-    const { cashBookList } = props
+    const { cashBookList, params } = props
 
-    const AdjustTableHeight = () => {
-        let a = []
-        for (let i = 0; i < 7 - cashBookList?.length; i++) {
-            a.push(
-                <tr>
-                    <td colSpan={7}></td>
-                </tr>
-            )
-        }
-    }
+    // const AdjustTableHeight = () => {
+    //     let a = []
+    //     for (let i = 0; i < 7 - cashBookList?.length; i++) {
+    //         a.push(
+    //             <tr>
+    //                 <td colSpan={7}></td>
+    //             </tr>
+    //         )
+    //     }
+    // }
 
     return (
-        <div>
-            <div className='cash-table-head  mx-4 mt-3'>
-                <div className='d-flex  justify-content-end me-5'>
-                    <div className='p-1 bg-light rounded-1 px-2 mt-2 '>
-                        <GrRefresh className='  ' />
+        <div className='table-head-scroll  mt-2 p-0'>
+            {/* <div className='cash-table-head  mx-4 mt-3'> */}
+                <div className='d-flex cash-table-head   justify-content-end '>
+                    <div className='p-1 bg-light rounded-1 px-2'>
+                        <GrRefresh size={18} />
                     </div>
                     <div className='d-flex ms-2' px-5>
-                        <img src={searchIcon} className='cashbook-ser-img ms-3  mt-3' />
+                        <img src={searchIcon} className='cashbook-ser-img ms-3 mt-2' />
                         <input
-                            className='cash-search-input rounded-2 mt-2  ps-5'
+                            className='cash-search-input rounded-2  ps-5'
                             placeholder='Search'
                             type="text" />
                     </div>
                 </div>
 
-                <div className='p-0'>
-                    <table className='cash-table-top mt-1' >
-                        <thead >
-                            <tr  >
-                                <th>Date</th>
+                <div className='cashbook-table-main   p-0' >
+                    <table className='cash-table-top   mt-1' >
+                        <thead>
+                            <tr className='cashbook-table-thead-th p-5  '  >
+                                <th className='p-3'>Date</th>
                                 <th>Doc No</th>
                                 <th>Ac Name</th>
                                 <th>Narration</th>
@@ -49,7 +49,9 @@ const CashBookTable = (props) => {
                             </tr>
 
                         </thead>
-                        <tbody>
+                        
+                        <tbody >
+                        
                             {
                                 cashBookList?.length > 0 ?
                                     cashBookList.map((data, i) =>
@@ -65,14 +67,14 @@ const CashBookTable = (props) => {
                                             </td>
                                         </tr>
 
-                                        <tr className='cashbook-table-row '>
+                                        <tr className='cashbook-table-row  '>
                                             {/* <td className='cashbook-table-row m-0 p-0 pt-3 ' colSpan={7}> */}
 
-                                            <td style={{ textAlign: 'center' }} className='text-black  ' colSpan={1}>24/11/2023</td>
+                                            <td  className='text-primary p-2   ' colSpan={1}>{params.from_date.split('-').reverse().join('/')}</td>
                                             <td colSpan={2}></td>
-                                            <td className='text-black '>Closing Balance</td>
+                                            <td className='text-primary '>Opening Balance</td>
                                             <td colSpan={2}></td>
-                                            <td style={{ textAlign: 'center' }} className='text-black  ' colSpan={1}>100056</td>
+                                            <td className='text-success fw-bolder ' colSpan={1}>{data?.total_opening_balance.toFixed(2)}</td>
 
                                             {/* </td> */}
 
@@ -80,16 +82,17 @@ const CashBookTable = (props) => {
 
                                         {data.cashbook.length > 0 &&
                                             data.cashbook.map((item, i) => {
-                                                // let date = 
+                                                const formattedBalance = parseFloat(item?.balance).toFixed(2);
+                                                const debitOrCredit = item?.balance >= 0 ? ' Debit' : ' Credit';
                                                 return(
                                                 <tr key={i} className='cashbook-table-row text-black'>
-                                                    <td>{item?.created_date?.slice(0,10).split('-').reverse().join('/')}</td>
+                                                    <td className='p-2'>{item?.created_date?.slice(0,10).split('-').reverse().join('/')}</td>
                                                     <td>{item?.voucher_no}</td>
-                                                    <td>Ac Name</td>
-                                                    <td>Narration</td>
-                                                    <td>Debit</td>
-                                                    <td>Credit</td>
-                                                    <td>Balance</td>
+                                                    <td>{item?.account_name}</td>
+                                                    <td>{item?.narration }</td>
+                                                    <td>{item?.debit || ""}</td>
+                                                    <td>{item?.credit || "" }</td>
+                                                    <td>{formattedBalance}{debitOrCredit}</td>
                                                 </tr>
                                             )})
                                         }
@@ -97,11 +100,11 @@ const CashBookTable = (props) => {
                                         <tr className='cashbook-table-row '>
                                             {/* <td className='cashbook-table-row m-0 p-0 pt-3 ' colSpan={7}> */}
 
-                                            <td style={{ textAlign: 'center' }} className='text-black  ' colSpan={1}>24/11/2023</td>
+                                            <td  className='text-primary p-2' colSpan={1}>{params.to_date.split('-').reverse().join('/')}</td>
                                             <td colSpan={2}></td>
-                                            <td className='text-black '>Closing Balance</td>
+                                            <td className='text-primary'>Closing Balance</td>
                                             <td colSpan={2}></td>
-                                            <td style={{ textAlign: 'center' }} className='text-black  ' colSpan={1}>100056</td>
+                                            <td  className={`${data?.total_closing_balance.toString().includes('-')?"text-danger":"text-success fw-bolder"}`} colSpan={1}>{data?.total_closing_balance.toFixed(2)}</td>
 
                                             {/* </td> */}
 
@@ -109,8 +112,8 @@ const CashBookTable = (props) => {
 
                                         <tr className='bg-secondary py-5 '>
                                             <td colSpan={4}></td>
-                                            <td><div className='cashbook-down-box p-3 ps-1'></div></td>
-                                            <td><div className='cashbook-down-box p-3'></div></td>
+                                            <td><div className='cashbook-down-box text-black p-3 d-flex align-items-center justify-content-center'><p>{data?.total_debit}</p></div></td>
+                                            <td><div className='cashbook-down-box text-black p-3 d-flex align-items-center justify-content-center'>{data?.total_credit}</div></td>
                                             <td></td>
 
                                         </tr></>)
@@ -131,11 +134,12 @@ const CashBookTable = (props) => {
 
 
 
+                      
                         </tbody>
                     </table>
                 </div>
 
-            </div>
+            {/* </div> */}
 
 
         </div>
