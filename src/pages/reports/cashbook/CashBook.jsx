@@ -47,17 +47,10 @@ const CashBook = () => {
                             <div
                 /* onClick={()=>navigate("/stock-reports")}  */ className={`page_head_customer active`}
                             >
-                                Details
+                                Cash Book
                             </div>
 
-                            <div
-                                onClick={() => {
-                                    navigate("/cashbook-details");
-                                }}
-                                className={`page_head_item ${location.pathname == "/cashbook-details" && "active"}`}
-                            >
-                                Details
-                            </div>
+                           
 
                         </div>
                     </div>

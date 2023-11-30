@@ -44,7 +44,7 @@ const ItemProfitWise = () => {
                             <div
                 /* onClick={()=>navigate("/stock-reports")}  */ className={`page_head_customer active`}
                             >
-                                Details
+                                Item Wise Profit Report
                             </div>
 
                         </div>
