@@ -16,38 +16,38 @@ export const TaxDetails = (props) => {
   return (
     <div className="row mx-0 d-flex">
       <div className="col-9 px-0 ">
-        <div className="col-12 mt-1 d-flex justify-content-start d-flex flex-wrap gap-3">
+        <div className="col-12 mt-1 d-flex justify-content-start d-flex flex-wrap gap-2">
           <div
             style={{ background: "#4B4B4B" }}
-            className="reports-btn btn rounded-1 col-2 p-0 "
+            className="reports-btn btn rounded-1 col-1 p-0"
           >
             <BsFiletypePdf className="me-2 text-" size={18} />
             PDF
           </div>
           <div
             style={{ background: "#4B4B4B" }}
-            className="reports-btn btn rounded-1  col-2 py-0 "
+            className="reports-btn btn rounded-1  col-1 py-0"
           >
             <RiFileExcel2Line className="me-2" size={18} />
             Excel
           </div>
           <div
             style={{ background: "#4B4B4B" }}
-            className="reports-btn btn rounded-1  col-2 py-0 "
+            className="reports-btn btn rounded-1  col-1 py-0"
           >
             <TfiPrinter size={18} className="me-2 h-100" />
             Print
           </div>
           <div
             style={{ background: "#4B4B4B" }}
-            className="reports-btn btn rounded-1  col-2 py-0 "
+            className="reports-btn btn rounded-1  col-1 py-0"
           >
             <TfiEmail size={18} className="me-2 h-100" />
             Email
           </div>
           <div
             style={{ background: "#4B4B4B" }}
-            className="reports-btn btn rounded-1  col-2 py-0"
+            className="reports-btn btn rounded-1  col-1 py-0"
           >
             <BsWhatsapp size={18} className="me-2 h-100" />
             Whatsapp
