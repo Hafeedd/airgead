@@ -6,13 +6,13 @@ import { Form } from 'react-bootstrap'
 
 const SalesBookEntry = (props) => {
 
-    const {paramsToReport, setParamsToReport} = props
+    const {params, setParams} = props
 
     const handleChange = (e)=>{
         if(e.target.value === ""){
-            setParamsToReport({ ...paramsToReport,[e.target.name]:null})
+            setParams({ ...params,[e.target.name]:null})
         }else{
-            setParamsToReport({ ...paramsToReport,[e.target.name]:e.target.value})
+            setParams({ ...params,[e.target.name]:e.target.value})
         }
 
     }
@@ -20,7 +20,7 @@ const SalesBookEntry = (props) => {
     return (
 
         <div className='row mx-0'>
-            <div className="col-12 mt-1 d-flex justify-content-start mt-3">
+            <div className="col-12 mt-1 d-flex justify-content-start mt-1">
                 <div
                     style={{ background: "#4B4B4B" }}
                     className="reports-btn btn rounded-1 col-1 col-2 py-0 me-3"
@@ -65,9 +65,9 @@ const SalesBookEntry = (props) => {
                         </Form.Label>
                         <Form.Control
                             onChange={handleChange}
-                            // required
-                            name="item_code"
-                            // value = {paramsToReport.from_date || (new Date().toISOString(0,10))}
+                            required
+                            name="from_date"
+                            value = {params.from_date || (new Date().toISOString(0,10))}
                             className="purchase-input-text me-2 text-start"
                             type="date"
                         />
@@ -78,9 +78,9 @@ const SalesBookEntry = (props) => {
                         </Form.Label>
                         <Form.Control
                             onChange={handleChange}
-                            // required
-                            name="item_code"
-                            // value = {paramsToReport.to_date || (new Date().toISOString(0,10))}
+                            required
+                            name="to_date"
+                            value = {params.to_date || (new Date().toISOString(0,10))}
                             className="purchase-input-text me-2 text-start"
                             type="date"
                         />

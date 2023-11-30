@@ -1,42 +1,53 @@
 import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router";
+import PurchaseBookEntry from "./components/PurchaseBookEntry";
+import PurchaseBookTable from "./components/PurchaseBookTable";
+import PurchaseRegisterTable from "./components/PurchaseRegisterTable";
 import { useReportsServices } from "../../../services/reports/reports";
-import SalesBookEntry from "./components/SalesBookEntry";
-import SalesBookTable from "./components/SalesBookTable";
-import SalesRegisterTable from "./components/SalesRegisterTable";
+import useItemServices from "../../../services/master/itemServices";
 
-const SalesBook = () => {
-  const [salesBookList, setSalesBookList] = useState([]);
-  const [saleRegisterList, setSaleRegisterList] = useState([]);
+const PurchaseBook = () => {
   const [show, setShow] = useState(false);
   const [colshow, setColShow] = useState(false);
+  const [purchaseBookList, setPurchaseBookList] = useState([]);
+  const [purchaseRegisterList, setPurchaseRegisterList] = useState([]);
+  const [unitList, setUnitList] = useState([])
   const [params, setParams] = useState({
     from_date: new Date().toISOString().slice(0, 10),
     to_date: new Date().toISOString().slice(0, 10),
-    salesman: null,
-    billtype: null,
-    customer: null,
+    supplier: null,
     care_off: null,
   });
 
   const navigate = useNavigate();
   const location = useLocation();
 
-  const { getSalesBook, getSaleRegister } = useReportsServices();
+  const { getPurchaseBook, getPurchaseRegister } = useReportsServices();
+  const { getProperty } = useItemServices();
 
   useEffect(() => {
     getData();
   }, [params]);
 
+
   const getData = async () => {
     try {
-      const response = await getSalesBook(params);
+      const response = await getPurchaseBook(params);
       if (response.success) {
-        setSalesBookList(response.data);
+        setPurchaseBookList(response.data);
       }
-      const response1 = await getSaleRegister(params);
+      const response1 = await getPurchaseRegister(params);
       if (response1.success) {
-        setSaleRegisterList(response1.data);
+        setPurchaseRegisterList(response1.data);
+      }
+      const response2 = await getProperty();
+      if (response2.success) {
+        if(response2.data.length>0){
+          let a = response2.data.filter(x=>
+            x.property_type == 'unit'
+          )
+          setUnitList(a)
+        }
       }
     } catch (err) {
       console.log(err);
@@ -49,30 +60,30 @@ const SalesBook = () => {
         <div className="page_head ps-4 d-flex justify-content-between">
           <div>
             <div className="fs-5 fw-600">
-              {location.pathname === "/sale-register" && "active"
-                ? "Sale Register"
-                : "Sales Book"}
+              {location.pathname === "/purchase-register" && "active"
+                ? "Purchase Register"
+                : "Purchase Book"}
             </div>
             <div className="page_head_items mb-2 mt-2">
               <div
                 onClick={() => {
-                  navigate("/sales-book");
+                  navigate("/purchase-book");
                 }}
                 className={`page_head_item ${
-                  location.pathname === "/sales-book" && "active"
+                  location.pathname === "/purchase-book" && "active"
                 }`}
               >
-                Sales Book
+                Purchase Book
               </div>
               <div
                 onClick={() => {
-                  navigate("/sale-register");
+                  navigate("/purchase-register");
                 }}
                 className={`page_head_item ${
-                  location.pathname === "/sale-register" && "active"
+                  location.pathname === "/purchase-register" && "active"
                 }`}
               >
-                Sale Register
+                Purchase Register
               </div>
             </div>
           </div>
@@ -95,39 +106,41 @@ const SalesBook = () => {
       </div>
       <div className="p-3 mt-3">
         <div className="p-2 bg-light rounded-1">
-          {location.pathname === "/sale-register" && "active" ? (
+          {location.pathname === "/purchase-register" && "active" ? (
             <>
-              <SalesBookEntry
+              <PurchaseBookEntry
                 {...{
                   params,
                   setParams,
                 }}
               />
-              <SalesRegisterTable
+              <PurchaseRegisterTable
                 {...{
-                  saleRegisterList,
-                  setSaleRegisterList,
+                  purchaseRegisterList,
+                  setPurchaseRegisterList,
+                  unitList,
+                  setUnitList,
                 }}
               />
             </>
           ) : (
             <>
-              <SalesBookEntry
+              <PurchaseBookEntry
                 {...{
                   params,
                   setParams,
                 }}
               />
-              <SalesBookTable
+              <PurchaseBookTable
                 {...{
-                  salesBookList,
+                  purchaseBookList,
+                  setPurchaseBookList,
                 }}
               />
             </>
           )}
-
-          <div className="row mt-3">
-            <div className="w-100 d-flex justify-content-end mb-3">
+          <div className="row mt-2">
+            <div className="w-100 d-flex justify-content-end mb-2 ">
               <div className="btn btn-dark col-1 col-2 py-0 me-2">Exit</div>
             </div>
           </div>
@@ -137,4 +150,4 @@ const SalesBook = () => {
   );
 };
 
-export default SalesBook;
+export default PurchaseBook;

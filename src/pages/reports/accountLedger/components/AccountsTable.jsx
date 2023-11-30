@@ -105,9 +105,9 @@ export const AccountsTable = (props) => {
                         <div className="text-light ms-3 py-1 d-flex align-items-center justify-content-between">
                           Ledger Name : {"( " + data.account_name + " ) "}{" "}
                           &nbsp;&nbsp;{" "}
-                          {"( " + data?.opening_balance + ": Op. Balance ) "}{" "}
+                          {"( " + data?.opening_balance?.toFixed(2) + ": Op. Balance ) "}{" "}
                           &nbsp;&nbsp;{" "}
-                          {"( " + data?.closing_balance + ": Cl. Balance )"}
+                          {"( " + data?.closing_balance?.toFixed(2) + ": Cl. Balance )"}
                           <div className="col-3 p-2 stock-ledger-search d-flex align-items-center">
                             <div className="col-1 me-2">
                               <MdRefresh
@@ -151,7 +151,7 @@ export const AccountsTable = (props) => {
                           <td className="text-center">{item?.narration}</td>
                           <td className="text-center">{item?.debit || 0}</td>
                           <td className="text-center">{item?.credit || 0}</td>
-                          <td className="text-end">{balance}</td>
+                          <td className="text-end">{balance?.toFixed(2)}</td>
                         </tr>
                       );
                     })

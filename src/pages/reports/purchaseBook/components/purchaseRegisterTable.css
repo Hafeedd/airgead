@@ -1,0 +1,15 @@
+
+.table-scroll{
+    height: 23rem;
+    overflow-y: auto;
+}
+
+.stick-table table thead tr th{
+    position: sticky;
+    top: 0;
+    z-index: 1;
+}
+
+.bord{
+    border: red solid 1px !important;
+}

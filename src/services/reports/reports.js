@@ -1,5 +1,5 @@
 import { axiosPrivate } from "../../api/axios"
-import useStaffServices from "../master/staffServices"
+// import useStaffServices from "../master/staffServices"
 
 export const useReportsServices = () =>{
     
@@ -48,6 +48,16 @@ export const useReportsServices = () =>{
         return response?.data
     }
 
+    const getPurchaseBook = async (params)=>{
+        const response = await axiosPrivate.get('/reports/purchase_report/view/',{params:params})
+        return response?.data
+    }
+
+    const getPurchaseRegister = async(params)=>{
+        const response = await axiosPrivate.get('/reports/purchase_register/report/view/',{params:params})
+        return response?.data
+    }
+
     return{
         getStockLedger,
         getAccLedger,
@@ -58,5 +68,7 @@ export const useReportsServices = () =>{
         getTaxReport,
         getCashBook,
         getItemWiseProfit,
+        getPurchaseBook,
+        getPurchaseRegister,
     }
 }
