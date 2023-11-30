@@ -4,12 +4,14 @@ import PurchaseBookEntry from "./components/PurchaseBookEntry";
 import PurchaseBookTable from "./components/PurchaseBookTable";
 import PurchaseRegisterTable from "./components/PurchaseRegisterTable";
 import { useReportsServices } from "../../../services/reports/reports";
+import useItemServices from "../../../services/master/itemServices";
 
 const PurchaseBook = () => {
   const [show, setShow] = useState(false);
   const [colshow, setColShow] = useState(false);
   const [purchaseBookList, setPurchaseBookList] = useState([]);
   const [purchaseRegisterList, setPurchaseRegisterList] = useState([]);
+  const [unitList, setUnitList] = useState([])
   const [params, setParams] = useState({
     from_date: new Date().toISOString().slice(0, 10),
     to_date: new Date().toISOString().slice(0, 10),
@@ -21,6 +23,7 @@ const PurchaseBook = () => {
   const location = useLocation();
 
   const { getPurchaseBook, getPurchaseRegister } = useReportsServices();
+  const { getProperty } = useItemServices();
 
   useEffect(() => {
     getData();
@@ -37,12 +40,19 @@ const PurchaseBook = () => {
       if (response1.success) {
         setPurchaseRegisterList(response1.data);
       }
+      const response2 = await getProperty();
+      if (response2.success) {
+        if(response2.data.length>0){
+          let a = response2.data.filter(x=>
+            x.property_type == 'unit'
+          )
+          setUnitList(a)
+        }
+      }
     } catch (err) {
       console.log(err);
     }
   };
-
-  console.log(purchaseBookList);
 
   return (
     <div className="item_add">
@@ -108,6 +118,8 @@ const PurchaseBook = () => {
                 {...{
                   purchaseRegisterList,
                   setPurchaseRegisterList,
+                  unitList,
+                  setUnitList,
                 }}
               />
             </>

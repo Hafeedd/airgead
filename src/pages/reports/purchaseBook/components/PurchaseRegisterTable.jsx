@@ -1,9 +1,17 @@
 import React from "react";
 import { GrRefresh } from "react-icons/gr";
 import searchIcon from "../../../../assets/icons/search.png";
+import "./purchaseRegisterTable.css";
 
 const PurchaseRegisterTable = (props) => {
-  const { purchaseRegisterList, setPurchaseRegisterList } = props;
+  const {
+    purchaseRegisterList,
+    setPurchaseRegisterList,
+    unitList,
+    setUnitList,
+  } = props;
+
+  console.log(unitList)
 
   const handleDrop = (i) => {
     let tempList = purchaseRegisterList;
@@ -14,6 +22,15 @@ const PurchaseRegisterTable = (props) => {
     tempList.splice(i, 1, newList);
     setPurchaseRegisterList([...tempList]);
   };
+
+  const SelectUnit = ({utId}) => {
+    let a;
+    if (unitList.length > 0)
+      unitList.forEach((data) => {
+        if (data.id == utId) a = data.property_value;
+      });
+    return a;
+  }; 
 
   return (
     <div className="row mx-0 mt-3">
@@ -55,6 +72,7 @@ const PurchaseRegisterTable = (props) => {
             <tbody>
               {purchaseRegisterList?.length > 0 ? (
                 purchaseRegisterList.map((data, i) => {
+                  let totalTotal = 0;
                   return (
                     <>
                       <tr key={i}>
@@ -83,32 +101,33 @@ const PurchaseRegisterTable = (props) => {
                           </div>
                         </td>
                       </tr>
-                      {!data.drop && data?.purchase_item.length > 0 ? (
+                      {!data.drop &&
+                        data?.purchase_item.length > 0 &&
                         data?.purchase_item.map((item, i) => {
-                          let gross = (item?.item.total )-(item?.item.tax_gst) 
+                          let gross = item?.item.total - item?.item.tax_gst;
+                          let utId = item?.item.fk_units;
+                          totalTotal = totalTotal + item?.item.total;
                           return (
                             <tr key={i}>
                               <td>{item?.item.item_name || " "}</td>
                               <td>{item?.item.quantity}</td>
-                              <td>Ut</td>
-                              <td>{item?.item.free}</td>
-                              <td>{item?.item.rate}</td>
-                              <td>{gross || 0}</td>
-                              <td>{item?.item.discount_1_amount}</td>
-                              <td>{item?.item.discount_1_percentage}</td>
-                              <td>{item?.item.tax_gst}</td>
-                              <td>{item?.item.total}</td>
+                              <td>
+                                <SelectUnit {...{ utId }}/>
+                              </td>
+                              <td>{item?.item.free || 0}</td>
+                              <td>{item?.item.rate || 0}</td>
+                              <td>{gross.toFixed(2) || 0}</td>
+                              <td>{item?.item.discount_1_amount || 0}</td>
+                              <td>{item?.item.discount_1_percentage || 0}</td>
+                              <td>{item?.item.tax_gst || 0}</td>
+                              <td>{item?.item.total || 0}</td>
                             </tr>
                           );
-                        })
-                      ) : (
-                        <tr>
-                          <td colSpan={10} className="fs-4 text-center">
-                            {" "}
-                            No Reports yet
-                          </td>
-                        </tr>
-                      )}
+                        })}
+                      <tr>
+                        <td colSpan={9} className="bg-secondary"></td>
+                        <td className="bg-secondary text-light">{totalTotal}</td>
+                      </tr>
                     </>
                   );
                 })
