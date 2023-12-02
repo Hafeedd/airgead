@@ -119,7 +119,10 @@ const Sidebar = () => {
                     </span>
                     <span className='SidebarSpan d-flex ms-5 ps-3'>
                         <div className='SidebarItemText' onClick={()=>navigate('/bill-wise-ledger')}>Bill Wise Ledger</div>
+                    </span>                    <span className='SidebarSpan d-flex ms-5 ps-3'>
+                        <div className='SidebarItemText' onClick={()=>navigate('/bill-wise-profit')}>Bill Wise Profit</div>
                     </span>
+
                 </div>
 
             </div>

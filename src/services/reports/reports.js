@@ -1,5 +1,5 @@
 import { axiosPrivate } from "../../api/axios"
-// import useStaffServices from "../master/staffServices"
+// // import useStaffServices from "../master/staffServices"
 
 export const useReportsServices = () =>{
     
@@ -73,6 +73,13 @@ export const useReportsServices = () =>{
         return response?.data
     }
 
+    const getBillWiseProfit = async (params)=>{
+        const response = await axiosPrivate.get('reports/bill_wise/profit/report/',{params:params})
+        return response?.data
+    }
+
+
+
     return{
         getStockLedger,
         getAccLedger,
@@ -88,5 +95,6 @@ export const useReportsServices = () =>{
         getStockJournalReport,
         getBarcodeRegReport,
         getItemHistory,
+        getBillWiseProfit,
     }
 }
