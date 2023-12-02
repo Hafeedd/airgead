@@ -1,4 +1,5 @@
 import "./App.css";
+import "./App.css";
 import { BrowserRouter, Outlet, Route, Routes } from "react-router-dom";
 import { Layout } from "./components/layout/Layout";
 import ItemMaster from "./pages/master/item/ItemMaster";
@@ -26,6 +27,7 @@ import PayrollTransaction from "./pages/transactions/payroll/PayrollTransaction"
 import ItemProfitWise from "./pages/reports/profitReport/ItemProfitWise";
 import PurchaseBook from "./pages/reports/purchaseBook/PurchaseBook";
 import { BarcodeRegister } from "./pages/reports/barcodeRegister/BarcodeRegister";
+import BillWiseLedger from "./pages/reports/billlwiseLedger/BillWiseLedger";
 
 function App() {
   return (
@@ -57,8 +59,8 @@ function App() {
               path="/receipt-transaction"
               element={<PaymentTransaction types={"Receipt"} />}
             />
-            <Route path="/staff-attendance" element={<StaffAttendance />} />
-            <Route path="/pay-roll" element={<PayrollTransaction />} />
+            <Route path="/staff-attendance" element={<StaffAttendance  />}  />
+            <Route path="/pay-roll" element={<PayrollTransaction  />}  />
             <Route path="/stock-journal" element={<StockJournal />} />
             <Route path="/stock-reports" element={<StockLedger />} />
             <Route path="/account-reports" element={<AccountLedger />} />
@@ -87,6 +89,7 @@ function App() {
             <Route path="/purchase-register" element={<PurchaseBook />} />
             <Route path="/barcode-register" element={<BarcodeRegister />} />
             <Route path="/item-history" element={<BarcodeRegister />} />
+            <Route path="/bill-wise-ledger" element={<BillWiseLedger />} />
           </Route>
         </Route>
       </Routes>

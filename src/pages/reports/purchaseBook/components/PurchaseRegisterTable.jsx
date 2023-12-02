@@ -61,10 +61,14 @@ const PurchaseRegisterTable = (props) => {
                 <th>Qty</th>
                 <th>Ut</th>
                 <th>Free</th>
-                <th>Rate</th>
+                <th>P.Rate</th>
                 <th>Gross</th>
                 <th>Disc</th>
-                <th>Disc Tax%</th>
+                <th width="50" className="text-center">
+                  Disc Tax%
+                </th>
+                <th>CGST</th>
+                <th>SGST</th>
                 <th>Tax</th>
                 <th>Total</th>
               </tr>
@@ -73,10 +77,12 @@ const PurchaseRegisterTable = (props) => {
               {purchaseRegisterList?.length > 0 ? (
                 purchaseRegisterList.map((data, i) => {
                   let totalTotal = 0;
+                  let totalQty = 0;
+                  let totalgross = 0;
                   return (
                     <>
                       <tr key={i}>
-                        <td colSpan={10} className="w-100 m-0 p-0 border-0">
+                        <td colSpan={12} className="w-100 m-0 p-0 border-0">
                           <div className="table-hd p-2 border-0">
                             <div className="d-flex ms-4 py-1 px-0 justify-content-between align-items-center">
                               Deatils : {data?.documents_no}{" "}
@@ -107,26 +113,42 @@ const PurchaseRegisterTable = (props) => {
                           let gross = item?.item.total - item?.item.tax_gst;
                           let utId = item?.item.fk_units;
                           totalTotal = totalTotal + item?.item.total;
+                          totalQty = totalQty + item?.item.quantity
+                          totalgross = totalgross + gross
                           return (
                             <tr key={i}>
                               <td>{item?.item.item_name || " "}</td>
                               <td>{item?.item.quantity}</td>
                               <td>
-                                <SelectUnit {...{ utId }}/>
+                                <SelectUnit {...{ utId }} />
                               </td>
                               <td>{item?.item.free || 0}</td>
                               <td>{item?.item.rate || 0}</td>
                               <td>{gross.toFixed(2) || 0}</td>
-                              <td>{item?.item.discount_1_amount || 0}</td>
-                              <td>{item?.item.discount_1_percentage || 0}</td>
-                              <td>{item?.item.tax_gst || 0}</td>
-                              <td>{item?.item.total || 0}</td>
+                              <td>
+                                {item?.item.discount_1_amount.toFixed(2) || 0}
+                              </td>
+                              <td width="50" className="text-center">
+                                {item?.item.discount_1_percentage.toFixed(2) ||
+                                  0}
+                              </td>
+                              <td>{item?.item.cgst_or_igst.toFixed(2) || 0}</td>
+                              <td>{item?.item.sgst.toFixed(2) || 0}</td>
+                              <td>{item?.item.tax_gst.toFixed(2) || 0}</td>
+                              <td>{item?.item.total.toFixed(2) || 0}</td>
                             </tr>
                           );
                         })}
-                      <tr>
-                        <td colSpan={9} className="bg-secondary"></td>
-                        <td className="bg-secondary text-light">{totalTotal}</td>
+                      <tr className="pur-btm">
+                        <td></td>
+                        <td>{totalQty.toFixed(2)}</td>
+                        <td colSpan={3} ></td>
+                        <td>{totalgross.toFixed(2)}</td>
+                        <td colSpan={4}></td>
+                        <td> Total</td>
+                        <td>
+                          {totalTotal.toFixed(2)}
+                        </td>
                       </tr>
                     </>
                   );
