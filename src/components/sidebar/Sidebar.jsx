@@ -114,14 +114,12 @@ const Sidebar = () => {
                     <span className='SidebarSpan d-flex ms-5 ps-3'>
                         <div className='SidebarItemText' onClick={()=>navigate('/barcode-register')}>Barcode Register</div>
                     </span>
-                    {/* <span className='SidebarSpan d-flex ms-5 ps-3'>
+                    <span className='SidebarSpan d-flex ms-5 ps-3'>
                         <div className='SidebarItemText' onClick={()=>navigate('/item-history')}>Item History</div>
-                    </span> */}
+                    </span>
                     <span className='SidebarSpan d-flex ms-5 ps-3'>
                         <div className='SidebarItemText' onClick={()=>navigate('/bill-wise-ledger')}>Bill Wise Ledger</div>
                     </span>
-
-
                 </div>
 
             </div>

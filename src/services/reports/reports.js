@@ -68,6 +68,11 @@ export const useReportsServices = () =>{
         return response?.data
     }
 
+    const getItemHistory = async(id,params)=>{
+        const response = await axiosPrivate.get(`/reports/item_report/${id}/`,{params:params})
+        return response?.data
+    }
+
     return{
         getStockLedger,
         getAccLedger,
@@ -82,5 +87,6 @@ export const useReportsServices = () =>{
         getPurchaseRegister,
         getStockJournalReport,
         getBarcodeRegReport,
+        getItemHistory,
     }
 }
