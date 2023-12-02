@@ -9,7 +9,7 @@ const SalesDeliveryDetails = (props) => {
     const {handleKeyDown,formRef} = useOnKey(ref, setRef)
 
   return (
-    < div ref={formRef} className="col-8 col-9 mx-0 ps-4 pe-0 row" >
+    < div ref={formRef} className="col-8 col-9 mx-0 ps-4 pe-0 row pt-1" >
         <div className="col-5 ps-3 mx-0 pe-2 row">
             <Form.Group className='col-12 mx-0 d-flex align-items-center px-0'>
                 <Form.Label className='col-3 purchase-input-label'>Vehicle No</Form.Label>

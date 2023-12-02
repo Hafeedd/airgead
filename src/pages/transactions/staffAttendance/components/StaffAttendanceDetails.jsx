@@ -132,8 +132,8 @@ const StaffAttendanceDetails = (props) => {
   }
 
   return (
-    <div className="mx-0 px-0">
-      StaffAttendanceDetails
+    <div className="mx-0 px-0 fs-5">
+      <b>Staff Attendance Details</b>
       <div className="col-12 d-flex justify-content-center align-items-md-center mx-0 mt-3">
         <div
           className="col-4 col-5 d-flex justify-content-end"
@@ -210,7 +210,7 @@ const StaffAttendanceDetails = (props) => {
       </div>
       <div
         style={{
-          height: "27.5rem",
+          height: "29.5rem",
           width: "85rem",
           overflowX: "scroll",
           overflowY: "scroll",

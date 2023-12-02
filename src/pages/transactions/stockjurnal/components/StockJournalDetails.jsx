@@ -22,12 +22,10 @@ export const StockJournalDetails = (props) => {
     handleResetStockTabe,
     stockTableItemList,
     handleClearAll,
-    setStockTableItemList,
     unitList,
     handleAddToTableList,
     tableEdit,
     setTableEdit,
-    deleteStockJ,
     stockJList,
     setEdit,
   } = props;
@@ -70,7 +68,13 @@ export const StockJournalDetails = (props) => {
     setTableEdit(stockTableItem);
     let tempTable = stockTableItemList;
     tempTable.splice(i, 1);
-    setStockTableItem(data);
+    console.log(tempTable)
+    if(!tableEdit){
+      tempTable = stockTableItem
+      tempTable.push(tableEdit)
+    }
+      setStockTableItem(data);
+
   };
 
   const handleChangeTableItem = (e, data) => {
@@ -82,7 +86,7 @@ export const StockJournalDetails = (props) => {
         unit: item_data?.unit,
         name: item_data?.name,
         cost: item_data?.cost,
-        value: item_data?.retail_rate
+        value: item_data?.retail_rate,
       }));
     } else if (e.target.value === "")
       setStockTableItem((data) => ({ ...data, [e.target.name]: null }));
@@ -118,29 +122,31 @@ export const StockJournalDetails = (props) => {
   };
 
   const handlePrev = () => {
-    if (stockJList?.length>0) {
+    if (stockJList?.length > 0) {
       if (!edit) {
         setEdit(stockJList[0]);
       } else {
         let ind = stockJList?.findIndex((x) => edit.id == x.id);
         if (ind !== stockJList?.length - 1) {
           handleClearAll();
-          setStockTableItem();
+          // handleResetStockTabe();
           setEdit(stockJList[ind + 1]);
         } else {
           Swal.fire("No more stock to edit", "go for next", "warning");
         }
       }
-    }else{
+    } else {
+      setEdit(false);
       Swal.fire("No more stock to edit", "go for next", "warning");
     }
   };
 
   const handleNext = () => {
-    let i = stockJList?.length - 1;
+    console.log(edit);
     if (!edit) {
       Swal.fire("No more stock to edit", "go for prev", "warning");
     } else if (edit?.id == stockJList[0].id) {
+      setEdit(false);
       handleClearAll();
     } else {
       handleClearAll();
@@ -148,6 +154,7 @@ export const StockJournalDetails = (props) => {
       if (ind !== stockJList[0]) {
         setEdit(stockJList[ind - 1]);
       } else {
+        setEdit(false);
         Swal.fire("No more stock to edit", "go for prev", "warning");
       }
     }
@@ -257,7 +264,7 @@ export const StockJournalDetails = (props) => {
       <div className="pe-4 stock-journal-table-cont mt-2">
         <table className=" table mb-0 stock-journal-table w-100">
           <thead>
-            <th colSpan={2} className="ps-4">
+            <th colSpan={2} width="100" className="ps-4 text-start">
               Item Name
             </th>
             <th width={"120"} className="">
@@ -273,9 +280,10 @@ export const StockJournalDetails = (props) => {
               Value
             </th>
             {/* <th width={'130'} className="">Godown</th> */}
-            <th width={"180"} className="">
+            {/* <th width={"180"} className="">
               Stock in/ Stock Less
-            </th>
+            </th> */}
+            <th width={"170"}></th>
             <th width={"40"}></th>
           </thead>
           <tbody>
@@ -333,9 +341,6 @@ export const StockJournalDetails = (props) => {
                 {stockTableItem?.value || "0.00"}
               </td>
               <td className="align-middle">
-                {stockTableItem?.godown || "0.00"}
-              </td>
-              <td className="align-middle">
                 <select
                   className="add-less-btn"
                   onChange={handleChangeTableItem}
@@ -347,14 +352,17 @@ export const StockJournalDetails = (props) => {
                   <option value="less">Less</option>
                 </select>
               </td>
-                {tableEdit && !edit &&
-              <td className="align-middle ps-0 text-start">
+              {tableEdit && !edit ? (
+                <td className="align-middle ps-0 text-start">
                   <BiSolidTrashAlt
                     size={20}
                     onClick={() => handleTrashButton()}
                   />
-              </td>
-                }
+                </td>
+              ):tableEdit&&
+              <td></td>}
+              {!tableEdit &&<td className="align-middle">
+              </td>}
             </tr>
             {stockTableItemList?.length > 0 &&
               stockTableItemList?.map((data, i) => (
@@ -398,6 +406,9 @@ export const StockJournalDetails = (props) => {
                   <td className="align-middle">{data.cost || "0.00"}</td>
                   <td className="align-middle">{data.value || "0.00"}</td>
                   {/* <td className="align-middle">{data.godown||'0.00'}</td> */}
+                  {/* <td className="align-middle">
+                    {data.unit || ''}
+                  </td> */}
                   <td className="align-middle">
                     <select
                       className="add-less-btn"
@@ -428,11 +439,12 @@ export const StockJournalDetails = (props) => {
                       </svg>
                     </div>
                   </td>
+                  {/* <td className=""></td> */}
                 </tr>
               ))}
             <AdjustTableHeight />
             <tr>
-              <th className="p-2 text-start">
+              <td className="p-2 text-start">
                 <div
                   onClick={handlePrev}
                   className="btn stock-next-prev-btn me-2"
@@ -442,36 +454,36 @@ export const StockJournalDetails = (props) => {
                 <div onClick={handleNext} className="btn stock-next-prev-btn">
                   {"Next >"}
                 </div>
-              </th>
-              <th className="p-2 text-center align-middle">Total</th>
-              <th className="align-middle">
-                <div className="purchase-input-text drop shadows text-center">
+              </td>
+              <td className="p-2 text-center align-middle">Total</td>
+              <td className="align-middle">
+                <div className="purchase-input-text drop shadows">
                   {stockJAdd?.total_qty || ""}
                 </div>
-              </th>
-              <th></th>
-              <th></th>
-              <th className="align-middle">
-                <div className="purchase-input-text drop shadows text-center">
+              </td>
+              <td></td>
+              <td></td>
+              <td className="align-middle">
+                <div className="purchase-input-text drop shadows">
                   {stockJAdd?.total_value || ""}
                 </div>
-              </th>
-              <th className="align-middle" colSpan={3}>
+              </td>
+              <td className="align-middle" colSpan={2}>
                 <div className="row">
                   <div
                     onClick={handleClearAll}
-                    className="col-5 col-6 stock-jsave-btn btn mx-2"
+                    className="col-5 col-6 stock-jsave-btn btn mx-2 d-flex justify-content-center"
                   >
                     Clear
                   </div>
                   <div
                     onClick={handleSubmit}
-                    className="col-5 col-6 stock-jsave-btn btn"
+                    className="col-5 col-6 stock-jsave-btn btn d-flex justify-content-center"
                   >
                     {edit ? "Update" : "Save"}
                   </div>
                 </div>
-              </th>
+              </td>
             </tr>
           </tbody>
         </table>

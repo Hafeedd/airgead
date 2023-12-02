@@ -16,7 +16,7 @@ export const AccountLedger = () => {
   const [chooseAccountModalShow, setChooseAccountModalShow] = useState(false);
 
   const [paramsToReport, setParamsToReport] = useState({
-    from_date: new Date().toISOString().slice(0, 8) + "01",
+    from_date: new Date().toISOString().slice(0, 10),
     to_date: new Date().toISOString().slice(0, 10),
   });
 
@@ -116,9 +116,10 @@ export const AccountLedger = () => {
           <AccountsTable
             list = {reportList}
           />
-          <div className="row mt-3">
-            <div className="w-100 d-flex justify-content-end mb-3">
-              <div className="btn btn-dark col-1 col-2 py-0">Exit</div>
+          <div className="row mt-1">
+            <div className="w-100 d-flex justify-content-end mb-1">
+              <div onClick={()=>navigate(-1)} 
+              className="btn btn-dark col-1 col-2 py-0">Exit</div>
             </div>
           </div>
         </div>

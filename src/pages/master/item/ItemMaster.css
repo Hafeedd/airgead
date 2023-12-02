@@ -68,7 +68,7 @@
 }
 
 .table-scroller{
-    height: 35rem;
+    height: 39rem;
     overflow-y: scroll;
     overflow-x: visible;
 }
@@ -80,7 +80,7 @@
 .itemList_header{
     position: sticky;
     top:3.5rem;
-    z-index: 2;
+    z-index: 200;
 }
 
 .page_head{
@@ -88,7 +88,7 @@
     top: 3.5rem;
     background: #F5F5F5;
     padding-left: 1rem;
-    z-index: 10;
+    z-index: 100;
 }
 
 .item_add{

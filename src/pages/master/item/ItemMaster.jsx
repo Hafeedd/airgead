@@ -85,10 +85,10 @@ const ItemMaster = () => {
     return(
         <div className='item_add'>
                 <div className="itemList_header row mx-0">
-                    <div className="page_head ps-4 d-flex justify-content-between">
+                    <div className="page_head ps-4 d-flex justify-content-between my-1">
                         <div>
                         <div className='fw-600 fs-5'>Master Item</div>
-                        <div className='page_head_items mb-3'>
+                        <div className='page_head_items mb-2'>
                             <div onClick={()=>{navigate('/')}} className={`page_head_item ${pageHeadItem === 1 && "active"}`}>Item List</div>
                             {/* <div onClick={()=>setPageHeadItem(2)} className={`page_head_item ${pageHeadItem === 2 && "active"}`}>Change Item Code</div>
                             <div onClick={()=>setPageHeadItem(3)} className={`page_head_item ${pageHeadItem === 3 && "active"}`}>Raw Meterial Settins</div>

@@ -141,7 +141,7 @@ const PurchaseBook = () => {
           )}
           <div className="row mt-2">
             <div className="w-100 d-flex justify-content-end mb-2 ">
-              <div className="btn btn-dark col-1 col-2 py-0 me-2">Exit</div>
+              <div onClick={()=>navigate(-1)} className="btn btn-dark col-1 col-2 py-0 me-2">Exit</div>
             </div>
           </div>
         </div>

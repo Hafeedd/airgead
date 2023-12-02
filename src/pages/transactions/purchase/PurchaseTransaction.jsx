@@ -677,11 +677,11 @@ const PurchaseTransaction = () => {
 
   return (
     <div className="item_add">
-      <div className="itemList_header row mx-0">
+      <div className="itemList_header row mx-0 mb-3">
         <div className="page_head ps-4 d-flex pe-0">
           <div className="col-6 col-7">
             <div className="fw-600 fs-5">Purchase</div>
-            <div className="page_head_items mb-3">
+            <div className="page_head_items mb-1">
               <div
                 onClick={() => {
                   navigate("/purchase-transaction");

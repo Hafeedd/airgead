@@ -4,7 +4,7 @@ import { TfiEmail, TfiPrinter } from "react-icons/tfi";
 import { BsWhatsapp, BsFiletypePdf } from "react-icons/bs";
 import { RiFileExcel2Line } from "react-icons/ri";
 
-export const StockJournalReportDetails = (props) => {
+export const BarcodeRegDet = (props) => {
   const { params, setParams } = props;
 
   const handleChange = (e) => {

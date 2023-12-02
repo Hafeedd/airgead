@@ -53,7 +53,7 @@ const SalesBook = () => {
                 ? "Sale Register"
                 : "Sales Book"}
             </div>
-            <div className="page_head_items mb-2 mt-2">
+            <div className="page_head_items my-2">
               <div
                 onClick={() => {
                   navigate("/sales-book");
@@ -93,8 +93,8 @@ const SalesBook = () => {
           </div>
         </div>
       </div>
-      <div className="p-3 mt-3">
-        <div className="p-2 bg-light rounded-1">
+      <div className="p-3">
+        <div className="p-1 pt-2 bg-light rounded-1">
           {location.pathname === "/sale-register" && "active" ? (
             <>
               <SalesBookEntry
@@ -128,7 +128,7 @@ const SalesBook = () => {
 
           <div className="row mt-3">
             <div className="w-100 d-flex justify-content-end mb-3">
-              <div className="btn btn-dark col-1 col-2 py-0 me-2">Exit</div>
+              <div onClick={()=>navigate(-1)} className="btn btn-dark col-1 col-2 py-0 me-2">Exit</div>
             </div>
           </div>
         </div>

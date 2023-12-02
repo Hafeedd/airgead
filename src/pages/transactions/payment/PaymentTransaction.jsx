@@ -405,11 +405,11 @@ const PaymentTransaction = ({types}) => {
 
     return (
         <div className='item_add'>
-            <div className="itemList_header row mx-0">
-                <div className="page_head my-1 ps-4">
+            <div className="itemList_header row mx-0 mb-3">
+                <div className="page_head my-0 ps-4">
                     <div>
                         <div className='fw-600 fs-5'>Transaction {pathOfPage=="/payment-transaction"?'payment':'receipt'}</div>
-                        <div className='page_head_items mb-3'>
+                        <div className='page_head_items mb-1'>
                             <div onClick={()=>handleReset()} className={`page_head_item active`}>
                                 {pathOfPage=="/payment-transaction"?'payment':'receipt'} Details</div>
                         </div>

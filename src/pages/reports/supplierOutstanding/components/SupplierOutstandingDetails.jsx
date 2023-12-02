@@ -5,6 +5,7 @@ import { GrRefresh } from "react-icons/gr";
 import { RiFileExcel2Line } from "react-icons/ri";
 import { TfiEmail, TfiPrinter } from "react-icons/tfi";
 import searchIcon from "../../../../assets/icons/search.png";
+import { useNavigate } from "react-router";
 
 const SupplierOutstandingDetails = (props) => {
   const {
@@ -17,6 +18,8 @@ const SupplierOutstandingDetails = (props) => {
     setStaffOutstanding,
     location,
   } = props;
+
+  const navigate = useNavigate()
 
   const handleChange = (e) => {
     if (e.target.value === "") {
@@ -340,7 +343,7 @@ const SupplierOutstandingDetails = (props) => {
         <br />
         <div className="row">
           <div className="w-100 d-flex justify-content-end mb-3">
-            <div className="btn btn-dark col-1 col-2 py-0">Exit</div>
+            <div onClick={()=>navigate(-1)} className="btn btn-dark col-1 col-2 py-0">Exit</div>
           </div>
         </div>
       </div>

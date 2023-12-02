@@ -1,8 +1,30 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { GrRefresh } from "react-icons/gr";
 import searchIcon from "../../../../assets/icons/search.png";
+import { useReportsServices } from "../../../../services/reports/reports";
+import { useNavigate } from "react-router";
 
-export const StockJournalReportTable = () => {
+export const StockJournalReportTable = (props) => {
+  const { params } = props;
+  const [list, setList] = useState([]);
+  const navigate = useNavigate()
+  const { getStockJournalReport } = useReportsServices();
+
+  useEffect(() => {
+    getData();
+  }, [params]);
+
+  const getData = async () => {
+    try {
+      const response = await getStockJournalReport(params);
+      if (response.success) {
+        setList(response.data.stock_journal_report);
+      }
+    } catch (err) {}
+  };
+
+  console.log(list);
+
   return (
     <div>
       <div className="mt-3">
@@ -27,9 +49,7 @@ export const StockJournalReportTable = () => {
           </div>
         </div>
       </div>
-      <div
-        className="stock-journal-report-table-cont"
-      >
+      <div className="stock-journal-report-table-cont">
         <table className="table">
           <thead className="text-light">
             <tr>
@@ -39,49 +59,77 @@ export const StockJournalReportTable = () => {
               <th width="180" className="">
                 QTY
               </th>
-              <th width="200" className="text-start ps-3">
-                UT
-              </th>
+              <th className="text-start ps-3">UT</th>
+              <th width="40">Add/Less</th>
               <th width="150">Cost</th>
               <th>Gross</th>
               <th>Net Amnt</th>
             </tr>
           </thead>
           <tbody>
-            <tr>
-              <td className="top-tr text-start ps-3 py-3" colSpan={6}>Ledger Name : CASH IN HAND {'( CASH )'} {'( 19 Items )'}</td>
-            </tr>
-            <tr>
-              <td className="py-4" colSpan={6}></td>
-            </tr>
-            <tr>
-              <td className="bottom-tr py-4" colSpan={6}></td>
-            </tr>
-            <tr>
-              <td className="top-tr text-start ps-3 py-3" colSpan={6}>Ledger Name : CASH IN HAND {'( CASH )'} {'( 19 Items )'}</td>
-            </tr>
-            <tr>
-              <td className="py-4" colSpan={6}></td>
-            </tr>
-            <tr>
-              <td className="bottom-tr py-4" colSpan={6}></td>
-            </tr>
-            <tr>
-              <td className="top-tr text-start ps-3 py-3" colSpan={6}>Ledger Name : CASH IN HAND {'( CASH )'} {'( 19 Items )'}</td>
-            </tr>
-            <tr>
-              <td className="py-4" colSpan={6}></td>
-            </tr>
-            <tr>
-              <td className="bottom-tr py-4" colSpan={6}></td>
-            </tr>
+            {list?.length > 0 ?
+              list?.map((data, i) => 
+              {
+                let total_qty = 0
+                let total_gross = 0
+              return(
+                <>
+                  <tr key={i}>
+                    <td className="top-tr text-start ps-3 py-3" colSpan={7}>
+                      Doc Number : {data.document_number} {" ( Date "}{" "}
+                      {data.date?.slice(0, 10)?.split("-").reverse().join("-")}{" "}
+                      {") ( "}
+                      {data?.items?.length} {" Items )"}
+                    </td>
+                  </tr>
+                  {data?.items?.length > 0 ? (
+                    data.items.map((item, i) => 
+                    {
+                      total_qty = total_qty+parseInt(item?.qty||0)||0
+                      total_gross = total_gross + parseInt(item?.gross||0)||0
+                    return (
+                      <tr>
+                        <td className="py-4">{item.item_name || ""}</td>
+                        <td className="py-4">{item.qty || ""}</td>
+                        <td className="py-4 text-start ps-3">
+                          {item.unit || ""}
+                        </td>
+                        <td className="py-4">
+                          {item.add_qty > 0 ? "ADD" : "LESS"}
+                        </td>
+                        <td className="py-4">{item.cost || ""}</td>
+                        <td className="py-4">{item.gross || ""}</td>
+                        <td className="py-4">{item.qty * item.cost || 0}</td>
+                      </tr>
+                    )})
+                  ) : (
+                    <tr>
+                      <td className="fs-5 text-center" colSpan={7}>
+                        No items
+                      </td>
+                    </tr>
+                  )}
+                  <tr>
+                    <td className="bottom-tr py-4" colSpan={1}></td>
+                    <td className="bottom-tr align-middle px-2">
+                      <div className="input rounded-2">{total_qty}</div>
+                    </td>
+                    <td className="bottom-tr py-4" colSpan={3}></td>
+                    <td className="bottom-tr align-middle px-2">
+                      <div className="input rounded-2">{total_gross}</div>
+                    </td>
+                    <td className="bottom-tr py-4"></td>
+                  </tr>
+                </>
+              )}):
+              <tr><td colSpan={7} className="fs-5 p-3">There is no Stock report to show</td></tr>}
           </tbody>
         </table>
       </div>
       <br />
       <div className="row">
         <div className="w-100 d-flex justify-content-end mb-0">
-          <div className="btn btn-dark col-1 col-2 py-0">Exit</div>
+          <div onClick={()=>navigate(-1)} className="btn btn-dark col-1 col-2 py-0">Exit</div>
         </div>
       </div>
     </div>

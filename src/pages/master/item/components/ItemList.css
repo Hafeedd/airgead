@@ -62,11 +62,11 @@
     justify-content: center;
 }
 
-.table-scroller{
+/* .table-scroller{
     height: 37rem;
     overflow-y: scroll;
     overflow-x: visible;
-}
+} */
 
 .button{
     cursor: pointer;
@@ -75,7 +75,7 @@
 .itemList_header{
     position: sticky;
     top:3.5rem;
-    z-index: 2;
+    z-index: 200;
 }
 
 .customer-add-btn{

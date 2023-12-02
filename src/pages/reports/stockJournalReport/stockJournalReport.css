@@ -24,3 +24,13 @@
 .stock-journal-report-table-cont .table tbody tr td.bottom-tr{
     background: #B1B1B1;
 }
+
+.stock-journal-report-table-cont .table tbody tr td.bottom-tr .input{
+    background: #FFF;
+    height: 2.1875rem;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    /* padding: 3rem; */
+}

@@ -68,7 +68,7 @@ const SalesInvoiceDetails = (props) => {
 
 
     return (
-        < div ref={formRef} className="col-8 col-9 mx-0 ps-4 pe-0 row" >
+        < div ref={formRef} className="col-8 col-9 mx-0 ps-4 pe-0 row pt-2" >
             <Form.Group className='col-5 mx-0 d-flex align-items-center'>
                 <Form.Label className='col-3 purchase-input-label'>Invoice No</Form.Label>
                 <Form.Control

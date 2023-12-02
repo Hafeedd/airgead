@@ -57,9 +57,9 @@ const SalesBookEntry = (props) => {
                     Whatsapp
                 </div>
             </div>
-            <div className='row mx-0 mt-2'>
-                <div className="d-flex col-8 px-0 m-3">
-                    <Form.Group className="col-5 pe-4 ps-0 mx-0 d-flex align-items-center mt-1">
+            <div className='row mx-0'>
+                <div className="d-flex col-12 px-0  mt-2">
+                    <Form.Group className="col-3 col-4 pe-4 ps-0 mx-0 d-flex align-items-center mt-1">
                         <Form.Label className="col-2 purchase-input-label pb-1">
                             From
                         </Form.Label>
@@ -72,7 +72,7 @@ const SalesBookEntry = (props) => {
                             type="date"
                         />
                     </Form.Group>
-                    <Form.Group className="col-5 pe-4 ps-0 mx-0 d-flex align-items-center mt-1">
+                    <Form.Group className="col-3 col-4 pe-4 ps-0 mx-0 d-flex align-items-center mt-1">
                         <Form.Label className="col-2 purchase-input-label pb-1">
                             Upto
                         </Form.Label>

@@ -87,7 +87,7 @@ const SupplierMaster = () => {
                     <div className="page_head my-1 ps-4 d-flex justify-content-between">
                         <div>
                         <div className='fw-600 fs-5'>Master Supplier</div>
-                        <div className='page_head_items mb-3'>
+                        <div className='page_head_items mb-2'>
                             <div onClick={()=>navigate('/supplier-master')} className={`page_head_item ${pageHeadItem === 1 && "active"}`}>Supplier List</div>
                         </div>
                         </div>

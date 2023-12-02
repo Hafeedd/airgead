@@ -58,6 +58,16 @@ export const useReportsServices = () =>{
         return response?.data
     }
 
+    const getStockJournalReport = async(params)=>{
+        const response = await axiosPrivate.get('/reports/stock_journal/report/',{params:params})
+        return response?.data
+    }
+
+    const getBarcodeRegReport = async(params)=>{
+        const response = await axiosPrivate.get('/reports/barcode/register/report/',{params:params})
+        return response?.data
+    }
+
     return{
         getStockLedger,
         getAccLedger,
@@ -70,5 +80,7 @@ export const useReportsServices = () =>{
         getItemWiseProfit,
         getPurchaseBook,
         getPurchaseRegister,
+        getStockJournalReport,
+        getBarcodeRegReport,
     }
 }

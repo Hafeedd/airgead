@@ -408,11 +408,11 @@ const SalesTransaction = () => {
 
     return (
         <div className='item_add'>
-            <div className="itemList_header row mx-0">
+            <div className="itemList_header row mx-0 mb-3">
                 <div className="page_head ps-4 d-flex pe-0">
                     <div className='col-5 col-6'>
                         <div className='fw-600 fs-5'>Sales</div>
-                        <div className='page_head_items mb-3'>
+                        <div className='page_head_items mb-1'>
                             <div onClick={() => { navigate('/sales-transaction') }} className={`page_head_item active`}>Sales Details</div>
                         </div>
                     </div>

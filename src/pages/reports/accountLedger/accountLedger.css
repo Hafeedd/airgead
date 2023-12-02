@@ -14,7 +14,8 @@
 }
 
 .acc-ledger-cont{
-    height: 28rem;
+    margin-bottom: 0;
+    height: 31.9rem;
     overflow: hidden;
     overflow-y: scroll;
 }
