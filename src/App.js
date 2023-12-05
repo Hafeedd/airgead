@@ -28,6 +28,8 @@ import ItemProfitWise from "./pages/reports/profitReport/ItemProfitWise";
 import PurchaseBook from "./pages/reports/purchaseBook/PurchaseBook";
 import { BarcodeRegister } from "./pages/reports/barcodeRegister/BarcodeRegister";
 import BillWiseLedger from "./pages/reports/billlwiseLedger/BillWiseLedger";
+import { ItemHistory } from "./pages/reports/ItemHistory/ItemHistory";
+import BillWiseProfit from './pages/reports/billWiseProfitReport/BillWiseProfit';
 
 function App() {
   return (
@@ -88,8 +90,10 @@ function App() {
             <Route path="/profit-report" element={<ItemProfitWise />} />
             <Route path="/purchase-register" element={<PurchaseBook />} />
             <Route path="/barcode-register" element={<BarcodeRegister />} />
-            <Route path="/item-history" element={<BarcodeRegister />} />
+            <Route path="/item-history" element={<ItemHistory />} />
             <Route path="/bill-wise-ledger" element={<BillWiseLedger />} />
+            <Route path="/bill-wise-profit" element={<BillWiseProfit/>}/>
+
           </Route>
         </Route>
       </Routes>

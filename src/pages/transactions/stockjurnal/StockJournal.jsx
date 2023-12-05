@@ -8,7 +8,6 @@ import useStockJournalServices from "../../../services/transactions/stockJournal
 import Swal from "sweetalert2";
 
 export const StockJournal = () => {
-  const [pageHeadItem, setPageHeadItem] = useState(1);
   const [showJournalFilter, setShowJournalFilter] = useState(false);
   const [itemNameList, setItemNameList] = useState([]);
   const [unitList, setUnitList] = useState([]);
