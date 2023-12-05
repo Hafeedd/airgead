@@ -1,8 +1,70 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import BillWiseLedgerEntry from './components/BillWiseLedgerEntry';
 import BillWiseLedgerTable from './components/BillWiseLedgerTable';
+import { useReportsServices } from '../../../services/reports/reports';
+import useAccountServices from '../../../services/master/accountServices';
 
 const BillWiseLedger = () => {
+
+  const [billwiseledgerList, setBillWiseLedgerList] = useState([])
+  const [accountList, setAccountList] = useState([])
+  const [accountCode, setAccountCode] = useState()
+  const [params, setParams] = useState({
+    from_date: new Date().toISOString().slice(0, 10),
+    to_date: new Date().toISOString().slice(0, 10),
+    account_code: "10002",
+  });
+
+  const {getBillWiseLedger} = useReportsServices()
+  const {getAccountList} = useAccountServices()
+
+  useEffect(()=>{
+    if(accountCode)
+    getData()
+  },[params,accountCode])
+
+  useEffect(()=>{
+    getAccount()
+  },[])
+
+  const getAccount = async () =>{
+    try{
+      const response1 = await getAccountList();
+      if (response1.success) {
+        let tempList = [];
+        response1.data.map((item) => {
+          let a;
+          if (item.name && item.code) {
+            a = {
+              key: item.id,
+              value: item.code,
+              text: item.name,
+              description: item.code,
+            };
+            tempList.push(a);
+          }
+        });
+        setAccountCode(tempList[0].value);
+        setAccountList(tempList);
+      }
+    }catch(err){}
+  }
+
+  const getData = async()=>{
+    try{
+      let tempParams = {
+        ...params,account_code:accountCode
+      }
+      const response = await getBillWiseLedger(tempParams);
+      if(response.success){
+        setBillWiseLedgerList(response.data)
+      }
+    }catch(err){
+      console.log(err)
+    }
+  }
+
+  
   return (
     <div className="item_add">
       <div className="itemList_header row mx-0">
@@ -16,13 +78,32 @@ const BillWiseLedger = () => {
             </div>
           </div>
           <div className="d-flex px-0 align-items-center customer-add-btn">
+            <div className="p-2 choose-acc-btn rounded-2 text-light cursor ">
+              Column Settings
+            </div>
           </div>
         </div>
       </div>
       <div className="p-3">
         <div className="p-2 bg-light rounded-1 px-3">
-            <BillWiseLedgerEntry />
-            <BillWiseLedgerTable/>
+          <BillWiseLedgerEntry
+            {...{
+              params,
+              setParams,
+              accountList,
+              setAccountList,
+              accountCode,
+              setAccountCode,
+            }}
+          />
+          <BillWiseLedgerTable
+            {...{
+              billwiseledgerList,
+              setBillWiseLedgerList,
+              params,
+              setParams,
+            }}
+          />
         </div>
       </div>
     </div>

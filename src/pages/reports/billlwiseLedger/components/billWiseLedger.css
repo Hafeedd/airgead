@@ -1,0 +1,31 @@
+.op-clr{
+    color: red;
+}
+.table-sd{
+    background-color: #EAEAEA;;
+}
+
+.billwise.table.daybook-table thead tr th{
+    z-index: 1;
+}
+
+.bill-wise-select {
+    min-height: 1.7rem !important;
+    background: #eeeeee !important;
+}
+
+.bill-wise-select input{
+    padding: 0.3rem 1rem !important;
+}
+
+.bill-wise-select .icon{
+    padding: 0 !important;
+    margin-right: 0.1rem !important;
+    height: 1.7rem !important;
+    display: flex;
+    align-items: center;
+}
+.table-scrolle{
+    height: 24rem;
+    overflow-y: auto;
+}

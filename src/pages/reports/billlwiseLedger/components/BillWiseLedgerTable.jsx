@@ -2,7 +2,12 @@ import React from 'react'
 import { GrRefresh } from 'react-icons/gr';
 import searchIcon from "../../../../assets/icons/search.png";
 
-const BillWiseLedgerTable = () => {
+const BillWiseLedgerTable = (props) => {
+
+  const {billwiseledgerList, setBillWiseLedgerList, params} = props
+
+  console.log(billwiseledgerList)
+
   return (
     <div className="row mx-0 mt-3">
       <div className="daybook-cont px-0">
@@ -24,107 +29,132 @@ const BillWiseLedgerTable = () => {
             </div>
           </div>
         </div>
-        <div className="day-book-table-cont">
-          <table className="table daybook-table">
+        <div className="day-book-table-cont table-scrolle">
+          <table className="table daybook-table billwise">
             <thead>
               <tr>
-                <th>Date</th>
-                <th>Doc. No</th>
-                <th>A/c Name</th>
-                <th>Narration</th>
-                <th>Qty</th>
-                <th>Rate</th>
-                <th>Total</th>
-                <th>Debit</th>
-                <th>Credit</th>
-                <th>Balance</th>
+                <th className="text-center">Date</th>
+                <th className="text-center">Doc. No</th>
+                <th className="text-center">Narration</th>
+                <th className="text-center">Item Name</th>
+                <th className="text-center">Qty</th>
+                <th className="text-center">Rate</th>
+                <th className="text-center">Total</th>
+                <th className="text-center">Debit</th>
+                <th className="text-center">Credit</th>
+                <th className="text-center">Balance</th>
               </tr>
             </thead>
             <tbody>
-              <tr>
-                <td>Date</td>
-                <td>Doc. No</td>
-                <td>A/c Name</td>
-                <td>Narration</td>
-                <td>Qty</td>
-                <td>Rate</td>
-                <td>Total</td>
-                <td>Debit</td>
-                <td>Credit</td>
-                <td>Balance</td>
-              </tr>
-              <tr>
-                <td>Date</td>
-                <td>Doc. No</td>
-                <td>A/c Name</td>
-                <td>Narration</td>
-                <td>Qty</td>
-                <td>Rate</td>
-                <td>Total</td>
-                <td>Debit</td>
-                <td>Credit</td>
-                <td>Balance</td>
-              </tr>
-              <tr>
-                <td>Date</td>
-                <td>Doc. No</td>
-                <td>A/c Name</td>
-                <td>Narration</td>
-                <td>Qty</td>
-                <td>Rate</td>
-                <td>Total</td>
-                <td>Debit</td>
-                <td>Credit</td>
-                <td>Balance</td>
-              </tr>
-              <tr>
-                <td>Date</td>
-                <td>Doc. No</td>
-                <td>A/c Name</td>
-                <td>Narration</td>
-                <td>Qty</td>
-                <td>Rate</td>
-                <td>Total</td>
-                <td>Debit</td>
-                <td>Credit</td>
-                <td>Balance</td>
-              </tr>
-              <tr>
-                <td>Date</td>
-                <td>Doc. No</td>
-                <td>A/c Name</td>
-                <td>Narration</td>
-                <td>Qty</td>
-                <td>Rate</td>
-                <td>Total</td>
-                <td>Debit</td>
-                <td>Credit</td>
-                <td>Balance</td>
-              </tr>
-              <tr>
-                <td>Date</td>
-                <td>Doc. No</td>
-                <td>A/c Name</td>
-                <td>Narration</td>
-                <td>Qty</td>
-                <td>Rate</td>
-                <td>Total</td>
-                <td>Debit</td>
-                <td>Credit</td>
-                <td>Balance</td>
-              </tr>
-              <tr>
-                <td>Date</td>
-                <td>Doc. No</td>
-                <td>A/c Name</td>
-                <td>Narration</td>
-                <td>Qty</td>
-                <td>Rate</td>
-                <td>Total</td>
-                <td>Debit</td>
-                <td>Credit</td>
-                <td>Balance</td>
-              </tr>
+              {billwiseledgerList?.length > 0 ? (
+                billwiseledgerList?.map((data, i) => {
+                  return (
+                    <>
+                      <tr>
+                        <td colSpan={10} className="w-100 m-0 p-0 border-0">
+                          <div className="table-hd p-2 border-0">
+                            <div className="d-flex ms-3 py-1 px-0 justify-content-between align-items-center">
+                              &emsp;Ledger Name : {data?.account_code}{" "}
+                              &emsp;&emsp;&emsp;&emsp;
+                            </div>
+                          </div>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td colSpan={10} className="w-100 m-0 p-0 border-0">
+                          <div className="table-sd p-2 border-0">
+                            <div className="d-flex ms-3 py-1 px-0 justify-content-between align-items-center op-clr">
+                              &emsp;Date :&emsp;
+                              {params.from_date
+                                .slice(0, 10)
+                                .split("-")
+                                .reverse()
+                                .join("/")}
+                              &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;
+                              OPENING BALANCE:&emsp;{data?.opening_balance}
+                            </div>
+                          </div>
+                        </td>
+                      </tr>
+                      {data?.ledger?.length > 0 ? (
+                        data?.ledger?.map((ledger, i) => {
+                          return (
+                            <tr key={i}>
+                              <td className="text-center">{ledger.date}
+                                {/* {ledger?.date
+                                  .slice(0, 10)
+                                  .split("-")
+                                  .reverse()
+                                  .join("/")} */}
+                              </td>
+                              <td className="text-center">
+                                {ledger?.bill_number}
+                              </td>
+                              <td className="text-center">{ledger?.type}</td>
+                              {ledger?.items?.length > 0 &&
+                                ledger?.items?.map((item, i) => {
+                                  return (
+                                    <>
+                                      <td className="text-center">
+                                        {item?.item_name}
+                                      </td>
+                                      <td className="text-center">
+                                        {item?.quantity || 0.0}
+                                      </td>
+                                      <td className="text-center">
+                                        {item?.rate || 0.0}
+                                      </td>
+                                      <td className="text-center">
+                                        {item?.amount || 0.0}
+                                      </td>
+                                      <td className="text-center">
+                                        {data?.debit || 0.0}
+                                      </td>
+                                      <td className="text-center">
+                                        {data?.credit || 0.0}
+                                      </td>
+                                      <td className="text-center">{0.0}</td>
+                                    </>
+                                  );
+                                })}
+                            </tr>
+                          );
+                        })
+                      ) : (
+                        <tr>
+                          <td colSpan={10} className="fs-4 text-center">
+                            {" "}
+                            No Reports yet
+                          </td>
+                        </tr>
+                      )}
+                      <tr>
+                        <td colSpan={10} className="w-100 m-0 p-0 border-0">
+                          <div className="table-sd p-2 border-0">
+                            <div className="d-flex ms-3 py-1 px-0 justify-content-between align-items-center op-clr">
+                              &emsp;Date :&emsp;
+                              {params.to_date
+                                .slice(0, 10)
+                                .split("-")
+                                .reverse()
+                                .join("/")}
+                              &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;
+                              CLOSING BALANCE:&emsp;{data?.closing_balance}
+                            </div>
+                          </div>
+                        </td>
+                      </tr>
+                    </>
+                  );
+                })
+              ) : (
+                <tr>
+                  <td colSpan={10} className="fs-4 text-center">
+                    {" "}
+                    No Reports yet
+                  </td>
+                </tr>
+              )}
             </tbody>
           </table>
         </div>
