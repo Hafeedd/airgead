@@ -4,9 +4,17 @@ import searchIcon from "../../../../assets/icons/search.png";
 
 const BillWiseLedgerTable = (props) => {
 
-  const {billwiseledgerList, setBillWiseLedgerList, params} = props
+  const {
+    billwiseledgerList,
+    setBillWiseLedgerList,
+    params,
+    accountList,
+    setAccountList,
+    accountCode,
+    setAccountCode,
+    accountName
+  } = props;
 
-  console.log(billwiseledgerList)
 
   return (
     <div className="row mx-0 mt-3">
@@ -46,15 +54,13 @@ const BillWiseLedgerTable = (props) => {
               </tr>
             </thead>
             <tbody>
-              {billwiseledgerList?.length > 0 ? (
-                billwiseledgerList?.map((data, i) => {
-                  return (
                     <>
                       <tr>
                         <td colSpan={10} className="w-100 m-0 p-0 border-0">
                           <div className="table-hd p-2 border-0">
                             <div className="d-flex ms-3 py-1 px-0 justify-content-between align-items-center">
-                              &emsp;Ledger Name : {data?.account_code}{" "}
+                              &emsp;Ledger Name :{" "}
+                              {accountName || accountList[0]?.text}
                               &emsp;&emsp;&emsp;&emsp;
                             </div>
                           </div>
@@ -71,52 +77,41 @@ const BillWiseLedgerTable = (props) => {
                                 .reverse()
                                 .join("/")}
                               &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;
-                              OPENING BALANCE:&emsp;{data?.opening_balance}
+                              OPENING BALANCE:&emsp;
+                              {billwiseledgerList?.opening_balance}
                             </div>
                           </div>
                         </td>
                       </tr>
-                      {data?.ledger?.length > 0 ? (
-                        data?.ledger?.map((ledger, i) => {
+                      {billwiseledgerList?.ledger_data?.length > 0 ? (
+                        billwiseledgerList?.ledger_data?.map((data, i) => {
                           return (
                             <tr key={i}>
-                              <td className="text-center">{ledger.date}
-                                {/* {ledger?.date
-                                  .slice(0, 10)
+                              <td className="text-center">
+                                {data?.date
+                                  ?.slice(0, 10)
                                   .split("-")
                                   .reverse()
-                                  .join("/")} */}
+                                  .join("/")}
                               </td>
                               <td className="text-center">
-                                {ledger?.bill_number}
+                                {data?.bill_number
+                                  ? data?.bill_number
+                                  : data?.doc_no}
                               </td>
-                              <td className="text-center">{ledger?.type}</td>
-                              {ledger?.items?.length > 0 &&
-                                ledger?.items?.map((item, i) => {
-                                  return (
-                                    <>
-                                      <td className="text-center">
-                                        {item?.item_name}
-                                      </td>
-                                      <td className="text-center">
-                                        {item?.quantity || 0.0}
-                                      </td>
-                                      <td className="text-center">
-                                        {item?.rate || 0.0}
-                                      </td>
-                                      <td className="text-center">
-                                        {item?.amount || 0.0}
-                                      </td>
-                                      <td className="text-center">
-                                        {data?.debit || 0.0}
-                                      </td>
-                                      <td className="text-center">
-                                        {data?.credit || 0.0}
-                                      </td>
-                                      <td className="text-center">{0.0}</td>
-                                    </>
-                                  );
-                                })}
+                              <td className="text-center">{data?.type}</td>
+                              
+                                  <>
+                                    <td className="text-center">0
+                                    </td>
+                                    <td className="text-center">0</td>
+                                    <td className="text-center">0</td>
+                                    <td className="text-center">0</td>
+                                    <td className="text-center">0</td>
+                                    <td className="text-center">0</td>
+                                    <td className="text-center">{0.0}</td>
+                                  </>
+                               
                             </tr>
                           );
                         })
@@ -139,22 +134,13 @@ const BillWiseLedgerTable = (props) => {
                                 .reverse()
                                 .join("/")}
                               &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;
-                              CLOSING BALANCE:&emsp;{data?.closing_balance}
+                              CLOSING BALANCE:&emsp;
+                              {billwiseledgerList?.closing_balance}
                             </div>
                           </div>
                         </td>
                       </tr>
                     </>
-                  );
-                })
-              ) : (
-                <tr>
-                  <td colSpan={10} className="fs-4 text-center">
-                    {" "}
-                    No Reports yet
-                  </td>
-                </tr>
-              )}
             </tbody>
           </table>
         </div>

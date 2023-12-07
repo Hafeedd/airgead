@@ -85,21 +85,22 @@ export const useReportsServices = () =>{
         return response?.data
     }
 
-    return{
-        getStockLedger,
-        getAccLedger,
-        getOutstanding,
-        getSalesBook,
-        getSaleRegister,
-        getDayBook,
-        getTaxReport,
-        getCashBook,
-        getItemWiseProfit,
-        getPurchaseBook,
-        getPurchaseRegister,
-        getStockJournalReport,
-        getBarcodeRegReport,
-        getItemHistory,
-        getBillWiseProfit,
-    }
+    return {
+      getStockLedger,
+      getAccLedger,
+      getOutstanding,
+      getSalesBook,
+      getSaleRegister,
+      getDayBook,
+      getTaxReport,
+      getCashBook,
+      getItemWiseProfit,
+      getPurchaseBook,
+      getPurchaseRegister,
+      getStockJournalReport,
+      getBarcodeRegReport,
+      getItemHistory,
+      getBillWiseProfit,
+      getBillWiseLedger,
+    };
 }

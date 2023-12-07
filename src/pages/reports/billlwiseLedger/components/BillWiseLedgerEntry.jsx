@@ -12,11 +12,12 @@ const BillWiseLedgerEntry = (props) => {
     params,
     setParams,
     accountList,
-    setAccountList,
     accountCode,
     setAccountCode,
+    setAccountName,
   } = props;
 
+  
   const handleChange = (e)=>{
     if(e.target.value === ""){
       setParams({ ...params,[e.target.name]:null})
@@ -85,7 +86,10 @@ const BillWiseLedgerEntry = (props) => {
             clearable
             selection
             search={search}
-            onChange={(e,data)=>setAccountCode(data.value)}
+            onChange={(e,data)=>{
+              setAccountCode(data.value)
+              setAccountName(data.options?.filter(x=>x.value==data.value)[0]?.text)  
+            }}
             className="bill-wise-select item d-flex align-items-center py-0 form-control"
             name="supplier_detail"
             placeholder="select Account Details"

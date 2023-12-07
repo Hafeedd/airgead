@@ -6,8 +6,9 @@ import useAccountServices from '../../../services/master/accountServices';
 
 const BillWiseLedger = () => {
 
-  const [billwiseledgerList, setBillWiseLedgerList] = useState([])
+  const [billwiseledgerList, setBillWiseLedgerList] = useState({})
   const [accountList, setAccountList] = useState([])
+  const [accountName, setAccountName] = useState()
   const [accountCode, setAccountCode] = useState()
   const [params, setParams] = useState({
     from_date: new Date().toISOString().slice(0, 10),
@@ -50,6 +51,8 @@ const BillWiseLedger = () => {
     }catch(err){}
   }
 
+
+
   const getData = async()=>{
     try{
       let tempParams = {
@@ -63,6 +66,10 @@ const BillWiseLedger = () => {
       console.log(err)
     }
   }
+
+  console.log(billwiseledgerList)
+  console.log(billwiseledgerList?.ledger_data)
+
 
   
   return (
@@ -91,9 +98,9 @@ const BillWiseLedger = () => {
               params,
               setParams,
               accountList,
-              setAccountList,
               accountCode,
               setAccountCode,
+              setAccountName,
             }}
           />
           <BillWiseLedgerTable
@@ -102,6 +109,11 @@ const BillWiseLedger = () => {
               setBillWiseLedgerList,
               params,
               setParams,
+              accountList,
+              setAccountList,
+              accountCode,
+              setAccountCode,
+              accountName,
             }}
           />
         </div>
