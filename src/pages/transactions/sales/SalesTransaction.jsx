@@ -19,21 +19,22 @@ import { formValidation } from '../../../hooks/formValidation/formValidation'
 import Swal from 'sweetalert2'
 import usePurchaseServices from '../../../services/transactions/purchcaseServices'
 import useItemServices from '../../../services/master/itemServices'
+import { PrintFIle } from './components/SalesBill'
 
 const SalesTransaction = () => {
     const [salesItemModal, setSalesItemModal] = useState(false)
     const [salesEditModal, setSalesEditModal] = useState(false)
     const [pageHeadItem, setPageHeadItem] = useState(1)
     const [salesBatchShow, setSalesBatchShow] = useState(false)
-    const [salesHeader, setSalesHeader] = useState(1)
+    // const [salesHeader, setSalesHeader] = useState(1)
     const [tableEdit, setTableEdit] = useState(false)
     const [edit, setEdit] = useState(false)
     const [docNoRecheck, setDocNoRecheck] = useState(null)
     const [cstm_id, setCstm_id,] = useState(false)
     const [customerList, setCustomerList] = useState(null)
-    const [salesItemSerielModal, setSalesItemSerielModal] = useState(false)
+    // const [salesItemSerielModal, setSalesItemSerielModal] = useState(false)
     const [tableItemList, setTableItemList] = useState([])
-    const [tableItemBatch, setTableItemBatch] = useState(null)
+    // const [tableItemBatch, setTableItemBatch] = useState(null)
     const [tableItemBatchList, setTableItemBatchList] = useState([])
     const [salesList, setSalesList] = useState()
     const [tableItemKeys, setTableItemKeys] = useState([])
@@ -42,6 +43,7 @@ const SalesTransaction = () => {
     const [billType, setBillType] = useState([])
     const [billTypeDocNo, setBillTypeDocNo] = useState(null)
     const [codeWithBillTypeList, setCodeWithBillTypeList] = useState(null)
+    const [showPrint, setShowPrint] = useState(false)
 
     const [ref, setRef] = useState(null)
 
@@ -166,6 +168,7 @@ const SalesTransaction = () => {
         handleTableItemReset()
         setTableItemList([])
         setEdit()
+        setShowPrint(false)
     }
 
     const handleTableItemReset = () =>{
@@ -204,7 +207,6 @@ const SalesTransaction = () => {
 
     useEffect(()=>{
         if(tableItemList?.length>0){
-            console.log(tableItemList)
         let netAmount = tableItemList?.reduce((a,b)=>{
             return b.total ?
             parseFloat(a)+parseFloat(b.total):0
@@ -387,18 +389,21 @@ const SalesTransaction = () => {
                 response = await putSales(edit?.id,data) 
             }
             if(response?.success){
-                handleSalesAllReset()
+                // handleSalesAllReset()
+                setShowPrint(true)
                 Swal.fire('Purchase added successfully','','success')
             }else{
                 Swal.fire(response?.data,'','error')
             }
         }catch(err){
             let data = err?.response?.data?.data
-            let index = Object.keys(data)[0]
+            let index
+            if(typeof data == 'object')
+            index = Object.keys(data)[0]
             let error = data[index][0]
             Swal.fire({
                 title:index.toUpperCase(),
-                text:error,
+                text:error||"Something went wrong , Pls try again",
                 icon:'error',
                 timer:1000,
                 showConfirmButton:false
@@ -535,6 +540,14 @@ const SalesTransaction = () => {
                 from="sales"
                 setPurchaseList={setSalesList} closeEditModal={setSalesEditModal}
                 {...{setSalesEditModal,getData,setEdit,edit}}/>
+            </Modal>
+            <Modal
+            show={showPrint}
+            centered
+            size="lg"
+            onHide={()=>handleSalesAllReset()}
+            >
+                <PrintFIle {...{handleSalesAllReset}}/>
             </Modal>
         </div>
     )

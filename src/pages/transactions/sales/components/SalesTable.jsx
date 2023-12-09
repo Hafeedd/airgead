@@ -23,10 +23,7 @@ const SalesTable = (props) => {
     handleSalesAllReset,
     tableItemList,
     salesList,
-    setSalesList,
     setTableItemList,
-    tableItemBatchList,
-    setTableItemBatchList,
     handleTableItemReset,
     getData,
     tableItemKeys,
@@ -34,7 +31,7 @@ const SalesTable = (props) => {
   } = props;
   const [ref, setRef] = useState(null);
   const [unitList, setUnitList] = useState(null);
-  const [calcChange, setCalcChange] = useState();
+  // const [calcChange, setCalcChange] = useState();
   const [itemNameList, setItemNameList] = useState([]);
 
   const { getProperty, getItemNameList } = useItemServices();
@@ -538,7 +535,7 @@ const SalesTable = (props) => {
 
   return (
     <>
-      <div className="px-2">
+      <div className="px-2 " id="TableToPrint">
         <table
           ref={formRef}
           className="table table-secondary purchase-table mb-0"
@@ -872,7 +869,7 @@ const SalesTable = (props) => {
 
             {tableItemList?.length > 0 &&
               tableItemList?.map((data, i) => (
-                <tr key={i}>
+                <tr id={"tableBodyTr"} key={i}>
                   <td className="text-start ps-3" colSpan={3}>
                     <select
                       disabled
@@ -913,8 +910,8 @@ const SalesTable = (props) => {
                   <td>{data.discount_1_amount}</td>
                   <td>{data.value}</td>
                   <td>{data.tax_gst}%</td>
-                  <td>{data.cgst_or_igst}%</td>
-                  <td>{data.sgst}%</td>
+                  <td>{data.cgst_or_igst}</td>
+                  <td>{data.sgst}</td>
                   <td>{data.total}</td>
                   {/* <td>{data.cost}</td>
                   <td>{data.margin}</td>

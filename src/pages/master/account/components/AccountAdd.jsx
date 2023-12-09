@@ -23,6 +23,7 @@ const AccountAdd = ({ edit, refresh, setEdit }) => {
         position_in_profit_loss: null,
         position_in_balance_sheet: null,
         hsn: null,
+        bank_account:false,
         tax: null,
         reserved: false,
         blocked: false,
@@ -363,14 +364,19 @@ const AccountAdd = ({ edit, refresh, setEdit }) => {
                             </div>
                         </div>
                         <div className="d-flex align-items-center px-0 row mx-0 my-2">
-                            <span className="col-7" />
-                            <div className="col-5 d-flex align-items-center row mx-0 my-0 px-0 justify-content-end">
-                                <div className='mx-0 px-0 col-6 d-flex align-items-center justify-content-end'>
+                            {/* <span className="col-4" /> */}
+                            <div className="col-12 d-flex align-items-center row mx-0 my-0 px-0 justify-content-end">
+                                <div className='mx-0 px-0 col-2 d-flex align-items-center justify-content-end me-2'>
+                                    <input type='checkbox' onChange={handleChange} onKeyDown={handleKeyDown}
+                                     name='bank_account' checked={accountAdd.bank_account} />
+                                    <label htmlFor='bank_account' className='ps-2'>Bank A/C</label>
+                                </div>
+                                <div className='mx-0 px-0 col-2 col-3 d-flex align-items-center justify-content-end'>
                                     <input type='checkbox' onChange={handleChange} onKeyDown={handleKeyDown}
                                      name='reserved' checked={accountAdd.reserved} />
                                     <label htmlFor='reserved' className='ps-2'>Reserved</label>
                                 </div>
-                                <div className='mx-0 px-0 col-6 d-flex align-items-center justify-content-end'>
+                                <div className='mx-0 px-0 col-2 col-3 d-flex align-items-center justify-content-end'>
                                     <input type='checkbox' onChange={handleChange} onKeyDown={handleKeyDown}
                                      name='blocked' checked={accountAdd.blocked} />
                                     <label htmlFor='blocked' className='ps-2'>Blocked</label>

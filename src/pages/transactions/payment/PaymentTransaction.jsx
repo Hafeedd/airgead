@@ -94,6 +94,9 @@ const PaymentTransaction = ({types}) => {
                     let b , a
                     if(item.name == "CASH IN BANK" || item.name == "CASH IN HAND"){
                         b = {key:item.id,value:item.code,text:item.name,description:item.code}
+                        if(item.name=="CASH IN HAND" && tempListPayment.length>0){
+                            tempListPayment.unshift(b)
+                        }else
                         tempListPayment.push(b)
                     }
                     if(item.name && item.code){
@@ -269,7 +272,6 @@ const PaymentTransaction = ({types}) => {
     const handleChange = (e,data) => {
         if(data){
             let payment_data = data.options.filter(x=>x.value===data.value)[0]
-            console.log(payment_data)
             setPaymentAdd(data=>({...data,account_detail:payment_data?.text,
             account_code:payment_data?.description,account_id:payment_data?.key}))
         }
@@ -344,10 +346,13 @@ const PaymentTransaction = ({types}) => {
     const handleSubmit = async (e) => {
         e.preventDefault()
         try{
+            let a 
+            if(location?.pathname?.match('receipt')) a = "Receipt"
+            else a = "Payment"
             if(!formValidation()) return 0
-            const submitData = handleToUpperCase(paymentAdd)
+            let submitData = handleToUpperCase(paymentAdd)
+            submitData = {...submitData,method:a}
             let response
-            console.log(edit)
             if(!edit){
                 response = await postPaymentReciept(submitData)
             }else{
@@ -382,9 +387,10 @@ const PaymentTransaction = ({types}) => {
         key.map((data) => {
             tempData = { ...tempData, [data]: null }
         })
+        console.log(accountPayList[0])
         tempData = {...tempData,tax_type:'GST',amount:0,
-        cash_bank_account_name:accountPayList[0]?.value,
-        cash_bank_account:accountPayList[0]?.text}
+        cash_bank_account_name:accountPayList[0]?.text,
+        cash_bank_account:accountPayList[0]?.value}
         setPaymentAdd({...tempData,voucher_number:codeData})
         setEdit(false)
     }
