@@ -13,7 +13,7 @@ const BillWiseLedger = () => {
   const [params, setParams] = useState({
     from_date: new Date().toISOString().slice(0, 10),
     to_date: new Date().toISOString().slice(0, 10),
-    account_code: "10002",
+    account_code: null || "10002",
   });
 
   const {getBillWiseLedger} = useReportsServices()
@@ -67,10 +67,6 @@ const BillWiseLedger = () => {
     }
   }
 
-  console.log(billwiseledgerList)
-  console.log(billwiseledgerList?.ledger_data)
-
-
   
   return (
     <div className="item_add">
@@ -106,13 +102,8 @@ const BillWiseLedger = () => {
           <BillWiseLedgerTable
             {...{
               billwiseledgerList,
-              setBillWiseLedgerList,
               params,
-              setParams,
               accountList,
-              setAccountList,
-              accountCode,
-              setAccountCode,
               accountName,
             }}
           />

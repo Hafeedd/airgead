@@ -29,3 +29,10 @@
     height: 24rem;
     overflow-y: auto;
 }
+
+.bill-wise-table thead tr th{
+    background: #000;
+    position: sticky;
+    top: 0;
+    color: white;
+}

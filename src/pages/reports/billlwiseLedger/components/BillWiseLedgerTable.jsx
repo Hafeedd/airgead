@@ -1,20 +1,9 @@
-import React from 'react'
-import { GrRefresh } from 'react-icons/gr';
+import React, { useEffect } from "react";
+import { GrRefresh } from "react-icons/gr";
 import searchIcon from "../../../../assets/icons/search.png";
 
 const BillWiseLedgerTable = (props) => {
-
-  const {
-    billwiseledgerList,
-    setBillWiseLedgerList,
-    params,
-    accountList,
-    setAccountList,
-    accountCode,
-    setAccountCode,
-    accountName
-  } = props;
-
+  const { billwiseledgerList, params, accountList, accountName } = props;
 
   return (
     <div className="row mx-0 mt-3">
@@ -37,14 +26,14 @@ const BillWiseLedgerTable = (props) => {
             </div>
           </div>
         </div>
-        <div className="day-book-table-cont table-scrolle">
-          <table className="table daybook-table billwise">
+        <div className="bill-wise-ledg-table table-scrolle">
+          <table className="table bill-wise-table billwise">
             <thead>
               <tr>
                 <th className="text-center">Date</th>
                 <th className="text-center">Doc. No</th>
+                <th className="text-center">Account Name</th>
                 <th className="text-center">Narration</th>
-                <th className="text-center">Item Name</th>
                 <th className="text-center">Qty</th>
                 <th className="text-center">Rate</th>
                 <th className="text-center">Total</th>
@@ -54,20 +43,52 @@ const BillWiseLedgerTable = (props) => {
               </tr>
             </thead>
             <tbody>
+              <tr >
+                <td colSpan={10} className="w-100 m-0 p-0 border-0">
+                  <div className="table-hd p-2 border-0">
+                    <div className="d-flex ms-3 py-1 px-0 justify-content-between align-items-center">
+                      &emsp;Ledger Name : {accountName || accountList[0]?.text}
+                      &emsp;&emsp;&emsp;&emsp;
+                    </div>
+                  </div>
+                </td>
+              </tr>
+              {billwiseledgerList?.length > 0 ? (
+                billwiseledgerList?.map((data, i) => {
+                  let bal = parseFloat(data?.opening_balance);
+                  console.log(bal,'f')
+                  let ListAfter = [];
+                  if (data?.ledger_data?.length > 0) {
+                    data?.ledger_data?.map((ledgerData) => {
+                      console.log(ledgerData);
+                      if (ledgerData.items.length > 0) {
+                        let ledgerList = [];
+                        ledgerData.items?.map((itemsInLedg) => {
+                          // console.log(itemsInLedg)
+                          ledgerList.push(itemsInLedg);
+                          const checkDayBookBill =
+                            ledgerData.account_detail?.filter(
+                              (x) => x.documents_no == itemsInLedg.doc_num
+                            );
+                          if (checkDayBookBill.length > 0)
+                            ledgerList.push(...checkDayBookBill);
+                        });
+                        if (ledgerList.length > 0)
+                          ListAfter.push(...ledgerList);
+                      }
+                    });
+                  } else {
+                    ListAfter.push(...data.daybook_data);
+                  }
+
+                  return (
                     <>
-                      <tr>
-                        <td colSpan={10} className="w-100 m-0 p-0 border-0">
-                          <div className="table-hd p-2 border-0">
-                            <div className="d-flex ms-3 py-1 px-0 justify-content-between align-items-center">
-                              &emsp;Ledger Name :{" "}
-                              {accountName || accountList[0]?.text}
-                              &emsp;&emsp;&emsp;&emsp;
-                            </div>
-                          </div>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td colSpan={10} className="w-100 m-0 p-0 border-0">
+                      {" "}
+                      <tr key={i}>
+                        <td
+                          colSpan={10}
+                          className="w-100 m-0 p-0"
+                        >
                           <div className="table-sd p-2 border-0">
                             <div className="d-flex ms-3 py-1 px-0 justify-content-between align-items-center op-clr">
                               &emsp;Date :&emsp;
@@ -78,51 +99,66 @@ const BillWiseLedgerTable = (props) => {
                                 .join("/")}
                               &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;
                               OPENING BALANCE:&emsp;
-                              {billwiseledgerList?.opening_balance}
+                              {data?.opening_balance.toFixed(2)}
                             </div>
                           </div>
                         </td>
                       </tr>
-                      {billwiseledgerList?.ledger_data?.length > 0 ? (
-                        billwiseledgerList?.ledger_data?.map((data, i) => {
+                      {ListAfter?.length > 0 &&
+                        ListAfter?.map((ledg, i) => {
+                          bal = parseFloat(bal) - parseFloat(ledg?.credit);
+                          bal =parseFloat(bal) || 0 + parseFloat(ledg?.debit) || 0;
+                          // console.log(ledg?.debit, bal, "l");
+                          
                           return (
                             <tr key={i}>
                               <td className="text-center">
-                                {data?.date
-                                  ?.slice(0, 10)
-                                  .split("-")
-                                  .reverse()
-                                  .join("/")}
+                                {ledg?.created_at
+                                  ? ledg?.created_at
+                                      .slice(0, 10)
+                                      .split("-")
+                                      .reverse()
+                                      .join("/")
+                                  : ledg?.date
+                                      ?.slice(0, 10)
+                                      .split("-")
+                                      .reverse()
+                                      .join("/") || "..."}
                               </td>
                               <td className="text-center">
-                                {data?.bill_number
-                                  ? data?.bill_number
-                                  : data?.doc_no}
+                                {ledg?.doc_num
+                                  ? ledg?.doc_num
+                                  : ledg?.documents_no}
                               </td>
-                              <td className="text-center">{data?.type}</td>
-                              
-                                  <>
-                                    <td className="text-center">0
-                                    </td>
-                                    <td className="text-center">0</td>
-                                    <td className="text-center">0</td>
-                                    <td className="text-center">0</td>
-                                    <td className="text-center">0</td>
-                                    <td className="text-center">0</td>
-                                    <td className="text-center">{0.0}</td>
-                                  </>
-                               
+                              <td className="text-center">
+                                {ledg?.supplier
+                                  ? ledg?.supplier
+                                  : ledg?.account_name}
+                              </td>
+                              <td className="text-center">
+                                {ledg?.item_name
+                                  ? ledg?.item_name
+                                  : ledg?.narration}
+                              </td>{" "}
+                              <td className="text-center">
+                                {ledg?.quantity ? ledg?.quantity || 0 : " "}
+                              </td>{" "}
+                              <td className="text-center">
+                                {ledg?.rate ? ledg?.rate || 0 : " "}
+                              </td>{" "}
+                              <td className="text-center">
+                                {ledg?.total ? ledg?.total || 0 : " "}
+                              </td>
+                              <td className="text-center">
+                                {ledg?.debit ? ledg?.debit || 0 : " "}
+                              </td>
+                              <td className="text-center">
+                                {ledg?.credit ? ledg?.credit || 0 : " "}
+                              </td>
+                              <td className="text-center">{bal || 0}</td>
                             </tr>
                           );
-                        })
-                      ) : (
-                        <tr>
-                          <td colSpan={10} className="fs-4 text-center">
-                            {" "}
-                            No Reports yet
-                          </td>
-                        </tr>
-                      )}
+                        })}
                       <tr>
                         <td colSpan={10} className="w-100 m-0 p-0 border-0">
                           <div className="table-sd p-2 border-0">
@@ -135,18 +171,28 @@ const BillWiseLedgerTable = (props) => {
                                 .join("/")}
                               &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;
                               CLOSING BALANCE:&emsp;
-                              {billwiseledgerList?.closing_balance}
+                              {data?.closing_balance.toFixed(2)}
                             </div>
                           </div>
                         </td>
                       </tr>
                     </>
+                  );
+                })
+              ) : (
+                <tr>
+                  <td colSpan={10} className="fs-4 text-center">
+                    {" "}
+                    No Reports yet
+                  </td>
+                </tr>
+              )}
             </tbody>
           </table>
         </div>
       </div>
     </div>
   );
-}
+};
 
-export default BillWiseLedgerTable
+export default BillWiseLedgerTable;
