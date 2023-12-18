@@ -27,7 +27,7 @@ const SalesDetailFooter = (props) => {
                         <Form.Label className='col-4 purchase-input-label'>CGST</Form.Label>
                         <Form.Control
                             disabled
-                            value={salesAdd?.total_scGst||''}
+                            value={salesAdd?.total_sgst||''}
                             className='sales-input-text'
                             type='text'
                         />
@@ -36,7 +36,7 @@ const SalesDetailFooter = (props) => {
                         <Form.Label className='col-4 purchase-input-label'>SGST</Form.Label>
                         <Form.Control
                             disabled
-                            value={salesAdd?.total_scGst||''}
+                            value={salesAdd?.total_sgst||''}
                             className='sales-input-text'
                             type='text'
                         />

@@ -1,16 +1,28 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Form } from 'react-bootstrap'
 
 const SalesPrintingDetails = () => {
+    const [printStyles, setPrintStyles] = useState(localStorage.getItem('printType')||'A4_normal')
+
+    const handlePrintStyleChange = (e) =>{
+        localStorage.setItem('printType',e.target.value)
+        setPrintStyles(e.target.value)
+    }
     return (
         < div className="col-8 col-9 mx-0 ps-5 pe-0 row" >
             <Form.Group className='col-5 mx-0 d-flex align-items-center my-1'>
                 <Form.Label className='col-3 purchase-input-label'>Style</Form.Label>
-                <Form.Control
+                <Form.Select
                     className='purchase-input-text'
                     placeholder='A4 (21x30)'
+                    onChange={handlePrintStyleChange}
                     type='text'
-                />
+                    value={printStyles}
+                >
+                    <option value={"A4_normal"}>A4 Normal</option>
+                    <option value={"A4_normal_2"}>A4 Normal 2</option>
+                    <option value={"thermal"}>Thermal</option>
+                </Form.Select>
             </Form.Group>
             <Form.Group className='col-7 ps-4 mx-0 d-flex align-items-center my-1'>
                 <Form.Label className='col-3 purchase-input-label'>Printer</Form.Label>

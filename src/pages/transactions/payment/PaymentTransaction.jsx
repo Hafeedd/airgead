@@ -107,7 +107,6 @@ const PaymentTransaction = ({types}) => {
                 setAccountPayList(tempListPayment)
                 setAccountList(tempList)
                 if(tempListPayment?.length>0)
-                console.log(tempListPayment[0])
                     setPaymentAdd({...paymentAdd,cash_bank_account_name:tempListPayment[0]?.name,
                         cash_bank_account:tempListPayment[0]?.value})
             }

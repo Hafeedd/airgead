@@ -115,7 +115,7 @@ const SalesCustomerDetails = (props) => {
                 </Form.Group>
                 <div className="col-12 sales-customer-container text-start row mx-0 my-1 p-0">
                     <Form.Control
-                    className='sales-customer-container text-start align-items-start p-0 px-3'
+                    className='sales-customer-container text-start text-uppercase align-items-start p-0 px-3'
                     placeholder='Address'
                     onKeyDown={handleKeyDown}
                     onChange={handleChange}

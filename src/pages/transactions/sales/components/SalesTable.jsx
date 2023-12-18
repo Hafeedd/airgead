@@ -29,6 +29,7 @@ const SalesTable = (props) => {
     tableItemKeys,
     setTableItemKeys,
   } = props;
+  
   const [ref, setRef] = useState(null);
   const [unitList, setUnitList] = useState(null);
   // const [calcChange, setCalcChange] = useState();
@@ -188,7 +189,6 @@ const SalesTable = (props) => {
         Swal.fire(response.message, "", "error");
       }
     } catch (err) {
-      console.log(err);
       Swal.fire("Fialed to delete item", "please try again", "warning");
     }
   };
@@ -280,7 +280,7 @@ const SalesTable = (props) => {
       } = newObj;
       others.cgst_or_igst = tax_gst / 2 || 0;
       others.sgst = tax_gst / 2 || 0;
-      if (!purchase_rate) {
+      if (!retail_rate) {
         others = {};
         retail_rate = 0;
       }
@@ -450,7 +450,6 @@ const SalesTable = (props) => {
       }
       tempItem = { ...tempItem, ...value };
       if (tempItem.tax_gst) {
-        console.log(tempItem.discount_amnt_per_item)
         value = {
           ...value,
           ["gross"]:
@@ -962,9 +961,10 @@ const SalesTable = (props) => {
               <td></td>
               <td></td>
               <td></td>
+              <td></td>
               <td className="item">
                 <div className="purch-green-table-item">
-                  {salesAdd.total_disc || 0}
+                  {salesAdd.discount || 0}
                 </div>
               </td>
               <td className="item">
@@ -975,12 +975,12 @@ const SalesTable = (props) => {
               <td></td>
               <td className="item">
                 <div className="purch-green-table-item">
-                  {salesAdd.total_scGst || 0}%
+                  {salesAdd.total_sgst || 0}%
                 </div>
               </td>
               <td className="item">
                 <div className="purch-green-table-item">
-                  {salesAdd.total_scGst || 0}%
+                  {salesAdd.total_sgst || 0}%
                 </div>
               </td>
               <td className="item">
@@ -990,7 +990,7 @@ const SalesTable = (props) => {
               </td>
               <td></td>
               <td></td>
-              <td></td>
+              {/* <td></td> */}
               <td></td>
               <td></td>
             </tr>
