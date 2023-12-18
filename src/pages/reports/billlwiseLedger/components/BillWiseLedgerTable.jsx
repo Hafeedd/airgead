@@ -56,11 +56,9 @@ const BillWiseLedgerTable = (props) => {
               {billwiseledgerList?.length > 0 ? (
                 billwiseledgerList?.map((data, i) => {
                   let bal = parseFloat(data?.opening_balance);
-                  console.log(bal,'f')
                   let ListAfter = [];
                   if (data?.ledger_data?.length > 0) {
                     data?.ledger_data?.map((ledgerData) => {
-                      console.log(ledgerData);
                       if (ledgerData.items.length > 0) {
                         let ledgerList = [];
                         ledgerData.items?.map((itemsInLedg) => {
@@ -68,7 +66,7 @@ const BillWiseLedgerTable = (props) => {
                           ledgerList.push(itemsInLedg);
                           const checkDayBookBill =
                             ledgerData.account_detail?.filter(
-                              (x) => x.documents_no == itemsInLedg.doc_num
+                              (x) => x.documents_no == itemsInLedg.doc_num||itemsInLedg.docu_no
                             );
                           if (checkDayBookBill.length > 0)
                             ledgerList.push(...checkDayBookBill);
@@ -106,9 +104,7 @@ const BillWiseLedgerTable = (props) => {
                       </tr>
                       {ListAfter?.length > 0 &&
                         ListAfter?.map((ledg, i) => {
-                          bal = parseFloat(bal) - parseFloat(ledg?.credit);
-                          bal =parseFloat(bal) || 0 + parseFloat(ledg?.debit) || 0;
-                          // console.log(ledg?.debit, bal, "l");
+                          bal = parseFloat(bal)+parseFloat(ledg?.debit)
                           
                           return (
                             <tr key={i}>
@@ -126,14 +122,12 @@ const BillWiseLedgerTable = (props) => {
                                       .join("/") || "..."}
                               </td>
                               <td className="text-center">
-                                {ledg?.doc_num
-                                  ? ledg?.doc_num
-                                  : ledg?.documents_no}
+                                {ledg?.doc_num ? ledg?.doc_num: ledg?.docu_no ? ledg?.docu_no:ledg?.documents_no ? ledg?.documents_no:ledg?.bill_number}
                               </td>
                               <td className="text-center">
                                 {ledg?.supplier
                                   ? ledg?.supplier
-                                  : ledg?.account_name}
+                                  : ledg?.customer_name ? ledg?.customer_name:ledg?.account_name}
                               </td>
                               <td className="text-center">
                                 {ledg?.item_name
