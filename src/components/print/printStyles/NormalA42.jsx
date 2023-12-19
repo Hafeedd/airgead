@@ -155,7 +155,7 @@ export const NormalA42 = (props) => {
                 </div>
                 <div className="row mx-0 justify-content-end">
                 <div className="col-8 text-end"><b>Bill Total :</b></div> 
-                <div className="col-3 text-end">{total}</div> 
+                <div className="col-3 text-end">{roundOff}</div> 
                 </div>
           </div>
 

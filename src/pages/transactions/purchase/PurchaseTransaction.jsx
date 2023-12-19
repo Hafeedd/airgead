@@ -274,7 +274,7 @@ const PurchaseTransaction = () => {
       tempItem = {...tempItem, ...value}
       // if (name == 'tax_gst' || name == 'sales_rate' || name == 'margin') {
         if (tempItem.tax_gst) {
-          console.log(tempItem.value)
+          let totalTaxAmnt = tempItem.tax_gst * (tempItem.value / 100)
           value = {
             ...value,
             ["total"]: tempItem.value + tempItem.tax_gst * (tempItem.value / 100),
@@ -282,8 +282,8 @@ const PurchaseTransaction = () => {
                 (tempItem.rate-tempItem.discount_1_amount_per_item)
               +
               (tempItem.tax_gst * ((tempItem.rate - tempItem.discount_1_amount_per_item) / 100)),
-            ["cgst_or_igst"]: tempItem.tax_gst / 2,
-            ["sgst"]: tempItem.tax_gst / 2,
+            ["cgst_or_igst"]: totalTaxAmnt / 2,
+            ["sgst"]: totalTaxAmnt / 2,
           };
         } else {
           value = { ...value, cgst_or_igst: 0, sgst: 0 };
@@ -554,13 +554,15 @@ const PurchaseTransaction = () => {
       discount_1_amount: 0.0,
     });
     setTableEdit(false)
-    setEdit(false)
+    // setEdit(false)
   };
+
+  console.log(edit)
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      if (tebleItemKeys?.length < 1) {
+      if (tebleItemKeys?.length < 0) {
         Swal.fire({
           title: "Item not added",
           icon: "warning",
@@ -616,7 +618,7 @@ const PurchaseTransaction = () => {
     }
   };
 
-  const handleBatchSubmit = async (tempItems,c_id) => {
+  const handleBatchSubmit = async (tempItems) => {
     try {
       let ItemTempList = [...tableItemBatchList],
         itemTemp = {};
@@ -624,7 +626,9 @@ const PurchaseTransaction = () => {
         tableItemBatchList?.map((data) => {
           let itemTemp = { ...data };
           itemTemp = { ...itemTemp, ["cstm_id"]: cstm_id };
+          setTableItemBatchList(ItemTempList);
         });
+      }
         try {
           let submitData = { ...tableItem,fk_units:tableItem?.unit };
           if (purchaseAdd.isBatch)
@@ -636,6 +640,7 @@ const PurchaseTransaction = () => {
             response = await putPurchaseItem(tableEdit, submitData);
           }
           if (response?.success && !tableEdit) {
+            console.log("3432432")
               let tempItemKeys = [...tebleItemKeys];
               tempItemKeys.push({ id: response?.data?.purchase?.id });
               ItemTempList.push(itemTemp)
@@ -648,28 +653,33 @@ const PurchaseTransaction = () => {
                         setTableItemList(tempItems);
                     }
                 })
-          } else if(edit){
-            try{
-            const data = getData();
-            setEdit(data);
-                tempItems?.map((x, i) => {
-                    if (x.id == tableEdit) {
-                        x = {...x,...tableItem}
-                        tempItems.splice(i, 1);
-                        tempItems.push({ ...x })
-                        setTableItemList(tempItems);
-                    }
-                })
-            }catch(err){console.log(err)}
+          } else if((edit || tableEdit) && response.success){
+            const data = await getData();
+            // setEdit(data);
+            tempItems?.map((x, i) => {
+              if (x.id == tableEdit) {
+                x = {...x,...tableItem}
+                tempItems.splice(i, 1);
+                tempItems.push({ ...x })
+                setTableItemList(tempItems);
+              }
+            })
             setTableEdit(false);
-          }else{
-            setEdit(false)
+          // }else if(edit){
+          //   setEdit(false)
           }
-          setTableItemBatchList(ItemTempList);
-        } catch (err) {}
+          else{
+            Swal.fire('Error',response.message||
+            'Error while adding new item , Please try again','error')
+          }
+        } catch (err) {
+          // setTableItemList([...tableItemList])
+          const key = Object.keys(err?.response?.data?.data)[0]?.split('_').join(' ')
+          const value = Object.values(err?.response?.data?.data)[0][0]
+          Swal.fire("Error",key+" "+value||"Failed to add Item , please try again.",'error')
+        }
         setPurchaseItemSerielModal(false);
         handleTableItemReset();
-      }
     } catch (err) {
       console.log(err);
     }

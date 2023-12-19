@@ -1,5 +1,7 @@
 import React from "react";
-import html2pdf from "html2pdf.js";
+import html2canvas from "html2canvas";
+import jsPDF from "jspdf";
+import "jspdf-autotable";
 import { GenerateDynamicHtml } from "../../../../components/print/Print";
 
 export const PrintFIle = (props) => {
@@ -25,67 +27,122 @@ export const PrintFIle = (props) => {
     hsnCalc,
   } = props;
 
-  const printStyle = localStorage.getItem('printType')
+  const printStyle = localStorage.getItem("printType");
 
-  const handleConvertToPdf =async () => {
+  const handleConvertToPdf = async (status) => {
     // const dynamicHtml = GenerateDynamicHtml();
-    
+
     // Create a temporary container element to hold the dynamic HTML
-    const tempContainer = document.getElementById("new");
+    const content = document.getElementById("new");
     // tempContainer.innerHTML = dynamicHtml;
-    const options = {
-      margin: 1 ,
-      image: { type: "jpeg", quality: 1.0 }, // Adjust quality (1.0 is maximum)
-      html2canvas: { scale:2, width:printStyle!=='thermal'? tempContainer.offsetWidth:null,
-       height:printStyle!=='thermal'?tempContainer.offsetHeight:null },
-      jsPDF: { unit: "mm", format: printStyle=='thermal'?"a7":"a4", orientation: printStyle=='thermal'?"portrait":"landscape" },
+    const pdfOptions = {
+      margin: 10,
+      filename: "output.pdf",
+      image: { type: "jpeg", quality: 0.98 },
+      html2canvas: { scale: 2 },
+      jsPDF: {
+        unit: "mm",
+        format: "a4",
+        orientation: "portrait",
+        autoPrint: { variant: "non-conform" },
+      },
     };
 
-    // Pass the temporary container element to html2pdf for conversion
-    if(printStyle !== "thermal")
-    await html2pdf(tempContainer, options)
-    else
-    await html2pdf(tempContainer).set(options).outputPdf((pdf) => {
-      // Here, you can handle the generated PDF (e.g., save or print it)
-      // For example, you can open the PDF in a new tab
-      const blob = new Blob([pdf], { type: 'application/pdf' });
-      const url = URL.createObjectURL(blob);
-      window.open(url, '_blank');
-    })
+    html2canvas(content, { scale: 2 }).then(async (canvas) => {
+      const imgData = canvas.toDataURL("image/jpeg");
+      const pdf = new jsPDF(pdfOptions.jsPDF);
+
+      pdf.addImage(
+        imgData,
+        "JPEG",
+        pdfOptions.margin,
+        pdfOptions.margin,
+        210 - 2 * pdfOptions.margin,
+        297 - 2 * pdfOptions.margin
+      );
+
+      if (printStyle == "thermal") {
+        // Use Courier font
+        pdf.setFont("courier");
+
+        // Set font size
+        pdf.setFontSize(12);
+
+        // Add black and white image
+        pdf.addImage(
+          imgData,
+          "JPEG",
+          pdfOptions.margin,
+          pdfOptions.margin,
+          210 - 2 * pdfOptions.margin,
+          297 - 2 * pdfOptions.margin
+        );
+      }
+      if(status == "print"){
+
+        // Generate a Blob from the PDF content
+        const pdfBlob = pdf.output("blob");
+        
+        // Create an object URL from the Blob
+      const pdfObjectURL = URL.createObjectURL(pdfBlob);
+
+      // Create an invisible iframe
+      const iframe = document.createElement("iframe");
+      iframe.style.display = "none";
+      document.body.appendChild(iframe);
+
+      // Set the iframe content to the PDF object URL
+      iframe.src = pdfObjectURL;
+
+      // Wait for the PDF to load in the iframe, then trigger print
+      iframe.onload = () => {
+        iframe.contentWindow.print();
+        // Release the object URL when done printing
+        URL.revokeObjectURL(pdfObjectURL);
+      };
+    }else if(status == "pdf"){
+      pdf.save(pdfOptions.filename)
+    }
+    });
   };
 
   return (
     <div className="w-100 d-flex justify-content-center flex-column">
       <div className="w-100 d-flex justify-content-center flex-column p-2">
-        <GenerateDynamicHtml {...{
-         c_address,
-         c_name,
-         c_number,
-         delivery_add,
-         c_gstin,
-         vehicle_no,
-         driver,
-         total_qty,
-         total_disc,
-         total_value,
-         total_cgst,
-         total_sgst,
-         total,
-         taxPerc,
-         hsn,
-         roundOff,
-         hsnCalc,
-        }}/>
+        <GenerateDynamicHtml
+          {...{
+            c_address,
+            c_name,
+            c_number,
+            delivery_add,
+            c_gstin,
+            vehicle_no,
+            driver,
+            total_qty,
+            total_disc,
+            total_value,
+            total_cgst,
+            total_sgst,
+            total,
+            taxPerc,
+            hsn,
+            roundOff,
+            hsnCalc,
+          }}
+        />
       </div>
-      <div className="w-100 d-flex justify-content-center pb-3">
+      <div className="w-100 d-flex justify-content-center gap-4 pb-3">
         <button
           onClick={handleSalesAllReset}
-          className="btn btn-sm btn-dark me-4"
+          className="btn btn-sm btn-dark"
         >
           Close
         </button>
-        <button className="btn btn-sm btn-dark" onClick={handleConvertToPdf}>
+        <button className="btn btn-sm btn-dark" onClick={()=>handleConvertToPdf("print")}>
           Print
+        </button>
+        <button className="btn btn-sm btn-dark" onClick={()=>handleConvertToPdf("pdf")}>
+          Pdf
         </button>
       </div>
     </div>
