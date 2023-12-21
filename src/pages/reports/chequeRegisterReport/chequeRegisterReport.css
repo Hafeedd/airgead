@@ -1,0 +1,24 @@
+.table-head-bg th{
+    background-color: black;
+    color: white;
+    padding-top: 1.5rem;
+}
+.cheque-report-top-entry-sticky {
+    position: sticky;
+    top: 0;
+}
+
+.table-head-bg th{
+    position: sticky;
+    top: 2.9rem;
+}
+
+.cheque-report-table-date{
+    width: 8.5rem;
+}
+
+.cheque-report-date-sel{
+    width: 8rem;
+    padding: 0;
+    margin: 0;
+}
