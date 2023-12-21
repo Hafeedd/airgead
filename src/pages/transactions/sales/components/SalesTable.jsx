@@ -499,7 +499,7 @@ const SalesTable = (props) => {
   };
 
   const handlePrev = () => {
-    if (salesList) {
+    if (salesList.length>0) {
       if (!edit) {
         setEdit(salesList[0]);
       } else {
@@ -512,6 +512,8 @@ const SalesTable = (props) => {
           Swal.fire("No more purchase to edit", "go for next", "warning");
         }
       }
+    }else{
+      Swal.fire("No more purchase to edit", "go for next", "warning");
     }
   };
 
@@ -519,7 +521,7 @@ const SalesTable = (props) => {
     let i = salesList?.length - 1;
     if (!edit) {
       Swal.fire("No more purchase to edit", "go for prev", "warning");
-    } else if (edit?.id == salesList[0].id) {
+    } else if (edit?.id == salesList[0]?.id) {
       handleSalesAllReset();
     } else {
       handleSalesAllReset();

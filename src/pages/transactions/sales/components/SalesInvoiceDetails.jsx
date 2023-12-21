@@ -26,12 +26,17 @@ const SalesInvoiceDetails = (props) => {
 
     const handleBillTypeSelection = () =>{
         if(edit?.fk_bill_type && salesAdd.fk_bill_type)
-            if((edit?.fk_bill_type == salesAdd.fk_bill_type)){
+            if(edit?.fk_bill_type == salesAdd?.fk_bill_type){
                 let tempBillType = billType?.filter(x=>x.value == salesAdd.fk_bill_type)
                 setDocNoRecheck(edit?.documents_no)
-                setBillTypeDocNo(tempBillType[0]?.text.trim() + edit?.documents_no)
+                if((edit?.documents_no && edit?.documents_no?.match(/^[0-9]/))){
+                    setBillTypeDocNo(`${tempBillType[0]?.text?.trim()}  ${edit?.documents_no}`)
+                }else{
+                    setBillTypeDocNo(edit?.documents_no)
+                }
                 return 0
         }
+        
         if(codeWithBillTypeList?.length>0){
             let bill_type
             let cod = codeWithBillTypeList?.filter(x=>{
@@ -48,21 +53,22 @@ const SalesInvoiceDetails = (props) => {
                     })
                     // ---------------------------------------
                 return x.sub_id == bill_type
-                })
-
+                })[0]
                 let tempBillType = bill_type?.split(' ').join('')
-                if(cod?.length>0){
-                    let tempDocNo = tempBillType+cod[0]?.next_value
-                    setSalesAdd(data=>({...data,documents_no:cod[0]?.next_value,
-                    fk_bill_type:cod[0]?.fk_bill_type}))
-                    setDocNoRecheck(cod[0]?.next_value)
+                if(cod){
+                    let tempDocNo = `${tempBillType} ${cod?.next_value}`
+                    console.log(tempDocNo)
+                    setSalesAdd(data=>({...data,documents_no:cod?.next_value,
+                    fk_bill_type:cod?.fk_bill_type}))
+                    setDocNoRecheck(cod?.next_value)
                     setBillTypeDocNo(tempDocNo)
-                    setCurrentEditBillType(cod[0].fk_bill_type)
+                    setCurrentEditBillType(cod.fk_bill_type)
                     }
         }else if(edit){
+            console.log("c")
             let tempBillType = billType?.filter(x=>x.value == salesAdd.fk_bill_type)
             setDocNoRecheck(edit?.documents_no)
-            setBillTypeDocNo(tempBillType[0]?.text.trim() + edit?.documents_no)
+            setBillTypeDocNo(`${tempBillType[0]?.text.trim()} ${edit?.documents_no}`)
         }
     }
 

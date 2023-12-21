@@ -43,6 +43,9 @@ const SalesTransaction = () => {
   const [billTypeDocNo, setBillTypeDocNo] = useState(null);
   const [codeWithBillTypeList, setCodeWithBillTypeList] = useState(null);
   const [showPrint, setShowPrint] = useState(false);
+  const [cstClsOpn, setCstClsOpn] = useState({
+    opening:null,closing:null,
+  })
 
   const [ref, setRef] = useState(null);
 
@@ -261,35 +264,61 @@ const SalesTransaction = () => {
       }, 0);
 
       let hsnWiseCalc = []
-      let hsnFilter =  []
+      let hsnFilter =  ['other']
       tableItemList.forEach(data=>{
         if(data.hsn && hsnFilter.indexOf(data.hsn)<0){
           hsnFilter.push(data.hsn)
         }
       })
-      
-      hsnFilter.map(item=>{
-            var totalSgst = tableItemList?.reduce((a, b) => {
-              return (b.hsn == item && (b.sgst || b.sgst >= 0)) ? parseFloat(a) + parseFloat(b.sgst) : a;
-            }, 0);
-            var value = tableItemList?.reduce((a, b) => {
-              return (b.hsn == item && (b.value || b.value >= 0)) ? parseFloat(a) + parseFloat(b.value) : a;
-            }, 0);
-            var total = tableItemList?.reduce((a, b) => {
-              return (b.hsn == item && (b.total || b.total >= 0)) ? parseFloat(a) + parseFloat(b.total) : a;
-            }, 0);
-            let totalTaxPerc
-            if(total && totalSgst){
-              totalTaxPerc = ((totalSgst * 2) / total) * 100;
-            }
-            hsnWiseCalc.push({
-              hsn:item,
-              total:total?.toFixed(2),
-              value:value?.toFixed(2),
-              taxPerc:totalTaxPerc?.toFixed(2),
-              totalSgst:totalSgst?.toFixed(2),
-            })
-      })
+        console.log(hsnFilter)
+      hsnFilter.map((item)=>{
+        if(item !== 'other'){
+          var totalSgst = tableItemList?.reduce((a, b) => {
+            return (b.hsn == item && (b.sgst || b.sgst >= 0)) ? parseFloat(a) + parseFloat(b.sgst) : a;
+          }, 0);
+          var value = tableItemList?.reduce((a, b) => {
+            return (b.hsn == item && (b.value || b.value >= 0)) ? parseFloat(a) + parseFloat(b.value) : a;
+          }, 0);
+          var total = tableItemList?.reduce((a, b) => {
+            return (b.hsn == item && (b.total || b.total >= 0)) ? parseFloat(a) + parseFloat(b.total) : a;
+          }, 0);
+          let totalTaxPerc
+          if(total && totalSgst){
+            totalTaxPerc = ((totalSgst * 2) / total) * 100;
+          }
+          
+          hsnWiseCalc.push({
+            hsn:item,
+            total:total?.toFixed(2),
+            value:value?.toFixed(2),
+            taxPerc:totalTaxPerc?.toFixed(2),
+            totalSgst:totalSgst?.toFixed(2),
+          })
+        }else{
+          var totalSgst = tableItemList?.reduce((a, b) => {
+            console.log(b.hsn)
+            return (!b.hsn && (b.sgst || b.sgst >= 0)) ? parseFloat(a) + parseFloat(b.sgst) : a;
+          }, 0);
+          var value = tableItemList?.reduce((a, b) => {
+            return (!b.hsn && (b.value || b.value >= 0)) ? parseFloat(a) + parseFloat(b.value) : a;
+          }, 0);
+          var total = tableItemList?.reduce((a, b) => {
+            return (!b.hsn && (b.total || b.total >= 0)) ? parseFloat(a) + parseFloat(b.total) : a;
+          }, 0);
+          let totalTaxPerc
+          if(total && totalSgst){
+            totalTaxPerc = ((totalSgst * 2) / total) * 100;
+          }
+          
+          hsnWiseCalc.push({
+            hsn:item,
+            total:total?.toFixed(2),
+            value:value?.toFixed(2),
+            taxPerc:totalTaxPerc?.toFixed(2),
+            totalSgst:totalSgst?.toFixed(2),
+          })
+        }
+        })
       
       let total_gst_perc;
       if (total_total && total_sgst) {
@@ -450,6 +479,7 @@ const SalesTransaction = () => {
         Swal.fire(response?.data, "", "error");
       }
     } catch (err) {
+      if(data.length<1) return 0
       let data = err?.response?.data?.data;
       let index;
       if (typeof data == "object") index = Object.keys(data)[0];
@@ -543,12 +573,12 @@ const SalesTransaction = () => {
               <div className="col-12 row mx-0 mb-1 align-items-center">
                 <div className="col-6">Opening Balance</div>
                 <div className="col-1">:</div>
-                <div className="col-5">300.0 Db</div>
+                <div className="col-5">{cstClsOpn.opening||0}</div>
               </div>
               <div className="col-12 row mx-0 align-items-center">
                 <div className="col-6">Closing Balance</div>
                 <div className="col-1">:</div>
-                <div className="col-5">515.0 Cr</div>
+                <div className="col-5">{cstClsOpn.closing||0}</div>
               </div>
             </div>
             <div className="col-9 d-flex align-items-end justify-content-start px-0 mx-0 mt-1">
@@ -610,6 +640,7 @@ const SalesTransaction = () => {
                 salesAdd,
                 setSalesAdd,
                 getCustomer,
+                setCstClsOpn
               }}
             />
           ) : pageHeadItem == 4 ? (
