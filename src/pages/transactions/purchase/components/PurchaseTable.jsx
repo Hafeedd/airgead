@@ -123,6 +123,7 @@ const PurchaseTable = (props) => {
   };
 
   const handleAddBatchOpen = (e) => {
+    e.preventDefault()
     let itemTempList = [...tableItemList];
 
     if (e.type === "keydown") {
@@ -145,7 +146,6 @@ const PurchaseTable = (props) => {
       let itemTemp = { ...tableItem };
       itemTemp = { ...itemTemp, ["cstm_id"]: cstm_id };
       itemTempList.unshift(itemTemp);
-      setTableItemList(itemTempList);
       setCstm_id(cstm_id + 1);
       setPurchaseItemSerielModal(cstm_id);
       if (purchaseAdd.isBatch) setShowBatch(true);
@@ -156,7 +156,6 @@ const PurchaseTable = (props) => {
   };
 
   const handlePrev = () => {
-    console.log(purchaseList)
     if (purchaseList?.length>0) {
       if (!edit) {
         setEdit(purchaseList[0]);
@@ -639,13 +638,13 @@ const PurchaseTable = (props) => {
                     <FiEdit className="mb-1 btn p-0" size={"16px"} />
                   </div>
                 ) : (
-                  <input
+                  <button
                     onKeyDown={handleAddBatchOpen}
+                    onClick={handleAddBatchOpen}
                     type="button"
-                    // onClick={handleAddBatchOpen}
                     className="table-item-add-btn"
                     value={"+"}
-                  />
+                  >+</button>
                 )}
               </td>
               <td className="p-0 text-start">

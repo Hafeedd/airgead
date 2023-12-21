@@ -11,8 +11,6 @@ const PurchaseRegisterTable = (props) => {
     setUnitList,
   } = props;
 
-  console.log(unitList)
-
   const handleDrop = (i) => {
     let tempList = purchaseRegisterList;
     let newList = tempList[i];

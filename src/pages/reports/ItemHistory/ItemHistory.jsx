@@ -35,6 +35,7 @@ export const ItemHistory = () => {
                   tempList.push(a);
                 });
                 setItemNameList(tempList);
+                setItemId(tempList[0].id)
               }
         }catch(err){}
     }

@@ -274,7 +274,6 @@ const PurchaseTransaction = () => {
       tempItem = {...tempItem, ...value}
       // if (name == 'tax_gst' || name == 'sales_rate' || name == 'margin') {
         if (tempItem.tax_gst) {
-          console.log(tempItem.value)
           value = {
             ...value,
             ["total"]: tempItem.value + tempItem.tax_gst * (tempItem.value / 100),
@@ -282,8 +281,8 @@ const PurchaseTransaction = () => {
                 (tempItem.rate-tempItem.discount_1_amount_per_item)
               +
               (tempItem.tax_gst * ((tempItem.rate - tempItem.discount_1_amount_per_item) / 100)),
-            ["cgst_or_igst"]: tempItem.tax_gst / 2,
-            ["sgst"]: tempItem.tax_gst / 2,
+            ["cgst_or_igst"]: tempItem.tax_gst * (tempItem.value / 100) / 2,
+            ["sgst"]: tempItem.tax_gst * (tempItem.value / 100) / 2,
           };
         } else {
           value = { ...value, cgst_or_igst: 0, sgst: 0 };
@@ -620,12 +619,12 @@ const PurchaseTransaction = () => {
     try {
       let ItemTempList = [...tableItemBatchList],
         itemTemp = {};
-      if (tableItemBatchList){
+      if (tableItemBatchList.length>0){
         tableItemBatchList?.map((data) => {
           let itemTemp = { ...data };
           itemTemp = { ...itemTemp, ["cstm_id"]: cstm_id };
         });
-        try {
+      }
           let submitData = { ...tableItem,fk_units:tableItem?.unit };
           if (purchaseAdd.isBatch)
             submitData = { ...submitData, batch_items: batchKeys };
@@ -636,6 +635,7 @@ const PurchaseTransaction = () => {
             response = await putPurchaseItem(tableEdit, submitData);
           }
           if (response?.success && !tableEdit) {
+            console.log(response?.success , tableEdit)
               let tempItemKeys = [...tebleItemKeys];
               tempItemKeys.push({ id: response?.data?.purchase?.id });
               ItemTempList.push(itemTemp)
@@ -649,8 +649,7 @@ const PurchaseTransaction = () => {
                     }
                 })
           } else if(edit){
-            try{
-            const data = getData();
+            const data = await getData();
             setEdit(data);
                 tempItems?.map((x, i) => {
                     if (x.id == tableEdit) {
@@ -660,18 +659,15 @@ const PurchaseTransaction = () => {
                         setTableItemList(tempItems);
                     }
                 })
-            }catch(err){console.log(err)}
             setTableEdit(false);
           }else{
             setEdit(false)
           }
           setTableItemBatchList(ItemTempList);
-        } catch (err) {}
         setPurchaseItemSerielModal(false);
         handleTableItemReset();
-      }
     } catch (err) {
-      console.log(err);
+      Swal.fire('Error',"Failed while adding item to table. Pls try again later",'error')
     }
   };
 

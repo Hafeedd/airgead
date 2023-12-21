@@ -84,7 +84,7 @@ export const ItemHistoryEntry = (props) => {
             type="date"
           />
         </Form.Group>
-        <Form.Group className="col-4 col-3 pe-4 ps-0 mx-0 d-flex align-items-center mt-3">
+        <Form.Group className="col-4 col-3 pe-4 ps-0 mx-0 d-flex align-items-center mt-1">
           <Form.Label className="col-2 purchase-input-label pb-1">
             Item
           </Form.Label>
@@ -103,7 +103,7 @@ export const ItemHistoryEntry = (props) => {
           />
         </Form.Group>
       </div>
-      <Form.Group className="col-4 col-3 pe-4 ps-0 mx-0 d-flex align-items-center mt-1">
+      <Form.Group className="col-4 col-3 pe-4 ps-0 mx-0 d-flex align-items-center mt-3">
         <Form.Label className="col-2 purchase-input-label pb-1">
           Barcode
         </Form.Label>

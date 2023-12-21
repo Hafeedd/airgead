@@ -69,7 +69,7 @@ export const useReportsServices = () =>{
     }
 
     const getItemHistory = async(id,params)=>{
-        const response = await axiosPrivate.get(`/reports/item_report/${id}/`,{params:params})
+        const response = await axiosPrivate.get(`/reports/item/item_report/${id}/`,{params:params})
         return response?.data
     }
 

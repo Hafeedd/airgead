@@ -1,0 +1,15 @@
+.stock-journal-report-table-cont.item-history{
+    height: 25.4rem !important;
+}
+
+.stock-journal-report-table-cont.item-history table tbody tr.first-tr td{
+    background-color: #bd93f3; 
+    color: white;
+    padding: 1rem;
+    text-align: start;
+}
+
+.stock-journal-report-table-cont.item-history table thead tr th{
+    position: sticky;
+    top: 0;
+}
