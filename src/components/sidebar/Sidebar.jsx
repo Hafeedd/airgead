@@ -69,6 +69,9 @@ const Sidebar = () => {
                     <span className='SidebarSpan d-flex ms-5 ps-3'>
                         <div className='SidebarItemText' onClick={()=>navigate('/pay-roll')}>Pay Roll</div>
                     </span>
+                    <span className='SidebarSpan d-flex ms-5 ps-3'>
+                        <div className='SidebarItemText' onClick={()=>navigate('/cheque-register')}>Cheque Register</div>
+                    </span>
                     
                 </div>
                 
@@ -110,6 +113,9 @@ const Sidebar = () => {
                     </span>
                     <span className='SidebarSpan d-flex ms-5 ps-3'>
                         <div className='SidebarItemText' onClick={()=>navigate('/bill-wise-profit')}>Bill Wise Profit</div>
+                    </span>
+                    <span className='SidebarSpan d-flex ms-5 ps-3'>
+                        <div className='SidebarItemText' onClick={()=>navigate('/cheque-register-report')}>Cheque Register</div>
                     </span>
 
                 </div>

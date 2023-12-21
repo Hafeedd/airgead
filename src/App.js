@@ -24,6 +24,9 @@ import StaffAttendance from './pages/transactions/staffAttendance/StaffAttendanc
 import PayrollTransaction from './pages/transactions/payroll/PayrollTransaction';
 import ItemProfitWise from './pages/reports/profitReport/ItemProfitWise';
 import BillWiseProfit from './pages/reports/billWiseProfitReport/BillWiseProfit';
+import ChequeRegister from './pages/transactions/chequeRegister/ChequeRegister';
+import ChequeRegisterReport from './pages/reports/chequeRegisterReport/ChequeRegisterReport';
+
 
 function App() {
   return (
@@ -64,7 +67,8 @@ function App() {
             <Route path="/Stock-journal-report" element={<StockJournalReport/>}/>
             <Route path="/profit-report" element={<ItemProfitWise/>}/>
             <Route path="/bill-wise-profit" element={<BillWiseProfit/>}/>
-
+            <Route path="/cheque-register" element={<ChequeRegister/>}/>
+            <Route path="/cheque-register-report" element={<ChequeRegisterReport/>}/>
           </Route>
         </Route>
       </Routes>
