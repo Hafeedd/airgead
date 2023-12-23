@@ -52,22 +52,22 @@ const PurchaseInvoiceDetails = (props) => {
             option.description?.toString()?.includes(searchValue))});
       };
 
-      const openNewWindow = () => {
-        // Define the URL for the new window
-        const newWindowUrl = 'http://localhost:3000/';
+    //   const openNewWindow = () => {
+    //     // Define the URL for the new window
+    //     const newWindowUrl = 'http://localhost:3000/';
     
-        // Use window.open to open a new browser window
-    const newWindow = window.open('', '_blank');
+    //     // Use window.open to open a new browser window
+    // const newWindow = window.open('', '_blank');
 
-    // Check if the new window is successfully opened
-    if (newWindow) {
-      // Set the location to the desired URL
-      newWindow.location.href = newWindowUrl;
-    } else {
-      // Handle the case where the new window couldn't be opened
-      console.error('Unable to open a new browser window');
-    }
-      };
+    // // Check if the new window is successfully opened
+    // if (newWindow) {
+    //   // Set the location to the desired URL
+    //   newWindow.location.href = newWindowUrl;
+    // } else {
+    //   // Handle the case where the new window couldn't be opened
+    //   console.error('Unable to open a new browser window');
+    // }
+    //   };
     
       
     return (
@@ -134,7 +134,7 @@ const PurchaseInvoiceDetails = (props) => {
                     </select>
                 </div>
             </Form.Group> */}
-            <div className='col-3 col-2' onClick={()=>/* navigate("/supplier-add") */openNewWindow()}>
+            <div className='col-3 col-2' onClick={()=>navigate("/supplier-add")/* openNewWindow() */}>
             <div className='btn btn-sm btn-dark rounded-2 w-100 p-0 mt-2'>Add Supplier</div>
             </div>
             <span className='col-3'/>
