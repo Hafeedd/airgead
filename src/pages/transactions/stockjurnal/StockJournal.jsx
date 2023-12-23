@@ -46,7 +46,6 @@ export const StockJournal = () => {
 
   useEffect(() => {
     if (edit) {
-      console.log("editUseEffect")
       const { items, ...others } = edit;
       setStockJAdd(others);
       setStockTableItemList(items);
@@ -65,6 +64,7 @@ export const StockJournal = () => {
     });
     handleResetStockTabe();
     setStockTableItemList([]);
+    getData()
   };
 
   const handleResetStockTabe = () => {
@@ -101,10 +101,6 @@ export const StockJournal = () => {
       setStockJAdd(tempStockJAdd);
     }
   }, [stockTableItemList, stockTableItem]);
-
-  // useEffect({
-
-  // },[stockJList])
 
   const handleAddToTableList = async () => {
     if (!stockTableItem.qty || !stockTableItem.code) {
@@ -161,9 +157,11 @@ export const StockJournal = () => {
       let response2 = await getItemNameList();
       let response3 = await getProperty();
       let response4 = await getStockJ();
-      if (response.success) {
-        let code = response.data.filter((x) => x.sub_id === "SJN");
-        setStockJAdd({ ...stockJAdd, code: code[0]?.next_code });
+      let tempEdit
+      setEdit(data=>{tempEdit= data})
+      if (response.success && !tempEdit) {
+        let code = response.data.filter((x) => x.sub_id === "SJN")[0];
+        setStockJAdd(data=>({ ...data, code: code?.next_code }));
       }
       if (response2.success) {
         let tempList = [];

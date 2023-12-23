@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { NormaA4 } from "./printStyles/NormaA4";
 import { NormalA42 } from "./printStyles/NormalA42";
 import { Thermal } from "./printStyles/Thermal";
+import './printStyles.css'
 
 export const GenerateDynamicHtml = (props) => {
   const {

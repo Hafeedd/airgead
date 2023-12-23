@@ -1,10 +1,8 @@
 import React from "react";
-import html2pdf from "html2pdf.js";
+import html2canvas from "html2canvas";
+import jsPDF from "jspdf";
+import "jspdf-autotable";
 import { GenerateDynamicHtml } from "../../../../components/print/Print";
-
-import html2canvas from 'html2canvas';
-import jsPDF from 'jspdf';
-import 'jspdf-autotable';
 
 export const PrintFIle = (props) => {
   const {
@@ -31,69 +29,81 @@ export const PrintFIle = (props) => {
 
   const printStyle = localStorage.getItem("printType");
 
-  const handleConvertToPdf = async () => {
+  const handleConvertToPdf = async (status) => {
     // const dynamicHtml = GenerateDynamicHtml();
 
     // Create a temporary container element to hold the dynamic HTML
-    const tempContainer = document.getElementById("new");
+    const content = document.getElementById("new");
     // tempContainer.innerHTML = dynamicHtml;
-    // const options = {
-    //   margin: 5,
-    //   image: { type: "jpeg", quality: 1 }, // Adjust quality (1.0 is maximum)
-    //   html2canvas: {
-    //     scale: 9,
-    //     // width: printStyle == "thermal" ? tempContainer.offsetWidth*2 : null,
-    //     // height: printStyle == "thermal" ? tempContainer.offsetHeight*2 : null,
-    //   },
-    //   jsPDF: {
-    //     unit: "mm",
-    //     format: printStyle == "thermal" ? "a7" : "a4",
-    //     orientation: printStyle == "thermal" ? "portrait" : "landscape",
-    //   },
-    // };
-
-    const options = {
+    const pdfOptions = {
       margin: 10,
-      filename: 'output.pdf',
-      image: { type: 'jpeg', quality: 0.98 },
+      filename: "output.pdf",
+      image: { type: "jpeg", quality: 0.98 },
       html2canvas: { scale: 2 },
-      jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
+      jsPDF: {
+        unit: "mm",
+        format: "a4",
+        orientation: "portrait",
+        autoPrint: { variant: "non-conform" },
+      },
     };
 
-    // Pass the temporary container element to html2pdf for conversion
-    // if (printStyle != "thermal") 
-    // await html2pdf(tempContainer, options);
+    html2canvas(content, { scale: 2 }).then(async (canvas) => {
+      const imgData = canvas.toDataURL("image/jpeg");
+      const pdf = new jsPDF(pdfOptions.jsPDF);
 
-    html2canvas(tempContainer, { scale: 2 }).then(canvas => {
-      const imgData = canvas.toDataURL('image/jpeg');
-      const pdf = new jsPDF(options.jsPDF);
-      if(printStyle == 'thermal'){
+      pdf.addImage(
+        imgData,
+        "JPEG",
+        pdfOptions.margin,
+        pdfOptions.margin,
+        210 - 2 * pdfOptions.margin,
+        297 - 2 * pdfOptions.margin
+      );
+
+      if (printStyle == "thermal") {
         // Use Courier font
-      pdf.setFont('courier');
+        pdf.setFont("courier");
 
-      // Set font size
-      pdf.setFontSize(12);
+        // Set font size
+        pdf.setFontSize(12);
 
-      // Add black and white image
-      pdf.addImage(imgData, 'JPEG', options.margin, options.margin, 210 - 2 * options.margin, 297 - 2 * options.margin);
-
-      // Save PDF file
-      pdf.save(options.filename);
-
+        // Add black and white image
+        pdf.addImage(
+          imgData,
+          "JPEG",
+          pdfOptions.margin,
+          pdfOptions.margin,
+          210 - 2 * pdfOptions.margin,
+          297 - 2 * pdfOptions.margin
+        );
       }
-      pdf.addImage(imgData, 'JPEG', options.margin, options.margin, 210 - 2 * options.margin, 297 - 2 * options.margin);
-      pdf.autoPrint();
+      if(status == "print"){
+
+        // Generate a Blob from the PDF content
+        const pdfBlob = pdf.output("blob");
+        
+        // Create an object URL from the Blob
+      const pdfObjectURL = URL.createObjectURL(pdfBlob);
+
+      // Create an invisible iframe
+      const iframe = document.createElement("iframe");
+      iframe.style.display = "none";
+      document.body.appendChild(iframe);
+
+      // Set the iframe content to the PDF object URL
+      iframe.src = pdfObjectURL;
+
+      // Wait for the PDF to load in the iframe, then trigger print
+      iframe.onload = () => {
+        iframe.contentWindow.print();
+        // Release the object URL when done printing
+        URL.revokeObjectURL(pdfObjectURL);
+      };
+    }else if(status == "pdf"){
+      pdf.save(pdfOptions.filename)
+    }
     });
-    // else
-    //   await html2pdf(tempContainer)
-    //     .set(options)
-    //     .outputPdf((pdf) => {
-    //       // Here, you can handle the generated PDF (e.g., save or print it)
-    //       // For example, you can open the PDF in a new tab
-    //       const blob = new Blob([pdf], { type: "application/pdf" });
-    //       const url = URL.createObjectURL(blob);
-    //       window.open(url, "_blank");
-    //     });
   };
 
   return (
@@ -121,15 +131,18 @@ export const PrintFIle = (props) => {
           }}
         />
       </div>
-      <div className="w-100 d-flex justify-content-center pb-3">
+      <div className="w-100 d-flex justify-content-center gap-4 pb-3">
         <button
           onClick={handleSalesAllReset}
-          className="btn btn-sm btn-dark me-4"
+          className="btn btn-sm btn-dark"
         >
           Close
         </button>
-        <button className="btn btn-sm btn-dark" onClick={handleConvertToPdf}>
+        <button className="btn btn-sm btn-dark" onClick={()=>handleConvertToPdf("print")}>
           Print
+        </button>
+        <button className="btn btn-sm btn-dark" onClick={()=>handleConvertToPdf("pdf")}>
+          Pdf
         </button>
       </div>
     </div>

@@ -6,7 +6,7 @@ import '../cashbook.css'
 
 const CashBookTable = (props) => {
 
-    const { cashBookList, params } = props
+    const { cashBookList, params} = props
 
     // const AdjustTableHeight = () => {
     //     let a = []

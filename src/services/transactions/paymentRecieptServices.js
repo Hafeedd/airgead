@@ -1,4 +1,3 @@
-import { async } from "q"
 import { axiosPrivate } from "../../api/axios"
 
 const usePaymentRecieptServices = () =>{

@@ -90,7 +90,7 @@ export const NormaA4 = (props) => {
                 <th className="border-bottom border-secondary">S/L</th>
                 {tableHead.length > 0 &&
                   tableHead.map((data) => (
-                    <th className="border-start border-secondary">{data}</th>
+                    <th className="border-start border-bottom border-secondary">{data}</th>
                   ))}
               </tr>
             </thead>
@@ -160,38 +160,34 @@ export const NormaA4 = (props) => {
         </div>
 
         <div className="row mx-0 p-3 justify-content-between align-items-end">
-          <div className="col-8 border gap-2 rounded-2 d-flex p-2 me-2 mb-2">
-            {hsnCalc?.length > 0 &&
-              hsnCalc.map((data, i) => (
-                <>
-                  <div className="col-2 col-3 gap-2 px-0">
-                    <div>Hsn</div>
-                    {data.hsn || ""}
-                  </div>
-                  <div className="col-2 col-1 gap-2 px-0">
-                    <div>Value</div>
-                    {data.total || 0}
-                  </div>
-                  <div className="col-2 col-1 gap-2 px-0">
-                    <div>Cgst%</div> {parseFloat(data.totalSgst) / 2 || 0}%
-                  </div>
-                  <div className="col-2 col-1 gap-2 px-0">
-                    <div>Cgst</div>
-                    {data.totalSgst || 0}
-                  </div>
-                  <div className="col-2 col-1 gap-2 px-0">
-                    <div>Sgst%</div> {parseFloat(data.taxPerc) / 2 || 0}%
-                  </div>
-                  <div className="col-2 col-1 gap-2 px-0">
-                    <div>Sgst</div>
-                    {data.totalSgst || 0}
-                  </div>
-                  <div className="col-2 col-1 gap-2 px-0">
-                    <div>Gst</div>
-                    {(data.totalSgst * 2)?.toFixed(2) || 0}
-                  </div>
-                </>
-              ))}
+          <div className="col-8 border border-secondary rounded-2 p-2">
+            <table className="table normalA4-print border-0 border-none me-2 mb-2">
+              <thead>
+                <tr className="border-bottom border-secondary">
+                  <th className="text-start">Hsn</th>
+                  <th>Value</th>
+                  <th>Cgst%</th>
+                  <th>Cgst</th>
+                  <th>Sgst%</th>
+                  <th>Sgst</th>
+                  <th>Gst</th>
+                </tr>
+              </thead>
+              <tbody>
+                {hsnCalc?.length > 0 &&
+                  hsnCalc.map((data, i) => (
+                    <tr key={i}>
+                      <td className="text-start">{data.hsn || ""}</td>
+                      <td>{data.total || 0}</td>
+                      <td>{parseFloat(data.totalSgst) / 2 || 0}%</td>
+                      <td>{data.totalSgst || 0}</td>
+                      <td>{parseFloat(data.taxPerc) / 2 || 0}%</td>
+                      <td>{data.totalSgst || 0}</td>
+                      <td>{(data.totalSgst * 2)?.toFixed(2) || 0}</td>
+                    </tr>
+                  ))}
+              </tbody>
+            </table>
           </div>
           <div className="col-3">
             <div className="row mb-2">
@@ -202,7 +198,7 @@ export const NormaA4 = (props) => {
               <div className="col-7">
                 <b>Grand Total:</b>
               </div>
-              {total}
+              {Math.round(total||0)?.toFixed(2)}
             </div>
           </div>
         </div>

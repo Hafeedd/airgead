@@ -146,6 +146,7 @@ const PurchaseTable = (props) => {
       let itemTemp = { ...tableItem };
       itemTemp = { ...itemTemp, ["cstm_id"]: cstm_id };
       itemTempList.unshift(itemTemp);
+      // setTableItemList(itemTempList);
       setCstm_id(cstm_id + 1);
       setPurchaseItemSerielModal(cstm_id);
       if (purchaseAdd.isBatch) setShowBatch(true);
@@ -254,7 +255,6 @@ const PurchaseTable = (props) => {
         const data = await getData();
         data?.map((purchData) => {
           if (purchData?.id === edit?.id) {
-            console.log(purchData);
             setEdit(purchData);
           }
         });

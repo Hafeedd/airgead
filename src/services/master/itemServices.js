@@ -19,8 +19,8 @@ const useItemServices = () => {
   const postProperty = async (data) => {
     const response = await axiosPrivate.post(
       "master/property_type/created/",
-      { ["property_value"]: data.property_value },
-      { params: { ["property_type"]: data.property_type } }
+      { property_value: data.property_value },
+      { params: { property_type: data.property_type } }
     );
     return response.data;
   };

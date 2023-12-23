@@ -30,6 +30,9 @@ import { BarcodeRegister } from "./pages/reports/barcodeRegister/BarcodeRegister
 import BillWiseLedger from "./pages/reports/billlwiseLedger/BillWiseLedger";
 import { ItemHistory } from "./pages/reports/ItemHistory/ItemHistory";
 import BillWiseProfit from './pages/reports/billWiseProfitReport/BillWiseProfit';
+import ChequeRegister from './pages/transactions/chequeRegister/ChequeRegister';
+import ChequeRegisterReport from './pages/reports/chequeRegisterReport/ChequeRegisterReport';
+
 
 function App() {
   return (
@@ -93,7 +96,8 @@ function App() {
             <Route path="/item-history" element={<ItemHistory />} />
             <Route path="/bill-wise-ledger" element={<BillWiseLedger />} />
             <Route path="/bill-wise-profit" element={<BillWiseProfit/>}/>
-
+            <Route path="/cheque-register" element={<ChequeRegister/>}/>
+            <Route path="/cheque-register-report" element={<ChequeRegisterReport/>}/>
           </Route>
         </Route>
       </Routes>

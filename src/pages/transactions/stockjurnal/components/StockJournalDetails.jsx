@@ -49,7 +49,6 @@ export const StockJournalDetails = (props) => {
   const handleKeyWithSubmit = (e) => {
     e.preventDefault();
     if (e.type == "keydown") if (e.key == "Enter") handleAddToTableList();
-
     handleKeyDown(e);
   };
 
@@ -142,7 +141,6 @@ export const StockJournalDetails = (props) => {
   };
 
   const handleNext = () => {
-    console.log(edit);
     if (!edit) {
       Swal.fire("No more stock to edit", "go for prev", "warning");
     } else if (edit?.id == stockJList[0].id) {
@@ -159,6 +157,7 @@ export const StockJournalDetails = (props) => {
       }
     }
   };
+
 
   return (
     <div className="stock-jdetails-cont p-1 ps-4 rounded-1 w-100 bg-light h-100">
@@ -193,7 +192,7 @@ export const StockJournalDetails = (props) => {
             required
             name="date"
             value={
-              stockJAdd.date || !edit
+              stockJAdd.date? new Date(stockJAdd.date).toISOString().slice(0,10) : !edit
                 ? new Date().toISOString().slice(0, 10)
                 : ""
             }

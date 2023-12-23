@@ -6,7 +6,7 @@ import useOnKey from '../../../../hooks/onKeyFunct/onKeyFunct'
 const SalesCustomerDetails = (props) => {
     const {customerList, setCustomerList, 
         getCustomer,salesAdd ,setSalesAdd,
-        getAllUserAc,billType} = props
+        getAllUserAc,billType,setCstClsOpn} = props
 
     const [ref, setRef] = useState()
     const [careOfList, setCareOfList] = useState()
@@ -26,6 +26,7 @@ const SalesCustomerDetails = (props) => {
         })
         return tempList
     }
+
     const formatCareOf =  (data) =>{
         let tempList = []
         data.map(item=>{
@@ -71,6 +72,7 @@ const SalesCustomerDetails = (props) => {
                 console.log(billType[0])
                 bill_types = billType[0]?.value
             }
+            console.log(bill_types)
             setSalesAdd(data=>({...data,['customer_name']:customer_data?.description,
             ['fk_customer']:customer_data?.value,['fk_bill_type']:bill_types,
             ['rate_types']:customer_data?.rate_types}))
@@ -81,6 +83,7 @@ const SalesCustomerDetails = (props) => {
         if(e.target.value === "") setSalesAdd(data=>({...data,[e.target.name]:null}))
         else setSalesAdd(data=>({...data,[e.target.name]:e.target.value}))
     }
+    console.log(salesAdd)
 
     return (
         < div ref={formRef} className="col-8 col-9 mx-0 ps-4 pe-0 row " >
@@ -117,6 +120,7 @@ const SalesCustomerDetails = (props) => {
                     <Form.Control
                     className='sales-customer-container text-start text-uppercase align-items-start p-0 px-3'
                     placeholder='Address'
+                    style={{resize:'none'}}
                     onKeyDown={handleKeyDown}
                     onChange={handleChange}
                     as="textarea"

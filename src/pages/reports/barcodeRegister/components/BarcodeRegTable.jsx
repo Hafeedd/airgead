@@ -152,7 +152,8 @@ export const BarcodeRegTable = (props) => {
       <br />
       <div className="row">
         <div className="w-100 d-flex justify-content-end mb-0">
-          <div onClick={()=>navigate(-1)} className="btn btn-dark col-1 col-2 py-0">Exit</div>
+          <div className="btn btn-dark col-1 col-2 py-0 me-3">Clear</div>
+          <div className="btn btn-dark col-1 col-2 py-0">Print</div>
         </div>
       </div>
     </div>
