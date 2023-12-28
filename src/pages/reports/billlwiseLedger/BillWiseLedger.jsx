@@ -48,7 +48,9 @@ const BillWiseLedger = () => {
         setAccountCode(tempList[0].value);
         setAccountList(tempList);
       }
-    }catch(err){}
+    }catch(err){
+      console.log(err)
+    }
   }
 
 
@@ -60,14 +62,16 @@ const BillWiseLedger = () => {
       }
       const response = await getBillWiseLedger(tempParams);
       if(response.success){
+
+        
         setBillWiseLedgerList(response.data)
       }
     }catch(err){
       console.log(err)
     }
   }
-
   
+
   return (
     <div className="item_add">
       <div className="itemList_header row mx-0">
