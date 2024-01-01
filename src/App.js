@@ -36,6 +36,8 @@ import StockValueReport from "./pages/reports/stockValueReport/StockValueReport"
 
 import StaffSalaryAttendance from './pages/reports/staffSalaryAttendance/StaffSalaryAttendance';
 import MaterialComposition from './pages/master/material composition/MaterialComposition';
+import StaffSalaryAttendance from './pages/reports/staffSalaryAttendance/StaffSalaryAttendance';
+import MaterialComposition from './pages/master/material composition/MaterialComposition';
 
 function App() {
   return (
