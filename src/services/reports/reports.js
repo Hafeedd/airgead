@@ -88,6 +88,11 @@ export const useReportsServices = () =>{
         return response?.data
     }
 
+    const getStockValueReport = async (params)=>{
+        const response = await axiosPrivate.get('reports/stoke/value/report/',{params:params})
+        return response?.data
+    }
+
     const getBillWiseLedger = async(params)=>{
         const response = await axiosPrivate.get('/reports/billwise_ledger/report/',{params:params})
         return response?.data
@@ -115,6 +120,7 @@ export const useReportsServices = () =>{
       getBarcodeRegReport,
       getItemHistory,
       getBillWiseProfit,
+        getStockValueReport,
       getBillWiseLedger,
       getConsolidateCashbook
     };
