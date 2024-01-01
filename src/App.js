@@ -88,6 +88,7 @@ function App() {
             <Route path="/sale-register" element={<SalesBook />} />
             <Route path="/tax-report" element={<TaxReport />} />
             <Route path="/cashbook-report" element={<CashBook />} />
+            <Route path="/consolidate-cashbook" element={<CashBook />} />
             <Route path="/Stock-journal-report" element={<StockJournalReport />} />
             <Route path="/purchase-book" element={<PurchaseBook />} />
             <Route path="/profit-report" element={<ItemProfitWise />} />

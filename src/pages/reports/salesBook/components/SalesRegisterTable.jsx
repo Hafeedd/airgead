@@ -173,9 +173,9 @@ const SalesRegisterTable = (props) => {
                           );
                         })}
                       <tr>
-                        <td colSpan={12} className="bg-secondary p-0 m-0">
+                        <td colSpan={12} className="bg-secondary p-0 m-0 py-2">
                           <div className="sales-mas">
-                            <h5 className="sales-btm sale-fir">{per + "%"}</h5>
+                            {/* <h5 className="sales-btm sale-fir">{per + "%"}</h5> */}
                             <h5 className="sales-btm sale-sec">{total}</h5>
                           </div>
                         </td>
