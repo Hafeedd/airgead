@@ -6,12 +6,10 @@ import useStaffAttendanceServices from "../../../services/transactions/staffAtte
 const StaffAttendance = () => {
   const [year, setYear] = useState(new Date().getFullYear());
   const [month, setMonth] = useState(new Date().getMonth());
-  const [startDate, setStartDate] = useState(
-    new Date(year, month, 1).toDateString().slice(8, 10)
-  );
-  const [endDate, setEndDate] = useState(
-    new Date(year, month + 1, 0).toDateString().slice(8, 10)
-  );
+  const [startDate, setStartDate] = useState(new Date(year, month, 1).toDateString().slice(8, 10));
+  const [endDate, setEndDate] = useState(new Date(year, month + 1, 0).toDateString().slice(8, 10));
+
+
   const months = [
     "January",
     "February",
@@ -27,8 +25,9 @@ const StaffAttendance = () => {
     "December",
   ];
   const [allStaff, setAllStaff] = useState([]);
-  console.log(year, month, startDate, endDate);
+
   const { getAllStaffAttendance } = useStaffAttendanceServices();
+
   const getData = async () => {
     try {
       const paramsToReport = {
@@ -37,6 +36,7 @@ const StaffAttendance = () => {
       };
       const response = await getAllStaffAttendance(paramsToReport);
       if (response?.success) {
+        console.log("hoi hoi:",response.data);
         setAllStaff(response.data);
       }
     } catch (err) {
@@ -48,33 +48,41 @@ const StaffAttendance = () => {
   }, [startDate]);
   return (
     <div className="item_add">
-      <div className="itemList_header row mx-0 mb-3">
+      <div className="itemList_header row mx-0 my-0 mb-o pb-0">
         <div className="page_head ps-4 d-flex justify-content-between">
-          <div>
-            <div className="fw-600 fs-5">Staff Attendance</div>
-            <div className="page_head_items mb-1">
-              <div className={`page_head_item active`}>Details</div>
+          <div className="d-flex align-items-center">
+            <div>
+              <div className="fw-600 fs-5">Staff Attendance</div>
+              <div className="page_head_items mb-2 mt-2">
+                <div className={`page_head_customer active`}>
+                  Staff Attendance
+                </div>
+              </div>
             </div>
           </div>
         </div>
       </div>
-      <div className="px-4">
-        <div className="row mt-3 mx-0 rounded-1 w-100 bg-light">
-          <div className="w-100 mb-3 mt-2">
-            <StaffAttendanceDetails
-              {...{
-                startDate,
-                setStartDate,
-                endDate,
-                setEndDate,
-                months,
-                month,
-                setMonth,
-                year,
-                setYear,
-                allStaff,
-              }}
-            />
+      <div className="p-3 py-0 ps-4">
+        <div className="stock-jdetails-cont col-12 p-1 pt-0 ps-2 rounded-1 w-100 bg-light h-100 pe-2">
+          <div className="row mt-3 mx-0">
+            <div className="w-100 mb-3 mt-2">
+              <StaffAttendanceDetails
+                {...{
+                  startDate,
+                  endDate,
+                  months,
+                  month,
+                  setMonth,
+                  year,
+                  setYear,
+                  allStaff,
+                  getData,
+                  setAllStaff,
+                  setStartDate,
+                  setEndDate,
+                }}
+              />
+            </div>
           </div>
         </div>
       </div>

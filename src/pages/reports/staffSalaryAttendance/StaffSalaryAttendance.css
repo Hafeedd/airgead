@@ -1,4 +1,4 @@
-.PayrollTable thead tr th{
+.StaffTables thead tr th{
     border: 2px solid black;
     background-color: black;
     color: white;
@@ -6,11 +6,11 @@
     top: 0;
 }
 
-.PayrollTable tbody tr{
+.StaffTables tbody tr{
     border: 2px solid grey;
 }
 
-.PayrollTable tfoot tr td{
+.StaffTables tfoot tr td{
     border: 2px solid black;
     background-color: black;
     color: white;
@@ -18,12 +18,8 @@
     bottom: 0;
 }
 
-.PayrollTable tbody input{
- border: 0 solid black;
- max-width:100px;
- text-align: center;
+.TabHead {
+    background-color: #4a00a8;
+    color:white
 }
 
-.rotate-in{
-    transform: rotate(90deg);
-}

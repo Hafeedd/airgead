@@ -232,7 +232,7 @@ const SupplierOutstandingDetails = (props) => {
                       {columnVisibility?.opbal && (
                         <td>
                           {data?.opening_balance_new < 0
-                            ? data?.opening_balance_new + " Cr"
+                            ? Math.abs(data?.opening_balance_new) + " Cr"
                             : data?.opening_balance_new > 0
                             ? data?.opening_balance_new + " Db"
                             : 0}
@@ -243,7 +243,7 @@ const SupplierOutstandingDetails = (props) => {
                       {columnVisibility?.clbal && (
                         <td>
                           {data?.closing_balance < 0
-                            ? data?.closing_balance + " Cr"
+                            ? Math.abs(data?.closing_balance) + " Cr"
                             : data?.closing_balance > 0
                             ? data?.closing_balance + " Db"
                             : 0}
@@ -283,7 +283,7 @@ const SupplierOutstandingDetails = (props) => {
                   {columnVisibility?.opbal && (
                     <td>
                       {supOutstanding?.total_opening_balance < 0
-                        ? supOutstanding?.total_opening_balance + " Cr"
+                        ? Math.abs(supOutstanding?.total_opening_balance) + " Cr"
                         : supOutstanding?.total_opening_balance > 0
                         ? supOutstanding?.total_opening_balance + " Db"
                         : 0}
@@ -298,7 +298,7 @@ const SupplierOutstandingDetails = (props) => {
                   {columnVisibility?.clbal && (
                     <td>
                       {supOutstanding?.total_closing_balance < 0
-                        ? supOutstanding?.total_closing_balance + " Cr"
+                        ? Math.abs(supOutstanding?.total_closing_balance) + " Cr"
                         : supOutstanding?.total_closing_balance > 0
                         ? supOutstanding?.total_closing_balance + " Db"
                         : 0}
@@ -314,7 +314,7 @@ const SupplierOutstandingDetails = (props) => {
                   {columnVisibility?.opbal && (
                     <td>
                       {staffOutstanding?.total_opening_balance < 0
-                        ? staffOutstanding?.total_opening_balance + " Cr"
+                        ? Math.abs(staffOutstanding?.total_opening_balance) + " Cr"
                         : staffOutstanding?.total_opening_balance > 0
                         ? staffOutstanding?.total_opening_balance + " Db"
                         : 0}
@@ -329,7 +329,7 @@ const SupplierOutstandingDetails = (props) => {
                   {columnVisibility?.clbal && (
                     <td>
                       {staffOutstanding?.total_closing_balance < 0
-                        ? staffOutstanding?.total_closing_balance + " Cr"
+                        ? Math.abs(staffOutstanding?.total_closing_balance) + " Cr"
                         : staffOutstanding?.total_closing_balance > 0
                         ? staffOutstanding?.total_closing_balance + " Db"
                         : 0}
