@@ -52,7 +52,7 @@ const PurchaseBookTable = (props) => {
                   let gross = 0;
                   gross =
                     (data?.total_amount ||
-                    0) - (data?.total_sgst || 0 + data?.total_cgst || 0);
+                    0) - (data?.t2otal_sgst || 0 + data?.total_cgst || 0);
                   let total = 0;
                   total =
                     gross + (data?.total_sgst || 0 + data?.total_cgst || 0);

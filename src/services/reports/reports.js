@@ -74,17 +74,19 @@ export const useReportsServices = () =>{
     }
 
     const getBillWiseProfit = async (params)=>{
-        const response = await axiosPrivate.get('reports/bill_wise/profit/report/',{params:params})
+        const response = await axiosPrivate.get('/reports/bill_wise/profit/report/',{params:params})
         return response?.data
     }
-
-
 
     const getBillWiseLedger = async(params)=>{
         const response = await axiosPrivate.get('/reports/billwise_ledger/report/',{params:params})
         return response?.data
     }
 
+    const getConsolidateCashbook = async(params)=>{
+        const response = await axiosPrivate.get('/reports/consolidated/cashbook/report/',{params:params})
+        return response?.data;
+    } 
     return {
       getStockLedger,
       getAccLedger,
@@ -102,5 +104,6 @@ export const useReportsServices = () =>{
       getItemHistory,
       getBillWiseProfit,
       getBillWiseLedger,
+      getConsolidateCashbook
     };
 }
