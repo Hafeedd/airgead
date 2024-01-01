@@ -22,6 +22,8 @@ const StaffAttendanceDetails = (props) => {
     allStaff,
     getData,
     setAllStaff,
+    setStartDate,
+    setEndDate,
   } = props;
   const [present, setPresent] = useState(false);
   const [checkPresent, setCheckPresent] = useState();
@@ -115,6 +117,7 @@ const StaffAttendanceDetails = (props) => {
     } else {
       setMonth((prevMonth) => prevMonth - 1);
     }
+    updateDateRange();
   };
 
   const handleRight = () => {
@@ -124,6 +127,13 @@ const StaffAttendanceDetails = (props) => {
     } else {
       setMonth((prevMonth) => prevMonth + 1);
     }
+    updateDateRange();
+  };
+
+  const updateDateRange = () => {
+    setStartDate(new Date(year, month, 1).toDateString().slice(8, 10));
+    setEndDate(new Date(year, month + 1, 0).toDateString().slice(8, 10));
+    getData(); // Fetch data for the new date range
   };
 
   const DateHeading = () => {

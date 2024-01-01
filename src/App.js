@@ -23,6 +23,7 @@ import { StockJournalReport } from './pages/reports/stockJournalReport/StockJour
 import StaffAttendance from './pages/transactions/staffAttendance/StaffAttendance';
 import PayrollTransaction from './pages/transactions/payroll/PayrollTransaction';
 import StaffSalaryAttendance from './pages/reports/staffSalaryAttendance/StaffSalaryAttendance';
+import MaterialComposition from './pages/master/material composition/MaterialComposition';
 
 function App() {
   return (
@@ -64,6 +65,8 @@ function App() {
             <Route path="/Stock-journal-report" element={<StockJournalReport/>}/>
             <Route path="/StaffAttendance" element={<StaffSalaryAttendance/>}/>
             <Route path="/StaffSalary" element={<StaffSalaryAttendance/>}/>
+            <Route path="/material-composition-product" element={<MaterialComposition/>}/>
+            <Route path="/material-composition-list" element={<MaterialComposition/>}/>
           </Route>
         </Route>
       </Routes>

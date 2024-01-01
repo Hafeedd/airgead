@@ -2,7 +2,7 @@ import { axiosPrivate } from "../../api/axios"
 
 const useStaffAttendanceServices = () => {
    const getAllStaffAttendance =async(data)=>{
-    const response = await axiosPrivate.get('master/staff/all_staffattendance/',data)
+    const response = await axiosPrivate.get('master/staff/all_staffattendance/',{params:data})
     return response.data
    }
    const postBulkUploadAttendance = async(data)=>{

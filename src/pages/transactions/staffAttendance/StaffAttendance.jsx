@@ -6,13 +6,9 @@ import useStaffAttendanceServices from "../../../services/transactions/staffAtte
 const StaffAttendance = () => {
   const [year, setYear] = useState(new Date().getFullYear());
   const [month, setMonth] = useState(new Date().getMonth());
-  const today = new Date(year, month, 1);
-  const startDate = new Date(today.getFullYear(), today.getMonth(), 1)
-    .toDateString()
-    .slice(8, 10);
-  const endDate = new Date(today.getFullYear(), today.getMonth() + 1, 0)
-    .toDateString()
-    .slice(8, 10);
+  const [startDate, setStartDate] = useState(new Date(year, month, 1).toDateString().slice(8, 10));
+  const [endDate, setEndDate] = useState(new Date(year, month + 1, 0).toDateString().slice(8, 10));
+
 
   const months = [
     "January",
@@ -82,6 +78,8 @@ const StaffAttendance = () => {
                   allStaff,
                   getData,
                   setAllStaff,
+                  setStartDate,
+                  setEndDate,
                 }}
               />
             </div>

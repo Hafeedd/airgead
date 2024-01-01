@@ -1,0 +1,24 @@
+.materials thead tr th{
+    border: 2px solid black;
+    background-color: black;
+    color: white;
+    position: sticky;
+    top: 0;
+}
+
+.materials tbody tr{
+    border: 2px solid grey;
+}
+
+.materials tfoot tr td{
+    border: 2px solid black;
+    background-color: black;
+    color: white;
+    position: sticky;
+    bottom: 0;
+}
+
+.TabHead {
+    background-color: black;
+    color:white
+}

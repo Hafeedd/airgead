@@ -24,7 +24,19 @@ const PayrollTransactionDetails = (props) => {
     setFullPayroll,
   } = props;
   const navigate = useNavigate();
+
+  const [totalSalary, setTotalSalary] = useState(0);
   const [narration, setNarration] = useState("Salary");
+
+  useEffect(()=>{
+    let totalS = 0
+    console.log(payrollData)
+    if(payrollData.length>0){
+      totalS = payrollData.reduce((a,b)=>parseFloat(a)+parseFloat(b.net_salary||0),0)
+    }
+    console.log(totalS)
+    setTotalSalary(totalS)
+  },[payrollData])
 
   useEffect(() => {
     if (edit) {
@@ -407,15 +419,15 @@ const PayrollTransactionDetails = (props) => {
           <tfoot>
             <tr>
               <td></td>
-              <td>--</td>
-              <td>--</td>
-              <td>--</td>
-              <td>--</td>
-              <td>--</td>
-              <td>--</td>
-              <td>--</td>
-              <td>--</td>
-              <td>--</td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td colSpan={2} className="text-end">Total salary</td>
+              {/* <td>Salary</td> */}
+              <td>{totalSalary}</td>
             </tr>
           </tfoot>
         </table>
