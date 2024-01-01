@@ -147,6 +147,11 @@ export const useReportsServices = () => {
     );
     return response?.data;
   };
+
+  const getStockValueReport = async (params)=>{
+    const response = await axiosPrivate.get('reports/stoke/value/report/',{params:params})
+    return response?.data
+}
   return {
     getStockLedger,
     getAccLedger,
@@ -167,5 +172,6 @@ export const useReportsServices = () => {
     getBillWiseProfit,
     getBillWiseLedger,
     getConsolidateCashbook,
+    getStockValueReport,
   };
 };
