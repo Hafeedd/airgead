@@ -1,0 +1,17 @@
+.stock-value-heading{
+    font-weight: bold;
+    font-size: 15px;
+}
+
+.stock-value-table-head th{
+    background-color: black;
+    color: white;
+    padding-top: 15px;
+    padding-bottom: 15px;
+}
+
+.stock-value-table-bottom td{
+    background-color: rgb(107, 107, 107);
+    color: white;
+    font-size: 1.2rem;
+}
