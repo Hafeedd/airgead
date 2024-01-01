@@ -76,7 +76,7 @@ const StaffMaster = () => {
   return (
     <div className="item_add ">
       <div className="itemList_header row mx-0">
-        <div className="page_head ps-4 pe-5 d-flex justify-content-between my-1">
+        <div className="page_head px-4 d-flex justify-content-between my-1">
           <div>
             <div className="fs-5 py-0">Staff Master</div>
             <div className="page_head_items mb-2">

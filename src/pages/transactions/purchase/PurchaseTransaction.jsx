@@ -16,6 +16,7 @@ import { formValidation } from "../../../hooks/formValidation/formValidation";
 import useItemServices from "../../../services/master/itemServices";
 import useOnKey from "../../../hooks/onKeyFunct/onKeyFunct";
 import { StockPop } from "./components/StockPop";
+import useCustomerServices from '../../../services/master/customerServices'
 
 const PurchaseTransaction = () => {
   const [purchaseItemModal, setPurchaseItemModal] = useState(false);
@@ -115,7 +116,7 @@ const PurchaseTransaction = () => {
   useEffect(() => {
     if (tableItemList.length > 0) {
       let netAmount = tableItemList?.reduce((a, b) => {
-        return b.sales_rate ? parseFloat(a) + parseFloat(b.sales_rate) : 0;
+        return b.total ? parseFloat(a) + parseFloat(b.total) : 0;
       }, 0);
       let netMargin = tableItemList?.reduce((a, b) => {
         return b.margin ? parseFloat(a) + parseFloat(b.margin) : 0;
@@ -129,11 +130,6 @@ const PurchaseTransaction = () => {
       let totalQty = tableItemList?.reduce((a, b) => {
         return b.quantity ? parseFloat(a) + parseFloat(b.quantity) : 0;
       }, 0);
-      let total_disc = tableItemList?.reduce((a, b) => {
-        return b.discount_1_amount
-          ? parseFloat(a) + parseFloat(b.discount_1_amount)
-          : 0;
-      }, 0);
       let total_value = tableItemList?.reduce((a, b) => {
         return b.value ? parseFloat(a) + parseFloat(b.value) : 0;
       }, 0);
@@ -143,20 +139,26 @@ const PurchaseTransaction = () => {
       let total_total = tableItemList?.reduce((a, b) => {
         return b.value ? parseFloat(a) + parseFloat(b.total) : 0;
       }, 0);
+      // let total_disc = tableItemList?.reduce((a, b) => {
+      //   return b.discount_1_amount
+      //     ? parseFloat(a) + parseFloat(b.discount_1_amount)
+      //     : 0;
+      // }, 0);
 
       let tempPurchaseAdd = {
         ...purchaseAdd,
         total_margin: netMargin?.toFixed(0),
-        total_amount: netAmount?.toFixed(2),
+        // total_amount: netAmount?.toFixed(2),
+        total_amount2: netAmount?.toFixed(2),
         paid_cash: netAmount?.toFixed(2),
         total_CTC: totalCTC?.toFixed(2),
         total_qty: totalQty?.toFixed(0),
-        total_disc: total_disc?.toFixed(0),
+        // total_disc: total_disc?.toFixed(0),
         total_value: total_value?.toFixed(2),
         total_total: total_total?.toFixed(2),
         total_scGst: total_scGst?.toFixed(0),
         total_items: totalItem,
-        discount: total_disc?.toFixed(2),
+        // discount: total_disc?.toFixed(2),
       };
       setPurchaseAdd({ ...tempPurchaseAdd });
     } else {
@@ -167,11 +169,11 @@ const PurchaseTransaction = () => {
         paid_cash: 0,
         total_CTC: 0,
         total_qty: 0,
-        total_disc: 0,
         total_value: 0,
         total_total: 0,
         total_scGst: 0,
-        total_items: 0,
+        total_items: 0, 
+        // total_disc: 0,
       });
     }
   }, [tableItemList]);
@@ -183,7 +185,27 @@ const PurchaseTransaction = () => {
         parseFloat(purchaseAdd.total_amount) -
         parseFloat(purchaseAdd.paid_cash ? purchaseAdd.paid_cash : 0);
       if (balance >= 0) {
-        tempPurhase = { ...tempPurhase, change_due: balance };
+        tempPurhase = { ...tempPurhase, change_due: balance.toFixed(0),paid_cash2:balance };
+      } else {
+        tempPurhase = { ...tempPurhase, change_due: 0 };
+      }
+      if (balance > 0) {
+        tempPurhase = { ...tempPurhase, payment_type: "CREDIT" };
+      } else {
+        tempPurhase = { ...tempPurhase, payment_type: "CASH" };
+      }
+      setPurchaseAdd(tempPurhase);
+    }
+  }, [purchaseAdd.paid_cash]);
+
+  useEffect(() => {
+    let tempPurhase = { ...purchaseAdd };
+    if (purchaseAdd.total_amount) {
+      let balance =
+        parseFloat(purchaseAdd.total_amount) -
+        parseFloat(purchaseAdd.paid_cash ? purchaseAdd.paid_cash : 0);
+      if (balance >= 0) {
+        tempPurhase = { ...tempPurhase, change_due: balance.toFixed(2) };
       } else {
         tempPurhase = { ...tempPurhase, change_due: 0 };
       }
@@ -378,13 +400,33 @@ const PurchaseTransaction = () => {
     deletePurchaseItem,
     deletePurchaseItemBatch,
   } = usePurchaseServices();
+  const {getSupplier} = useCustomerServices()
 
   const getData = async () => {
     try {
       let code, response, response2;
+
+      let res = await getSupplier()
+      if(!res?.success) return 0
+      let tempSuppList = []
+      res.data.map(item=>{
+          let a = {value:item.id,text:item.code,name:item.name,description:item.name}
+          tempSuppList.push(a)
+      })
+      setSupplierList(tempSuppList)
+
       response = await getPurchase();
       if (response?.success) {
-        setPurchaseList(response?.data);
+        let tempPurData = []
+        response?.data.map(purData=>{
+          // console.log(purData)
+          if(purData.fk_supplier>-1){
+            let supplierName = tempSuppList.filter(supData=>supData.value == purData.fk_supplier)[0].name
+            purData = {...purData,supplier_name:supplierName}
+          }
+          tempPurData.push(purData)
+        })
+        setPurchaseList(tempPurData);
       }
       response2 = await getCode();
       if (response2.success && !edit) {
@@ -468,7 +510,20 @@ const PurchaseTransaction = () => {
         ...data,
         [e.target.name]: !data[e.target.name],
       }));
-    } else if (e.target.value == "")
+    }
+    else if(e.target.name == "discount"){
+      let discPrice 
+        if(e.target.value == ''){
+        let discAmntToBeAdded = Math.abs(Number(purchaseAdd?.total_amount2||0)-Number(purchaseAdd.total_amount))||null
+        discPrice = Number(purchaseAdd.total_amount)+Number(discAmntToBeAdded)
+        }else
+        if(purchaseAdd?.total_amount2){
+        discPrice = purchaseAdd?.total_amount2
+        discPrice = discPrice - e.target.value}
+      setPurchaseAdd(data=>({...data, [e.target.name]:e.target.value,
+      total_amount:discPrice?.toFixed(2)}))
+    }
+    else if (e.target.value == "")
       setPurchaseAdd((data) => ({ ...data, [e.target.name]: null }));
     else
       setPurchaseAdd((data) => ({ ...data, [e.target.name]: e.target.value }));
@@ -557,8 +612,6 @@ const PurchaseTransaction = () => {
     // setEdit(false)
   };
 
-  console.log(edit)
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
@@ -578,8 +631,8 @@ const PurchaseTransaction = () => {
       if (!edit) {
         response = await postPurchase(submitData);
       } else {
-        const { documents_no, ...others } = submitData;
-        response = await putPurchase(edit?.id, others);
+        // const { documents_no, ...others } = submitData;
+        response = await putPurchase(edit?.id, submitData);
       }
       if (response?.success) {
         handlePurchaseAllReset();
@@ -587,12 +640,9 @@ const PurchaseTransaction = () => {
       } else {
         if(response?.data?.length>0){
           if(response?.data){
-            let data = response?.data;
-            let index = Object.keys(data)[0];
-            let error = data[index][0];
             Swal.fire({
-              title: index.toUpperCase(),
-              text: error,
+              title: 'Error',
+              text: response?.data||"Something went wrong. Pls try again later",
               icon: "error",
               timer: 1000,
               showConfirmButton: false,
@@ -602,12 +652,9 @@ const PurchaseTransaction = () => {
       }
     } catch (err) {
       if(err?.response?.data?.data){
-      let data = err?.response?.data?.data;
-      let index = Object.keys(data)[0];
-      let error = data[index][0];
       Swal.fire({
-        title: index.toUpperCase(),
-        text: error,
+        title: 'Error',
+        text: err?.response?.data||"Something went wrong. Pls try again later",
         icon: "error",
         timer: 1000,
         showConfirmButton: false,

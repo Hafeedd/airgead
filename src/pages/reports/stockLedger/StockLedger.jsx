@@ -8,7 +8,7 @@ import { StockTable } from "./components/StockTable";
 export const StockLedger = () => {
     const [stockList, setStockList] = useState([])
     const [paramsToReport, setParamsToReport] = useState({
-      from_date:(new Date().toISOString().slice(0,8)+'01'),
+      from_date:(new Date().toISOString().slice(0,10)),
       to_date:(new Date().toISOString().slice(0,10)),
       item_code:null,
     })

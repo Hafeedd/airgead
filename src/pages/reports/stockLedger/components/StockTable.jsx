@@ -109,8 +109,8 @@ export const StockTable = (props) => {
           <tr key={i}>
             <td><div style={{height:'2.9rem'}} className="text-start d-flex align-items-center">{data?.item_code||"..."}</div></td>
             <td><div style={{height:'2.9rem'}} width="110" className="text-start d-flex align-items-center">{data?.item_name||"..."}</div></td>
-            <td><div className="prple_td margin-r">{data?.opening_stack||'0'}</div></td>
-            <td><div className="grn_td">{data?.total_purchase_quantity||'0'}</div></td>
+            <td><div className="prple_td margin-r">{data?.opening_stock||'0'}</div></td>
+            <td><div className="grn_td">{data?.total_purchased_quantity||'0'}</div></td>
             <td><div className="grn_td">{data?.total_purchase_quantity||'0'}</div></td>
             <td><div className="grn_td margin-r">{data?.total_purchase_quantity||'0'}</div></td>
             <td><div className="brn_td">{data?.total_purchase_quantity||'0'}</div></td>

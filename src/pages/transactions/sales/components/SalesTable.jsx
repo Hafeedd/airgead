@@ -284,15 +284,15 @@ const SalesTable = (props) => {
         others = {};
         retail_rate = 0;
       }
-      let gross = purchase_rate;
+      let gross = retail_rate;
       if (tax_gst && !tax_inclusive) {
-        gross = purchase_rate + tax_gst * (purchase_rate / 100);
+        gross = retail_rate + tax_gst * (retail_rate / 100);
       }
       if (others.discount_1_percentage) {
         others.discount_1_amount =
           gross - (gross - others.discount_1_percentage * (gross / 100));
       }
-      if (others.purchase_rate) {
+      if (others.retail_rate) {
         others.value = gross;
       }
 
@@ -304,7 +304,7 @@ const SalesTable = (props) => {
         fk_items: newObj?.value,
         unit: newObj?.unit,
         sales_rate: retail_rate || 0,
-        rate: purchase_rate || 0,
+        rate: retail_rate || 0,
         gross: gross || 0,
         tax_gst: tax_gst,
         quantity: 1,

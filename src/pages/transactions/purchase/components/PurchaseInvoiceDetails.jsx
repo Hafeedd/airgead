@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { Form } from 'react-bootstrap'
 import { FiEdit } from 'react-icons/fi'
-import useCustomerServices from '../../../../services/master/customerServices'
 import { Dropdown } from 'semantic-ui-react'
 import { useNavigate } from 'react-router'
 import useOnKey from '../../../../hooks/onKeyFunct/onKeyFunct'
@@ -11,26 +10,26 @@ const PurchaseInvoiceDetails = (props) => {
         supplierList, setSupplierList} = props
 
     const [ref, setRef] = useState(null)
-    const {getSupplier} = useCustomerServices()
+
     
     const navigate = useNavigate()
 
-    useEffect(()=>{
-        getData()
-    },[])
+    // useEffect(()=>{
+    //     getData()
+    // },[])
 
     const {handleKeyDown,  formRef } = useOnKey(ref, setRef);
     
-    const getData = async () =>{
-        let res = await getSupplier()
-        if(!res?.success) return 0
-        let tempList = []
-        res.data.map(item=>{
-            let a = {value:item.id,text:item.code,name:item.name,description:item.name}
-            tempList.push(a)
-        })
-        setSupplierList(tempList)
-    }
+    // const getData = async () =>{
+    //     let res = await getSupplier()
+    //     if(!res?.success) return 0
+    //     let tempList = []
+    //     res.data.map(item=>{
+    //         let a = {value:item.id,text:item.code,name:item.name,description:item.name}
+    //         tempList.push(a)
+    //     })
+    //     setSupplierList(tempList)
+    // }
 
     const supplierNameFilter = () =>{
         if(purchaseAdd.fk_supplier && supplierList?.length>0){
@@ -104,7 +103,7 @@ const PurchaseInvoiceDetails = (props) => {
             <Form.Group className='col-3 ps-5 mx-0 d-flex align-items-center mt-1'>
                 <Form.Label className='col-3 purchase-input-label'>Bill No</Form.Label>
                 <Form.Control
-                    required
+                    // required
                     name="bill_no" value={purchaseAdd.bill_no||''}
                     onKeyDown={handleKeyDown}
                     onChange={handleChange}

@@ -3,41 +3,38 @@ import search from "../../../../assets/icons/search.png";
 import editIcon from "../../../../assets/icons/edit-black.svg";
 
 const AccountList = ({ listItem, handleEdit, handleDelete, toEdit }) => {
+  const [searchedList, setSearchedList] = useState([]);
 
-    const [searchedList, setSearchedList] = useState([]);
+  useEffect(() => {
+    setSearchedList(listItem);
+  }, [listItem]);
 
-    useEffect(() => {
-      setSearchedList(listItem);
-    }, [listItem]);
-  
-    const handleSearch = async (e) => {
-        console.log(listItem)
-      try {
-        let tempData,
-          tempList = listItem;
-        if (listItem) {
-          let value = e.target.value.toLocaleLowerCase();
-          if (value != "") {
-            if (listItem.length > 0) {
-              tempData = tempList?.filter((x) => {
-                let searchInString = `${
-                  x.code?.toLocaleLowerCase() +
-                  " " +
-                  x.name?.toLocaleLowerCase()
-                }`;
-                let search = searchInString?.includes(value);
-                if (search) {
-                  return true;
-                }
-              });
-              setSearchedList(tempData);
-            }
-          } else {
-            setSearchedList(listItem);
+  const handleSearch = async (e) => {
+    console.log(listItem);
+    try {
+      let tempData,
+        tempList = listItem;
+      if (listItem) {
+        let value = e.target.value.toLocaleLowerCase();
+        if (value != "") {
+          if (listItem.length > 0) {
+            tempData = tempList?.filter((x) => {
+              let searchInString = `${
+                x.code?.toLocaleLowerCase() + " " + x.name?.toLocaleLowerCase()
+              }`;
+              let search = searchInString?.includes(value);
+              if (search) {
+                return true;
+              }
+            });
+            setSearchedList(tempData);
           }
+        } else {
+          setSearchedList(listItem);
         }
-      } catch {}
-    };
+      }
+    } catch {}
+  };
 
   return (
     <div>
@@ -46,15 +43,20 @@ const AccountList = ({ listItem, handleEdit, handleDelete, toEdit }) => {
           <div className="item_seach_bar_cont rounded-2">
             <img src={search} className="search_img me-3 ms-2 py-2" />
             <input
-                onChange={handleSearch}
+              onChange={handleSearch}
               className="item_search_bar rounded-2 border-0 py-1"
               placeholder="Search"
               type="text"
             />
           </div>
         </div>
-        <div className="col-2">
-          <div className="btn btn-sm btn-dark filter-btn">Filter Here</div>
+        <div className="col-2 d-flex align-item-center">
+          <div
+            // onClick={getData}
+            className="btn fs-6 btn-sm btn-dark filter-btn"
+          >
+            Filter Here
+          </div>
         </div>
       </div>
       <div
@@ -73,7 +75,7 @@ const AccountList = ({ listItem, handleEdit, handleDelete, toEdit }) => {
               <th className="text-start ps-2">Code</th>
               <th className="text-start ps-2">A/C Type</th>
               <th style={{ width: "15rem" }}>Cl. Balance</th>
-              <th style={{ width: "15rem" }}>Op. Balance</th>
+              {/* <th style={{ width: "15rem" }}>Op. Balance</th> */}
               <th
                 style={{ borderTopRightRadius: "0.3125rem", width: "5rem" }}
               ></th>
@@ -88,8 +90,8 @@ const AccountList = ({ listItem, handleEdit, handleDelete, toEdit }) => {
                     <td className="text-start">{data?.name}</td>
                     <td className="text-start">{data?.code}</td>
                     <td className="text-start">{data?.account_type_one}</td>
-                    <td>0</td>
-                    <td>{data?.opening_balance}</td>
+                    <td>{data?.closing_balance || 0}</td>
+                    {/* <td>{data?.opening_balance}</td> */}
                     <td>
                       <div
                         className="button"

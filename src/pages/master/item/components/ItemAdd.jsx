@@ -49,9 +49,6 @@ const ItemAdd = () =>{
         fk_barcode:'',
     })
 
-
-    
-
     return(
         <div className='item_add'>
             <div className="page_head">

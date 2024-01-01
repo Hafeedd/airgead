@@ -55,8 +55,8 @@ const CustomerTable = (props) => {
                         />
                     </div>
                 </div>
-                <div className="col-2">
-                    <div onClick={getData} className="btn btn-sm btn-dark filter-btn">
+                <div className="col-2 d-flex">
+                    <div onClick={getData} className="btn fs-6 btn-sm btn-dark filter-btn">
                         Filter Here
                     </div>
                 </div>
@@ -73,9 +73,8 @@ const CustomerTable = (props) => {
                             <th>Mob2</th>
                             <th>Address</th>
                             <th>Contract Person</th>
-                            <th></th>
-
-                            <th style={{ borderTopRightRadius: "0.3125rem" }}></th>
+                            <th width="50"></th>
+                            <th width="50" style={{ borderTopRightRadius: "0.3125rem" }}></th>
                         </tr>
                     </thead>
                     <tbody>

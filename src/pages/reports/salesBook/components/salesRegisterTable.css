@@ -22,13 +22,6 @@
   cursor: pointer;
 }
 
-.daybook-table thead tr th {
-  padding: 0.3rem 0.6rem;
-}
-.daybook-table tbody tr td {
-  padding: 1rem;
-  position: sticky;
-}
 .sales-mas {
   text-align: right;
 }

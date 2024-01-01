@@ -65,7 +65,8 @@ const PurchaseEditList = (props) => {
           purchaseList?.map((data,i)=>(
           <tr key={i}>
             <td className='text-start ps-3'>{data?.documents_no}</td>
-            <td className=''>{data?.bill_date}</td>
+            <td className=''>{new Date(data?.created_at)?.toISOString()
+            .slice(0,10).split('-').reverse().join('-')}</td>
             <td className=''>{data?.supplier_name}</td>
             <td className=''>{data?.total_amount}</td>
             <td className=''></td>
@@ -84,7 +85,7 @@ const PurchaseEditList = (props) => {
           }
         </tbody>
       </table>
-      <div className="col-12 row pe-3 my-0 mt-3 w-100 justify-content-end mb-2 mx-0 align-items-end"
+      <div className="col-12 row pe-3 my-0 mt-3 w-100 justify-content-end position-relative pb-2 mx-0 align-items-end"
       style={{MinHeight:"inherit"}}>
           <div className='mx-0 px-1 pe-0 col-1 col-2 pb-0 position-sticky' style={{bottom:"5px"}}>
             <button onClick={()=>closeEditModal(false)} className='btn btn-sm btn-dark w-100'>close</button>

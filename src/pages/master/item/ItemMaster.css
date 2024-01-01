@@ -305,7 +305,7 @@ input[type=number] {
 .unit_modal_body{
     background: #464646;
     border-radius: 5px; 
-    height: 12rem;
+    /* height: 12rem; */
     overflow: hidden;
     overflow-y: scroll;
 }
@@ -338,7 +338,7 @@ input[type=number] {
     width: 8rem;
     text-align: start;
     font-size: 0.875rem;
-    height: 2.125rem;
+    /* height: 2.125rem; */
     font-weight: 500;
     color: white;
     border: 1.3px solid #464646;

@@ -92,3 +92,22 @@
     width:-moz-fit-content;
     width: fit-content;
 }
+
+.purchase-input-text.account-add-group-drop{
+    min-height: fit-content !important;
+    background: #f0f2f4 !important;
+}
+
+.purchase-input-text.account-add-group-drop input.search{
+    text-transform: uppercase;
+    padding: 0.3rem !important;
+    padding-left: 0.9rem !important;
+}
+
+.purchase-input-text.account-add-group-drop .dropdown.icon{
+    display: flex !important;
+    align-items: center;
+    height: 100% !important;
+    padding: 0 !important;
+    padding-right: 0.5rem !important;
+}

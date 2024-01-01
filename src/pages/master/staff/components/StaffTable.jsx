@@ -31,44 +31,46 @@ export const StaffTable = (props) => {
     handleSearchFilter(filter);
   }, [filter]);
 
-  const handleSearchFilter = (data) =>{
+  const handleSearchFilter = (data) => {
     let tempList = [];
-      let value
-    if(data?.staff_grade || data?.designation){
-      if(data.designation){
-        tempList = staffList?.filter(x=>{
-                return x.fk_designation == data.designation
-        })
+    let value;
+    if (data?.staff_grade || data?.designation) {
+      if (data.designation) {
+        tempList = staffList?.filter((x) => {
+          return x.fk_designation == data.designation;
+        });
+      } else if (data.staff_grade && !data.designation) {
+        tempList = staffList?.filter((x) => {
+          return x.fk_staff_grade == data.staff_grade;
+        });
       }
-      else if(data.staff_grade && !data.designation){
-        tempList = staffList?.filter(x=>{
-                return x.fk_staff_grade == data.staff_grade
-        })
+      if (data.designation && data.staff_grade) {
+        tempList = tempList.filter((x) => {
+          return x.fk_staff_grade == data.staff_grade;
+        });
       }
-      if(data.designation && data.staff_grade){
-        tempList = tempList.filter(x=>{
-          return x.fk_staff_grade == data.staff_grade
-        })
-      }
-      setSearchList(tempList)
-      return 0
-    }else if(staffList?.length>0){
-        setSearchList(staffList)
+      setSearchList(tempList);
+      return 0;
+    } else if (staffList?.length > 0) {
+      setSearchList(staffList);
     }
-  }
+  };
 
   const handleSearch = async (e) => {
     try {
       let tempList = [];
-      let value
-    value = e?.target?.value?.toLocaleLowerCase();
+      let value;
+      value = e?.target?.value?.toLocaleLowerCase();
       if (value != "" && value) {
         if (staffList.length > 0) {
-          let list
-          if(searchList?.length>0 && (filter?.staff_grade || filter?.designation)){
-            list = searchList
-          }else{
-            list = staffList
+          let list;
+          if (
+            searchList?.length > 0 &&
+            (filter?.staff_grade || filter?.designation)
+          ) {
+            list = searchList;
+          } else {
+            list = staffList;
           }
           tempList = list?.filter((x) => {
             let searchInString = `${
@@ -85,17 +87,17 @@ export const StaffTable = (props) => {
           });
         }
         setSearchList(tempList);
-    }else if(filter?.designation || filter?.staff_grade){
-      handleSearchFilter(filter)
-    }
-    else if(tempList.length<1){
+      } else if (filter?.designation || filter?.staff_grade) {
+        handleSearchFilter(filter);
+      } else if (tempList.length < 1) {
         setSearchList(staffList);
+      } else {
+        console.log("first");
+        setSearchList(tempList);
+      }
+    } catch (err) {
+      console.log(err);
     }
-    else{
-      console.log("first")
-        setSearchList(tempList)
-    }
-    } catch(err){console.log(err)}
   };
 
   return (
@@ -113,14 +115,19 @@ export const StaffTable = (props) => {
             />
           </div>
         </div>
-        <div className="col-2">
-          <div onClick={getData} className="btn btn-sm btn-dark filter-btn">
+        <div className="col-2 d-flex align-item-center">
+          <div
+            // onClick={getData}
+            className="btn fs-6 btn-sm btn-dark filter-btn"
+          >
             Filter Here
           </div>
         </div>
       </div>
       <div
-        className={`item_add_cont p-0 table-scroller mx-0 ${location.pathname == "/staff-pay-scale" && "payscale"}`}
+        className={`item_add_cont p-0 table-scroller mx-0 ${
+          location.pathname == "/staff-pay-scale" && "payscale"
+        }`}
         style={{
           borderRadius: "0.3125rem 0.3125rem 0rem 0rem",
         }}
@@ -135,7 +142,9 @@ export const StaffTable = (props) => {
               <th>Address</th>
               <th width="170">Mob</th>
               {!payscale && <th width="50"></th>}
-              <th width={payscale ? "100" : "40"} className="text-end">
+              <th width={payscale ? "100" : "40"} 
+              style={{ borderTopRightRadius: "0.3125rem" }}
+              className="text-end">
                 {payscale && (
                   <div className="d-flex gap-2 justify-content-end pe-3">
                     <input
@@ -153,7 +162,7 @@ export const StaffTable = (props) => {
                 )}
               </th>
 
-              <th style={{ borderTopRightRadius: "0.3125rem" }}></th>
+              {/* <th style={{ borderTopRightRadius: "0.3125rem" }}></th> */}
             </tr>
           </thead>
           <tbody>
@@ -240,13 +249,12 @@ export const StaffTable = (props) => {
           </tbody>
         </table>
       </div>
-      {location.pathname=="/staff-pay-scale"&&
-      <div className="row mt-3">
-        <div className="col-10 col-11" />
-        <button className="col-1 btn btn-dark">
-          Add
-        </button>
-      </div>}
+      {location.pathname == "/staff-pay-scale" && (
+        <div className="row mt-3">
+          <div className="col-10 col-11" />
+          <button className="col-1 btn btn-dark">Add</button>
+        </div>
+      )}
     </div>
   );
 };

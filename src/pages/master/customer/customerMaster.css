@@ -1,0 +1,10 @@
+.custom-table-2 tbody tr td, .custom-table-2 tbody tr th{
+    height: fit-content;
+    padding: 0 !important;
+}
+
+.unit_modal_body {
+    height: 25rem;
+    overflow: hidden;
+    overflow-y: scroll;
+}

@@ -22,7 +22,7 @@ const PaymentTransaction = ({ types }) => {
     method: "Payment",
     voucher_number: null,
     account_id: null,
-    account_detail: null,
+    account_name: null,
     account_code: null,
     narration: null,
     cash_bank_account_name: null,
@@ -62,20 +62,29 @@ const PaymentTransaction = ({ types }) => {
   }, [paymentAdd]);
 
   useEffect(() => {
+    let method = "Payment";
+    if (location.pathname.includes("rec")) method = "Receipt";
+    setPaymentAdd((data) => ({ ...data, method: method }));
+    handleReset();
+  }, [location.pathname]);
+
+  console.log(paymentAdd.method)
+
+  useEffect(() => {
     getData();
   }, []);
   useEffect(() => {
     getData2();
   }, [pathOfPage]);
 
-  useEffect(() => {
-    if (types) {
-      let data = { ...paymentAdd, method: types };
-      setPaymentAdd(data);
-    }
-  }, [types]);
+  // useEffect(() => {
+  //   if (types) {
+  //     let data = { ...paymentAdd, method: types };
+  //     setPaymentAdd(data);
+  //   }
+  // }, [types]);
 
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
 
   const {
     postPaymentReciept,
@@ -111,6 +120,8 @@ const PaymentTransaction = ({ types }) => {
               value: item.code,
               text: item.name,
               description: item.code,
+              op_balance: Math.abs(item?.opening_balance)||null,
+              cl_balance: Math.abs(item?.closing_balance)||null
             };
             tempList.push(a);
           }
@@ -118,7 +129,7 @@ const PaymentTransaction = ({ types }) => {
         setAccountPayList(tempListPayment);
         setAccountList(tempList);
         if (tempListPayment?.length > 0)
-          setPaymentAdd(data=>({
+          setPaymentAdd((data) => ({
             ...data,
             cash_bank_account_name: tempListPayment[0]?.name,
             cash_bank_account: tempListPayment[0]?.value,
@@ -176,14 +187,14 @@ const PaymentTransaction = ({ types }) => {
         id: item.id,
         voucher_number: item.voucher_number,
         account_id: item?.daybook?.fk_account_master,
-        account_detail: item?.daybook[0]?.account_name,
+        account_name: item?.daybook[0]?.account_name,
         account_code: item?.daybook[0]?.account_code,
         narration: item?.narration,
         cash_bank_account_name: item?.daybook[1]?.account?.name,
-        cash_bank_account: item?.daybook[1]?.account?.code,
+        cash_bank_account: item?.daybook[1]?.cash_bank_account,
         amount: item?.daybook[0]?.amount,
         amount_word: null,
-        date: item?.daybook[0].date,
+        date: item?.daybook[0]?.date||item?.daybook[0]?.created_at,
         project: item?.daybook[0]?.project,
         cheque_no: item?.cheque_no,
         draw_no: item?.draw_no,
@@ -222,8 +233,11 @@ const PaymentTransaction = ({ types }) => {
         const data = formatList(response.data);
         setPayRecieptList(data);
       }
-        let payRecCode
-        setPaymentAdd(data=>{payRecCode = data.code})
+      let payRecCode;
+      setPaymentAdd((data) => {
+        payRecCode = data.code;
+        return data
+      });
       if (response2.success && (!edit || !payRecCode)) {
         if (pathOfPage) {
           for (let i of response2.data) {
@@ -238,7 +252,7 @@ const PaymentTransaction = ({ types }) => {
             }
           }
         }
-          setPaymentAdd((data) => ({ ...data, voucher_number: code }))
+        setPaymentAdd((data) => ({ ...data, voucher_number: code }));
       }
     } catch (err) {
       console.log(err);
@@ -295,9 +309,11 @@ const PaymentTransaction = ({ types }) => {
       let payment_data = data.options.filter((x) => x.value === data.value)[0];
       setPaymentAdd((data) => ({
         ...data,
-        account_detail: payment_data?.text,
+        account_name: payment_data?.text,
         account_code: payment_data?.description,
         account_id: payment_data?.key,
+        op_balance: payment_data?.op_balance,
+        cl_balance: payment_data?.cl_balance,
       }));
     }
     // if (typeof e.target.value === 'string' && e.target.type !== 'select-one')
@@ -343,9 +359,10 @@ const PaymentTransaction = ({ types }) => {
       setPaymentAdd((data) => ({ ...data, [e.target.name]: e.target.checked }));
     else if (e.target.value === "")
       setPaymentAdd((data) => ({ ...data, [e.target.name]: null }));
-    else if (e.target.name === "method") {
-      navigate(`/${e.target.value.toLowerCase()}-transaction`);
-    } else
+    // else if (e.target.name === "method") {
+    //   navigate(`/${e.target.value.toLowerCase()}-transaction`);
+    // }
+    else
       setPaymentAdd((data) => ({ ...data, [e.target.name]: e.target.value }));
 
     if (e.target.name === "tax_type") {
@@ -360,12 +377,12 @@ const PaymentTransaction = ({ types }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      let a;
-      if (location?.pathname?.match("receipt")) a = "Receipt";
-      else a = "Payment";
+      // let a;
+      // if (location?.pathname?.match("receipt")) a = "Receipt";
+      // else a = "Payment";
       if (!formValidation()) return 0;
       let submitData = handleToUpperCase(paymentAdd);
-      submitData = { ...submitData, method: a };
+      submitData = { ...submitData };
       let response;
       if (!edit) {
         response = await postPaymentReciept(submitData);
@@ -407,47 +424,47 @@ const PaymentTransaction = ({ types }) => {
 
   const handleReset = async () => {
     setPaymentAdd({
-        id: null,
-        method: "Payment",
-    voucher_number: null,
-    account_id: null,
-    account_detail: null,
-    account_code: null,
-    narration: null,
-    cash_bank_account_name: null,
-    cash_bank_account: null,
-    amount: 0,
-    amount_word: null,
-    date: null,
-    project: null,
-    cheque_no: null,
-    draw_no: null,
-    cheque_date: null,
-    salesman: null,
-    commision: null,
-    discount: null,
-    tax_percent: null,
-    taxable: null,
-    tax_type: "GST",
-    cgst: null,
-    sgst: null,
-    tax_amount: null,
-    print_style: null,
-    printer: null,
-    print_copies: null,
-    print_preview: false,
-    print: false,
-    op_balance: null,
-    cl_balance: null,
-    })
+      id: null,
+      method: "Payment",
+      voucher_number: null,
+      account_id: null,
+      account_name: null,
+      account_code: null,
+      narration: null,
+      cash_bank_account_name: null,
+      cash_bank_account: null,
+      amount: 0,
+      amount_word: null,
+      date: null,
+      project: null,
+      cheque_no: null,
+      draw_no: null,
+      cheque_date: null,
+      salesman: null,
+      commision: null,
+      discount: null,
+      tax_percent: null,
+      taxable: null,
+      tax_type: "GST",
+      cgst: null,
+      sgst: null,
+      tax_amount: null,
+      print_style: null,
+      printer: null,
+      print_copies: null,
+      print_preview: false,
+      print: false,
+      op_balance: null,
+      cl_balance: null,
+    });
     setEdit(false);
-    getData()
-    getData2()
+    getData();
+    getData2();
   };
 
   const handleEdit = (data) => {
     let tempPayRecAdd, tempMethod;
-    if (location.pathname === "/payment-transaction") tempMethod = "Payment";
+    if (location.pathname.includes('pay')) tempMethod = "Payment";
     else tempMethod = "Receipt";
     if (data) {
       tempPayRecAdd = { ...data, method: tempMethod };

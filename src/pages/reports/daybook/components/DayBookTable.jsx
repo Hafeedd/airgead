@@ -105,15 +105,15 @@ export const DayBookTable = (props) => {
                       </tr>
                       {data?.account_data?.length > 0 &&
                         data?.account_data?.map((daybookData) => {
-                          return (
-                            <tr>
+                          return (daybookData?.debit>0 || daybookData?.credit>0) &&(
+                            <tr className="border border-secondary">
                               <td>{daybookData?.account_name}</td>
                               <td>{daybookData?.narrations}</td>
                               <td className="text-center">
-                                {daybookData?.debit}
+                                {daybookData?.debit||''}
                               </td>
                               <td className="text-center">
-                                {daybookData?.credit}
+                                {daybookData?.credit||''}
                               </td>
                             </tr>
                           );

@@ -113,6 +113,15 @@ export const AddStaff = (props) => {
     return tempData
 }
 
+function removeNullValues(obj) {
+  return Object.keys(obj).reduce((acc, key) => {
+    if (obj[key] !== null) {
+      acc[key] = obj[key];
+    }
+    return acc;
+  }, {});
+}
+
   const handleSubmit = async (e) =>{
     e.preventDefault()
     try{
@@ -121,7 +130,9 @@ export const AddStaff = (props) => {
       submitData= {...submitData,profession:profIdList}
       if(educIdList?.length>0)
       submitData= {...submitData,education:educIdList}
-    let data = handleToUpperCase(submitData)
+
+      const dataAfterNullRemove = removeNullValues(submitData)
+    let data = handleToUpperCase(dataAfterNullRemove)
     let response
     if(!edit){
        response = await postStaff(data)
@@ -267,14 +278,6 @@ export const AddStaff = (props) => {
               <div className="col-6 row mx-0 px-2">
                 <div className="mx-0 px-0 col-3">Gender</div>
                 <div className="mx-0 px-0 col-8">
-                  {/* <input
-                    onChange={handleChange}
-                    onKeyDown={handleKeyDown}
-                    name="gender"
-                    value={staffAdd.gender || ""}
-                    type="text"
-                    className="item_input ms-0"
-                  /> */}
                   <select
                   onChange={handleChange}
                   onKeyDown={handleKeyDown}
@@ -310,7 +313,6 @@ export const AddStaff = (props) => {
                     onChange={handleChange}
                     onKeyDown={handleKeyDown}
                     name="mobile"
-                    required
                     value={staffAdd.mobile || ""}
                     type="number"
                     className="item_input ms-0"

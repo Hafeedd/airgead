@@ -16,7 +16,7 @@ const useOnKey = (ref, setRef) =>{
             newList.push(...x.querySelectorAll('input:not([disabled]), select:not([disabled]), textarea, button'))
             )
     }
-    newList[0]?.focus()
+    // newList[0]?.focus()
         set(newList)
     }
 

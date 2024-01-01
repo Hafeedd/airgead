@@ -1,9 +1,6 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Form, Modal } from 'react-bootstrap'
 import editBtn from '../../assets/icons/edit-black.svg'
-// import { Dropdown } from 'primereact/dropdown';
-// import 'primereact/resources/themes/lara-light-indigo/theme.css';
-// import 'primereact/resources/primereact.css';
 import { Dropdown } from 'semantic-ui-react'
 import './searchDropDown.css'
 

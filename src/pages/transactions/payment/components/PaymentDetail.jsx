@@ -72,7 +72,6 @@ const PaymentDetail = ({
   const search = (options, searchValue) => {
     searchValue = searchValue.toUpperCase();
     return options.filter((option) => {
-      console.log(option)
       return (
         option?.value?.includes(searchValue) ||
         option?.text?.includes(searchValue)
@@ -95,7 +94,7 @@ const PaymentDetail = ({
             <div className="mx-0 px-0 col-7">
               <select
                 onChange={handleChange}
-                value={location.match('/pay')?'Payment':'Receipt'}
+                value={paymentAdd.method}
                 name="method"
                 className="account-select-dropdown ms-0 pe-0"
               >
@@ -104,7 +103,34 @@ const PaymentDetail = ({
               </select>
             </div>
           </div>
+          {/* --- */}
+          {/* <div className="col-6 row mx-0 px-0 pe-4">
+            <div className="mx-0 px-3 col-5 text-end">Date</div>
+            <div className="mx-0 px-0 col-7">
+              <input
+                onChange={handleChange}
+                name="date"
+                value={paymentAdd.date ? paymentAdd.date.slice(0, 10) : !edit && (new Date().toISOString().slice(0,10))}
+                type="date"
+                className="item_input names"
+              />
+            </div>
+          </div> */}
+          {/* --- */}
           <div className="col-6 col-7 row ps-4 mx-0 px-0">
+            <div className="mx-0 px-0 col-5">Date</div>
+            <div className="mx-0 px-0 col-7">
+            <input
+                onChange={handleChange}
+                name="date"
+                value={paymentAdd.date ? paymentAdd.date.slice(0, 10) : !edit && (new Date().toISOString().slice(0,10))}
+                type="date"
+                className="item_input names"
+              />
+            </div>
+          </div>
+
+          {/* <div className="col-6 col-7 row ps-4 mx-0 px-0">
             <div className="mx-0 px-0 col-5">Voucher No</div>
             <div className="mx-0 px-0 col-7">
               <input
@@ -118,14 +144,29 @@ const PaymentDetail = ({
                 className="item_input names"
               />
             </div>
-          </div>
+          </div> */}
         </div>
 
+        <div className="d-flex align-items-center px-0 row mx-0 my-2">
+          <div className="mx-0 px-0 col-3">Voucher No</div>
+          <div className="mx-0 px-0 col-4">
+          <input
+                required
+                onChange={handleChange}
+                name="voucher_number"
+                value={
+                  paymentAdd.voucher_number ? paymentAdd.voucher_number : ""
+                }
+                type="text"
+                className="item_input names"
+              />
+          </div>
+        </div>
         <div className="d-flex align-items-center px-0 row mx-0 my-2">
           <div className="mx-0 px-0 col-3">A/C Details</div>
           <div className="mx-0 px-0 col-9 payment-select">
             <Dropdown
-              disabled={edit}
+              // disabled={edit}
               clearable
               selection
               search={search}
@@ -170,7 +211,7 @@ const PaymentDetail = ({
           <div className="mx-0 px-0 col-3">Cash/Bank A/c</div>
           <div className="mx-0 px-0 col-9">
             <Dropdown
-              disabled={edit}
+              // disabled={edit}
               selection
               search={search}
               onChange={(e, data) => handleChangePaymentCash(e, data)}
@@ -188,18 +229,7 @@ const PaymentDetail = ({
 
       <div className="item_add_form_part2 row mx-0 ps-4 pe-0 me-0 col-6 border-0">
         <div className="d-flex align-items-center px-0 ps-1 row mx-0 my-2">
-          <div className="col-6 row mx-0 px-0 pe-4">
-            <div className="mx-0 px-3 col-5 text-end">Date</div>
-            <div className="mx-0 px-0 col-7">
-              <input
-                onChange={handleChange}
-                name="date"
-                value={paymentAdd.date ? paymentAdd.date.slice(0, 10) : !edit && (new Date().toISOString().slice(0,10))}
-                type="date"
-                className="item_input names"
-              />
-            </div>
-          </div>
+          
         </div>
         <div className="d-flex align-items-center px-0 ps-2 row mx-0 mt-3">
           <div className="col-12 row mx-0 px-0">

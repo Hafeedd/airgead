@@ -300,8 +300,8 @@ const PurchaseTable = (props) => {
               <th>Disc</th>
               <th>Value</th>
               <th>Tax%</th>
-              <th>CGST/IGST%</th>
-              <th>SGST%</th>
+              <th>CGST/IGST</th>
+              <th>SGST</th>
               <th>Total</th>
               <th>Cost</th>
               <th>Margin%</th>
@@ -360,8 +360,8 @@ const PurchaseTable = (props) => {
                   <td>{data.discount_1_amount}</td>
                   <td>{data.value}</td>
                   <td>{data.tax_gst}%</td>
-                  <td>{data.cgst_or_igst}%</td>
-                  <td>{data.sgst}%</td>
+                  <td>{data.cgst_or_igst}</td>
+                  <td>{data.sgst}</td>
                   <td>{data.total}</td>
                   <td>{data.cost}</td>
                   <td>{data.margin}</td>
