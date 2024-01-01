@@ -210,7 +210,7 @@ const CustomerOutstandingDetails = (props) => {
                       {columnVisibility?.opbal && (
                         <td>
                           {data?.opening_balance_new < 0
-                            ? data?.opening_balance_new + " Cr"
+                            ? Math.abs(data?.opening_balance_new) + " Cr"
                             : data?.opening_balance_new > 0
                             ? data?.opening_balance_new + " Db"
                             : 0}
@@ -221,7 +221,7 @@ const CustomerOutstandingDetails = (props) => {
                       {columnVisibility?.clbal && (
                         <td>
                           {data?.closing_balance < 0
-                            ? data?.closing_balance + " Cr"
+                            ? Math.abs(data?.closing_balance) + " Cr"
                             : data?.closing_balance > 0
                             ? data?.closing_balance + " Db"
                             : 0}
@@ -248,7 +248,7 @@ const CustomerOutstandingDetails = (props) => {
                 {columnVisibility?.opbal && (
                   <td>
                     {custOutstanding?.total_opening_balance < 0
-                      ? custOutstanding?.total_opening_balance + " Cr"
+                      ? Math.abs(custOutstanding?.total_opening_balance) + " Cr"
                       : custOutstanding?.total_opening_balance > 0
                       ? custOutstanding?.total_opening_balance + " Db"
                       : 0}
@@ -258,12 +258,12 @@ const CustomerOutstandingDetails = (props) => {
                   <td>{custOutstanding?.total_user_debit}</td>
                 )}
                 {columnVisibility?.credit && (
-                  <td>{custOutstanding?.total_user_credit}</td>
+                  <td>{Math.abs(custOutstanding?.total_user_credit)}</td>
                 )}
                 {columnVisibility?.clbal && (
                   <td>
                     {custOutstanding?.total_closing_balance < 0
-                      ? custOutstanding?.total_closing_balance + " Cr"
+                      ? Math.abs(custOutstanding?.total_closing_balance) + " Cr"
                       : custOutstanding?.total_closing_balance > 0
                       ? custOutstanding?.total_closing_balance + " Db"
                       : 0}
