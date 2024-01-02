@@ -32,6 +32,7 @@ import { ItemHistory } from "./pages/reports/ItemHistory/ItemHistory";
 import BillWiseProfit from './pages/reports/billWiseProfitReport/BillWiseProfit';
 import ChequeRegister from './pages/transactions/chequeRegister/ChequeRegister';
 import ChequeRegisterReport from './pages/reports/chequeRegisterReport/ChequeRegisterReport';
+import StockValueReport from "./pages/reports/stockValueReport/StockValueReport";
 
 import StaffSalaryAttendance from './pages/reports/staffSalaryAttendance/StaffSalaryAttendance';
 import MaterialComposition from './pages/master/material composition/MaterialComposition';
@@ -84,6 +85,8 @@ function App() {
             <Route path="/bill-wise-profit" element={<BillWiseProfit/>}/>
             <Route path="/cheque-register" element={<ChequeRegister/>}/>
             <Route path="/cheque-register-report" element={<ChequeRegisterReport/>}/>
+            <Route path="/stock-value-report" element={<StockValueReport/>}/>
+            
             <Route path="/StaffAttendance" element={<StaffSalaryAttendance/>}/>
             <Route path="/StaffSalary" element={<StaffSalaryAttendance/>}/>
             <Route path="/material-composition-product" element={<MaterialComposition/>}/>
