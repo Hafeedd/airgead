@@ -117,7 +117,6 @@ const StaffAttendanceDetails = (props) => {
     } else {
       setMonth((prevMonth) => prevMonth - 1);
     }
-    updateDateRange();
   };
 
   const handleRight = () => {
@@ -127,13 +126,17 @@ const StaffAttendanceDetails = (props) => {
     } else {
       setMonth((prevMonth) => prevMonth + 1);
     }
-    updateDateRange();
   };
 
+  useEffect(() => {
+    updateDateRange();
+  }, [month, year]);
+
   const updateDateRange = () => {
-    setStartDate(new Date(year, month, 1).toDateString().slice(8, 10));
-    setEndDate(new Date(year, month + 1, 0).toDateString().slice(8, 10));
-    getData(); // Fetch data for the new date range
+    const firstDay = new Date(year, month, 1).toLocaleDateString('en-US', { day: '2-digit' });
+    const lastDay = new Date(year, month + 1, 0).toLocaleDateString('en-US', { day: '2-digit' });
+    setStartDate(firstDay);
+    setEndDate(lastDay);
   };
 
   const DateHeading = () => {
@@ -240,9 +243,8 @@ const StaffAttendanceDetails = (props) => {
       Swal.error("error", "Attendance Not Updated");
     }
   };
-  const selectedDate = `${year}-${month + 1}-${
-    show?.day < 10 ? "0" + show.day : show.day
-  }`;
+  const selectedDate = `${year}-${month + 1< 10 ? ('0'+(month+1)):(month+1)}-${show?.day < 10 ? "0" + show.day : show.day}`;
+  console.log("hello.....",selectedDate);
   const handleCheckIsPresent = () => {
     let select = show?.leave_count?.filter(
       (x) => x?.attendance_date == selectedDate
