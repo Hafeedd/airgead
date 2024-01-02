@@ -198,25 +198,25 @@ const PurchaseTransaction = () => {
     }
   }, [purchaseAdd.paid_cash]);
 
-  useEffect(() => {
-    let tempPurhase = { ...purchaseAdd };
-    if (purchaseAdd.total_amount) {
-      let balance =
-        parseFloat(purchaseAdd.total_amount) -
-        parseFloat(purchaseAdd.paid_cash ? purchaseAdd.paid_cash : 0);
-      if (balance >= 0) {
-        tempPurhase = { ...tempPurhase, change_due: balance.toFixed(2) };
-      } else {
-        tempPurhase = { ...tempPurhase, change_due: 0 };
-      }
-      if (balance > 0) {
-        tempPurhase = { ...tempPurhase, payment_type: "CREDIT" };
-      } else {
-        tempPurhase = { ...tempPurhase, payment_type: "CASH" };
-      }
-      setPurchaseAdd(tempPurhase);
-    }
-  }, [purchaseAdd.paid_cash]);
+  // useEffect(() => {
+  //   let tempPurhase = { ...purchaseAdd };
+  //   if (purchaseAdd.total_amount) {
+  //     let balance =
+  //       parseFloat(purchaseAdd.total_amount) -
+  //       parseFloat(purchaseAdd.paid_cash ? purchaseAdd.paid_cash : 0);
+  //     if (balance >= 0) {
+  //       tempPurhase = { ...tempPurhase, change_due: balance.toFixed(2) };
+  //     } else {
+  //       tempPurhase = { ...tempPurhase, change_due: 0 };
+  //     }
+  //     if (balance > 0) {
+  //       tempPurhase = { ...tempPurhase, payment_type: "CREDIT" };
+  //     } else {
+  //       tempPurhase = { ...tempPurhase, payment_type: "CASH" };
+  //     }
+  //     setPurchaseAdd(tempPurhase);
+  //   }
+  // }, [purchaseAdd.paid_cash]);
 
   useEffect(() => {
     if (
@@ -421,7 +421,7 @@ const PurchaseTransaction = () => {
         response?.data.map(purData=>{
           // console.log(purData)
           if(purData.fk_supplier>-1){
-            let supplierName = tempSuppList.filter(supData=>supData.value == purData.fk_supplier)[0].name
+            let supplierName = tempSuppList.filter(supData=>supData.value == purData.fk_supplier)[0]?.name
             purData = {...purData,supplier_name:supplierName}
           }
           tempPurData.push(purData)
