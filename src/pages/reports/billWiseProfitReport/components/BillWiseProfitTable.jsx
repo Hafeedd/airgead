@@ -67,9 +67,9 @@ const BillWiseProfitTable = (props) => {
                                             </tr>
                                         )
                                     }):
-                                    <tr>
+                                    (<tr>
                                         <td colSpan={7} className='text-center'>No report Yet</td>
-                                    </tr>
+                                    </tr>)
                             }
 
                             

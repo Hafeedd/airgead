@@ -6,6 +6,7 @@ const ConsolidateCashbookTable = (props) => {
   const { consolidateList, params } = props;
 
   console.log(consolidateList);
+  
 
   return (
     <div className="row mx-0 mt-3">

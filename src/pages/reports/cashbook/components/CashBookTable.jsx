@@ -36,7 +36,7 @@ const CashBookTable = (props) => {
                 </div>
 
                 <div className='cashbook-table-main   p-0' >
-                    <table className='cash-table-top   mt-1' >
+                    <table className='cash-table-top mt-1' >
                         <thead>
                             <tr className='cashbook-table-thead-th p-5  '  >
                                 <th className='p-3'>Date</th>
