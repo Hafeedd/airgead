@@ -43,6 +43,16 @@ export const useReportsServices = () =>{
         return response?.data
     }
 
+    const getStaffAttendance = async (params)=>{
+        const response = await axiosPrivate.get('/reports/staff_attendance/report/',{params:params})
+        return response?.data
+    }
+    
+    const getStaffSalary = async (params)=>{
+        const response = await axiosPrivate.get('/reports/staff/staff_salary/payroll/report/',{params:params})
+        return response?.data
+    }
+
     const getItemWiseProfit = async (params)=>{
         const response = await axiosPrivate.get('/reports/item_wise/profit/report/',{params:params})
         return response?.data
@@ -96,6 +106,8 @@ export const useReportsServices = () =>{
       getDayBook,
       getTaxReport,
       getCashBook,
+      getStaffAttendance,
+      getStaffSalary,
       getItemWiseProfit,
       getPurchaseBook,
       getPurchaseRegister,
