@@ -123,7 +123,7 @@ const PurchaseTable = (props) => {
   };
 
   const handleAddBatchOpen = (e) => {
-    e.preventDefault()
+    e.preventDefault();
     let itemTempList = [...tableItemList];
 
     if (e.type === "keydown") {
@@ -150,33 +150,32 @@ const PurchaseTable = (props) => {
       setCstm_id(cstm_id + 1);
       setPurchaseItemSerielModal(cstm_id);
       if (purchaseAdd.isBatch) setShowBatch(true);
-    } else{
-      setPurchaseItemSerielModal(tableEdit || true);}
+    } else {
+      setPurchaseItemSerielModal(tableEdit || true);
+    }
     if (purchaseAdd.isBatch) setShowBatch(true);
     else handleBatchSubmit(itemTempList);
   };
 
   const handlePrev = () => {
-    if (purchaseList?.length>0) {
+    if (purchaseList?.length > 0) {
       if (!edit) {
         setEdit(purchaseList[0]);
       } else {
         let ind = purchaseList?.findIndex((x) => edit.id == x.id);
         if (ind !== purchaseList?.length - 1) {
           handlePurchaseAllReset();
-          setTableItemList([]);
           setEdit(purchaseList[ind + 1]);
         } else {
           Swal.fire("No more purchase to edit", "go for next", "warning");
         }
       }
-    }else{
+    } else {
       Swal.fire("No more purchase to edit", "go for next", "warning");
     }
   };
 
   const handleNext = () => {
-    let i = purchaseList?.length - 1;
     if (!edit) {
       Swal.fire("No more purchase to edit", "go for prev", "warning");
     } else if (edit?.id == purchaseList[0].id) {
@@ -323,6 +322,12 @@ const PurchaseTable = (props) => {
                 <tr>
                   <td className="text-start ps-3" colSpan={2}>
                     <select
+                      style={{
+                        WebkitAppearance: "none",
+                        MozAppearance: "none",
+                        fontSize: "10px",
+                        padding: "3.5px 1px",
+                      }}
                       disabled
                       value={data.fk_items}
                       className="purchase_input border-0 w-100"
@@ -438,6 +443,7 @@ const PurchaseTable = (props) => {
                   }
                   style={{
                     WebkitAppearance: "none",
+                    MozAppearance: "none",
                     fontSize: "10px",
                     padding: "3.5px 1px",
                   }}
@@ -644,7 +650,9 @@ const PurchaseTable = (props) => {
                     type="button"
                     className="table-item-add-btn"
                     value={"+"}
-                  >+</button>
+                  >
+                    +
+                  </button>
                 )}
               </td>
               <td className="p-0 text-start">
@@ -701,12 +709,12 @@ const PurchaseTable = (props) => {
               <td></td>
               <td className="item">
                 <div className="purch-green-table-item">
-                  {purchaseAdd.total_scGst || 0}%
+                  {purchaseAdd.total_scGst || 0}
                 </div>
               </td>
               <td className="item">
                 <div className="purch-green-table-item">
-                  {purchaseAdd.total_scGst || 0}%
+                  {purchaseAdd.total_scGst || 0}
                 </div>
               </td>
               <td className="item">

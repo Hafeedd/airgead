@@ -87,11 +87,11 @@ const SearchDropDown = ({
     return (
         <Form.Group className={`search_container search-dropdown h-100 ${containerClass}`}>
                     <Dropdown
-                    placeholder='select'
                     onChange={handleChange}
                     onKeyDown={handleKeyDown}
                     value={selectedValue[id]||''}
                     className='drop_input mx-0' 
+                    placeholder='select'
                     fluid
                     search
                     clearable

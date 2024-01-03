@@ -10,7 +10,7 @@ import useAccountServices from "../../../services/master/accountServices";
 import useItemServices from "../../../services/master/itemServices";
 import { formValidation } from "../../../hooks/formValidation/formValidation";
 
-const PaymentTransaction = ({ types }) => {
+const PaymentTransaction = ({ method }) => {
   const [accountList, setAccountList] = useState([]);
   const [payReciptList, setPayRecieptList] = useState([]);
   const [pathOfPage, setPathOfPage] = useState();
@@ -19,7 +19,7 @@ const PaymentTransaction = ({ types }) => {
   const location = useLocation();
   const [paymentAdd, setPaymentAdd] = useState({
     id: null,
-    method: "Payment",
+    method: method,
     voucher_number: null,
     account_id: null,
     account_name: null,
@@ -54,28 +54,29 @@ const PaymentTransaction = ({ types }) => {
 
   const { getCode } = useItemServices();
 
-  useEffect(() => {
-    const path = location.pathname;
-    if (path !== setPathOfPage) {
-      setPathOfPage(path);
-    }
-  }, [paymentAdd]);
+  // useEffect(() => {
+  //   const path = location.pathname;
+  //   if (path !== setPathOfPage) {
+  //     setPathOfPage(path);
+  //   }
+  // }, [method]);
 
-  useEffect(() => {
-    let method = "Payment";
-    if (location.pathname.includes("rec")) method = "Receipt";
-    setPaymentAdd((data) => ({ ...data, method: method }));
-    handleReset();
-  }, [location.pathname]);
+  // useEffect(() => {
+  //   let method = "Payment";
+  //   if (location.pathname.includes("rec")) method = "Receipt";
+  //   setPaymentAdd((data) => ({ ...data, method: method }));
+  //   handleReset();
+  // }, [location.pathname]);
 
-  console.log(paymentAdd.method)
+  // console.log(paymentAdd.method)
 
   useEffect(() => {
     getData();
   }, []);
+  
   useEffect(() => {
     getData2();
-  }, [pathOfPage]);
+  }, [method]);
 
   // useEffect(() => {
   //   if (types) {
@@ -223,10 +224,8 @@ const PaymentTransaction = ({ types }) => {
 
   const getData2 = async () => {
     try {
-      let a, response, response2, code;
-      if (location.pathname.match("receipt")) a = "Receipt";
-      else a = "Payment";
-      const param = { params: { method: a } };
+      let response, response2, code;
+      const param = { params: { method: method } };
       response = await getPaymentReciept(param);
       response2 = await getCode();
       if (response.success) {
@@ -239,10 +238,10 @@ const PaymentTransaction = ({ types }) => {
         return data
       });
       if (response2.success && (!edit || !payRecCode)) {
-        if (pathOfPage) {
+        if (paymentAdd.method) {
           for (let i of response2.data) {
             let type;
-            if (pathOfPage == "/payment-transaction") {
+            if (method == "Payment") {
               type = "PAY";
             } else {
               type = "RES";
@@ -463,9 +462,7 @@ const PaymentTransaction = ({ types }) => {
   };
 
   const handleEdit = (data) => {
-    let tempPayRecAdd, tempMethod;
-    if (location.pathname.includes('pay')) tempMethod = "Payment";
-    else tempMethod = "Receipt";
+    let tempPayRecAdd, tempMethod = paymentAdd.method
     if (data) {
       tempPayRecAdd = { ...data, method: tempMethod };
       setPaymentAdd(tempPayRecAdd);
@@ -519,7 +516,7 @@ const PaymentTransaction = ({ types }) => {
               handleEdit,
               getData2,
               setPayRecieptList,
-              location,
+              method,
               getPaymentReciept,
               formatList,
             }}

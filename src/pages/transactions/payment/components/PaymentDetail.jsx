@@ -309,7 +309,7 @@ const PaymentDetail = ({
                 onChange={(e) => handleChange(e)}
                 name="amount"
                 placeholder="Enter Amount"
-                value={paymentAdd.amount ? paymentAdd.amount : ""}
+                value={Math.abs(paymentAdd.amount) || ""}
                 type="number"
                 min={0}
                 max={999999999999999}

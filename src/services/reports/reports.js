@@ -1,4 +1,4 @@
-import { axiosPrivate } from "../../api/axios"
+import { axiosPrivate } from "../../api/axios";
 // // import useStaffServices from "../master/staffServices"
 
 export const useReportsServices = () =>{

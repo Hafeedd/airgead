@@ -9,34 +9,36 @@ export const DayBookTable = (props) => {
 
   useEffect(() => {
     setSearchedList(dayBookList);
-  }, [dayBookList]);
+  }, [dayBookList,]);
 
   const handleSearch = async (e) => {
     try {
       let tempData,
-        tempList = dayBookList;
+        tempList = [...dayBookList];
       if (dayBookList) {
-        let value = e.target.value.toLocaleLowerCase();
+        let value = e.target.value.toLowerCase();
         if (value != "") {
           if (dayBookList.length > 0) {
+            let accDocNoString = " "
+            // let accDateString = " "
             tempData = tempList?.filter((x) => {
-              let searchInString = `${
-                x.account_data[0].document_no?.toLocaleLowerCase() +
-                " " +
-                x.account_data[0].date?.toLocaleLowerCase()
-              }`;
+              if(x?.account_data?.length<0) return false
+                  accDocNoString = x?.account_data?.reduce((a,b)=>a+" "+b?.document_no?.toLowerCase(),' ')
+                  // accDateString = x?.account_data?.reduce((a,b)=>a+" "+b?.date?.toLowerCase(),' ')          
+
+              let searchInString = accDocNoString
               let search = searchInString?.includes(value);
               if (search) {
                 return true;
               }
             });
-            setSearchedList(tempData);
+            setSearchedList([...tempData]);
           }
         } else {
-          setSearchedList(dayBookList);
+          setSearchedList([...dayBookList]);
         }
       }
-    } catch {}
+    } catch(err){}
   };
 
   return (
@@ -80,7 +82,8 @@ export const DayBookTable = (props) => {
               {searchedList?.length > 0 ? (
                 searchedList?.map((data, i) => {
                   return(
-                    data.account_data.length>0&&
+                    (data.account_data.length>0 && 
+                      (data.account_data.filter(x=>x.debit>0 || x.credit>0).length>0))&&
                     <>
                       <tr>
                         <td
@@ -104,7 +107,7 @@ export const DayBookTable = (props) => {
                         </td>
                       </tr>
                       {data?.account_data?.length > 0 &&
-                        data?.account_data?.map((daybookData) => {
+                        data?.account_data?.map((daybookData) => {                          
                           return (daybookData?.debit>0 || daybookData?.credit>0) &&(
                             <tr className="border border-secondary">
                               <td>{daybookData?.account_name}</td>

@@ -4,6 +4,7 @@ import useAccountServices from "../../../../services/master/accountServices";
 import Swal from "sweetalert2";
 import { useNavigate } from "react-router";
 import useOnKey from "../../../../hooks/onKeyFunct/onKeyFunct";
+import { RiFileEditFill } from "react-icons/ri";
 import { Dropdown } from "semantic-ui-react";
 
 const AccountAdd = ({ edit, refresh, setEdit }) => {
@@ -47,6 +48,7 @@ const AccountAdd = ({ edit, refresh, setEdit }) => {
     putAccountEdit,
     getAccountGroup,
     deleteAccountGroup,
+    putAccountGroup,
   } = useAccountServices();
 
   const navigate = useNavigate();
@@ -57,11 +59,17 @@ const AccountAdd = ({ edit, refresh, setEdit }) => {
       if (response?.success) {
         setAccountGroupList(response?.data);
         setTempGroupList(response?.data);
-        let tempListForDrop = []
-        response?.data?.map(x=>{tempListForDrop.push({
-            ...x,key:x.id,text:x.name,value:x.id,description:x.code
-        })})
-        setAccountGroupListForDrop([...tempListForDrop])
+        let tempListForDrop = [];
+        response?.data?.map((x) => {
+          tempListForDrop.push({
+            ...x,
+            key: x.id,
+            text: x.name,
+            value: x.id,
+            description: x.code,
+          });
+        });
+        setAccountGroupListForDrop([...tempListForDrop]);
       }
     } catch {}
   };
@@ -72,7 +80,7 @@ const AccountAdd = ({ edit, refresh, setEdit }) => {
 
   useEffect(() => {
     if (edit) {
-      console.log(edit)
+      console.log(edit);
       setAccountAdd((data) => ({
         ...data,
         code: edit?.code,
@@ -108,17 +116,17 @@ const AccountAdd = ({ edit, refresh, setEdit }) => {
     }
   }, [groupAdd.name]);
 
-  const handleChange = (e,data) => {
-    if(data){
-        let item_data = data.options.filter((x) => x.value === data.value)[0];
-        setAccountAdd(data=>({...data,
-            fk_account_group: item_data?.key,
-            account_group: item_data?.text,
-            account_type_one: item_data?.account_type,
-            reserved: item_data?.reserve === "YES" ? true : false,
-        }))
-    }
-    else if (e.target.name === "opening_balance" || e.target.name === "tax") {
+  const handleChange = (e, data) => {
+    if (data) {
+      let item_data = data.options.filter((x) => x.value === data.value)[0];
+      setAccountAdd((data) => ({
+        ...data,
+        fk_account_group: item_data?.key,
+        account_group: item_data?.text,
+        account_type_one: item_data?.account_type,
+        reserved: item_data?.reserve === "YES" ? true : false,
+      }));
+    } else if (e.target.name === "opening_balance" || e.target.name === "tax") {
       if (isNaN(parseFloat(e.target.value))) {
         Swal.fire({
           text: "Enter a valid integer",
@@ -137,11 +145,20 @@ const AccountAdd = ({ edit, refresh, setEdit }) => {
       setAccountAdd((data) => ({ ...data, [e.target.name]: e.target.checked }));
     else if (e.target.type === "select-one")
       if (e.target.value == "BANK")
-        setAccountAdd((data) => ({ ...data, bank_account: true, cash_bank: 'BANK' }));
-      else setAccountAdd((data) => ({ ...data,bank_account: false, cash_bank: 'CASH' }));
+        setAccountAdd((data) => ({
+          ...data,
+          bank_account: true,
+          cash_bank: "BANK",
+        }));
+      else
+        setAccountAdd((data) => ({
+          ...data,
+          bank_account: false,
+          cash_bank: "CASH",
+        }));
     else if (e.target.value === "")
       setAccountAdd((data) => ({ ...data, [e.target.name]: null }));
-    else if(!data)
+    else if (!data)
       setAccountAdd((data) => ({ ...data, [e.target.name]: e.target.value }));
     if (e.target.name === "transaction" && e.target.checked === false) {
       setAccountAdd((data) => ({ ...data, ["hsn"]: null, ["tax"]: null }));
@@ -255,8 +272,6 @@ const AccountAdd = ({ edit, refresh, setEdit }) => {
     }
   };
 
-  console.log(accountAdd)
-
   const deleteGroup = async (id) => {
     try {
       const response = await deleteAccountGroup(id);
@@ -289,13 +304,13 @@ const AccountAdd = ({ edit, refresh, setEdit }) => {
   const search = (options, searchValue) => {
     searchValue = searchValue.toUpperCase();
     return options.filter((option) => {
-      console.log(option)
+      console.log(option);
       return (
         option?.description?.includes(searchValue) ||
         option?.text?.includes(searchValue)
       );
     });
-  };  
+  };
 
   return (
     <div className="item_add">
@@ -349,18 +364,18 @@ const AccountAdd = ({ edit, refresh, setEdit }) => {
                   className="item_input names"
                 /> */}
                 <Dropdown
-                    clearable
-                    selection
-                    required
-                    search={search}
-                    // onKeyDown={handleKeyDown}
-                    onChange={handleChange}
-                    className="purchase-input-text account-add-group-drop 
+                  clearable
+                  selection
+                  required
+                  search={search}
+                  // onKeyDown={handleKeyDown}
+                  onChange={handleChange}
+                  className="purchase-input-text account-add-group-drop 
                     d-flex align-items-center py-0 form-control"
-                    name="item"
-                    placeholder="select"
-                    value={accountAdd.fk_account_group}
-                    options={accountGroupListForDrop}
+                  name="item"
+                  placeholder="select"
+                  value={accountAdd.fk_account_group}
+                  options={accountGroupListForDrop}
                 />
               </div>
               <div className="col-2 pe-0 d-flex align-items-center">
@@ -692,53 +707,100 @@ const AccountAdd = ({ edit, refresh, setEdit }) => {
                           });
                         };
 
-                        const handleSelect = (e) => {
-                          setAccountAdd((item) => ({
-                            ...item,
-                            fk_account_group: data?.id,
-                            account_group: data?.name,
-                            account_type_one: data?.account_type,
-                            reserved: data?.reserve === "YES" ? true : false,
-                          }));
-                          setGroupAdd((item) => ({
-                            ...item,
-                            name: null,
-                          }));
+                        const handleChange = (e, falseEdit) => {
+                          let value =
+                            e?.target?.value != "" ? e?.target?.value : null;
+                          let tempData = data;
+                          let tempList = [...tempGroupList];
+                          if (!falseEdit)
+                            tempData = {
+                              ...data,
+                              [e.target.name]: e.target.value,
+                              edited: true,
+                            };
+                          else tempData = { ...data, edited: false };
+
+                          tempList.splice(index, 1, tempData);
+                          setTempGroupList([...tempList]);
+                        };
+
+                        const handleEdit = async () => {
+                          try {
+                            const response = await putAccountEdit(
+                              data.id,
+                              data
+                            );
+                            if (response.success) {
+                              handleChange(null, true);
+                            }
+                          } catch (err) {}
                         };
 
                         return (
-                          <tr key={index} 
-                        //   onClick={handleSelect}
-                          >
+                          <tr key={index}>
                             <td>
-                              <div className="content ps-2">{data?.name}</div>
+                              <input
+                                name="name"
+                                onChange={handleChange}
+                                value={data?.name}
+                                className="content ps-2"
+                              />
                             </td>
                             <td>
-                              <div className="content ps-2">{data?.code}</div>
+                              <input
+                                name="code"
+                                onChange={handleChange}
+                                value={data?.code}
+                                className="content ps-2"
+                              />
                             </td>
                             <td>
-                              <div className="content ps-2">
-                                {data?.account_type}
-                              </div>
+                              <select
+                                name="account_type"
+                                onChange={handleChange}
+                                value={data?.account_type}
+                                className="content ps-2"
+                              >
+                                <option value="INCOME">INCOME</option>
+                                <option value="EXPENSE">EXPENSE</option>
+                                <option value="ASSET">ASSET</option>
+                                <option value="LIABILITY">LIABILITY</option>
+                              </select>
                             </td>
                             <td>
-                              <div className="content justify-content-center">
-                                {data?.position}
-                              </div>
+                              <input
+                                name="position"
+                                onChange={handleChange}
+                                value={data?.position}
+                                className="content text-center"
+                              />
                             </td>
                             <td>
-                              <div className="content">
-                                <div className="col-6 ps-2">
-                                  {data?.reserve}
-                                </div>
-                                <div className="col-6 d-flex justify-content-end">
+                              <div className="col-6 content justify-content-end gap-5">
+                                <select
+                                  name="reserve"
+                                  onChange={handleChange}
+                                  value={data?.reserve}
+                                  className="content ps-2"
+                                >
+                                  <option value="YES">Yes</option>
+                                  <option value="NO">No</option>
+                                </select>
+                                {data.edited ? (
+                                  <div
+                                    className="btn btn-sm btn-dark sq-btn py-2 px-2"
+                                    onClick={handleEdit}
+                                  >
+                                    <RiFileEditFill size={13} />
+                                  </div>
+                                ) : (
                                   <div
                                     className="btn btn-sm btn-dark sq-btn"
                                     // onClick={handleDelete}
                                   >
                                     -
                                   </div>
-                                </div>
+                                )}
                               </div>
                             </td>
                           </tr>

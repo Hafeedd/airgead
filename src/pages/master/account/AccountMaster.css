@@ -55,8 +55,18 @@
     padding-right: 0.3rem;
 }
 
+.table.account-group-table td .content:focus{
+    border: none !important;
+    box-shadow: none !important;
+    outline: 1px solid black !important;
+     
+}
+
 .table.account-group-table td .content{
+    text-transform: uppercase;
     background: #FFF;
+    width: 100%;
+    border: 0;
     padding: 0.25rem 0.25rem;
     height: 2.5rem;
     display: flex;

@@ -31,17 +31,17 @@ const PurchaseInvoiceDetails = (props) => {
     //     setSupplierList(tempList)
     // }
 
-    const supplierNameFilter = () =>{
-        if(purchaseAdd.fk_supplier && supplierList?.length>0){
-            for (let i of supplierList){
-                if(i.value==purchaseAdd.fk_supplier){
-                    return i.name
-                }
-            }
-        }else{
-            return null
-        }
-    }
+    // const supplierNameFilter = () =>{
+    //     if(purchaseAdd.fk_supplier && supplierList?.length>0){
+    //         for (let i of supplierList){
+    //             if(i.value==purchaseAdd.fk_supplier){
+    //                 return i.name
+    //             }
+    //         }
+    //     }else{
+    //         return null
+    //     }
+    // }
     
     const search = (options, searchValue) => {
         searchValue = searchValue.toUpperCase()
@@ -77,7 +77,7 @@ const PurchaseInvoiceDetails = (props) => {
                 <Dropdown
                     clearable
                     selection
-                    required
+                    required={true}
                     search={search}
                     onKeyDown={handleKeyDown}
                     onChange={handleChange}
@@ -91,9 +91,11 @@ const PurchaseInvoiceDetails = (props) => {
             <Form.Group className='col-3 ps-4 mx-0 d-flex align-items-center mt-1'>
                 <Form.Label className='col-3 purchase-input-label'>Supplier</Form.Label>
                 <Form.Control
-                    required
-                    disabled
-                    name="fk_supplier" value={supplierNameFilter()||''}
+                    // disabled
+                    // required={true}
+                    style={{cursor:'none'}}
+                    required={purchaseAdd?.change_due>0 ? true : false}
+                    name="fk_supplier" value={supplierList?.filter(x=>x.value == purchaseAdd.fk_supplier)[0]?.name||''}
                     onKeyDown={handleKeyDown}
                     className='purchase-input-text'
                     placeholder='Name'
@@ -103,7 +105,6 @@ const PurchaseInvoiceDetails = (props) => {
             <Form.Group className='col-3 ps-5 mx-0 d-flex align-items-center mt-1'>
                 <Form.Label className='col-3 purchase-input-label'>Bill No</Form.Label>
                 <Form.Control
-                    // required
                     name="bill_no" value={purchaseAdd.bill_no||''}
                     onKeyDown={handleKeyDown}
                     onChange={handleChange}

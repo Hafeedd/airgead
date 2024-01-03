@@ -23,6 +23,11 @@ const useAccountServices = () => {
     return response.data
   }
 
+  // Account Group Update
+  const putAccountGroup = async(id, data) =>{
+    const response = await axiosPrivate.get(`master/account_group/updated/${id}`, data)
+    return response.data
+  }
 
 // GET Services--------------------------------------------------------------
 
@@ -31,6 +36,7 @@ const useAccountServices = () => {
     const response = await axiosPrivate.get('master/account_group/created/')
     return response.data
   }
+ 
 
   // Account List
   const getAccountList = async() =>{
@@ -59,6 +65,7 @@ const useAccountServices = () => {
 
     // PUT APIS
     putAccountEdit,
+    putAccountGroup,
 
     // GET APIS
     getAllAccountList,

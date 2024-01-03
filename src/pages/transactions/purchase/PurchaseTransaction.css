@@ -552,3 +552,29 @@ td.clr{
     background: rgb(204, 204, 204) !important;
 }
 
+.purchase-bank-drop, .purchase-bank-drop input{
+    text-transform: uppercase !important;
+    padding:0 5px !important;
+    min-height: 1.7rem !important;
+    background: #eeeeee !important;
+    display: flex !important;
+    align-items: center !important;
+}
+
+.purchase-bank-drop.ui.selection.active.dropdown{
+    outline: none !important;
+    border: 1px solid black !important;
+}
+
+.purchase-bank-drop.ui.selection.active.dropdown .menu{
+    outline: none !important;
+    border: 1px solid black !important;
+}
+
+.purchase-bank-drop .icon{
+    height: 1.7rem !important;
+    display: flex !important;
+    align-items: center !important;
+    padding: 0 !important;
+    padding-right: 0.5rem !important;
+}

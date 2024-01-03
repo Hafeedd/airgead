@@ -13,7 +13,7 @@ const PaymentListSection = (props) => {
     toEdit,
     paymentAdd,
     getData2,
-    location,
+    method,
     getPaymentReciept,
     formatList,
   } = props;
@@ -41,10 +41,8 @@ const PaymentListSection = (props) => {
       if (payReciptList) {
         let value = e.target.value.toLocaleLowerCase();
         if (value != "") {
-          let a, response;
-          if (location.pathname.match("receipt")) a = "Receipt";
-          else a = "Payment";
-          const param = { params: { method: a } };
+          let response;
+          const param = { params: { method: paymentAdd.method } };
           response = await getPaymentReciept(param);
           if (response.success) {
             tempList = formatList(response.data);
@@ -118,9 +116,7 @@ const PaymentListSection = (props) => {
                     <td className="text-center">{data?.voucher_number}</td>
                     <td className="text-center">{data?.account_name}</td>
                     <td className="text-center">
-                      {location.pathname.match("receipt")
-                        ? "Receipt"
-                        : "Payment"}
+                      {method}
                     </td>
                     <td>{data?.narration}</td>
                     <td></td>

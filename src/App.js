@@ -33,7 +33,6 @@ import BillWiseProfit from './pages/reports/billWiseProfitReport/BillWiseProfit'
 import ChequeRegister from './pages/transactions/chequeRegister/ChequeRegister';
 import ChequeRegisterReport from './pages/reports/chequeRegisterReport/ChequeRegisterReport';
 import StockValueReport from "./pages/reports/stockValueReport/StockValueReport";
-
 import StaffSalaryAttendance from './pages/reports/staffSalaryAttendance/StaffSalaryAttendance';
 import MaterialComposition from './pages/master/material composition/MaterialComposition';
 
@@ -56,10 +55,10 @@ function App() {
             <Route path="/staff-master" element={<StaffMaster />} />
             <Route path="/purchase-transaction" element={<PurchaseTransaction />}/>
             <Route path="/sales-transaction" element={<SalesTransaction />} />
-            <Route path="/payment-transaction" element={<PaymentTransaction types={"Payment"} />}/>
-            <Route path="/receipt-transaction" element={<PaymentTransaction types={"Receipt"} />}/>
-            <Route path="/staff-attendance" element={<StaffAttendance  />}  />
-            <Route path="/pay-roll" element={<PayrollTransaction  />}  />
+            <Route path="/payment-transaction" element={<PaymentTransaction method={"Payment"} />}/>
+            <Route path="/receipt-transaction" element={<PaymentTransaction method={"Receipt"} />}/>
+            <Route path="/staff-attendance" element={<StaffAttendance />}  />
+            <Route path="/pay-roll" element={<PayrollTransaction />} />
             <Route path='/pay-roll-edit' element={<PayrollTransaction/>}/>
             <Route path="/stock-journal" element={<StockJournal />} />
             <Route path="/stock-reports" element={<StockLedger />} />
