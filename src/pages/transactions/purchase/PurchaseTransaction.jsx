@@ -511,7 +511,7 @@ const PurchaseTransaction = () => {
         fk_bank: bank_data?.value,
       }));
     }
-    if (data) {
+    else if (data) {
       let supplier_data = data.options.filter((x) => x.value === data.value)[0];
       setPurchaseAdd((data) => ({
         ...data,
