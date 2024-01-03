@@ -666,7 +666,6 @@ const PurchaseTransaction = () => {
       discount_1_amount: 0.0,
     });
     setTableEdit(false);
-    // setEdit(false)
   };
 
   const handleSubmit = async (e) => {
