@@ -12,7 +12,6 @@ const PurchaseTable = (props) => {
   const {
     setPurchaseItemModal,
     tableItem,
-    handleChangeTableItem,
     setTableItem,
     edit,
     setPurchaseItemSerielModal,
@@ -84,6 +83,7 @@ const PurchaseTable = (props) => {
       });
       setUnitList(list);
     };
+
     const handleDataNameList = (data) => {
       let tempList = [];
       data?.map((x) => {
@@ -106,6 +106,160 @@ const PurchaseTable = (props) => {
       console.log(err);
     }
   };
+
+  // handle table item changing-----------------------------------
+
+  const handleChangeTableItem = (e, data) => {
+    let tempItem = { ...tableItem };
+    if (data) {
+      let Item_data = data.options.filter((x) => x?.value === data?.value)[0];
+      tempItem = {
+        ...tempItem,
+        item_name: Item_data?.text,
+        code: Item_data?.description,
+        fk_items: Item_data?.value,
+        unit: Item_data?.unit,
+      };
+    }
+    if (e.target.value === "") {
+      tempItem = { ...tempItem, [e.target.name]: "" };
+    } else if (e.target.type === "number") {
+      tempItem = { ...tempItem, [e.target.name]: parseFloat(e.target.value) };
+    } else {
+      tempItem = { ...tempItem, [e.target.name]: e.target.value };
+    }
+    const calculatedData = handleAmountCalculation(tempItem, e);
+    setTableItem(calculatedData)
+  };
+
+  //  calculating table item values
+
+  const handleAmountCalculation = (tempItem, e ,setState ) => {
+    let name = e.target.name;
+    let value = {};
+    let total, cost;
+    if (tempItem.rate && tempItem.quantity) {
+      total = tempItem.total;
+      cost = tempItem.cost;
+      total = tempItem.quantity * tempItem.rate;
+      cost = tempItem.rate;
+      value = {
+        ["value"]: tempItem.quantity * tempItem.rate,
+        ["total"]: total,
+        ["cost"]: cost,
+      };
+      tempItem = { ...tempItem, ...value };
+      if (name !== "discount_1_amount" && tempItem.discount_1_percentage) {
+        value = {
+          ...value,
+          ["discount_1_amount"]:
+            value.value -
+            (value.value -
+              tempItem.discount_1_percentage * (value.value / 100)),
+          ["discount_1_amount_per_item"]:
+            tempItem.rate -
+            (tempItem.rate -
+              tempItem.discount_1_percentage * (tempItem.rate / 100)),
+        };
+      } else if (name !== "discount_1_amount") {
+        value = {
+          ...value,
+          ["discount_1_amount"]: 0,
+          ["discount_1_amount_per_item"]: 0,
+        };
+      }
+      if (name == "discount_1_amount" && tempItem.discount_1_amount) {
+        value = {
+          ...value,
+          ["discount_1_percentage"]:
+            (tempItem.discount_1_amount / value.value) * 100,
+        };
+      } else if (name == "discount_1_amount") {
+        value = { ...value, ["discount_1_percentage"]: 0 };
+      }
+      tempItem = { ...tempItem, ...value };
+      if (tempItem.value && tempItem.discount_1_amount) {
+        tempItem.discount_1_amount = parseFloat(tempItem.discount_1_amount);
+        value = {
+          ...tempItem,
+          ["value"]:
+            parseFloat(tempItem.quantity * tempItem.rate) -
+            parseFloat(tempItem.discount_1_amount),
+          ["total"]:
+            parseFloat(tempItem.quantity * tempItem.rate) -
+            parseFloat(tempItem.discount_1_amount),
+          ["cost"]:
+            parseFloat(tempItem.rate) - parseFloat(tempItem.discount_1_amount),
+        };
+      } else if (name !== "margin" && name !== "sales_rate") {
+        value = {
+          ...value,
+          ["value"]: tempItem.quantity * tempItem.rate,
+          ["total"]: tempItem.quantity * tempItem.rate,
+          ["cost"]: tempItem.rate,
+        };
+      }
+      tempItem = { ...tempItem, ...value };
+      // if (name == 'tax_gst' || name == 'sales_rate' || name == 'margin') {
+      if (tempItem.tax_gst) {
+        let totalTaxAmnt = tempItem.tax_gst * (tempItem.value / 100);
+        value = {
+          ...value,
+          ["total"]: tempItem.value + tempItem.tax_gst * (tempItem.value / 100),
+          ["cost"]:
+            tempItem.rate -
+            tempItem.discount_1_amount_per_item +
+            tempItem.tax_gst *
+              ((tempItem.rate - tempItem.discount_1_amount_per_item) / 100),
+          ["cgst_or_igst"]: totalTaxAmnt / 2,
+          ["sgst"]: totalTaxAmnt / 2,
+        };
+      } else {
+        value = { ...value, cgst_or_igst: 0, sgst: 0 };
+      }
+      // }
+      tempItem = { ...tempItem, ...value };
+      if (name !== "sales_rate") {
+        if (tempItem.margin) {
+          value = {
+            ...tempItem,
+            ["sales_rate"]:
+              parseFloat(tableItem.cost) +
+              parseFloat(tableItem.cost * (tempItem.margin / 100)),
+          };
+        } else {
+          value = { ...value, ["sales_rate"]: 0 };
+        }
+      }
+      tempItem = { ...tempItem, ...value };
+      if (name !== "margin") {
+        if (tempItem.sales_rate) {
+          value = {
+            ...value,
+            ["margin"]: parseFloat(
+              ((tempItem.sales_rate - value.cost) / tempItem.cost) * 100
+            ),
+          };
+        } else {
+          value = { ...value, ["margin"]: 0 };
+        }
+      }
+    } else {
+      tempItem = { ...tempItem, value: 0 };
+    }
+    tempItem = { ...tempItem, ...value };
+    let tempItemKeys = Object.keys(tempItem);
+    tempItemKeys?.map((key) => {
+      let number = parseFloat(tempItem[key]);
+      if (number?.toFixed(2) && !Number.isInteger(number) && number) {
+        tempItem = { ...tempItem, [key]: parseFloat(number?.toFixed(2)) };
+      }
+    });
+    // tempItem = { ...tempItem };
+    return tempItem
+  };
+
+  // -----------------------------------------------------
 
   const handleFocus = (e) => {
     if (!tableItem[e.target.name])
@@ -165,7 +319,7 @@ const PurchaseTable = (props) => {
         let ind = purchaseList?.findIndex((x) => edit.id == x.id);
         if (ind !== purchaseList?.length - 1) {
           handlePurchaseAllReset();
-          setEdit(purchaseList[ind + 1]);
+          setEdit(purchaseList[ind + 1]);        
         } else {
           Swal.fire("No more purchase to edit", "go for next", "warning");
         }
@@ -321,14 +475,13 @@ const PurchaseTable = (props) => {
               tableItemList.map((data) => (
                 <tr>
                   <td className="text-start ps-3" colSpan={2}>
-                    <select
+                    {/* <select
                       style={{
                         WebkitAppearance: "none",
                         MozAppearance: "none",
                         fontSize: "10px",
                         padding: "3.5px 1px",
                       }}
-                      disabled
                       value={data.fk_items}
                       className="purchase_input border-0 w-100"
                     >
@@ -339,11 +492,31 @@ const PurchaseTable = (props) => {
                             {item.text}
                           </option>
                         ))}
-                    </select>
+                    </select> */}
+                    <Dropdown
+                      // onClick={()=>setShowStock(data=>!data)}
+                      selection
+                      required
+                      upward={purchaseAdd.total_items > 4 ? true : false}
+                      search={search}
+                      placeholder="SELECT"
+                      className="purchase_search_drop border-0 w-100 ps-2"
+                      onKeyDown={handleKeyDown}
+                      name={"name"}
+                      value={data.fk_items || data.name}
+                      options={itemNameList}
+                    />
                   </td>
-                  <td>{data.quantity}</td>
+                  <td>
+                    <input
+                      name="quantity"
+                      className="purchase-table-items-input"
+                      value={data.quantity}
+                    />
+                  </td>
                   <td>
                     <select
+                      name="unit"
                       value={data.unit}
                       style={{
                         WebkitAppearance: "none",
@@ -360,17 +533,83 @@ const PurchaseTable = (props) => {
                         ))}
                     </select>
                   </td>
-                  <td>{data.rate}</td>
-                  <td>{data.discount_1_percentage}%</td>
-                  <td>{data.discount_1_amount}</td>
-                  <td>{data.value}</td>
-                  <td>{data.tax_gst}%</td>
-                  <td>{data.cgst_or_igst}</td>
-                  <td>{data.sgst}</td>
-                  <td>{data.total}</td>
-                  <td>{data.cost}</td>
-                  <td>{data.margin}</td>
-                  <td>{data.sales_rate}</td>
+                  <td>
+                    <input
+                      name="rate"
+                      className="purchase-table-items-input"
+                      value={data.rate}
+                    />
+                  </td>
+                  <td>
+                    <input
+                      name="discount_1_percentage"
+                      className="purchase-table-items-input"
+                      value={data.discount_1_percentage + "%"}
+                    />
+                  </td>
+                  <td>
+                    <input
+                      name="discount_1_amount"
+                      className="purchase-table-items-input"
+                      value={data.discount_1_amount}
+                    />
+                  </td>
+                  <td>
+                    <input
+                      name="value"
+                      className="purchase-table-items-input"
+                      value={data.value}
+                    />
+                  </td>
+                  <td>
+                    <input
+                      name="tax_gst"
+                      className="purchase-table-items-input"
+                      value={data.tax_gst + "%"}
+                    />
+                  </td>
+                  <td>
+                    <input
+                      name="cgst_or_igst"
+                      className="purchase-table-items-input"
+                      value={data.cgst_or_igst}
+                    />
+                  </td>
+                  <td>
+                    <input
+                      name="sgst"
+                      className="purchase-table-items-input"
+                      value={data.sgst}
+                    />
+                  </td>
+                  <td>
+                    <input
+                      name="total"
+                      className="purchase-table-items-input"
+                      value={data.total}
+                    />
+                  </td>
+                  <td>
+                    <input
+                      name="cost"
+                      className="purchase-table-items-input"
+                      value={data.cost}
+                    />
+                  </td>
+                  <td>
+                    <input
+                      name="margin"
+                      className="purchase-table-items-input"
+                      value={data.margin}
+                    />
+                  </td>
+                  <td>
+                    <input
+                      name="sales_rate"
+                      className="purchase-table-items-input"
+                      value={data.sales_rate}
+                    />
+                  </td>
                   <td>
                     <div
                       onClick={() => handleTableItemEdit(data)}

@@ -1,49 +1,139 @@
-import React, { useState } from 'react'
-import { Form } from 'react-bootstrap'
-import useOnKey from '../../../../hooks/onKeyFunct/onKeyFunct'
+import React, { useEffect, useState } from "react";
+import { Form } from "react-bootstrap";
+// import useOnKey from "../../../../hooks/onKeyFunct/onKeyFunct";
+import { Dropdown } from "semantic-ui-react";
+import useAccountServices from "../../../../services/master/accountServices";
 
 const SalesDetailFooter = (props) => {
-    const {salesAdd, setSalesAdd, 
-        handleKeyDown,handleChange,edit,
-        handleSubmit,handleSalesAllReset} = props
+  const {
+    salesAdd,
+    handleKeyDown,
+    handleChange,
+    edit,
+    handleSubmit,
+    handleSalesAllReset,
+  } = props;
 
-    const salseReturn = false
+  const [bankList, setBankList] = useState([]);
+
+  useEffect(() => {
+    getListOfBank();
+  }, []);
+
+  const { getAccountList } = useAccountServices();
+
+  const getListOfBank = async () => {
+    try {
+      let response3 = await getAccountList();
+      if (response3.success) {
+        let bankAcc = [];
+        response3.data.forEach((item) => {
+          if (item.bank_account) {
+            bankAcc.push({
+              key: item.code,
+              value: item.id,
+              text: item.name,
+              description: item.code,
+            });
+          }
+        });
+        setBankList([...bankAcc]);
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
   return (
-    <div className='row mx-0 my-1 me-0'>
-        <div className="col-5 col-6 ms-2 purchase-supplier-container row mx-0 mt-1 p-2">
-            <div className={`${salseReturn?"col-5 col-6":"col-12"} col-6 p-0 pe-1`}>
-                <div className="col-12 sales-value-container px-0 row mx-0 my-0 align-items-center d-flex py-3">
-                    <Form.Group className='col-12 mx-0 d-flex align-items-center'>
-                        <Form.Label className='col-4 purchase-input-label'>Sales Value</Form.Label>
-                        <Form.Control
-                            disabled
-                            value={salesAdd?.total_value||''}
-                            className='sales-input-text'
-                            type='text'
-                        />
-                    </Form.Group>
-                    <Form.Group className='col-12 mx-0 d-flex align-items-center mt-1'>
-                        <Form.Label className='col-4 purchase-input-label'>CGST</Form.Label>
-                        <Form.Control
-                            disabled
-                            value={salesAdd?.total_sgst||''}
-                            className='sales-input-text'
-                            type='text'
-                        />
-                    </Form.Group>
-                    <Form.Group className='col-12 mx-0 d-flex align-items-center mt-1'>
-                        <Form.Label className='col-4 purchase-input-label'>SGST</Form.Label>
-                        <Form.Control
-                            disabled
-                            value={salesAdd?.total_sgst||''}
-                            className='sales-input-text'
-                            type='text'
-                        />
-                    </Form.Group>
-                </div>
+    <div className="row mx-0 my-1 me-1 justify-content-between">
+      <div className="col-3 ms-2 purchase-supplier-container row mx-0 mt-1 p-2">
+        <div className="col-12 sales-value-container px-0 row mx-0 my-0 align-items-center d-flex pb-3">
+          <div className="col-12 my-1 container-title">E Paymen</div>
+          <Form.Group className="col-2 mx-0 px-0 col-10 mx-0 d-flex align-items-center mt-1 ms-2">
+            <Form.Label className="col-4 col-5 purchase-input-label">
+              Bank
+            </Form.Label>
+            <div className="mx-0 col-9 px-0">
+              <Dropdown
+                id="bank"
+                name="fk_bank"
+                validate={(value) => {
+                  if (salesAdd.bank_amount > 0)
+                    return {
+                      valid: value !== null,
+                      message: "Please select an option",
+                    };
+                }}
+                // required={salesAdd?.bank_amount>0?true:false}
+                value={salesAdd.fk_bank||''}
+                onChange={handleChange}
+                className="purchase-bank-drop mx-0"
+                placeholder="select"
+                fluid
+                search
+                clearable
+                selection
+                options={bankList}
+              />
             </div>
-            {salseReturn&&<div className="col-6 p-0 ps-1">
+          </Form.Group>
+          <Form.Group className="col-2 mx-0 px-0 col-10 mx-0 d-flex align-items-center mt-1 ms-2">
+            <Form.Label className="col-4 col-5 purchase-input-label">
+              Amount
+            </Form.Label>
+            <div className="mx-0 col-9 px-0">
+              <Form.Control
+                placeholder="Enter"
+                name="bank_amount"
+                value={salesAdd.bank_amount || ""}
+                onKeyDown={handleKeyDown}
+                onChange={handleChange}
+                className="purchase-input-text"
+                type="numeric"
+              />
+            </div>
+          </Form.Group>
+        </div>
+      </div>
+      <div className="col-3 ms-2 purchase-supplier-container row mx-0 mt-1 p-2">
+        <div className={`"col-12 p-0 pe-1`}>
+          <div className="col-12 sales-value-container px-0 row mx-0 my-0 align-items-center d-flex py-3">
+            <Form.Group className="col-12 mx-0 d-flex align-items-center">
+              <Form.Label className="col-4 purchase-input-label">
+                Sales Value
+              </Form.Label>
+              <Form.Control
+                disabled
+                value={salesAdd?.total_value || ""}
+                className="sales-input-text"
+                type="text"
+              />
+            </Form.Group>
+            <Form.Group className="col-12 mx-0 d-flex align-items-center mt-1">
+              <Form.Label className="col-4 purchase-input-label">
+                CGST
+              </Form.Label>
+              <Form.Control
+                disabled
+                value={salesAdd?.total_sgst || ""}
+                className="sales-input-text"
+                type="text"
+              />
+            </Form.Group>
+            <Form.Group className="col-12 mx-0 d-flex align-items-center mt-1">
+              <Form.Label className="col-4 purchase-input-label">
+                SGST
+              </Form.Label>
+              <Form.Control
+                disabled
+                value={salesAdd?.total_sgst || ""}
+                className="sales-input-text"
+                type="text"
+              />
+            </Form.Group>
+          </div>
+        </div>
+        {/* {salseReturn&&<div className="col-6 p-0 ps-1">
                 <div className="col-12 sales-value-container px-0 row mx-0 my-0">
                     <Form.Group className='col-12 mx-0 d-flex align-items-center mt-1'>
                         <Form.Label className='col-4 purchase-input-label'>Return Value</Form.Label>
@@ -74,80 +164,97 @@ const SalesDetailFooter = (props) => {
                     </Form.Group>
                     <span className="col-12 mt-3" />
                 </div>
-            </div>}
-        </div>
-        <div className="col-3 row me-0 ps-5">
-            <Form.Group className='col-12 mx-0 d-flex align-items-center mt-1'>
-                <Form.Label className='col-5 purchase-input-label'>Discount</Form.Label>
-                <Form.Control
-                    onKeyDown={handleKeyDown}
-                    name="discount"
-                    value={salesAdd.discount||''}
-                    onChange={handleChange}
-                    className='purchase-input-text'
-                    type='text'
-                />
-            </Form.Group>
-            <Form.Group className='col-12 mx-0 d-flex align-items-center mt-1'>
-                <Form.Label className='col-5 purchase-input-label'>Round Off</Form.Label>
-                <Form.Control
-                    onKeyDown={handleKeyDown}
-                    name="roundoff"
-                    value={salesAdd.roundoff||''}
-                    onChange={handleChange}
-                    className='purchase-input-text'
-                    type='text'
-                />
-            </Form.Group>
-            <Form.Group className='col-12 mx-0 d-flex align-items-center mt-1'>
-                <Form.Label className='col-5 purchase-input-label'>Paid Cash</Form.Label>
-                <Form.Control
-                    onKeyDown={handleKeyDown}
-                    name="paid_cash"
-                    value={salesAdd.paid_cash||''}
-                    onChange={handleChange}
-                    className='purchase-input-text'
-                    type='text'
-                />
-            </Form.Group>
-            <Form.Group className='col-12 mx-0 d-flex align-items-center mt-1'>
-                <Form.Label className='col-5 purchase-input-label'>Change Due</Form.Label>
-                <Form.Control
-                    onKeyDown={handleKeyDown}
-                    name="change_due"
-                    value={salesAdd.change_due||''}
-                    onChange={handleChange}
-                    className='purchase-input-text'
-                    type='text'
-                />
-            </Form.Group>
-        </div>
-        <div className="col-3 col-4 purchase-total-container ps-3 pe-1 me-0">
-            <div className="col-12 purchase-supplier-container row mx-0 mt-1 py-3">
-                <div className="col-12 row mx-0 align-items-center">
-                    <div className="col-1">Net</div>
-                    <div className="col-1">:</div>
-                    <div className="col-10 fs-4 text-danger">{salesAdd.total_amount||''}</div>
-                </div>
-                <div className="col-12 row mx-0 align-items-center">
-                    <div className="col-1">Bal</div>
-                    <div className="col-1">:</div>
-                    <div className="col-10"></div>
-                </div>
+            </div>} */}
+      </div>
+      <div className="col-3 row me-0 ps-5">
+        <Form.Group className="col-12 mx-0 d-flex align-items-center mt-1">
+          <Form.Label className="col-5 purchase-input-label">
+            Discount
+          </Form.Label>
+          <Form.Control
+            onKeyDown={handleKeyDown}
+            name="discount"
+            value={salesAdd.discount || ""}
+            onChange={handleChange}
+            className="purchase-input-text"
+            type="number"
+          />
+        </Form.Group>
+        <Form.Group className="col-12 mx-0 d-flex align-items-center mt-1">
+          <Form.Label className="col-5 purchase-input-label">
+            Round Off
+          </Form.Label>
+          <Form.Control
+            disabled
+            onKeyDown={handleKeyDown}
+            name="roundoff"
+            value={salesAdd.roundoff || ""}
+            onChange={handleChange}
+            className="purchase-input-text"
+            type="text"
+          />
+        </Form.Group>
+        <Form.Group className="col-12 mx-0 d-flex align-items-center mt-1">
+          <Form.Label className="col-5 purchase-input-label">
+            Cash Recieved
+          </Form.Label>
+          <Form.Control
+            onKeyDown={handleKeyDown}
+            name="paid_cash"
+            value={salesAdd.paid_cash || ""}
+            onChange={handleChange}
+            className="purchase-input-text"
+            type="number"
+          />
+        </Form.Group>
+        <Form.Group className="col-12 mx-0 d-flex align-items-center mt-1">
+          <Form.Label className="col-5 purchase-input-label">
+            Balance
+          </Form.Label>
+          <Form.Control
+            disabled
+            onKeyDown={handleKeyDown}
+            name="change_due"
+            value={salesAdd.change_due || ""}
+            onChange={handleChange}
+            className="purchase-input-text"
+            type="text"
+          />
+        </Form.Group>
+      </div>
+      <div className="col-2 col-3 purchase-total-container ps-3 pe-1 me-0">
+        <div className="col-12 purchase-supplier-container row mx-0 mt-1 py-3">
+          <div className="col-12 row mx-0 align-items-center py-3">
+            <div className="col-1 px-0">Net</div>
+            <div className="col-1 ">:</div>
+            <div className="col-10 col-9 fs-3 px-0 text-danger">
+              {salesAdd.total_amount || ''}
             </div>
-            <div className="col-12 row px-0 mx-0 mt-3">
-                <div className='mx-0 ps-0 pe-1 col-6'>
-                    <button type='reset' onClick={handleSalesAllReset} 
-                    className='btn btn-sm btn-outline-dark w-100'>Clear</button>
-                </div>
-                <div className='mx-0 ps-1 pe-0 col-6'>
-                    <button onClick={handleSubmit} type='submit' 
-                    className='btn btn-sm btn-dark w-100'>{edit?"Update":"Save"}</button>
-                </div>
-            </div>
+          </div>
         </div>
+        <div className="col-12 row px-0 mx-0 mt-4">
+          <div className="mx-0 ps-0 pe-1 col-6">
+            <button
+              type="reset"
+              onClick={handleSalesAllReset}
+              className="btn btn-sm btn-outline-dark w-100"
+            >
+              Clear
+            </button>
+          </div>
+          <div className="mx-0 ps-1 pe-0 col-6">
+            <button
+              onClick={handleSubmit}
+              type="submit"
+              className="btn btn-sm btn-dark w-100"
+            >
+              {edit ? "Update" : "Save"}
+            </button>
+          </div>
+        </div>
+      </div>
     </div>
-  )
-}
+  );
+};
 
-export default SalesDetailFooter
+export default SalesDetailFooter;

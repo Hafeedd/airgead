@@ -70,7 +70,7 @@ const AccountMaster = () => {
           setEdit={setToEdit}
         />
       ) : (
-        <AccountList {...{ handleEdit, toEdit, listItem }} />
+        <AccountList {...{loadAccountList, handleEdit, toEdit, listItem }} />
       )}
     </div>
   );

@@ -42,10 +42,21 @@ const SupplierMaster = () => {
       let res = await deleteSupplier(id);
       if (res.success)
         Swal.fire("Supplier deleted Successfully", "", "success");
-      else Swal.fire(res.message, "", "error");
+        else {
+          Swal.fire(
+            "Warning",
+            res.message ||
+              "This account may contain transaction. Therefore it cant be deleted",
+            "info"
+          );
+        }
       getData();
     } catch (err) {
-      Swal.fire("Failed to delete supplier please try again", "", "error");
+      Swal.fire(
+        "Warning",
+        "This account may contain transaction. Therefore it cant be deleted",
+        "warning"
+      );
     }
   };
 

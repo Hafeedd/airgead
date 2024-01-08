@@ -263,6 +263,17 @@ td.clr{
     color: #2C2C2C;
 }
 
+.purchase-table tbody tr td .purchase-table-items-input:focus{
+    border: 0 !important;
+    outline: 1px solid black;
+}
+.purchase-table tbody tr td .purchase-table-items-input{
+    background: transparent;
+    text-align: center;
+    width: 100% !important;
+    border: 0;
+}
+
 
 .btn-primary.purchase-add-btn{
     border-radius: 0.125rem;

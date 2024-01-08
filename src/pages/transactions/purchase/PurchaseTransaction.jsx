@@ -33,10 +33,10 @@ const PurchaseTransaction = () => {
   const [showStock, setShowStock] = useState(false);
   const [showBatch, setShowBatch] = useState(false);
   const [itemNameList, setItemNameList] = useState([]);
-  const [calcChange, setCalcChange] = useState(true);
   const [tableEdit, setTableEdit] = useState(false);
   const [batchKeys, setBatchKeys] = useState([]);
   const [bankList, setBankList] = useState([]);
+  const [bankSelect, setBankSelect] = useState(false);
   const navigate = useNavigate({});
 
   const [purchaseList, setPurchaseList] = useState();
@@ -119,6 +119,50 @@ const PurchaseTransaction = () => {
   const { getCode } = useItemServices();
 
   useEffect(() => {
+    if (!edit) {
+      handlePurchAllCalc("noEdit");
+    } else {
+      handlePurchAllCalc("edit");
+    }
+  }, [tableItemList]);
+
+  useEffect(() => {
+    if ((purchaseAdd.bank_amount && purchaseAdd.fk_bank)||
+    (!purchaseAdd.bank_amount&&!purchaseAdd.fk_bank)) setBankSelect(true);
+    else setBankSelect(false)
+
+  }, [purchaseAdd.bank_amount,purchaseAdd.fk_bank]);
+  
+
+  useEffect(() => {
+    let tempPurhase = { ...purchaseAdd };
+    if (purchaseAdd.change_due > 0) {
+      tempPurhase = { ...tempPurhase, payment_type: "CREDIT" };
+    } else {
+      tempPurhase = { ...tempPurhase, payment_type: "CASH" };
+    }
+    setPurchaseAdd({ ...tempPurhase });
+  }, [purchaseAdd.total_amount]);
+
+  useEffect(() => {
+    getData();
+    handleGetCode();
+  }, []);
+
+  useEffect(() => {
+    handleGetCode();
+    if (edit) {
+      let { items, updated_at, ...others } = edit;
+      setPurchaseAdd({ ...purchaseAdd, ...others });
+      if (items) {
+        setTimeout(() => {
+          setTableItemList([...items]);
+        }, 100);
+      }
+    }
+  }, [edit]);
+
+  const handlePurchAllCalc = (status) => {
     if (tableItemList.length > 0) {
       let netAmount = tableItemList?.reduce((a, b) => {
         return b.total ? parseFloat(a) + parseFloat(b.total) : 0;
@@ -150,16 +194,20 @@ const PurchaseTransaction = () => {
       //     : 0;
       // }, 0);
 
-      let roundOff = (((Math.round(parseFloat(netAmount))).toFixed(2) - parseFloat(netAmount)).toFixed(2));
+      let roundOff = (
+        Math.round(parseFloat(netAmount)).toFixed(2) - parseFloat(netAmount)
+      ).toFixed(2);
       if (roundOff == 0 || !roundOff) roundOff = null;
-      else if(roundOff < 0) roundOff = Math.abs(roundOff)
-      
-      let paidCash = netAmount
-      if(edit){
-        paidCash = edit.paid_cash
+      else if (roundOff < 0) roundOff = Math.abs(roundOff);
+
+      let paidCash = netAmount;
+      if (status == "edit") {
+        paidCash = edit.paid_cash;
       }
-      
-      console.log(roundOff)
+      if (status == "edit") {
+        netAmount = +edit.total_amount;
+      }
+
       let tempPurchaseAdd = {
         ...purchaseAdd,
         total_margin: netMargin?.toFixed(0),
@@ -195,167 +243,7 @@ const PurchaseTransaction = () => {
         // total_disc: 0,
       });
     }
-  }, [tableItemList]);
-
-  useEffect(() => {
-    let tempPurhase = { ...purchaseAdd };
-    if (purchaseAdd.change_due > 0) {
-      tempPurhase = { ...tempPurhase, payment_type: "CREDIT" };
-    } else {
-      tempPurhase = { ...tempPurhase, payment_type: "CASH" };
-    }
-    setPurchaseAdd({ ...tempPurhase });
-  }, [purchaseAdd.total_amount]);
-
-  // calculation of table item
-
-  const handleAmountCalculation = (tempItem, e) => {
-    let name = e.target.name;
-    let value = {};
-    let total, cost;
-    if (tempItem.rate && tempItem.quantity) {
-      total = tempItem.total;
-      cost = tempItem.cost;
-      total = tempItem.quantity * tempItem.rate;
-      cost = tempItem.rate;
-      value = {
-        ["value"]: tempItem.quantity * tempItem.rate,
-        ["total"]: total,
-        ["cost"]: cost,
-      };
-      tempItem = { ...tempItem, ...value };
-      if (name !== "discount_1_amount" && tempItem.discount_1_percentage) {
-        value = {
-          ...value,
-          ["discount_1_amount"]:
-            value.value -
-            (value.value -
-              tempItem.discount_1_percentage * (value.value / 100)),
-          ["discount_1_amount_per_item"]:
-            tempItem.rate -
-            (tempItem.rate -
-              tempItem.discount_1_percentage * (tempItem.rate / 100)),
-        };
-      } else if (name !== "discount_1_amount") {
-        value = {
-          ...value,
-          ["discount_1_amount"]: 0,
-          ["discount_1_amount_per_item"]: 0,
-        };
-      }
-      if (name == "discount_1_amount" && tempItem.discount_1_amount) {
-        value = {
-          ...value,
-          ["discount_1_percentage"]:
-            (tempItem.discount_1_amount / value.value) * 100,
-        };
-      } else if (name == "discount_1_amount") {
-        value = { ...value, ["discount_1_percentage"]: 0 };
-      }
-      tempItem = { ...tempItem, ...value };
-      if (tempItem.value && tempItem.discount_1_amount) {
-        tempItem.discount_1_amount = parseFloat(tempItem.discount_1_amount);
-        value = {
-          ...tempItem,
-          ["value"]:
-            parseFloat(tempItem.quantity * tempItem.rate) -
-            parseFloat(tempItem.discount_1_amount),
-          ["total"]:
-            parseFloat(tempItem.quantity * tempItem.rate) -
-            parseFloat(tempItem.discount_1_amount),
-          ["cost"]:
-            parseFloat(tempItem.rate) - parseFloat(tempItem.discount_1_amount),
-        };
-      } else if (name !== "margin" && name !== "sales_rate") {
-        value = {
-          ...value,
-          ["value"]: tempItem.quantity * tempItem.rate,
-          ["total"]: tempItem.quantity * tempItem.rate,
-          ["cost"]: tempItem.rate,
-        };
-      }
-      tempItem = { ...tempItem, ...value };
-      // if (name == 'tax_gst' || name == 'sales_rate' || name == 'margin') {
-      if (tempItem.tax_gst) {
-        let totalTaxAmnt = tempItem.tax_gst * (tempItem.value / 100);
-        value = {
-          ...value,
-          ["total"]: tempItem.value + tempItem.tax_gst * (tempItem.value / 100),
-          ["cost"]:
-            tempItem.rate -
-            tempItem.discount_1_amount_per_item +
-            tempItem.tax_gst *
-              ((tempItem.rate - tempItem.discount_1_amount_per_item) / 100),
-          ["cgst_or_igst"]: totalTaxAmnt / 2,
-          ["sgst"]: totalTaxAmnt / 2,
-        };
-      } else {
-        value = { ...value, cgst_or_igst: 0, sgst: 0 };
-      }
-      // }
-      tempItem = { ...tempItem, ...value };
-      if (name !== "sales_rate") {
-        if (tempItem.margin) {
-          value = {
-            ...tempItem,
-            ["sales_rate"]:
-              parseFloat(tableItem.cost) +
-              parseFloat(tableItem.cost * (tempItem.margin / 100)),
-          };
-        } else {
-          value = { ...value, ["sales_rate"]: 0 };
-        }
-      }
-      tempItem = { ...tempItem, ...value };
-      if (name !== "margin") {
-        if (tempItem.sales_rate) {
-          value = {
-            ...value,
-            ["margin"]: parseFloat(
-              ((tempItem.sales_rate - value.cost) / tempItem.cost) * 100
-            ),
-          };
-        } else {
-          value = { ...value, ["margin"]: 0 };
-        }
-      }
-    } else {
-      tempItem = { ...tempItem, value: 0 };
-    }
-    tempItem = { ...tempItem, ...value };
-    let tempItemKeys = Object.keys(tempItem);
-    tempItemKeys?.map((key) => {
-      let number = parseFloat(tempItem[key]);
-      if (number?.toFixed(2) && !Number.isInteger(number) && number) {
-        tempItem = { ...tempItem, [key]: parseFloat(number?.toFixed(2)) };
-      }
-    });
-    tempItem = { ...tempItem };
-    setTableItem(tempItem);
   };
-
-  // the purchase data is selected from purchase list when the edit state is set
-  useEffect(() => {
-    // checking the purchase id by edit id
-    if (edit) {
-      let { items, updated_at, ...others } = edit;
-      setPurchaseAdd({ ...purchaseAdd, ...others });
-      if (items) {
-        setTimeout(() => {
-          setTableItemList([...items]);
-        }, 100);
-      }
-    }
-  }, [edit]);
-
-  useEffect(() => {
-    getData();
-    handleGetCode();
-  }, []);
-
-  useEffect(()=>{
-    handleGetCode()
-  },[edit])
 
   const { getAccountList } = useAccountServices();
   const {
@@ -368,9 +256,9 @@ const PurchaseTransaction = () => {
   } = usePurchaseServices();
   const { getSupplier } = useCustomerServices();
 
-  const handleGetCode = async () =>{
-    try{
-      let code
+  const handleGetCode = async () => {
+    try {
+      let code;
       let response = await getCode();
       if (response.success && !edit) {
         for (let i of response.data) {
@@ -381,12 +269,12 @@ const PurchaseTransaction = () => {
           setPurchaseAdd((data) => ({ ...data, documents_no: code }));
         }
       }
-    }catch(err){}
-  }
+    } catch (err) {}
+  };
 
   const getData = async () => {
     try {
-      let  response, response1, response3;
+      let response, response1, response3;
 
       response = await getSupplier();
       if (!response?.success) return 0;
@@ -406,7 +294,6 @@ const PurchaseTransaction = () => {
       if (response1?.success) {
         let tempPurData = [];
         response1?.data.map((purData) => {
-          // console.log(purData)
           if (purData.fk_supplier > -1) {
             let supplierName = tempSuppList.filter(
               (supData) => supData.value == purData.fk_supplier
@@ -417,17 +304,6 @@ const PurchaseTransaction = () => {
         });
         setPurchaseList(tempPurData);
       }
-
-      // response2 = await getCode();
-      // if (response2.success && !edit) {
-      //   for (let i of response2.data) {
-      //     let type = "PUR";
-      //     if (i.sub_id == type) {
-      //       code = i.next_code;
-      //     }
-      //     setPurchaseAdd((data) => ({ ...data, documents_no: code }));
-      //   }
-      // }
 
       response3 = await getAccountList();
       if (response3.success) {
@@ -499,9 +375,10 @@ const PurchaseTransaction = () => {
     });
     setTableItemList([]);
     setTableItemBatchList([]);
-    setEdit();
+    setEdit(false);
     handleGetCode();
   };
+
 
   const handleChange = (e, data) => {
     if (data && data.name == "fk_bank") {
@@ -510,8 +387,7 @@ const PurchaseTransaction = () => {
         ...data,
         fk_bank: bank_data?.value,
       }));
-    }
-    else if (data) {
+    } else if (data) {
       let supplier_data = data.options.filter((x) => x.value === data.value)[0];
       setPurchaseAdd((data) => ({
         ...data,
@@ -524,36 +400,32 @@ const PurchaseTransaction = () => {
         [e.target.name]: !data[e.target.name],
       }));
     } else if (e.target.name == "discount") {
-      let discPrice;
-      if (e.target.value == "") {
-        let discAmntToBeAdded =
-          Math.abs(
-            Number(purchaseAdd?.total_amount || 0) -
-              Number(purchaseAdd.total_amount2)
-          ) || null;
-        discPrice =
-          Number(purchaseAdd.total_amount) + Number(discAmntToBeAdded);
-      } else if (purchaseAdd?.total_amount2) {
-        discPrice = purchaseAdd?.total_amount2;
-        discPrice = discPrice - e.target.value;
-      }
+      let discPrice,
+        value = e.target.value !== "" ? +e.target.value : null;
+
+      let totalAmount =
+        (+purchaseAdd.paid_cash || 0) +
+        (+purchaseAdd?.bank_amount || 0) +
+        (+purchaseAdd?.change_due || 0);
+      discPrice = totalAmount + +purchaseAdd.discount - value;
       setPurchaseAdd((data) => ({
         ...data,
-        [e.target.name]: e.target.value,
+        [e.target.name]: value,
         total_amount: discPrice?.toFixed(0),
         paid_cash: discPrice?.toFixed(0),
+        change_due: 0,
+        bank_amount: 0,
       }));
     } else if (e.target.name == "bank_amount") {
-      let value = e.target.value == "" ? null : e.target.value;
-      // console.log(Number(purchaseAdd.change_due)-Number(value))
+      let value = e.target.value == "" ? null : +e.target.value;
+      let totalAmount =
+        (+purchaseAdd.change_due || 0) +
+        (+purchaseAdd.paid_cash || 0) +
+        (+purchaseAdd.bank_amount || 0);
       setPurchaseAdd((data) => ({
         ...data,
-        change_due:
-          Number(purchaseAdd.change_due) +
-          Number(purchaseAdd.total_amount) +
-          Number(purchaseAdd.bank_amount) -
-          value -
-          purchaseAdd.total_amount,
+        paid_cash: +totalAmount - value,
+        change_due: purchaseAdd.total_amount - (value + +totalAmount - value),
         bank_amount: value,
       }));
     } else if (e.target.name == "paid_cash") {
@@ -584,29 +456,6 @@ const PurchaseTransaction = () => {
       setPurchaseAdd((data) => ({ ...data, [e.target.name]: null }));
     else
       setPurchaseAdd((data) => ({ ...data, [e.target.name]: e.target.value }));
-  };
-
-  const handleChangeTableItem = (e, data) => {
-    let tempItem = { ...tableItem };
-    if (data) {
-      let Item_data = data.options.filter((x) => x?.value === data?.value)[0];
-      tempItem = {
-        ...tempItem,
-        item_name: Item_data?.text,
-        code: Item_data?.description,
-        fk_items: Item_data?.value,
-        unit: Item_data?.unit,
-      };
-    }
-    if (e.target.value === "") {
-      tempItem = { ...tempItem, [e.target.name]: "" };
-    } else if (e.target.type === "number") {
-      tempItem = { ...tempItem, [e.target.name]: parseFloat(e.target.value) };
-    } else {
-      tempItem = { ...tempItem, [e.target.name]: e.target.value };
-    }
-    handleAmountCalculation(tempItem, e);
-    setCalcChange(!calcChange);
   };
 
   const handleChangeTableItemBatch = (e) => {
@@ -671,7 +520,7 @@ const PurchaseTransaction = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      if (tebleItemKeys?.length < 0) {
+      if (tableItemList.length <= 0) {
         Swal.fire({
           title: "Item not added",
           icon: "warning",
@@ -684,6 +533,8 @@ const PurchaseTransaction = () => {
       formValidation(formRef.current);
       let submitData = { ...purchaseAdd, items: tebleItemKeys };
       let response;
+      // console.log(submitData.change_due)
+      // return 0
       if (!edit) {
         response = await postPurchase(submitData);
       } else {
@@ -906,7 +757,6 @@ const PurchaseTransaction = () => {
             setShowStock,
             itemNameList,
             setItemNameList,
-            handleChangeTableItem,
             purchaseAdd,
             setPurchaseItemSerielModal,
             handleChange,
@@ -929,8 +779,9 @@ const PurchaseTransaction = () => {
         />
         <PurchaseDetailFooter
           {...{
+            bankSelect,
             bankList,
-            handleEdit,
+            tableItemList,
             purchaseAdd,
             handleChange,
             handleKeyDown,

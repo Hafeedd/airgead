@@ -1,10 +1,11 @@
-import React from "react";
-import { Form } from "react-bootstrap";
+import React, { useEffect, useRef } from "react";
+import { Form , Overlay } from "react-bootstrap";
 import { Dropdown } from "semantic-ui-react";
 
 const PurchaseDetailFooter = (props) => {
   const {
-    handleEdit,
+    bankSelect,
+    tableItemList,
     purchaseAdd,
     bankList,
     handleChange,
@@ -12,19 +13,22 @@ const PurchaseDetailFooter = (props) => {
     handlePurchaseAllReset,
     edit,
   } = props;
+  
 
   return (
     <div className="row mx-2 my-1 me-0">
       <div className="col-2 col-3 purchase-supplier-container align-items-start row mx-0 mt-1 me-4">
         <div className="col-12 my-1 container-title">E Paymen</div>
-        <Form.Group className="col-2 mx-0 px-0 col-10 mx-0 d-flex align-items-center mt-1 ms-2">
+        <Form.Group className="col-2 mx-0 px-0 col-10 mx-0 d-flex align-items-center mt-1 ms-2 position-relative">
           <Form.Label className="col-4 col-5 purchase-input-label">
             Bank
           </Form.Label>
           <div className="mx-0 col-9 px-0">
             <Dropdown
+              id='bank'
               name="fk_bank"
-              value={purchaseAdd.fk_bank}
+              disabled={tableItemList?.length<1}
+              value={purchaseAdd.fk_bank||''}
               onChange={handleChange}
               className="purchase-bank-drop mx-0"
               placeholder="select"
@@ -35,6 +39,10 @@ const PurchaseDetailFooter = (props) => {
               options={bankList}
             />
           </div>
+          {!bankSelect&&<div 
+          className="position-absolute bg-secondary text-light rounded-2 p-1"
+          style={{right:'-30px',bottom:'-29px'}}
+          >This field is required</div>}
         </Form.Group>
         <Form.Group className="col-2 mx-0 px-0 col-10 mx-0 d-flex align-items-center mt-2 ms-2">
           <Form.Label className="col-4 col-5 purchase-input-label">
@@ -44,6 +52,7 @@ const PurchaseDetailFooter = (props) => {
             <Form.Control
               placeholder="Enter"
               name="bank_amount"
+              disabled={tableItemList?.length<1}
               value={purchaseAdd.bank_amount || ""}
               onKeyDown={handleKeyDown}
               onChange={handleChange}
@@ -73,6 +82,7 @@ const PurchaseDetailFooter = (props) => {
             </Form.Label>
             <div className="mx-0 col-9 px-0">
               <select
+                disabled={tableItemList?.length<1}
                 onChange={handleChange}
                 onKeyDown={handleKeyDown}
                 value={purchaseAdd.payment_type || "CASH"}
@@ -109,6 +119,7 @@ const PurchaseDetailFooter = (props) => {
           <Form.Control
             placeholder="Enter"
             name="discount"
+            disabled={tableItemList?.length<1}
             value={purchaseAdd.discount || ""}
             onKeyDown={handleKeyDown}
             onChange={handleChange}
@@ -150,6 +161,7 @@ const PurchaseDetailFooter = (props) => {
           <Form.Control
             placeholder="Enter"
             name="paid_cash"
+            disabled={tableItemList?.length<1}
             value={purchaseAdd.paid_cash || ""}
             onKeyDown={handleKeyDown}
             onChange={handleChange}
@@ -185,7 +197,8 @@ const PurchaseDetailFooter = (props) => {
               </button>
             </div>
             <div className="mx-0 px-1 pe-0 col-6">
-              <button type="submit" className="btn btn-sm btn-dark w-100">
+              <button disabled={!bankSelect}
+               type="submit" className="btn btn-sm btn-dark w-100">
                 {edit ? "Update" : "Save"}
               </button>
             </div>

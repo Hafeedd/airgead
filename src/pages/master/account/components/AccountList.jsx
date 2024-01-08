@@ -1,16 +1,21 @@
 import React, { useEffect, useState } from "react";
 import search from "../../../../assets/icons/search.png";
 import editIcon from "../../../../assets/icons/edit-black.svg";
+import { HiOutlineTrash } from "react-icons/hi2";
+import Swal from "sweetalert2";
+import useAccountServices from "../../../../services/master/accountServices";
 
-const AccountList = ({ listItem, handleEdit, handleDelete, toEdit }) => {
+const AccountList = (props) => {
+  const { listItem, handleEdit, handleDelete, toEdit, loadAccountList } = props;
   const [searchedList, setSearchedList] = useState([]);
 
   useEffect(() => {
     setSearchedList(listItem);
   }, [listItem]);
 
+  const { deleteAccount } = useAccountServices();
+
   const handleSearch = async (e) => {
-    console.log(listItem);
     try {
       let tempData,
         tempList = listItem;
@@ -34,6 +39,34 @@ const AccountList = ({ listItem, handleEdit, handleDelete, toEdit }) => {
         }
       }
     } catch {}
+  };
+
+  const handleDeleteAccount = async (id) => {
+    try {
+      const response = await deleteAccount(id);
+      if (response?.success) {
+        Swal.fire({
+          title: "Success",
+          text: "Account deleted successfully",
+          icon: "success",
+          timer: 1000,
+          showConfirmButton: false,
+        });
+        loadAccountList();
+      } else {
+        Swal.fire({
+          title: "Warning",
+          text:
+            response?.message ||
+            "Failed to delete account. There may be transaction done with this account.",
+          icon: "info",
+          // timer: 1000,
+          // showConfirmButton: false,
+        });
+      }
+    } catch (err) {
+      console.log(err?.response?.data?.error);
+    }
   };
 
   return (
@@ -75,6 +108,7 @@ const AccountList = ({ listItem, handleEdit, handleDelete, toEdit }) => {
               <th className="text-start ps-2">Code</th>
               <th className="text-start ps-2">A/C Type</th>
               <th style={{ width: "15rem" }}>Cl. Balance</th>
+              <th style={{ width: "1rem" }}></th>
               {/* <th style={{ width: "15rem" }}>Op. Balance</th> */}
               <th
                 style={{ borderTopRightRadius: "0.3125rem", width: "5rem" }}
@@ -84,14 +118,45 @@ const AccountList = ({ listItem, handleEdit, handleDelete, toEdit }) => {
           <tbody>
             {searchedList?.length > 0 ? (
               searchedList?.map((data, i) => {
+                const handleDelete = async (e) => {
+                  Swal.fire({
+                    title: "Delete",
+                    text: `Are you sure, you want to delete ${data.name}?`,
+                    icon: "question",
+                    showDenyButton: true,
+                    showCancelButton: false,
+                    confirmButtonText: "Yes",
+                    denyButtonText: "Cancel",
+                    showLoaderOnConfirm: true,
+                    preConfirm: async () => {
+                      await handleDeleteAccount(data?.id);
+                    },
+                    preDeny: () => {
+                      Swal.fire({
+                        title: "Cancelled",
+                        icon: "info",
+                        timer: 1000,
+                        showConfirmButton: false,
+                      });
+                    },
+                  });
+                };
+
                 return (
                   <tr key={i}>
                     <td>{i + 1}</td>
                     <td className="text-start">{data?.name}</td>
                     <td className="text-start">{data?.code}</td>
                     <td className="text-start">{data?.account_type_one}</td>
-                    <td>{data?.closing_balance || 0}</td>
+                    <td>{data?.closing_balance || ""}</td>
                     {/* <td>{data?.opening_balance}</td> */}
+                    <td>
+                      <HiOutlineTrash
+                        onClick={handleDelete}
+                        size={18}
+                        className="text-danger"
+                      />
+                    </td>
                     <td>
                       <div
                         className="button"

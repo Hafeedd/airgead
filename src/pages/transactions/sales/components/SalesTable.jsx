@@ -228,11 +228,9 @@ const SalesTable = (props) => {
         });
 
       if (response?.success && !tableEdit) {
-        // console.log("first");
         let tempItemKeys = [...tableItemKeys];
         tempItemKeys.push({ id: response?.data?.id });
         setTableItemKeys(tempItemKeys);
-        console.log(tempItemKeys);
         let itemTemp = { ...tableItem };
         let itemTempList = [...tableItemList];
         itemTemp = { ...itemTemp, ["cstm_id"]: cstm_id, id: response.data.id };
@@ -506,7 +504,6 @@ const SalesTable = (props) => {
         let ind = salesList?.findIndex((x) => edit.id == x.id);
         if (ind !== salesList?.length - 1) {
           handleSalesAllReset();
-          setTableItemList([]);
           setEdit(salesList[ind + 1]);
         } else {
           Swal.fire("No more purchase to edit", "go for next", "warning");
@@ -966,7 +963,7 @@ const SalesTable = (props) => {
               <td></td>
               <td className="item">
                 <div className="purch-green-table-item">
-                  {salesAdd.discount || 0}
+                  {salesAdd.total_discount || 0}
                 </div>
               </td>
               <td className="item">

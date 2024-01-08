@@ -36,13 +36,21 @@ export const AccountsTable = (props) => {
               }
             });
             let data = [...searchedList];
-            data[i] = { ...data[i], ledger_report: [...tempData] , search: e.target.value};
+            data[i] = {
+              ...data[i],
+              ledger_report: [...tempData],
+              search: e.target.value,
+            };
             setSearchedList([...data]);
           }
         } else {
           let data = [...searchedList];
           if (list[i]?.ledger_report?.length > 0) {
-            data[i] = {...data,ledger_report:[...list[i]?.ledger_report],search:e.target.value}
+            data[i] = {
+              ...data,
+              ledger_report: [...list[i]?.ledger_report],
+              search: e.target.value,
+            };
             setSearchedList([...data]);
           }
         }
@@ -55,7 +63,11 @@ export const AccountsTable = (props) => {
   const handleRefresh = (e, i) => {
     let data = [...searchedList];
     if (list[i]?.ledger_report?.length > 0) {
-      data[i] = {...data,ledger_report:[...list[i]?.ledger_report],search:''}
+      data[i] = {
+        ...data,
+        ledger_report: [...list[i]?.ledger_report],
+        search: "",
+      };
       setSearchedList([...data]);
     }
   };
@@ -105,13 +117,17 @@ export const AccountsTable = (props) => {
                         <div className="text-light ms-3 py-1 d-flex align-items-center justify-content-between">
                           Ledger Name : {"( " + data.account_name + " ) "}{" "}
                           &nbsp;&nbsp;{" "}
-                          {"( " + data?.opening_balance?.toFixed(2) + ": Op. Balance ) "}{" "}
+                          {"( " +
+                            data?.opening_balance?.toFixed(2) +
+                            ": Op. Balance ) "}{" "}
                           &nbsp;&nbsp;{" "}
-                          {"( " + data?.closing_balance?.toFixed(2) + ": Cl. Balance )"}
+                          {"( " +
+                            data?.closing_balance?.toFixed(2) +
+                            ": Cl. Balance )"}
                           <div className="col-3 p-2 stock-ledger-search d-flex align-items-center">
                             <div className="col-1 me-2">
                               <MdRefresh
-                                onClick={(e)=>handleRefresh(e,i)}
+                                onClick={(e) => handleRefresh(e, i)}
                                 className="bg-dark m-1 p-0 rounded-1"
                                 size={21}
                               />
@@ -134,12 +150,23 @@ export const AccountsTable = (props) => {
                       </div>
                     </th>
                   </tr>
+                  <tr>
+                    <td colSpan={6} className="text-end">
+                      Opening Balance:
+                    </td>
+                    <td className="text-end">{data?.opening_balance?.toFixed(2)}</td>
+                  </tr>
                   {data?.ledger_report?.length > 0 ? (
                     data?.ledger_report?.map((item, i) => {
                       let balance;
-                      if (!item.debit)
-                        balance = tempBalance - item?.credit || 0;
-                      else balance = tempBalance - item?.debit || 0;
+                      if (!item.debit){
+                        if (data?.opening_balance?.toString().includes("-"))
+                          balance = tempBalance + item?.credit || 0;
+                        else balance = tempBalance - item?.credit || 0;
+                      }else if (data?.opening_balance?.toString().includes("-"))
+                        balance = tempBalance - item?.debit || 0;
+                        else
+                        balance = tempBalance + item?.debit || 0;
                       tempBalance = balance;
                       return (
                         <tr key={i}>
@@ -175,7 +202,7 @@ export const AccountsTable = (props) => {
                       className="text-end"
                       colSpan={6}
                     >
-                      {data.closing_balance}
+                      {data.closing_balance?.toFixed(2)}
                     </td>
                   </tr>
                 </>

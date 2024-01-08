@@ -49,10 +49,21 @@ const StaffMaster = () => {
     try {
       let res = await deleteStaff(id);
       if (res.success) Swal.fire("Staff deleted Successfully", "", "success");
-      else Swal.fire(res.message, "", "error");
+      else {
+        Swal.fire(
+          "Warning",
+          res.message ||
+            "This account may contain transaction. Therefore it cant be deleted",
+          "info"
+        );
+      }
       getData();
     } catch (err) {
-      Swal.fire("Failed to delete Staff please try again", "", "error");
+      Swal.fire(
+        "Warning",
+        "This account may contain transaction. Therefore it cant be deleted",
+        "warning"
+      );
     }
   };
 

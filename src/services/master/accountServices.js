@@ -25,7 +25,7 @@ const useAccountServices = () => {
 
   // Account Group Update
   const putAccountGroup = async(id, data) =>{
-    const response = await axiosPrivate.get(`master/account_group/updated/${id}`, data)
+    const response = await axiosPrivate.put(`master/account_group/updated/${id}/`, data)
     return response.data
   }
 
@@ -57,6 +57,12 @@ const useAccountServices = () => {
     const response = await axiosPrivate.delete(`master/account_group/updated/${id}/`)
     return response.data
   }
+ 
+  // Account
+  const deleteAccount = async(id) =>{
+    const response = await axiosPrivate.delete(`master/account/updated/${id}/`)
+    return response.data
+  }
 
   return {
     // POST APIS
@@ -74,6 +80,7 @@ const useAccountServices = () => {
     
     // DELETE APIS
     deleteAccountGroup,
+    deleteAccount,
   }
 }
 

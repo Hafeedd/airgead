@@ -284,6 +284,16 @@ const AccountAdd = ({ edit, refresh, setEdit }) => {
           showConfirmButton: false,
         });
         getAccountGroupData();
+      } else {
+        Swal.fire({
+          title: "Warning",
+          text:
+            response?.message ||
+            "Failed to delete account group. There may be accounts created using this account group.",
+          icon: "info",
+          // timer: 1000,
+          // showConfirmButton: false,
+        });
       }
     } catch (err) {
       console.log(err?.response?.data?.error);
@@ -694,7 +704,7 @@ const AccountAdd = ({ edit, refresh, setEdit }) => {
                             denyButtonText: "Cancel",
                             showLoaderOnConfirm: true,
                             preConfirm: async () => {
-                              await deleteGroup(data?.id);
+                              await deleteGroup(data?.id);                              
                             },
                             preDeny: () => {
                               Swal.fire({
@@ -726,7 +736,7 @@ const AccountAdd = ({ edit, refresh, setEdit }) => {
 
                         const handleEdit = async () => {
                           try {
-                            const response = await putAccountEdit(
+                            const response = await putAccountGroup(
                               data.id,
                               data
                             );
@@ -796,7 +806,7 @@ const AccountAdd = ({ edit, refresh, setEdit }) => {
                                 ) : (
                                   <div
                                     className="btn btn-sm btn-dark sq-btn"
-                                    // onClick={handleDelete}
+                                    onClick={handleDelete}
                                   >
                                     -
                                   </div>

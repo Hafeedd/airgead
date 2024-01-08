@@ -37,13 +37,14 @@ const SalesDeliveryDetails = (props) => {
             </Form.Group>
             <span className="col-12 mt-5" />
         </div>
+        
 {/* Row 2 -------------------------------------------------------------------------------------------------------- */}
 
         <div className="col-7 mx-0 pe-2 ps-5 row mb-2">
             <div className="col-12 sales-delivery-container row mx-0 my-1 py-3">
                 <div className="col-12 title">Address</div>
                 <div className="col-12 py-0 px-1"><hr className='m-0'/></div>
-                <textarea className='purchase-input-label textarea border-0' rows={4}
+                <textarea className='purchase-input-label textarea border-0' rows={3}
                 onKeyDown={handleKeyDown}
                 onChange={handleChange} name='delivery_address'
                 value={salesAdd?.delivery_address||''}/>
