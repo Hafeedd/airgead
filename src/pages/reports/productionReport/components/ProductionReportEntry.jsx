@@ -1,7 +1,6 @@
 import React from 'react'
 import '../productionreport.css'
 import { Form } from 'react-bootstrap';
-import { TfiEmail, TfiPrinter } from "react-icons/tfi";
 import { BsWhatsapp, BsFiletypePdf } from "react-icons/bs";
 import { RiFileExcel2Line } from "react-icons/ri";
 
@@ -41,28 +40,28 @@ const ProductionReportEntry = () => {
         <div className="col-6 px-0 mt-1 d-flex gap-3 justify-content-end">
           <div
             style={{ background: "#4D872A" }}
-            className="reports-btn btn rounded-1 col-3 py-2"
+            className="reports-btn btn rounded-1 col-2 py-1 px-0"
           >
             <BsWhatsapp size={18} className="me-2 h-100" />
             Whatsapp
           </div>
           <div
             style={{ background: "#AD3232" }}
-            className="reports-btn btn rounded-1 col-3 py-2"
+            className="reports-btn btn rounded-1 col-2 py-1"
           >
             <BsFiletypePdf className="me-2 text-" size={18} />
             PDF
           </div>
           <div
             style={{ background: "#4C6CBE" }}
-            className="reports-btn btn rounded-1 col-3 py-2"
+            className="reports-btn btn rounded-1 col-2 py-1"
           >
             <RiFileExcel2Line className="me-2" size={18} />
             Excel
           </div>
         </div>
       </div>
-      <div className="mt-4 col-12 d-flex">
+      <div className="mt-2 col-12 d-flex">
         <div className="col-6 d-flex">
           <div className="col-6 d-flex align-items-center">
             <Form.Label className="pe-1 purchase-input-label pb-1">

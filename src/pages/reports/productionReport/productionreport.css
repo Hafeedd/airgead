@@ -44,3 +44,38 @@ color: #FFF;
     background-color: #271A37;
     color: #FFF;
 }
+
+.bg-clr-1{
+    background-color: #51385D;
+    color: #FFF;
+}
+
+.production-table-ls thead th{
+    color: #FFF;
+    padding-top:3px;
+    padding-bottom: 5px;
+    background-color: #51385D;
+}
+.production-table-ls th div{
+    background-color: rgba(255, 255, 255, 0.10);
+}
+
+.production-table-ls{
+    width: 100%;
+}
+
+.production-table-ls td{
+    background-color: #F0F4F3;
+    padding-bottom: 3px;
+    padding-top: 3px;
+    text-align: center;
+}
+.production-table-ls tbody tr div{
+    border-right: 1px solid black;
+}
+
+.pro-table-scroller{
+    height: 29rem;
+    overflow-y: scroll;
+    overflow-x: hidden;
+}

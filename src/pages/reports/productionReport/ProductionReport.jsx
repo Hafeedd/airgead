@@ -42,7 +42,7 @@ const ProductionReport = () => {
         <div className="p-2 bg-light rounded-1">
           <ProductionReportEntry />
           <ProductionRegisterTable />
-          <div className="row mt-5">
+          <div className="row mt-2">
             <div className="w-100 d-flex justify-content-end mb-2 ">
               <div
                 // onClick={() => navigate(-1)}

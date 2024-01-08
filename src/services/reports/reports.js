@@ -1,4 +1,4 @@
-import { axiosPrivate } from "../../api/axios";
+import axios, { axiosPrivate } from "../../api/axios";
 // // import useStaffServices from "../master/staffServices"
 
 export const useReportsServices = () => {
@@ -151,7 +151,14 @@ export const useReportsServices = () => {
   const getStockValueReport = async (params)=>{
     const response = await axiosPrivate.get('reports/stoke/value/report/',{params:params})
     return response?.data
-}
+  }
+
+  const getProductionRegister = async(params)=>{
+    const response = await axiosPrivate.get("production/production/production_register/",{params:params})
+    return response?.data
+  }
+
+
   return {
     getStockLedger,
     getAccLedger,
@@ -173,5 +180,6 @@ export const useReportsServices = () => {
     getBillWiseLedger,
     getConsolidateCashbook,
     getStockValueReport,
+    getProductionRegister,
   };
 };
