@@ -161,3 +161,9 @@ Accordion button{
     overflow-y: auto;
     overflow-x: hidden;
 }
+
+.Ctable-scroll{
+    height: 28rem;
+    overflow-y: scroll;
+    overflow-x: hidden;
+}

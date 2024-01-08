@@ -36,7 +36,7 @@ const CashBookTable = (props) => {
                 </div>
 
                 <div className='cashbook-table-main   p-0' >
-                    <table className='cash-table-top   mt-1' >
+                    <table className='cash-table-top mt-1' >
                         <thead>
                             <tr className='cashbook-table-thead-th p-5  '  >
                                 <th className='p-3'>Date</th>
@@ -112,8 +112,8 @@ const CashBookTable = (props) => {
 
                                         <tr className='bg-secondary py-5 '>
                                             <td colSpan={4}></td>
-                                            <td><div className='cashbook-down-box text-black p-3 d-flex align-items-center justify-content-center'><p>{data?.total_debit}</p></div></td>
-                                            <td><div className='cashbook-down-box text-black p-3 d-flex align-items-center justify-content-center'>{data?.total_credit}</div></td>
+                                            <td><div className='cashbook-down-box text-black p-3 d-flex align-items-center justify-content-center'><p>{(data?.total_debit).toFixed(2)}</p></div></td>
+                                            <td><div className='cashbook-down-box text-black p-3 d-flex align-items-center justify-content-center'>{(data?.total_credit).toFixed(2)}</div></td>
                                             <td></td>
 
                                         </tr></>)
