@@ -28,10 +28,6 @@ const SalesInvoiceDetails = (props) => {
   const { formRef, handleKeyDown } = useOnKey(ref, setRef);
 
   useEffect(() => {
-    getOfInvoiceData();
-  }, []);
-
-  useEffect(() => {
     if (codeWithBillTypeList?.length > 0) handleBillTypeSelection();
   }, [salesAdd.fk_bill_type, codeWithBillTypeList]);
 
@@ -56,6 +52,7 @@ const SalesInvoiceDetails = (props) => {
       setSalesAdd((data) => ({
         ...data,
         documents_no: tempCode?.sub_id + tempCode?.next_value,
+        fk_bill_type:tempCode.fk_bill_type
       }));
     }
   };

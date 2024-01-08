@@ -12,6 +12,7 @@ const SalesCustomerDetails = (props) => {
     setSalesAdd,
     getAllUserAc,
     billType,
+    edit,
     setCstClsOpn,
   } = props;
 
@@ -31,7 +32,7 @@ const SalesCustomerDetails = (props) => {
         value: item?.id,
         text: item?.code,
         description: item?.name,
-        name: item?.fk_bill_types,
+        bill_type: item?.fk_bill_types,
         rate_types: item?.rate_types,
       };
       tempList.push(a);
@@ -81,22 +82,24 @@ const SalesCustomerDetails = (props) => {
   };
 
   const handleChange = (e, data) => {
-    if (data && data?.name == "fk_supplier") {
+    if (data && data?.name == "fk_customer") {
       let customer_data = data.options.filter((x) => x.value === data.value)[0];
-      let bill_types;
-      if (customer_data?.name) {
-        bill_types = customer_data?.name;
-      } else {
-        console.log(billType[0]);
-        bill_types = billType[0]?.value;
-      }
-      console.log(bill_types);
+      let bill_type = billType[0]?.value,
+        rateType;
+      if (customer_data?.bill_type) {
+        bill_type = customer_data?.bill_type;
+      } else if (edit?.fk_bill_type) bill_type = edit?.fk_bill_type;
+
+      if (customer_data?.rate_types) {
+        rateType = customer_data?.rate_types;
+      } else if (edit?.rate_types) rateType = edit?.rate_types;
+
       setSalesAdd((data) => ({
         ...data,
         ["customer_name"]: customer_data?.description,
         ["fk_customer"]: customer_data?.value,
-        ["fk_bill_type"]: bill_types,
-        ["rate_types"]: customer_data?.rate_types,
+        ["fk_bill_type"]: bill_type,
+        ["rate_types"]: rateType,
       }));
     }
     if (data && data?.name == "careof_user") {
@@ -106,7 +109,6 @@ const SalesCustomerDetails = (props) => {
       setSalesAdd((data) => ({ ...data, [e.target.name]: null }));
     else setSalesAdd((data) => ({ ...data, [e.target.name]: e.target.value }));
   };
-  console.log(salesAdd);
 
   return (
     <div ref={formRef} className="col-9 mx-0 ps-0 pe-0 row ">
@@ -121,7 +123,7 @@ const SalesCustomerDetails = (props) => {
             onKeyDown={handleKeyDown}
             onChange={handleChange}
             className="pruchase-select d-flex align-items-center sales_customer py-0 form-control"
-            name="fk_supplier"
+            name="fk_customer"
             placeholder="select"
             value={salesAdd?.fk_customer || ""}
             options={customerList}

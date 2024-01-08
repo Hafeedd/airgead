@@ -200,7 +200,7 @@
     padding: 0.35rem 0.4rem !important
 }
 
-.sales-batch-table tr:last-child td {
+.sales-batch-table tr:last-child td{
     padding-bottom: 0.5rem;
 }
 

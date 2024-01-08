@@ -297,14 +297,24 @@ const SalesTransaction = () => {
       let roundOff = (
         Math.round(parseFloat(netAmount)).toFixed(2) - parseFloat(netAmount)
       ).toFixed(2);
+
       if (roundOff == 0 || !roundOff) roundOff = null;
       else if (roundOff < 0) roundOff = Math.abs(roundOff);
 
-      let paidCash = netAmount?.toFixed();
-      if (editStatus == "edit") paidCash = edit.paid_cash;
+      let paidCash = netAmount?.toFixed(0);
+      if (editStatus == "edit") {
+        paidCash = edit.paid_cash;
+      }
+
+      let changeDue 
+      // = netAmount?.toFixed(0);
+      if (paidCash) {
+        console.log(netAmount?.toFixed(0) - paidCash - salesAdd.bank_amount)
+        changeDue = netAmount?.toFixed(0) - paidCash - salesAdd.bank_amount
+        console.log(changeDue)
+      }
 
       let tempSalesAdd = {
-        // ...salesAdd,
         hsnCalc: hsnWiseCalc,
         total_amount: netAmount?.toFixed(2),
         total_cgst: total_cgst_amnt?.toFixed(2),
@@ -322,33 +332,36 @@ const SalesTransaction = () => {
         roundoff: roundOff,
         total_discount: total_disc?.toFixed(2),
         paid_cash: paidCash,
+        change_due: changeDue,
       };
-      setSalesAdd(data=>({...data, ...tempSalesAdd }));
+      setSalesAdd((data) => ({ ...data, ...tempSalesAdd }));
+    }else{
+      if (tableItemList?.length < 1) {
+        let tempSalesAdd = {
+          total_amount: null,
+          total_cgst: null,
+          total_value: null,
+          total_margin: null,
+          total_amount: null,
+          paid_cash: null,
+          total_CTC: null,
+          total_qty: null,
+          total_disc: null,
+          total_value: null,
+          total_total: null,
+          total_scGst: null,
+          total_items: null,
+          discount: null,
+          change_due: null,
+        };
+        setSalesAdd((data) => ({ ...data, ...tempSalesAdd }));
+      }
     }
   };
 
   useEffect(() => {
-    if (tableItemList?.length < 1) {
-      let tempSalesAdd = {
-        // ...salesAdd,
-        total_amount: null,
-        total_cgst: null,
-        total_value: null,
-        total_margin: null,
-        total_amount: null,
-        paid_cash: null,
-        total_CTC: null,
-        total_qty: null,
-        total_disc: null,
-        total_value: null,
-        total_total: null,
-        total_scGst: null,
-        total_items: null,
-        discount: null,
-      };
-      setSalesAdd(data=>({...data, ...tempSalesAdd }));
-    }
-  }, [tableItemList]);
+    getOfInvoiceData();
+  }, []);
 
   const handleGetCode = async () => {
     try {
@@ -441,7 +454,7 @@ const SalesTransaction = () => {
       setSalesAdd((data) => ({
         ...data,
         paid_cash: +totalAmount - value,
-        change_due: salesAdd.total_amount - (value + +totalAmount - value),
+        // change_due: salesAdd.total_amount - (value + +totalAmount - value),
         bank_amount: value,
       }));
     } else if (e.target.value === "")
@@ -460,8 +473,8 @@ const SalesTransaction = () => {
           }
         });
         setBillType(list);
-        if (!edit)
-        setSalesAdd((data) => ({ ...data, fk_bill_type: list[0]?.value }));
+        if (!salesAdd.fk_bill_type)
+          setSalesAdd((data) => ({ ...data, fk_bill_type: list[0]?.value }));
       }
     } catch (err) {
       console.log(err);
@@ -484,25 +497,14 @@ const SalesTransaction = () => {
       formValidation(formRef.current);
       let submitData = { ...salesAdd, items: tableItemKeys };
       let response;
-      console.log(submitData);
-      // return 0
+
       if (!edit) {
-        let data = submitData;
-        if (docNoRecheck == submitData?.documents_no) {
-          const { documents_no, ...others } = submitData;
-          data = others;
-        }
-        response = await postSales(data);
+        response = await postSales(submitData);
       } else {
-        let data = submitData;
-        if (edit?.fk_bill_type == salesAdd?.fk_bill_type) {
-          const { documents_no, ...others } = submitData;
-          data = others;
-        }
-        response = await putSales(edit?.id, data);
+        response = await putSales(edit?.id, submitData);
       }
       if (response?.success) {
-        // handleSalesAllReset()
+        getData();
         setShowPrint(true);
         Swal.fire("Purchase added successfully", "", "success");
       } else {
@@ -664,6 +666,7 @@ const SalesTransaction = () => {
           ) : pageHeadItem == 2 ? (
             <SalesCustomerDetails
               {...{
+                edit,
                 customerList,
                 setCustomerList,
                 getAllUserAc,

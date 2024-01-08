@@ -111,7 +111,7 @@ const SalesTable = (props) => {
         <tr className="border-0" key={i}>
           <td
             className="border-0"
-            style={{ height: "1.7rem", display: "" }}
+            style={{ height: "1.66rem", display: "" }}
             colSpan={18}
           ></td>
         </tr>
