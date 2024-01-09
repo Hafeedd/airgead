@@ -74,7 +74,7 @@ const CashBookTable = (props) => {
                                             <td colSpan={2}></td>
                                             <td className='text-primary '>Opening Balance</td>
                                             <td colSpan={2}></td>
-                                            <td className='text-success fw-bolder ' colSpan={1}>{data?.total_opening_balance.toFixed(2)}</td>
+                                            <td className='text-success fw-bolder ' colSpan={1}>{data?.total_opening_balance >=0? `Debit ${data?.total_opening_balance.toFixed(2)}` : `Credit ${data?.total_opening_balance.toFixed(2)}`}</td>
 
                                             {/* </td> */}
 
@@ -104,7 +104,7 @@ const CashBookTable = (props) => {
                                             <td colSpan={2}></td>
                                             <td className='text-primary'>Closing Balance</td>
                                             <td colSpan={2}></td>
-                                            <td  className={`${data?.total_closing_balance.toString().includes('-')?"text-danger":"text-success fw-bolder"}`} colSpan={1}>{data?.total_closing_balance.toFixed(2)}</td>
+                                            <td  className={`${data?.total_closing_balance.toString().includes('-')?"text-danger":"text-success fw-bolder"}`} colSpan={1}>{data?.total_closing_balance >0? `Debit ${data?.total_closing_balance.toFixed(2)}`:`Credit ${data?.total_closing_balance.toFixed(2)}`}</td>
 
                                             {/* </td> */}
 
