@@ -89,7 +89,7 @@ const SalesDetailFooter = (props) => {
                 onKeyDown={handleKeyDown}
                 onChange={handleChange}
                 className="purchase-input-text"
-                type="numeric"
+                type="number"
               />
             </div>
           </Form.Group>

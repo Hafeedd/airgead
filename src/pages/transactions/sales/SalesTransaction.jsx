@@ -450,11 +450,10 @@ const SalesTransaction = () => {
         (+salesAdd.change_due || 0) +
         (+salesAdd.paid_cash || 0) +
         (+salesAdd.bank_amount || 0);
-      console.log(totalAmount);
       setSalesAdd((data) => ({
         ...data,
         paid_cash: +totalAmount - value,
-        // change_due: salesAdd.total_amount - (value + +totalAmount - value),
+        change_due: salesAdd.total_amount - (value + +totalAmount - value),
         bank_amount: value,
       }));
     } else if (e.target.value === "")
