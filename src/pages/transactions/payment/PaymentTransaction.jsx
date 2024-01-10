@@ -11,81 +11,58 @@ import useItemServices from "../../../services/master/itemServices";
 import { formValidation } from "../../../hooks/formValidation/formValidation";
 
 const PaymentTransaction = ({ method }) => {
+  const initialPaymentState = {
+      id: null,
+      method: method,
+      voucher_number: null,
+      account_id: null,
+      account_name: null,
+      account_code: null,
+      narration: null,
+      cash_bank_account_name: null,
+      cash_bank_account: null,
+      amount: 0,
+      amount_word: null,
+      date: null,
+      project: null,
+      cheque_no: null,
+      draw_no: null,
+      cheque_date: null,
+      salesman: null,
+      commision: null,
+      discount: null,
+      tax_percent: null,
+      taxable: null,
+      tax_type: "GST",
+      cgst: null,
+      sgst: null,
+      tax_amount: null,
+      print_style: null,
+      printer: null,
+      print_copies: null,
+      print_preview: false,
+      print: false,
+      op_balance: null,
+      cl_balance: null,
+  }
   const [accountList, setAccountList] = useState([]);
   const [payReciptList, setPayRecieptList] = useState([]);
   const [pathOfPage, setPathOfPage] = useState();
   const [edit, setEdit] = useState(false);
   const [accountPayList, setAccountPayList] = useState([]); // account chash and bank payment filtered list
   const location = useLocation();
-  const [paymentAdd, setPaymentAdd] = useState({
-    id: null,
-    method: method,
-    voucher_number: null,
-    account_id: null,
-    account_name: null,
-    account_code: null,
-    narration: null,
-    cash_bank_account_name: null,
-    cash_bank_account: null,
-    amount: 0,
-    amount_word: null,
-    date: null,
-    project: null,
-    cheque_no: null,
-    draw_no: null,
-    cheque_date: null,
-    salesman: null,
-    commision: null,
-    discount: null,
-    tax_percent: null,
-    taxable: null,
-    tax_type: "GST",
-    cgst: null,
-    sgst: null,
-    tax_amount: null,
-    print_style: null,
-    printer: null,
-    print_copies: null,
-    print_preview: false,
-    print: false,
-    op_balance: null,
-    cl_balance: null,
-  });
+  const [paymentAdd, setPaymentAdd] = useState(initialPaymentState);
 
   const { getCode } = useItemServices();
-
-  // useEffect(() => {
-  //   const path = location.pathname;
-  //   if (path !== setPathOfPage) {
-  //     setPathOfPage(path);
-  //   }
-  // }, [method]);
-
-  // useEffect(() => {
-  //   let method = "Payment";
-  //   if (location.pathname.includes("rec")) method = "Receipt";
-  //   setPaymentAdd((data) => ({ ...data, method: method }));
-  //   handleReset();
-  // }, [location.pathname]);
-
-  // console.log(paymentAdd.method)
 
   useEffect(() => {
     getData();
   }, []);
   
   useEffect(() => {
+    setPaymentAdd(data=>({...data,method:method}))
     getData2();
   }, [method]);
-
-  // useEffect(() => {
-  //   if (types) {
-  //     let data = { ...paymentAdd, method: types };
-  //     setPaymentAdd(data);
-  //   }
-  // }, [types]);
-
-  // const navigate = useNavigate();
 
   const {
     postPaymentReciept,
@@ -139,6 +116,42 @@ const PaymentTransaction = ({ method }) => {
       return response.data;
     } catch (err) {
       throw err;
+    }
+  };
+
+  const getData2 = async () => {
+    try {
+      let response, response2, code;
+      const param = { params: { method: method } };
+      response = await getPaymentReciept(param);
+      response2 = await getCode();
+      if (response.success) {
+        const data = formatList(response.data);
+        setPayRecieptList(data);
+      }
+      let payRecCode;
+      setPaymentAdd((data) => {
+        payRecCode = data.code;
+        return data
+      });
+      if (response2.success && (!edit || !payRecCode)) {
+        if (paymentAdd.method) {
+          for (let i of response2.data) {
+            let type;
+            if (method == "Payment") {
+              type = "PAY";
+            } else {
+              type = "RES";
+            }
+            if (i.sub_id == type) {
+              code = i.next_code;
+            }
+          }
+        }
+        setPaymentAdd((data) => ({ ...data, voucher_number: code }));
+      }
+    } catch (err) {
+      console.log(err);
     }
   };
 
@@ -222,42 +235,6 @@ const PaymentTransaction = ({ method }) => {
     return tempList;
   };
 
-  const getData2 = async () => {
-    try {
-      let response, response2, code;
-      const param = { params: { method: method } };
-      response = await getPaymentReciept(param);
-      response2 = await getCode();
-      if (response.success) {
-        const data = formatList(response.data);
-        setPayRecieptList(data);
-      }
-      let payRecCode;
-      setPaymentAdd((data) => {
-        payRecCode = data.code;
-        return data
-      });
-      if (response2.success && (!edit || !payRecCode)) {
-        if (paymentAdd.method) {
-          for (let i of response2.data) {
-            let type;
-            if (method == "Payment") {
-              type = "PAY";
-            } else {
-              type = "RES";
-            }
-            if (i.sub_id == type) {
-              code = i.next_code;
-            }
-          }
-        }
-        setPaymentAdd((data) => ({ ...data, voucher_number: code }));
-      }
-    } catch (err) {
-      console.log(err);
-    }
-  };
-
   const handleNumber = (e) => {
     if (
       e.code.includes("Numpad") ||
@@ -315,8 +292,6 @@ const PaymentTransaction = ({ method }) => {
         cl_balance: payment_data?.cl_balance,
       }));
     }
-    // if (typeof e.target.value === 'string' && e.target.type !== 'select-one')
-    // e.target.value = e.target.value.toUpperCase()
 
     if (e.target.type === "number") {
       var temp_value = e.target.value;
@@ -381,7 +356,6 @@ const PaymentTransaction = ({ method }) => {
       // else a = "Payment";
       if (!formValidation()) return 0;
       let submitData = handleToUpperCase(paymentAdd);
-      submitData = { ...submitData };
       let response;
       if (!edit) {
         response = await postPaymentReciept(submitData);
@@ -390,7 +364,7 @@ const PaymentTransaction = ({ method }) => {
       }
       if (response?.success) {
         Swal.fire(
-          `${paymentAdd?.method === "Payment" ? "Payment" : "Reciept"} ${
+          `${method === "Payment" ? "Payment" : "Reciept"} ${
             edit ? "edited" : "added"
           } successfully`,
           "",
@@ -422,40 +396,7 @@ const PaymentTransaction = ({ method }) => {
   };
 
   const handleReset = async () => {
-    setPaymentAdd({
-      id: null,
-      method: "Payment",
-      voucher_number: null,
-      account_id: null,
-      account_name: null,
-      account_code: null,
-      narration: null,
-      cash_bank_account_name: null,
-      cash_bank_account: null,
-      amount: 0,
-      amount_word: null,
-      date: null,
-      project: null,
-      cheque_no: null,
-      draw_no: null,
-      cheque_date: null,
-      salesman: null,
-      commision: null,
-      discount: null,
-      tax_percent: null,
-      taxable: null,
-      tax_type: "GST",
-      cgst: null,
-      sgst: null,
-      tax_amount: null,
-      print_style: null,
-      printer: null,
-      print_copies: null,
-      print_preview: false,
-      print: false,
-      op_balance: null,
-      cl_balance: null,
-    });
+    setPaymentAdd(initialPaymentState);
     setEdit(false);
     getData();
     getData2();
@@ -495,6 +436,7 @@ const PaymentTransaction = ({ method }) => {
         <div className="item_add_cont">
           <PaymentDetail
             {...{
+              method,
               edit,
               accountList,
               setPaymentAdd,

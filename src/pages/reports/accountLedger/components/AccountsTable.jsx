@@ -121,9 +121,9 @@ export const AccountsTable = (props) => {
                             data?.opening_balance?.toFixed(2) +
                             ": Op. Balance ) "}{" "}
                           &nbsp;&nbsp;{" "}
-                          {"( " +
+                          {/* "( " +
                             data?.closing_balance?.toFixed(2) +
-                            ": Cl. Balance )"}
+                            ": Cl. Balance )" */}
                           <div className="col-3 p-2 stock-ledger-search d-flex align-items-center">
                             <div className="col-1 me-2">
                               <MdRefresh
@@ -154,19 +154,27 @@ export const AccountsTable = (props) => {
                     <td colSpan={6} className="text-end">
                       Opening Balance:
                     </td>
-                    <td className="text-end">{data?.opening_balance?.toFixed(2)}</td>
+                    <td className="text-end">
+                      {data?.opening_balance?data?.opening_balance?.toFixed(2)
+                      +(data?.opening_balance?.toFixed(2)>0?" Db":" Cr"):'0'}
+                    </td>
                   </tr>
                   {data?.ledger_report?.length > 0 ? (
                     data?.ledger_report?.map((item, i) => {
-                      let balance;
-                      if (!item.debit){
-                        if (data?.opening_balance?.toString().includes("-"))
-                          balance = tempBalance + item?.credit || 0;
-                        else balance = tempBalance - item?.credit || 0;
-                      }else if (data?.opening_balance?.toString().includes("-"))
-                        balance = tempBalance - item?.debit || 0;
-                        else
-                        balance = tempBalance + item?.debit || 0;
+                      let balance = tempBalance
+                      // console.log(+balance + Math.abs(+item?.debit)||0 + +item.credit||0)
+                      balance = +balance + Math.abs(+item?.debit)||0 + +item.credit||0
+                      // if (!item.debit) {
+                      //   if (data?.opening_balance<0) {
+                      //     balance = Math.abs(tempBalance) + Math.abs(item?.credit) || 0;
+                      //   } else {
+                      //     balance = Math.abs(tempBalance) - Math.abs(item?.credit) || 0;
+                      //   }
+                      // } else if (
+                      //   data?.opening_balance<0
+                      // )
+                      //   balance = Math.abs(tempBalance) - Math.abs(item?.debit) || 0;
+                      // else balance = Math.abs(tempBalance) + Math.abs(item?.debit) || 0;
                       tempBalance = balance;
                       return (
                         <tr key={i}>
@@ -176,9 +184,9 @@ export const AccountsTable = (props) => {
                           <td className="text-center">{item?.opp_code}</td>
                           <td className="text-center">{item?.opp_account}</td>
                           <td className="text-center">{item?.narration}</td>
-                          <td className="text-center">{item?.debit || 0}</td>
-                          <td className="text-center">{item?.credit || 0}</td>
-                          <td className="text-end">{balance?.toFixed(2)}</td>
+                          <td className="text-center">{item?.debit?Math.abs(item?.debit) +" Db" : ''}</td>
+                          <td className="text-center">{item?.credit ?item?.credit + " Cr" : ''}</td>
+                          <td className="text-end">{balance?.toFixed(2)+ (balance>0 ?" Db" : " Cr")}</td>
                         </tr>
                       );
                     })
@@ -192,17 +200,17 @@ export const AccountsTable = (props) => {
                   <tr>
                     <td
                       style={{ background: "#CECECE" }}
-                      className=""
-                      colSpan={1}
+                      className="text-end"
+                      colSpan={6}
                     >
                       Closing balance
                     </td>
                     <td
                       style={{ background: "#CECECE" }}
                       className="text-end"
-                      colSpan={6}
+                      colSpan={1}
                     >
-                      {data.closing_balance?.toFixed(2)}
+                      {tempBalance?.toFixed(2)}
                     </td>
                   </tr>
                 </>

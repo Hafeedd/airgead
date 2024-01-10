@@ -39,7 +39,7 @@ const PurchaseEditList = (props) => {
           <tr>
             <th className='text-start ps-3 start'>Doc Number</th>
             <th>Date</th>
-            <th>{from?"Customer Name":"Supplier Name"}</th>
+            <th>{from==='sales'?"Customer Name":"Supplier Name"}</th>
             <th style={{borderRight:'0px'}}>NET Amount</th>
             <th style={{borderRight:'0px', width:"23%"}} className='ps-1 pe-0'>
                 <div className='item_seach_bar_cont rounded-2 px-0 pe-1 mx-0' style={{height: "2.0625rem",width:"fit-content"}}>
@@ -67,7 +67,7 @@ const PurchaseEditList = (props) => {
             <td className='text-start ps-3'>{data?.documents_no}</td>
             <td className=''>{new Date(data?.created_at)?.toISOString()
             .slice(0,10).split('-').reverse().join('-')}</td>
-            <td className=''>{data?.supplier_name}</td>
+            <td className=''>{from==='sales'?data?.customer_name:data?.supplier_name}</td>
             <td className=''>{data?.total_amount}</td>
             <td className=''></td>
             <td className=''>

@@ -9,6 +9,7 @@ import { useLocation } from "react-router";
 
 const PaymentDetail = ({
   edit,
+  method,
   setPaymentAdd,
   paymentAdd,
   handleChange,
@@ -94,7 +95,7 @@ const PaymentDetail = ({
             <div className="mx-0 px-0 col-7">
               <select
                 onChange={handleChange}
-                value={paymentAdd.method}
+                value={paymentAdd?.method}
                 name="method"
                 className="account-select-dropdown ms-0 pe-0"
               >

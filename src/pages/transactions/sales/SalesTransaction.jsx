@@ -307,11 +307,9 @@ const SalesTransaction = () => {
       }
 
       let changeDue 
-      // = netAmount?.toFixed(0);
+      
       if (paidCash) {
-        console.log(netAmount?.toFixed(0) - paidCash - salesAdd.bank_amount)
         changeDue = netAmount?.toFixed(0) - paidCash - salesAdd.bank_amount
-        console.log(changeDue)
       }
 
       let tempSalesAdd = {
