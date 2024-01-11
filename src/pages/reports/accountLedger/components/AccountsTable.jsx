@@ -162,8 +162,10 @@ export const AccountsTable = (props) => {
                   {data?.ledger_report?.length > 0 ? (
                     data?.ledger_report?.map((item, i) => {
                       let balance = tempBalance
-                      // console.log(+balance + Math.abs(+item?.debit)||0 + +item.credit||0)
-                      balance = +balance + Math.abs(+item?.debit)||0 + +item.credit||0
+                      if(!item.debit) balance = +balance + (+item?.credit)
+                      else balance = +balance + Math.abs(+item?.debit)
+                    
+                      // balance = +balance + +item.credit||0 + 
                       // if (!item.debit) {
                       //   if (data?.opening_balance<0) {
                       //     balance = Math.abs(tempBalance) + Math.abs(item?.credit) || 0;

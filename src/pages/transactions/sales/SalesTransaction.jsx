@@ -113,6 +113,7 @@ const SalesTransaction = () => {
   const [billTypeDocNo, setBillTypeDocNo] = useState(null);
   const [codeWithBillTypeList, setCodeWithBillTypeList] = useState([]);
   const [showPrint, setShowPrint] = useState(false);
+  const [bankSelect, setBankSelect] = useState(false);
   const [cstClsOpn, setCstClsOpn] = useState({
     opening: null,
     closing: null,
@@ -306,19 +307,20 @@ const SalesTransaction = () => {
         paidCash = edit.paid_cash;
       }
 
-      let changeDue 
-      
+      let changeDue;
       if (paidCash) {
-        changeDue = netAmount?.toFixed(0) - paidCash - salesAdd.bank_amount
+        changeDue =
+          (netAmount?.toFixed(0) - salesAdd.discount || 0) -
+          paidCash -
+          salesAdd.bank_amount;
       }
-
+      console.log(salesAdd.discount);
       let tempSalesAdd = {
         hsnCalc: hsnWiseCalc,
-        total_amount: netAmount?.toFixed(2),
         total_cgst: total_cgst_amnt?.toFixed(2),
         total_value: total_value?.toFixed(2),
         total_margin: netMargin?.toFixed(0),
-        total_amount: netAmount?.toFixed(0),
+        total_amount: netAmount?.toFixed(0) - salesAdd.discount,
         total_CTC: totalCTC?.toFixed(2),
         total_qty: totalQty?.toFixed(0),
         total_value: total_value?.toFixed(2),
@@ -333,33 +335,39 @@ const SalesTransaction = () => {
         change_due: changeDue,
       };
       setSalesAdd((data) => ({ ...data, ...tempSalesAdd }));
-    }else{
-      if (tableItemList?.length < 1) {
-        let tempSalesAdd = {
-          total_amount: null,
-          total_cgst: null,
-          total_value: null,
-          total_margin: null,
-          total_amount: null,
-          paid_cash: null,
-          total_CTC: null,
-          total_qty: null,
-          total_disc: null,
-          total_value: null,
-          total_total: null,
-          total_scGst: null,
-          total_items: null,
-          discount: null,
-          change_due: null,
-        };
-        setSalesAdd((data) => ({ ...data, ...tempSalesAdd }));
-      }
+    } else {
+      setSalesAdd((data) => ({ 
+        ...data, 
+        total_amount: null,
+        total_cgst: null,
+        total_value: null,
+        total_margin: null,
+        total_amount: null,
+        paid_cash: null,
+        total_CTC: null,
+        total_qty: null,
+        total_disc: null,
+        total_value: null,
+        total_total: null,
+        total_scGst: null,
+        total_items: null,
+        change_due: null,
+      }));
     }
   };
 
   useEffect(() => {
     getOfInvoiceData();
   }, []);
+
+  useEffect(() => {
+    if (
+      (salesAdd.bank_amount && salesAdd.fk_bank) ||
+      (!salesAdd.bank_amount && !salesAdd.fk_bank)
+    )
+      setBankSelect(true);
+    else setBankSelect(false);
+  }, [salesAdd.bank_amount, salesAdd.fk_bank]);
 
   const handleGetCode = async () => {
     try {
@@ -599,7 +607,11 @@ const SalesTransaction = () => {
           </div>
         </div>
       </div>
-      <form ref={formRef} className="item_add_cont px-3 pb-1 pt-0">
+      <form
+        onSubmit={handleSubmit}
+        ref={formRef}
+        className="item_add_cont px-3 pb-1 pt-0"
+      >
         <div className="row mx-0 mb-0 justify-content-between">
           <div className="col-3 mx-0 px-0 ps-2 row">
             <div className="col-12 sales-supplier-container px-0 py-4 row mx-0 mt-1">
@@ -712,6 +724,7 @@ const SalesTransaction = () => {
         />
         <SalesDetailFooter
           {...{
+            bankSelect,
             handleKeyDown,
             salesAdd,
             handleChange,

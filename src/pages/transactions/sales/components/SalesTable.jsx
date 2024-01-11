@@ -29,7 +29,7 @@ const SalesTable = (props) => {
     tableItemKeys,
     setTableItemKeys,
   } = props;
-  
+
   const [ref, setRef] = useState(null);
   const [unitList, setUnitList] = useState(null);
   // const [calcChange, setCalcChange] = useState();
@@ -106,12 +106,12 @@ const SalesTable = (props) => {
 
   const AdjustHeightOfTable = () => {
     let a = [];
-    for (let i = 0; i < 8 - salesAdd.total_items || 0; i++) {
+    for (let i = 0; i < 8 - tableItemList.length || 0; i++) {
       a.push(
         <tr className="border-0" key={i}>
           <td
             className="border-0"
-            style={{ height: "1.66rem", display: "" }}
+            style={{ height: "1.766rem", display: "" }}
             colSpan={18}
           ></td>
         </tr>
@@ -201,11 +201,7 @@ const SalesTable = (props) => {
       }
     }
     try {
-      if (
-        !tableItem.fk_items ||
-        !tableItem.quantity ||
-        !tableItem.rate
-      ) {
+      if (!tableItem.fk_items || !tableItem.quantity || !tableItem.rate) {
         Swal.fire({
           title: "Please Enter essential details first",
           text: "Select item , enter quantity, enter rate , enter sales rate",
@@ -363,9 +359,9 @@ const SalesTable = (props) => {
           ["discount_amnt_per_item"]:
             tempItem.discount_1_percentage * (tempItem.rate / 100),
         };
-      }else{
+      } else {
         value = {
-          ["discount_amnt_per_item"]:0
+          ["discount_amnt_per_item"]: 0,
         };
       }
 
@@ -497,7 +493,7 @@ const SalesTable = (props) => {
   };
 
   const handlePrev = () => {
-    if (salesList.length>0) {
+    if (salesList.length > 0) {
       if (!edit) {
         setEdit(salesList[0]);
       } else {
@@ -509,7 +505,7 @@ const SalesTable = (props) => {
           Swal.fire("No more purchase to edit", "go for next", "warning");
         }
       }
-    }else{
+    } else {
       Swal.fire("No more purchase to edit", "go for next", "warning");
     }
   };
@@ -935,65 +931,67 @@ const SalesTable = (props) => {
 
             <AdjustHeightOfTable />
 
-            <tr className="purchase-table-green">
-              <td className="item2 col-1" colSpan={2}>
-                <div
-                  className="btn bg-none outline-none text-light border-none"
-                  onClick={handlePrev}
-                >
-                  {"<"} Previous
-                </div>
-              </td>
-              <td className="item3 px-3 col-1">
-                <div
-                  className="btn bg-none outline-none text-light border-none"
-                  onClick={handleNext}
-                >
-                  Next {">"}
-                </div>
-              </td>
-              <td className="item">
-                <div className="purch-green-table-item">
-                  {salesAdd.total_qty || 0}
-                </div>
-              </td>
-              <td></td>
-              <td></td>
-              <td></td>
-              <td></td>
-              <td className="item">
-                <div className="purch-green-table-item">
-                  {salesAdd.total_discount || 0}
-                </div>
-              </td>
-              <td className="item">
-                <div className="purch-green-table-item">
-                  {salesAdd.total_value || 0}
-                </div>
-              </td>
-              <td></td>
-              <td className="item">
-                <div className="purch-green-table-item">
-                  {salesAdd.total_sgst || 0}%
-                </div>
-              </td>
-              <td className="item">
-                <div className="purch-green-table-item">
-                  {salesAdd.total_sgst || 0}%
-                </div>
-              </td>
-              <td className="item">
-                <div className="purch-green-table-item">
-                  {salesAdd.total_total || 0}
-                </div>
-              </td>
-              <td></td>
-              <td></td>
-              {/* <td></td> */}
-              <td></td>
-              <td></td>
-            </tr>
           </tbody>
+            <tfoot>
+              <tr className="purchase-table-green">
+                <td className="item2 col-1" colSpan={2}>
+                  <div
+                    className="btn bg-none outline-none text-light border-none"
+                    onClick={handlePrev}
+                  >
+                    {"<"} Previous
+                  </div>
+                </td>
+                <td className="item3 px-3 col-1">
+                  <div
+                    className="btn bg-none outline-none text-light border-none"
+                    onClick={handleNext}
+                  >
+                    Next {">"}
+                  </div>
+                </td>
+                <td className="item">
+                  <div className="purch-green-table-item">
+                    {salesAdd.total_qty || 0}
+                  </div>
+                </td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td className="item">
+                  <div className="purch-green-table-item">
+                    {salesAdd.total_discount || 0}
+                  </div>
+                </td>
+                <td className="item">
+                  <div className="purch-green-table-item">
+                    {salesAdd.total_value || 0}
+                  </div>
+                </td>
+                <td></td>
+                <td className="item">
+                  <div className="purch-green-table-item">
+                    {salesAdd.total_sgst || 0}%
+                  </div>
+                </td>
+                <td className="item">
+                  <div className="purch-green-table-item">
+                    {salesAdd.total_sgst || 0}%
+                  </div>
+                </td>
+                <td className="item">
+                  <div className="purch-green-table-item">
+                    {salesAdd.total_total || 0}
+                  </div>
+                </td>
+                <td></td>
+                <td></td>
+                {/* <td></td> */}
+                <td></td>
+                <td></td>
+              </tr>
+            </tfoot>
         </table>
       </div>
       <div className="sales-detail-container mx-2 mt-1">

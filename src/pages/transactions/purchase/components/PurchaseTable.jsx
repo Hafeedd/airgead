@@ -352,7 +352,7 @@ const PurchaseTable = (props) => {
         <tr key={i}>
           <td
             className="border-0"
-            style={{ height: "1.8rem", display: "" }}
+            style={{ height: "1.82rem", display: "" }}
             colSpan={17}
           ></td>
         </tr>
@@ -909,7 +909,9 @@ const PurchaseTable = (props) => {
               </td>
             </tr>
 
-            {<AdjustHeightOfTable />}
+            {<AdjustHeightOfTable />}  
+          </tbody>
+          <tfoot>
             <tr className="purchase-table-green">
               <td className="item2 col-1">
                 <div
@@ -967,7 +969,7 @@ const PurchaseTable = (props) => {
               <td></td>
               <td></td>
             </tr>
-          </tbody>
+            </tfoot>
         </table>
       </div>
       <div className="purchase-detail-container px-3 py-0 mx-2 mt-1">

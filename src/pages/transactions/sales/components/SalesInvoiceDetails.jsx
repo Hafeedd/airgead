@@ -32,8 +32,6 @@ const SalesInvoiceDetails = (props) => {
   }, [salesAdd.fk_bill_type, codeWithBillTypeList]);
 
   const handleBillTypeSelection = () => {
-    console.log('edit:::::',edit.fk_bill_type)
-    console.log('salesAdd:::::',salesAdd.fk_bill_type)
     let tempCode;
     if (
       edit &&
@@ -42,7 +40,6 @@ const SalesInvoiceDetails = (props) => {
     ) {
       setSalesAdd((data) => ({ ...data, documents_no: edit?.documents_no }));
     } else if (salesAdd.fk_bill_type && codeWithBillTypeList?.length > 0) {
-      console.log("first")
       tempCode = codeWithBillTypeList?.filter(
         (x) => x.fk_bill_type == salesAdd.fk_bill_type
       )[0];

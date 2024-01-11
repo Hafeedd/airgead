@@ -119,29 +119,23 @@ const PurchaseTransaction = () => {
   const { getCode } = useItemServices();
 
   useEffect(() => {
-    if (!edit) {
-      handlePurchAllCalc("noEdit");
-    } else {
-      handlePurchAllCalc("edit");
-    }
+    if (edit) handlePurchAllCalc("edit");
+    else handlePurchAllCalc("noEdit");
   }, [tableItemList]);
 
   useEffect(() => {
-    if ((purchaseAdd.bank_amount && purchaseAdd.fk_bank)||
-    (!purchaseAdd.bank_amount&&!purchaseAdd.fk_bank)) setBankSelect(true);
-    else setBankSelect(false)
-
-  }, [purchaseAdd.bank_amount,purchaseAdd.fk_bank]);
-  
+    if (
+      (purchaseAdd.bank_amount && purchaseAdd.fk_bank) ||
+      (!purchaseAdd.bank_amount && !purchaseAdd.fk_bank)
+    )
+      setBankSelect(true);
+    else setBankSelect(false);
+  }, [purchaseAdd.bank_amount, purchaseAdd.fk_bank]);
 
   useEffect(() => {
-    let tempPurhase = { ...purchaseAdd };
-    if (purchaseAdd.change_due > 0) {
-      tempPurhase = { ...tempPurhase, payment_type: "CREDIT" };
-    } else {
-      tempPurhase = { ...tempPurhase, payment_type: "CASH" };
-    }
-    setPurchaseAdd({ ...tempPurhase });
+    let paymentType = "CASH";
+    if (purchaseAdd.change_due > 0) paymentType = "CREDIT";
+    setPurchaseAdd((data) => ({ ...data, payment_type: paymentType }));
   }, [purchaseAdd.total_amount]);
 
   useEffect(() => {
@@ -204,15 +198,25 @@ const PurchaseTransaction = () => {
       if (status == "edit") {
         paidCash = edit.paid_cash;
       }
-      if (status == "edit") {
-        netAmount = +edit.total_amount;
+
+      // if (status == "edit" && purchaseAdd.discount>0) {
+      //   netAmount = +edit.total_amount - purchaseAdd.discount;
+      // }
+
+      let changeDue;
+
+      if (paidCash) {
+        changeDue =
+          (netAmount?.toFixed(0) - purchaseAdd.discount || 0) -
+          paidCash -
+          purchaseAdd.bank_amount;
       }
 
       let tempPurchaseAdd = {
         ...purchaseAdd,
         total_margin: netMargin?.toFixed(0),
-        total_amount: netAmount?.toFixed(0),
-        total_amount2: netAmount?.toFixed(2),
+        total_amount: netAmount?.toFixed(0) - purchaseAdd.discount,
+        total_amount2: netAmount?.toFixed(2) - purchaseAdd.discount,
         paid_cash: paidCash?.toFixed(0),
         total_CTC: totalCTC?.toFixed(2),
         total_qty: totalQty?.toFixed(0),
@@ -221,13 +225,14 @@ const PurchaseTransaction = () => {
         total_scGst: total_scGst?.toFixed(2),
         total_items: totalItem,
         roundoff: roundOff,
+        change_due: changeDue,
         // total_disc: total_disc?.toFixed(0),
         // discount: total_disc?.toFixed(2),
       };
-      setPurchaseAdd({ ...tempPurchaseAdd });
+      setPurchaseAdd((data) => ({ ...data, ...tempPurchaseAdd }));
     } else {
-      setPurchaseAdd({
-        ...purchaseAdd,
+      setPurchaseAdd((data) => ({
+        ...data,
         otal_margin: 0,
         total_amount: 0,
         paid_cash: 0,
@@ -237,11 +242,11 @@ const PurchaseTransaction = () => {
         total_total: 0,
         total_scGst: 0,
         total_items: 0,
-        // discount: 0,
-        // change_due: 0,
-        // roundoff: 0,
-        // total_disc: 0,
-      });
+        change_due: 0,
+        discount: 0,
+        roundoff: 0,
+        total_disc: 0,
+      }));
     }
   };
 
@@ -378,7 +383,6 @@ const PurchaseTransaction = () => {
     setEdit(false);
     handleGetCode();
   };
-
 
   const handleChange = (e, data) => {
     if (data && data.name == "fk_bank") {
@@ -543,6 +547,7 @@ const PurchaseTransaction = () => {
       }
       if (response?.success) {
         handlePurchaseAllReset();
+        getData()
         Swal.fire("Purchase added successfully", "", "success");
       } else {
         if (response?.data?.length > 0) {
@@ -550,7 +555,7 @@ const PurchaseTransaction = () => {
             Swal.fire({
               title: "Error",
               text:
-                response?.data || "Something went wrong. Pls try again later",
+                response?.data[0] || "Something went wrong. Pls try again later",
               icon: "error",
               timer: 1000,
               showConfirmButton: false,

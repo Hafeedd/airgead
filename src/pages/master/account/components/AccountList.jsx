@@ -4,6 +4,7 @@ import editIcon from "../../../../assets/icons/edit-black.svg";
 import { HiOutlineTrash } from "react-icons/hi2";
 import Swal from "sweetalert2";
 import useAccountServices from "../../../../services/master/accountServices";
+import deleteBtn from "../../../../assets/icons/delete.svg"
 
 const AccountList = (props) => {
   const { listItem, handleEdit, handleDelete, toEdit, loadAccountList } = props;
@@ -151,11 +152,12 @@ const AccountList = (props) => {
                     <td>{data?.closing_balance || ""}</td>
                     {/* <td>{data?.opening_balance}</td> */}
                     <td>
-                      <HiOutlineTrash
+                      {/* <HiOutlineTrash
                         onClick={handleDelete}
                         size={18}
                         className="text-danger"
-                      />
+                      /> */}
+                      <img src={deleteBtn} alt="delete_btn" />
                     </td>
                     <td>
                       <div

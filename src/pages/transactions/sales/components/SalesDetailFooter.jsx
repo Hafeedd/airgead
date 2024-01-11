@@ -6,11 +6,11 @@ import useAccountServices from "../../../../services/master/accountServices";
 
 const SalesDetailFooter = (props) => {
   const {
+    bankSelect,
     salesAdd,
     handleKeyDown,
     handleChange,
     edit,
-    handleSubmit,
     handleSalesAllReset,
   } = props;
 
@@ -49,7 +49,7 @@ const SalesDetailFooter = (props) => {
       <div className="col-3 ms-2 purchase-supplier-container row mx-0 mt-1 p-2">
         <div className="col-12 sales-value-container px-0 row mx-0 my-0 align-items-center d-flex pb-3">
           <div className="col-12 my-1 container-title">E Paymen</div>
-          <Form.Group className="col-2 mx-0 px-0 col-10 mx-0 d-flex align-items-center mt-1 ms-2">
+          <Form.Group className="col-2 mx-0 px-0 col-10 mx-0 d-flex align-items-center mt-1 ms-2 position-relative">
             <Form.Label className="col-4 col-5 purchase-input-label">
               Bank
             </Form.Label>
@@ -57,15 +57,7 @@ const SalesDetailFooter = (props) => {
               <Dropdown
                 id="bank"
                 name="fk_bank"
-                validate={(value) => {
-                  if (salesAdd.bank_amount > 0)
-                    return {
-                      valid: value !== null,
-                      message: "Please select an option",
-                    };
-                }}
-                // required={salesAdd?.bank_amount>0?true:false}
-                value={salesAdd.fk_bank||''}
+                value={salesAdd.fk_bank || ""}
                 onChange={handleChange}
                 className="purchase-bank-drop mx-0"
                 placeholder="select"
@@ -76,7 +68,15 @@ const SalesDetailFooter = (props) => {
                 options={bankList}
               />
             </div>
-          </Form.Group>
+            {!bankSelect && (
+              <div
+                className="position-absolute bg-secondary text-light rounded-2 p-1"
+                style={{ right: "-30px", bottom: "-29px" }}
+              >
+                This field is required
+              </div>
+            )}
+          </Form.Group> 
           <Form.Group className="col-2 mx-0 px-0 col-10 mx-0 d-flex align-items-center mt-1 ms-2">
             <Form.Label className="col-4 col-5 purchase-input-label">
               Amount
@@ -228,12 +228,12 @@ const SalesDetailFooter = (props) => {
             <div className="col-1 px-0">Net</div>
             <div className="col-1 ">:</div>
             <div className="col-10 col-9 fs-3 px-0 text-danger">
-              {salesAdd.total_amount || ''}
+              {salesAdd.total_amount || ""}
             </div>
           </div>
         </div>
-        <div className="col-12 row px-0 mx-0 mt-4">
-          <div className="mx-0 ps-0 pe-1 col-6">
+        <div className="col-12 row px-0 mx-0 mt-3">
+          <div className="mx-0 px-1 col-6">
             <button
               type="reset"
               onClick={handleSalesAllReset}
@@ -242,9 +242,9 @@ const SalesDetailFooter = (props) => {
               Clear
             </button>
           </div>
-          <div className="mx-0 ps-1 pe-0 col-6">
+          <div className="mx-0 px-1 pe-0 col-6">
             <button
-              onClick={handleSubmit}
+              disabled={!bankSelect}
               type="submit"
               className="btn btn-sm btn-dark w-100"
             >
