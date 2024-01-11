@@ -120,7 +120,7 @@ const SalesInvoiceDetails = (props) => {
             onChange={handleChange}
             onKeyDown={handleKeyDown}
           >
-            <option value="RET_RATE">RET RATE</option>
+            <option value="RETAIL_RATE">RETAIL RATE</option>
             <option value="MRP">MRP</option>
             <option value="WS_RATE">WS RATE</option>
             <option value="SUPER_WHOLESALE_RATE">SUPERWHOLESALE RATE</option>
