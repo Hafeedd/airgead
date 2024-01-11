@@ -2,11 +2,15 @@ import searchIcon from "../../../../assets/icons/search.png";
 import deleteBtn from "../../../../assets/icons/delete.svg";
 import editBtn from "../../../../assets/icons/edit-black.svg";
 import { useEffect, useState } from "react";
+import Swal from "sweetalert2";
+import useItemServices from "../../../../services/master/itemServices";
 
 const ItemList = (props) => {
   const { list, handleEdit, handleDelete, getData } = props;
 
   const [searchedList, setSearchedList] = useState([]);
+
+  const { deleteItemList } = useItemServices();
 
   useEffect(() => {
     setSearchedList(list);
@@ -36,6 +40,38 @@ const ItemList = (props) => {
         }
       }
     } catch {}
+  };
+
+  const handleDeleteItem = async (id) => {
+    try {
+      const response = await deleteItemList(id);
+      if (response?.success) {
+        Swal.fire({
+          title: "Success",
+          text: "Account deleted successfully",
+          icon: "success",
+          timer: 1000,
+          showConfirmButton: false,
+        });
+        getData();
+      } else {
+        Swal.fire({
+          title: "Warning",
+          text:
+            response?.message ||
+            "Failed to delete item. There may be transaction done with this item.",
+          icon: "info",
+        });
+      }
+    } catch (err) {
+      Swal.fire({
+        title: "Warning",
+        text:
+        err?.response?.data?.message ||
+          "Failed to delete item. There may be transaction done with this item.",
+        icon: "info",
+      });
+    }
   };
 
   return (
@@ -77,13 +113,36 @@ const ItemList = (props) => {
               <th>S.Rate</th>
               <th>Tax/GST</th>
               <th>MRP</th>
-              <th width="50"></th>
               <th width="50" style={{ borderTopRightRadius: "0.3125rem" }}></th>
             </tr>
           </thead>
           <tbody>
             {searchedList?.length > 0 ? (
               searchedList.map((data, i) => {
+
+                const handleDelete = async (e) => {
+                  Swal.fire({
+                    title: "Delete",
+                    text: `Are you sure, you want to delete ${data.name}?`,
+                    icon: "question",
+                    showDenyButton: true,
+                    showCancelButton: false,
+                    confirmButtonText: "Yes",
+                    denyButtonText: "Cancel",
+                    showLoaderOnConfirm: true,
+                    preConfirm: async () => {
+                      await handleDeleteItem(data?.id);
+                    },
+                    preDeny: () => {
+                      Swal.fire({
+                        title: "Cancelled",
+                        icon: "info",
+                        timer: 1000,
+                        showConfirmButton: false,
+                      });
+                    },
+                  });
+                };
                 return (
                   <tr>
                     <td>{i + 1}</td>
@@ -96,16 +155,9 @@ const ItemList = (props) => {
                     <td>{data?.tax_gst}</td>
                     <td>{data?.mrp_rate}</td>
                     <td>
-                      <div
-                        className="button"
-                        onClick={(e) => handleDelete(data?.id, e)}
-                      >
-                        <img src={deleteBtn} alt="deletebtn" />
-                      </div>
-                    </td>
-                    <td>
-                      <div className="button" onClick={(e) => handleEdit(data)}>
-                        <img src={editBtn} alt="Edit button" />
+                      <div className="button d-flex gap-4 pe-3" >
+                        <img src={deleteBtn} alt="deletebtn" onClick={(e) => handleDelete(data?.id, e)}/>
+                        <img src={editBtn} alt="Edit button" onClick={(e) => handleEdit(data)}/>
                       </div>
                     </td>
                   </tr>

@@ -183,8 +183,8 @@ export const AccountsTable = (props) => {
                           <td className="text-start">
                             {new Date(item?.date).toLocaleDateString()}
                           </td>
+                          <td className="text-center">{item?.doc_no}</td>
                           <td className="text-center">{item?.opp_code}</td>
-                          <td className="text-center">{item?.opp_account}</td>
                           <td className="text-center">{item?.narration}</td>
                           <td className="text-center">{item?.debit?Math.abs(item?.debit) +" Db" : ''}</td>
                           <td className="text-center">{item?.credit ?item?.credit + " Cr" : ''}</td>

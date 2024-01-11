@@ -157,6 +157,8 @@ const SalesTransaction = () => {
     }
   }, [edit]);
 
+  console.log(salesAdd.fk_bank)
+
   // console.log(salesAdd.fk_bill_type)
 
   useEffect(() => {
@@ -314,7 +316,7 @@ const SalesTransaction = () => {
           paidCash -
           salesAdd.bank_amount;
       }
-      console.log(salesAdd.discount);
+      
       let tempSalesAdd = {
         hsnCalc: hsnWiseCalc,
         total_cgst: total_cgst_amnt?.toFixed(2),

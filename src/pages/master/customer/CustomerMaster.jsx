@@ -12,7 +12,7 @@ const CustomerList = () => {
   const [listCustomer, setListCustomer] = useState([]);
   const [search, setSearch] = useState();
   // const [showCustomerAdd,setShowCustomerAdd] = useState(false)
-  const { getCustomer, deleteCustomer } = useCustomerServices();
+  const { getCustomer } = useCustomerServices();
 
   const location = useLocation().pathname;
   const navigate = useNavigate();
@@ -33,45 +33,45 @@ const CustomerList = () => {
     }
   }, [listCustomer]);
 
-  const handleDelete = (id, e) => {
-    Swal.fire({
-      title: "Are you sure?",
-      text: "You won't be able to revert this!",
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonColor: "#3085d6",
-      cancelButtonColor: "#d33",
-      confirmButtonText: "Yes, delete it!",
-    }).then((result) => {
-      if (result.isConfirmed) {
-        handleDeleteConfirm(id, e);
-      }
-    });
-  };
+  // const handleDelete = (id, e) => {
+  //   Swal.fire({
+  //     title: "Are you sure?",
+  //     text: "You won't be able to revert this!",
+  //     icon: "warning",
+  //     showCancelButton: true,
+  //     confirmButtonColor: "#3085d6",
+  //     cancelButtonColor: "#d33",
+  //     confirmButtonText: "Yes, delete it!",
+  //   }).then((result) => {
+  //     if (result.isConfirmed) {
+  //       handleDeleteConfirm(id, e);
+  //     }
+  //   });
+  // };
 
-  const handleDeleteConfirm = async (id, e) => {
-    e.preventDefault();
-    try {
-      let res = await deleteCustomer(id);
-      if (res.success)
-        Swal.fire("Customer deleted Successfully", "", "success");
-      else {
-        Swal.fire(
-          "Warning",
-          res.message ||
-            "This account may contain transaction. Therefore it cant be deleted",
-          "info"
-        );
-      }
-      getData();
-    } catch (err) {
-      Swal.fire(
-        "Warning",
-        "This account may contain transaction. Therefore it cant be deleted",
-        "warning"
-      );
-    }
-  };
+  // const handleDeleteConfirm = async (id, e) => {
+  //   e.preventDefault();
+  //   try {
+  //     let res = await deleteCustomer(id);
+  //     if (res.success)
+  //       Swal.fire("Customer deleted Successfully", "", "success");
+  //     else {
+  //       Swal.fire(
+  //         "Warning",
+  //         res.message ||
+  //           "This account may contain transaction. Therefore it cant be deleted",
+  //         "info"
+  //       );
+  //     }
+  //     getData();
+  //   } catch (err) {
+  //     Swal.fire(
+  //       "Warning",
+  //       "This account may contain transaction. Therefore it cant be deleted",
+  //       "warning"
+  //     );
+  //   }
+  // };
 
   const getData = async () => {
     try {
@@ -144,7 +144,7 @@ const CustomerList = () => {
               setSearch,
               navigate,
               handleEdit,
-              handleDelete,
+              // handleDelete,
               toEdit,
             }}
           />

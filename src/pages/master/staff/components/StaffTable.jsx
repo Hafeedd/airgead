@@ -4,6 +4,8 @@ import searchIcon from "../../../../assets/icons/search.png";
 import editBtn from "../../../../assets/icons/edit-black.svg";
 import { OverlayTrigger, ButtonToolbar, Popover } from "react-bootstrap";
 import { useLocation } from "react-router";
+import useStaffServices from "../../../../services/master/staffServices";
+import Swal from "sweetalert2";
 
 export const StaffTable = (props) => {
   const {
@@ -22,6 +24,8 @@ export const StaffTable = (props) => {
   } = props;
 
   const location = useLocation();
+
+  const { deleteStaff } = useStaffServices();
 
   useEffect(() => {
     setSearchList(staffList);
@@ -53,6 +57,38 @@ export const StaffTable = (props) => {
       return 0;
     } else if (staffList?.length > 0) {
       setSearchList(staffList);
+    }
+  };
+
+  const handleDeleteStaff = async (id) => {
+    try {
+      const response = await deleteStaff(id);
+      if (response?.success) {
+        Swal.fire({
+          title: "Success",
+          text: "Account deleted successfully",
+          icon: "success",
+          timer: 1000,
+          showConfirmButton: false,
+        });
+        getData();
+      } else {
+        Swal.fire({
+          title: "Warning",
+          text:
+            response?.message ||
+            "Failed to delete staff. There may be transaction done with this staff.",
+          icon: "info",
+        });
+      }
+    } catch (err) {
+      Swal.fire({
+        title: "Warning",
+        text:
+        err?.response?.data?.message ||
+          "Failed to delete staff. There may be transaction done with this staff.",
+        icon: "info",
+      });
     }
   };
 
@@ -92,7 +128,6 @@ export const StaffTable = (props) => {
       } else if (tempList.length < 1) {
         setSearchList(staffList);
       } else {
-        console.log("first");
         setSearchList(tempList);
       }
     } catch (err) {
@@ -142,9 +177,11 @@ export const StaffTable = (props) => {
               <th>Address</th>
               <th width="170">Mob</th>
               {!payscale && <th width="50"></th>}
-              <th width={payscale ? "100" : "40"} 
-              style={{ borderTopRightRadius: "0.3125rem" }}
-              className="text-end">
+              <th
+                width={payscale ? "100" : "40"}
+                style={{ borderTopRightRadius: "0.3125rem" }}
+                className="text-end"
+              >
                 {payscale && (
                   <div className="d-flex gap-2 justify-content-end pe-3">
                     <input
@@ -168,6 +205,31 @@ export const StaffTable = (props) => {
           <tbody>
             {searchList?.length > 0 ? (
               searchList?.map((data, i) => {
+
+                const handleDelete = async (e) => {
+                  Swal.fire({
+                    title: "Delete",
+                    text: `Are you sure, you want to delete ${data.name}?`,
+                    icon: "question",
+                    showDenyButton: true,
+                    showCancelButton: false,
+                    confirmButtonText: "Yes",
+                    denyButtonText: "Cancel",
+                    showLoaderOnConfirm: true,
+                    preConfirm: async () => {
+                      await handleDeleteStaff(data?.id);
+                    },
+                    preDeny: () => {
+                      Swal.fire({
+                        title: "Cancelled",
+                        icon: "info",
+                        timer: 1000,
+                        showConfirmButton: false,
+                      });
+                    },
+                  });
+                };
+
                 const popoverHoverFocus = (
                   <Popover className="task-description-popover">
                     <div className="task-desc-pop-container">
@@ -201,20 +263,17 @@ export const StaffTable = (props) => {
                       <td>
                         <div
                           className="button"
-                          onClick={(e) => handleDelete(data.id, e)}
+                          
                         >
-                          <img src={deleteBtn} alt="deletebtn" />
                         </div>
                       </td>
                     )}
 
                     {!payscale ? (
                       <td>
-                        <div
-                          className="button text-start"
-                          onClick={() => handleEdit(data)}
-                        >
-                          <img src={editBtn} alt="editBtn" />
+                        <div className="button text-start d-flex gap-4 pe-3">
+                        <img src={deleteBtn} alt="deletebtn" onClick={(e) => handleDelete(data.id, e)}/>
+                          <img src={editBtn} alt="editBtn" onClick={() => handleEdit(data)}/>
                         </div>
                       </td>
                     ) : (
@@ -231,11 +290,6 @@ export const StaffTable = (props) => {
                         />
                       </td>
                     )}
-                    {/* <td>
-                                    <div className='button' onClick={() => handleEdit(data)}>
-                                        {editBtn}
-                                    </div>
-                                </td> */}
                   </tr>
                 );
               })

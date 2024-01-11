@@ -12,7 +12,7 @@ const StaffMaster = () => {
   const [edit, setEdit] = useState();
   const [staffList, setStaffList] = useState([]);
   const [searchList, setSearchList] = useState([]);
-  const { getStaff, deleteStaff } = useStaffServices();
+  const { getStaff } = useStaffServices();
 
   useEffect(() => {
     getData();
@@ -28,44 +28,44 @@ const StaffMaster = () => {
     }
   };
 
-  const handleDelete = (id, e) => {
-    Swal.fire({
-      title: "Are you sure?",
-      text: "You won't be able to revert this!",
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonColor: "#3085d6",
-      cancelButtonColor: "#d33",
-      confirmButtonText: "Yes, delete it!",
-    }).then((result) => {
-      if (result.isConfirmed) {
-        handleDeleteConfirm(id, e);
-      }
-    });
-  };
+  // const handleDelete = (id, e) => {
+  //   Swal.fire({
+  //     title: "Are you sure?",
+  //     text: "You won't be able to revert this!",
+  //     icon: "warning",
+  //     showCancelButton: true,
+  //     confirmButtonColor: "#3085d6",
+  //     cancelButtonColor: "#d33",
+  //     confirmButtonText: "Yes, delete it!",
+  //   }).then((result) => {
+  //     if (result.isConfirmed) {
+  //       handleDeleteConfirm(id, e);
+  //     }
+  //   });
+  // };
 
-  const handleDeleteConfirm = async (id, e) => {
-    e.preventDefault();
-    try {
-      let res = await deleteStaff(id);
-      if (res.success) Swal.fire("Staff deleted Successfully", "", "success");
-      else {
-        Swal.fire(
-          "Warning",
-          res.message ||
-            "This account may contain transaction. Therefore it cant be deleted",
-          "info"
-        );
-      }
-      getData();
-    } catch (err) {
-      Swal.fire(
-        "Warning",
-        "This account may contain transaction. Therefore it cant be deleted",
-        "warning"
-      );
-    }
-  };
+  // const handleDeleteConfirm = async (id, e) => {
+  //   e.preventDefault();
+  //   try {
+  //     let res = await deleteStaff(id);
+  //     if (res.success) Swal.fire("Staff deleted Successfully", "", "success");
+  //     else {
+  //       Swal.fire(
+  //         "Warning",
+  //         res.message ||
+  //           "This account may contain transaction. Therefore it cant be deleted",
+  //         "info"
+  //       );
+  //     }
+  //     getData();
+  //   } catch (err) {
+  //     Swal.fire(
+  //       "Warning",
+  //       "This account may contain transaction. Therefore it cant be deleted",
+  //       "warning"
+  //     );
+  //   }
+  // };
 
   const getData = async () => {
     try {
@@ -145,7 +145,7 @@ const StaffMaster = () => {
               staffList,
               setStaffList,
               handleEdit,
-              handleDelete,
+              // handleDelete,
               searchList,
               setSearchList,
             }}

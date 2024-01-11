@@ -21,8 +21,7 @@ const PaymentDetail = ({
   handleChangePaymentCash,
 }) => {
   const [paymentNav, setPaymentNav] = useState(paymentAdd.cash_bank_account_name == "CASH IN BANK"?1:2);
-  const location = useLocation().pathname
-  const [paymentContent, setPaymentContent] = useState("");
+  // const [paymentContent, setPaymentContent] = useState("");
   const formRef = useRef(null);
 
   // const cash_type_list = [
@@ -38,37 +37,37 @@ const PaymentDetail = ({
     }
   },[paymentAdd.cash_bank_account_name])
 
-  useEffect(() => {
-    switch (paymentNav) {
-      case 1:
-        setPaymentContent(
-          <PaymentChequeDetails {...{ handleChange, paymentAdd }} />
-        );
-        break;
-      case 2:
-        setPaymentContent(
-          <PaymentSalesmanDetails {...{ handleChange, paymentAdd }} />
-        );
-        break;
-      case 3:
-        setPaymentContent(
-          <PaymentDiscountDetails {...{ handleChange, paymentAdd }} />
-        );
-        break;
-      case 4:
-        setPaymentContent(
-          <PaymentTaxDetails {...{ handleChange, paymentAdd, setPaymentAdd }} />
-        );
-        break;
-      case 5:
-        setPaymentContent(
-          <PaymentPrintDetails {...{ handleChange, paymentAdd }} />
-        );
-        break;
-      default:
-        break;
-    }
-  }, [paymentNav, paymentAdd]);
+  // useEffect(() => {
+  //   switch (paymentNav) {
+  //     case 1:
+  //       setPaymentContent(
+  //         <PaymentChequeDetails {...{ handleChange, paymentAdd }} />
+  //       );
+  //       break;
+  //     case 2:
+  //       setPaymentContent(
+  //         <PaymentSalesmanDetails {...{ handleChange, paymentAdd }} />
+  //       );
+  //       break;
+  //     case 3:
+  //       setPaymentContent(
+  //         <PaymentDiscountDetails {...{ handleChange, paymentAdd }} />
+  //       );
+  //       break;
+  //     case 4:
+  //       setPaymentContent(
+  //         <PaymentTaxDetails {...{ handleChange, paymentAdd, setPaymentAdd }} />
+  //       );
+  //       break;
+  //     case 5:
+  //       setPaymentContent(
+  //         <PaymentPrintDetails {...{ handleChange, paymentAdd }} />
+  //       );
+  //       break;
+  //     default:
+  //       break;
+  //   }
+  // }, [paymentNav, paymentAdd]);
 
   const search = (options, searchValue) => {
     searchValue = searchValue.toUpperCase();

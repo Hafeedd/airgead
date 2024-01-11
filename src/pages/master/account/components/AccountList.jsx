@@ -4,7 +4,7 @@ import editIcon from "../../../../assets/icons/edit-black.svg";
 import { HiOutlineTrash } from "react-icons/hi2";
 import Swal from "sweetalert2";
 import useAccountServices from "../../../../services/master/accountServices";
-import deleteBtn from "../../../../assets/icons/delete.svg"
+import deleteBtn from "../../../../assets/icons/delete.svg";
 
 const AccountList = (props) => {
   const { listItem, handleEdit, handleDelete, toEdit, loadAccountList } = props;
@@ -66,7 +66,13 @@ const AccountList = (props) => {
         });
       }
     } catch (err) {
-      console.log(err?.response?.data?.error);
+      Swal.fire({
+        title: "Warning",
+        text:
+        err?.response?.data?.message ||
+          "Failed to delete account. There may be transaction done with this account.",
+        icon: "info",
+      });
     }
   };
 
@@ -109,7 +115,7 @@ const AccountList = (props) => {
               <th className="text-start ps-2">Code</th>
               <th className="text-start ps-2">A/C Type</th>
               <th style={{ width: "15rem" }}>Cl. Balance</th>
-              <th style={{ width: "1rem" }}></th>
+              {/* <th style={{ width: "1rem" }}></th> */}
               {/* <th style={{ width: "15rem" }}>Op. Balance</th> */}
               <th
                 style={{ borderTopRightRadius: "0.3125rem", width: "5rem" }}
@@ -119,6 +125,7 @@ const AccountList = (props) => {
           <tbody>
             {searchedList?.length > 0 ? (
               searchedList?.map((data, i) => {
+                
                 const handleDelete = async (e) => {
                   Swal.fire({
                     title: "Delete",
@@ -151,20 +158,14 @@ const AccountList = (props) => {
                     <td className="text-start">{data?.account_type_one}</td>
                     <td>{data?.closing_balance || ""}</td>
                     {/* <td>{data?.opening_balance}</td> */}
-                    <td>
-                      {/* <HiOutlineTrash
-                        onClick={handleDelete}
-                        size={18}
-                        className="text-danger"
-                      /> */}
-                      <img src={deleteBtn} alt="delete_btn" />
-                    </td>
+                    {/* <td>
+                    </td> */}
                     <td>
                       <div
-                        className="button"
-                        onClick={(e) => handleEdit(data && data)}
+                        className="button pe-3 gap-4 d-flex"                        
                       >
-                        <img src={editIcon} alt={"editbtn"} />
+                        <img src={deleteBtn} alt="delete_btn" onClick={(e)=> handleDelete(e)}/>
+                        <img src={editIcon} alt={"editbtn"} onClick={(e) => handleEdit(data && data)}/>
                       </div>
                     </td>
                   </tr>

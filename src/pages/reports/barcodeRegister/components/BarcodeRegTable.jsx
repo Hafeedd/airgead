@@ -78,7 +78,7 @@ export const BarcodeRegTable = (props) => {
     let tempList = [...searchedList];
     let index = tempList.findIndex((x) => x.barcode == data.barcode);
     if (checked) {
-      tempList.splice(index, 1, { ...data, number: 1 });
+      tempList.splice(index, 1, { ...data, number: data?.qty||1 });
     } else {
       tempList.splice(index,1, { ...data, number: null });
     }
@@ -141,7 +141,7 @@ export const BarcodeRegTable = (props) => {
               <th>Company</th>
               <th>Size</th>
               <th>Barcode</th>
-              <th>Syc. Bc</th>
+              {/* <th>Syc. Bc</th> */}
               <th>Com. Bc</th>
               <th>P. Rate</th>
               <th>cost</th>
@@ -156,7 +156,7 @@ export const BarcodeRegTable = (props) => {
             {searchedList?.length > 0 ? (
               searchedList?.map((data, i) => {
                 return (
-                  <tr>
+                  <tr key={i}>
                     {/* <td>
                       {data?.date?.slice(0, 10).split("-").reverse().join("-")}
                     </td> */}
@@ -166,7 +166,7 @@ export const BarcodeRegTable = (props) => {
                     <td>{data?.company || ""}</td>
                     <td>{data?.size || ""}</td>
                     <td>{data?.barcode || ""}</td>
-                    <td>{data?.syc_bc || ""}</td>
+                    {/* <td>{data?.syc_bc || ""}</td> */}
                     <td>{data?.com_bc || ""}</td>
                     <td>{data?.p_rate || 0}</td>
                     <td>{data?.cost || 0}</td>

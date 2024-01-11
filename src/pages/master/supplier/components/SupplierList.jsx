@@ -4,15 +4,51 @@ import deleteBtn from "../../../../assets/icons/delete.svg";
 import editBtn from "../../../../assets/icons/edit-black.svg";
 import { Form } from "react-bootstrap";
 import { OverlayTrigger, ButtonToolbar, Popover } from "react-bootstrap";
+import Swal from "sweetalert2";
+import useCustomerServices from "../../../../services/master/customerServices";
 
 const SupplierList = (props) => {
-  const { list, handleEdit, handleDelete, getData } = props;
+  const { list, handleEdit, getData } = props;
 
   const [searchedList, setSearchedList] = useState([]);
+
+  const { deleteSupplier } = useCustomerServices();
 
   useEffect(() => {
     setSearchedList(list);
   }, [list]);
+
+  const handleDeleteSupplier = async (id) => {
+    try {
+      const response = await deleteSupplier(id);
+      if (response?.success) {
+        Swal.fire({
+          title: "Success",
+          text: "Account deleted successfully",
+          icon: "success",
+          timer: 1000,
+          showConfirmButton: false,
+        });
+        getData();
+      } else {
+        Swal.fire({
+          title: "Warning",
+          text:
+            response?.message ||
+            "Failed to delete supplier. There may be transaction done with this supplier.",
+          icon: "info",
+        });
+      }
+    } catch (err) {
+      Swal.fire({
+        title: "Warning",
+        text:
+        err?.response?.data?.message ||
+          "Failed to delete supplier. There may be transaction done with this supplier.",
+        icon: "info",
+      });
+    }
+  };
 
   const handleSearch = async (e) => {
     try {
@@ -80,13 +116,37 @@ const SupplierList = (props) => {
               <th style={{ width: "18rem" }}>Address</th>
               <th className="text-center">Mob</th>
               <th className="text-center">Remark</th>
-              <th></th>
-              <th style={{ borderTopRightRadius: "0.3125rem" }}></th>
+              <th width="20" style={{ borderTopRightRadius: "0.3125rem" }}></th>
             </tr>
           </thead>
           <tbody>
             {searchedList?.length > 0 ? (
               searchedList.map((data, i) => {
+
+                const handleDelete = async (e) => {
+                  Swal.fire({
+                    title: "Delete",
+                    text: `Are you sure, you want to delete ${data.name}?`,
+                    icon: "question",
+                    showDenyButton: true,
+                    showCancelButton: false,
+                    confirmButtonText: "Yes",
+                    denyButtonText: "Cancel",
+                    showLoaderOnConfirm: true,
+                    preConfirm: async () => {
+                      await handleDeleteSupplier(data?.id);
+                    },
+                    preDeny: () => {
+                      Swal.fire({
+                        title: "Cancelled",
+                        icon: "info",
+                        timer: 1000,
+                        showConfirmButton: false,
+                      });
+                    },
+                  });
+                };
+
                 const popoverHoverFocus = (
                   <Popover className="task-description-popover">
                     <div className="task-desc-pop-container">
@@ -124,18 +184,10 @@ const SupplierList = (props) => {
                     </td>
                     <td>
                       <div
-                        className="button"
-                        onClick={(e) => handleDelete(data.id, e)}
+                        className="button d-flex gap-4 pe-3"                        
                       >
-                        <img src={deleteBtn} alt="deletebtn" />
-                      </div>
-                    </td>
-                    <td>
-                      <div
-                        className="button"
-                        onClick={(e) => handleEdit(data && data)}
-                      >
-                        <img src={editBtn} alt="edit button" />
+                        <img src={deleteBtn} alt="deletebtn" onClick={(e) => handleDelete(data.id, e)}/>
+                        <img src={editBtn} alt="edit button" onClick={(e) => handleEdit(data && data)}/>
                       </div>
                     </td>
                   </tr>
