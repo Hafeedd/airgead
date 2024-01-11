@@ -232,9 +232,9 @@ const SupplierOutstandingDetails = (props) => {
                       {columnVisibility?.opbal && (
                         <td>
                           {data?.opening_balance_new < 0
-                            ? Math.abs(data?.opening_balance_new) + " Cr"
+                            ? Math.abs(data?.opening_balance_new).toFixed(2) + " Cr"
                             : data?.opening_balance_new > 0
-                            ? data?.opening_balance_new + " Db"
+                            ? (data?.opening_balance_new).toFixed(2) + " Db"
                             : 0}
                         </td>
                       )}
@@ -243,9 +243,9 @@ const SupplierOutstandingDetails = (props) => {
                       {columnVisibility?.clbal && (
                         <td>
                           {data?.closing_balance < 0
-                            ? Math.abs(data?.closing_balance) + " Cr"
+                            ? Math.abs(data?.closing_balance).toFixed(2) + " Cr"
                             : data?.closing_balance > 0
-                            ? data?.closing_balance + " Db"
+                            ? (data?.closing_balance).toFixed(2) + " Db"
                             : 0}
                         </td>
                       )}
@@ -298,7 +298,7 @@ const SupplierOutstandingDetails = (props) => {
                   {columnVisibility?.clbal && (
                     <td>
                       {supOutstanding?.total_closing_balance < 0
-                        ? Math.abs(supOutstanding?.total_closing_balance) + " Cr"
+                        ? Math.abs(supOutstanding?.total_closing_balance).toFixed(2) + " Cr"
                         : supOutstanding?.total_closing_balance > 0
                         ? supOutstanding?.total_closing_balance + " Db"
                         : 0}
@@ -329,7 +329,7 @@ const SupplierOutstandingDetails = (props) => {
                   {columnVisibility?.clbal && (
                     <td>
                       {staffOutstanding?.total_closing_balance < 0
-                        ? Math.abs(staffOutstanding?.total_closing_balance) + " Cr"
+                        ? Math.abs(staffOutstanding?.total_closing_balance).toFixed(2) + " Cr"
                         : staffOutstanding?.total_closing_balance > 0
                         ? staffOutstanding?.total_closing_balance + " Db"
                         : 0}

@@ -33,7 +33,7 @@ const initialSalesState = {
   order_no: null,
   bill_no: null,
   created_at: null,
-  rate_types: "RET_RATE",
+  rate_types: "RETAIL_RATE",
   bill_date: null,
   tax_gst: null,
   interstate: false,
