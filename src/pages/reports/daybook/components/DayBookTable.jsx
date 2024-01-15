@@ -126,12 +126,12 @@ export const DayBookTable = (props) => {
                         <td></td>
                         <td>
                           <dvi className="daybook-foot-data text-center">
-                            {data?.account_total?.total_debit?.toFixed(2)}
+                            {data?.account_total?.total_credit?.toFixed(2)}
                           </dvi>
                         </td>
                         <td>
                           <dvi className="daybook-foot-data text-center">
-                            {data?.account_total?.total_credit?.toFixed(2)}
+                            {data?.account_total?.total_debit?.toFixed(2)}
                           </dvi>
                         </td>
                       </tr>
