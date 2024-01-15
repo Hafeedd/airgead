@@ -1,12 +1,48 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { GrRefresh } from "react-icons/gr";
 import searchIcon from "../../../../assets/icons/search.png";
 
 const ConsolidateCashbookTable = (props) => {
   const { consolidateList, params } = props;
-  console.log(consolidateList)
-let totalDebit = 0
-let totalCredit = 0
+
+  const [searchedList, setSearchedList] = useState([]);
+
+  useEffect(() => {
+    setSearchedList(consolidateList?.opp_account_data);
+  }, [consolidateList]);
+
+  const handleSearch = async (e) => {
+    try {
+      let tempData,
+        tempList = consolidateList?.opp_account_data;
+      if (consolidateList) {
+        let value = e.target.value.toLowerCase();
+        if (value !== "") {
+          if (consolidateList?.opp_account_data.length > 0) {
+            let search;
+            tempData = tempList?.filter((x) => {
+              let searchInString = `${x?.account_name?.toLowerCase()}`;
+              search = searchInString?.includes(value);
+              if (search) return true;
+            });
+            if (search) {
+              return true;
+            }
+          }
+          setSearchedList(tempData);
+        } else {
+          setSearchedList(tempList);
+        }
+      } else {
+        setSearchedList(tempList);
+      }
+    } catch {}
+  };
+
+  let totalDebit = 0;
+  let totalCredit = 0;
+  let tempBalance = consolidateList?.cash_account_data?.op_balance||0;
+  console.log(searchedList);
   return (
     <div className="row mx-0 mt-3">
       <div className="daybook-cont">
@@ -16,11 +52,18 @@ let totalCredit = 0
         >
           <div className="col-3 p-2 stock-ledger-search d-flex align-items-center">
             <div className="col-1 me-2">
-              <GrRefresh className="bg-light m-1 p-1 rounded-1" size={20} />
+              <GrRefresh
+                onClick={() =>
+                  setSearchedList(consolidateList?.opp_account_data)
+                }
+                className="bg-light m-1 p-1 rounded-1"
+                size={20}
+              />
             </div>
             <div className="item_seach_bar_cont rounded-2 col-11 col-10">
               <img src={searchIcon} className="search_img me-3 ms-2 py-2" />
               <input
+                onChange={handleSearch}
                 className="item_search_bar rounded-2 border-0 py-1"
                 placeholder="Search"
                 type="text"
@@ -59,25 +102,24 @@ let totalCredit = 0
                   {consolidateList?.cash_account_data?.op_balance}
                 </td>
               </tr>
-              {consolidateList?.opp_account_data?.length > 0 &&
-                consolidateList?.opp_account_data?.map((data, i) => {
-                  let debit = (data?.total>0?data?.total:0).toFixed(2)
-                  let db = data?.total > 0 ? data?.total : 0;
-                  let credit = (data?.total<0?data?.total:0).toFixed(2)
-                  let cd = data?.total < 0 ? data?.total : 0;
-                  let ob = parseFloat(consolidateList?.cash_account_data?.op_balance).toFixed(2)
-                  let bal = credit - debit + ob;
-                  bal += bal
-                  totalCredit=(+totalCredit)+parseFloat(credit)
-                  totalDebit= (+totalDebit) + (+debit)
-                  console.log((bal =  + +ob + +credit+ +debit));
+              {searchedList?.length > 0 &&
+                searchedList?.map((data, i) => {
+                  let debit = (data?.total > 0 ? data?.total : 0).toFixed(2);
+                  let credit = (data?.total < 0 ? data?.total : 0).toFixed(2);
+                  let balance = tempBalance;
+                  // if (debit > 0) balance = +balance + +debit;
+                  // else if (credit < 0) balance = +balance - +credit;
+                  totalCredit = +totalCredit + parseFloat(credit);
+                  totalDebit = +totalDebit + +debit;
+                  balance = +balance + +credit + +debit
+                  tempBalance = balance;
                   return (
                     <tr>
                       <td>{data?.account_name}</td>
                       <td>{data?.account_code}</td>
-                      <td>{(debit && debit>0)?debit:' '}</td>
-                      <td>{(credit && credit<0)? credit:" "}</td>
-                      <td>{bal}</td>
+                      <td>{debit && debit > 0 ? debit : " "}</td>
+                      <td>{credit && credit < 0 ? credit : " "}</td>
+                      <td>{balance}</td>
                     </tr>
                   );
                 })}
