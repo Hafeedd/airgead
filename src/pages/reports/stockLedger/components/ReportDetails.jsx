@@ -28,7 +28,7 @@ export const ReportDetails = (props) => {
               onChange={handleChange}
               required
               name="from_date"
-              value={paramsToReport.from_date||(new Date().toISOString.slice(0,8)+'01')}
+              value={paramsToReport.from_date||(new Date()?.toISOString()?.slice(0,8)+'01')}
               className="purchase-input-text me-2"
               placeholder="Document number"
               type="date"
@@ -42,7 +42,7 @@ export const ReportDetails = (props) => {
               onChange={handleChange}
               required
               name="to_date"
-              value={paramsToReport.to_date||(new Date().toISOString().slice(0,8)+'01')}
+              value={paramsToReport.to_date||(new Date()?.toISOString()?.slice(0,8)+'01')}
               className="purchase-input-text me-2"
               placeholder="Document number"
               type="date"

@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { BarcodeRegDet } from "./components/BarcodeRegDet";
 import { BarcodeRegTable } from "./components/BarcodeRegTable";
+import './barcodeRegister.css'
 
 export const BarcodeRegister = () => {
   const [params, setParams] = useState({

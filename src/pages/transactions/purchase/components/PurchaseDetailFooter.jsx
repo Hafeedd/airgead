@@ -180,7 +180,7 @@ const PurchaseDetailFooter = (props) => {
           <Form.Control
             disabled={true}
             name="change_due"
-            value={purchaseAdd.change_due || ""}
+            value={purchaseAdd?.change_due && parseInt(purchaseAdd?.change_due) || ""}
             onKeyDown={handleKeyDown}
             onChange={handleChange}
             className="purchase-input-text"

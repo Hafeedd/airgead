@@ -12,7 +12,7 @@ import { StockJournalEdit } from "../../stockjurnal/components/StockJournalEdit"
 export const AccJournalDetails = () => {
   const [ref, setRef] = useState(null);
   const [tableList, setTableList] = useState([]);
-  const [accJnlList, setAccJnlList] = useState([])
+  const [accJnlList, setAccJnlList] = useState([]);
   const [accNameList, setAccNameList] = useState([]);
   const [tableEdit, setTableEdit] = useState(false);
   const [showAccJnl, setShowAccJnl] = useState(false);
@@ -34,65 +34,65 @@ export const AccJournalDetails = () => {
     credit: null,
   });
 
-  useEffect(()=>{
-    if(edit){
+  useEffect(() => {
+    if (edit) {
       setAccJnlAdd({
-        voucher_number:edit.voucher_number,
-        narration:edit.narration,
-        date:edit.crerated_at
-      })
-      let tempList = []
-      if(edit.daybook.length>0){
+        voucher_number: edit.voucher_number,
+        narration: edit.narration,
+        date: edit.crerated_at,
+      });
+      let tempList = [];
+      if (edit.daybook.length > 0) {
         for (let data of edit.daybook) {
-          let a = 'debit'
-          if(data.amount.includes('-')) {
-            a = 'credit'
-            data.amount = data.amount.slice(1,)}
+          let a = "";
+          if (data?.amount > 0 ) a = "debit";
+          if (data?.amount<0) {
+            a = "credit";
+          }
           tempList.push({
-            name:data.account_name,
-            code:data.account_code,
-            [a]:data.amount,
-          })
+            name: data.account_name,
+            code: data.account_code,
+            credit:0,
+            debit:0,
+            [a]: Math.abs(data.amount),
+          });
         }
       }
-      setTableList([
-        ...tempList
-      ])
+      setTableList([...tempList]);
     }
-  },[edit])
+  }, [edit]);
 
   useEffect(() => {
     if (tableList?.length > 0) {
-      console.log(tableList);
-      let totalCredit = tableList?.reduce((a, b) => {
-        return parseFloat(a) || 0 + parseFloat(b.credit) || 0;
-      }, 0);
-
+            console.log(tableList)
       let totalDebit = tableList?.reduce((a, b) => {
-        return parseFloat(a) || 0 + parseFloat(b.debit) || 0;
+        return (b.debit && b.debit >= 0) ? +a + +b.debit : a;
       }, 0);
 
-      let tempList = {
-        ...accJnlAdd,
+      let totalCredit = tableList?.reduce((a, b) => {
+        return (b.credit && b.credit > 0) ? +a + +b.credit : a;
+      }, 0);
+
+      setAccJnlAdd((data) => ({
+        ...data,
         total_credit: totalCredit,
         total_debit: totalDebit,
-      };
-      setAccJnlAdd({ ...tempList });
+      }));
     } else {
-      setAccJnlAdd({
-        ...accJnlAdd,
+      setAccJnlAdd((data) => ({
+        ...data,
         total_credit: 0,
         total_debit: 0,
-      });
+      }));
     }
   }, [tableList]);
-
 
   useEffect(() => {
     getData();
   }, []);
 
-  const { postAccJournal, getAccJournal, putAccJournal } = useAccJournalServices();
+  const { postAccJournal, getAccJournal, putAccJournal } =
+    useAccJournalServices();
   const { getCode } = useItemServices();
   const { getAccountList } = useAccountServices();
   const { handleKeyDown, formRef } = useOnKey(ref, setRef);
@@ -104,7 +104,10 @@ export const AccJournalDetails = () => {
       const response3 = await getAccJournal();
       if (response.success && !edit) {
         let code = response.data.filter((x) => x.sub_id === "JRE");
-        setAccJnlAdd({ ...accJnlAdd, voucher_number: code[0].next_code });
+        setAccJnlAdd((data) => ({
+          ...data,
+          voucher_number: code[0].next_code,
+        }));
       }
 
       if (response2.success) {
@@ -121,8 +124,8 @@ export const AccJournalDetails = () => {
         });
         setAccNameList(tempList);
       }
-      if(response3.success){
-        setAccJnlList(response3.data)
+      if (response3.success) {
+        setAccJnlList(response3.data);
       }
     } catch (err) {
       console.log(err);
@@ -147,9 +150,10 @@ export const AccJournalDetails = () => {
       total_debit: null,
       total_credit: null,
     });
-    setEdit(false)
-    setTableList([])
-    handleResetAccTable()
+    setEdit(false);
+    setTableList([]);
+    handleResetAccTable();
+    getData();
   };
 
   const handleSubmit = async (e) => {
@@ -165,24 +169,35 @@ export const AccJournalDetails = () => {
         });
         return 0;
       }
+      let tempTableList = [...tableList];
+      const indexOfCashInHand = tempTableList.findIndex(
+        (x) => x.code == "CASH"
+      );
+      if (indexOfCashInHand > -1) {
+        let tempCahsInHandData = tempTableList[indexOfCashInHand];
+        tempTableList.splice(indexOfCashInHand, 1);
+        tempTableList.push(tempCahsInHandData);
+      }
       let data = {
         ...accJnlAdd,
-        accounts: [...tableList],
+        accounts: [...tempTableList],
       };
-      let response 
-      if(!edit){
-        response =  await postAccJournal(data);
-      }else{
-        response = await putAccJournal(edit.id,data)
+      // console.log(data)
+      // return 0
+      let response;
+      if (!edit) {
+        response = await postAccJournal(data);
+      } else {
+        response = await putAccJournal(edit.id, data);
       }
       if (response.success) {
         Swal.fire("Journal created successfully", "", "success");
-        handleClearAll()
+        handleClearAll();
       } else {
         Swal.fire(response.message, "", "error");
       }
     } catch (err) {
-      console.log(err)
+      console.log(err);
       Swal.fire("Journal creation failed", "", "error");
     }
   };
@@ -232,7 +247,7 @@ export const AccJournalDetails = () => {
             onKeyDown={handleKeyDown}
             required
             name="date"
-            value={accJnlAdd.date || new Date().toISOString()?.slice(0, 10)}
+            value={accJnlAdd.date || new Date()?.toISOString()?.slice(0, 10)}
             className="purchase-input-text"
             placeholder="Date"
             type="date"
@@ -310,12 +325,16 @@ export const AccJournalDetails = () => {
 
       <AccJournalTable
         {...{
+          edit,
+          setEdit,
+          accJnlList,
           handleKeyDown,
           accJnlTable,
           setAccJnlTable,
           accNameList,
           tableList,
           setTableList,
+          handleClearAll,
           accJnlAdd,
           handleResetAccTable,
           tableEdit,
@@ -341,15 +360,23 @@ export const AccJournalDetails = () => {
         </Form.Group>
         <span className="col-3 col-4" />
         <div className="text-end col-4 d-flex align-items-end mx-0 justify-content-end">
-          <div className="btn col-4 py-1 border-dark me-2">Cancel</div>
+          <div
+            onClick={handleClearAll}
+            className="btn col-4 py-1 border-dark me-2"
+          >
+            Clear
+          </div>
           <div onClick={handleSubmit} className="btn col-4 py-1 btn-dark">
-            {edit?"Update":"Save"}
+            {edit ? "Update" : "Save"}
           </div>
         </div>
       </div>
-      <Modal show={showAccJnl} centered
-      size="lg"
-      onHide={()=>setShowAccJnl(false)}>
+      <Modal
+        show={showAccJnl}
+        centered
+        size="lg"
+        onHide={() => setShowAccJnl(false)}
+      >
         <Modal.Body className="p-0 rounded-3">
           <StockJournalEdit
             list={accJnlList}
@@ -358,6 +385,7 @@ export const AccJournalDetails = () => {
             {...{
               edit,
               setEdit,
+              getData,
               handleClearAll,
             }}
           />

@@ -1,0 +1,9 @@
+.barcode-container{
+    display: grid;
+    grid-template-columns: auto auto auto auto auto;
+    padding: 41.57480315px;
+}
+
+.barcode-item.next-line{
+    padding-top: 1.26rem;
+}

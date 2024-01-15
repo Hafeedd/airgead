@@ -8,7 +8,7 @@ import ReactToPrint from "react-to-print";
 
 const BarcodePdf = ({ barcodeList, totalNumberOfBarcode }) => {
   const barcodeRef = useRef(null)
-  let rowCount = 0
+  let rowCount = 1
   let barcodeCount = 0
 
 const handleConvertToPdf = async (status) => {
@@ -88,13 +88,12 @@ const handleConvertToPdf = async (status) => {
 
   return (
     <div
-      style={{ minHeight: "30rem" ,margin:'0.3rem',marginLeft:"1rem"}}
-      className="d-flex flex-wrap justify-content-start"
-    >
+      // style={{ minHeight: "30rem" ,margin:'41.57480315px',marginLeft:"1rem"}}
+      // className="barcode-container"
+      >
       <div
         id="new"
-        className="d-flex flex-wrap"
-        style={{ height: "fit-content" }}
+        className="barcode-container"
         ref={barcodeRef}
       >
         {
@@ -103,23 +102,23 @@ const handleConvertToPdf = async (status) => {
             let a = [];
             for (let i = 0; i < data.number; i++) {
               a.push(
-                <div key={i} className={`px-2 pb-1 ${rowCount<1&& 'pt-3'}`}>
+                <div key={i} style={{margin:"5px",marginBottom:"21px", maxHeight:"8rem"}} className={`text-center mt-0 barcode-item ${rowCount<1&& "next-line"}`}>
                   <Barcode
                     value={data?.barcode}
-                    width={1.2678}
-                    height={21.8}
+                    width={1.0178}
+                    height={19.8}
                     margin={0}
                     textMargin={0}
                     fontSize={13}
                   />
-                    <div className="d-flex flex-column">
-                      <div className="py-0 my-0">{data?.item_name || "Item Name"}</div>
-                      <div className="py-0 my-0">₹{data?.cost}</div>
+                    <div className="d-flex flex-column h-auto text-start">
+                      <div style={{fontSize:"10px", height:"1rem"}} className="py-0 my-0">{data?.item_name}</div>
+                      <div style={{fontSize:"12px", height:"1rem"}} className="py-0 my-0">₹{data?.cost}</div>
                     </div>
                 </div>
               );
-              barcodeCount++
-              if(parseFloat(barcodeCount % 65) < 5){
+              barcodeCount++          
+              if(parseFloat(barcodeCount % 65) < 5 && barcodeCount>5){
                 rowCount = 0
               } 
               else rowCount = 1
@@ -140,6 +139,7 @@ const handleConvertToPdf = async (status) => {
         <ReactToPrint
           trigger={() => <button className="btn btn-sm btn-dark">Print</button>}
           content={()=>barcodeRef.current}
+          style={{margin:"41.57480315px"}}
         />
       </div>
     </div>

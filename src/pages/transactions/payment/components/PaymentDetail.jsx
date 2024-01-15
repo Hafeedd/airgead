@@ -5,7 +5,6 @@ import PaymentDiscountDetails from "./PaymentDiscountDetails";
 import PaymentTaxDetails from "./PaymentTaxDetails";
 import PaymentPrintDetails from "./PaymentPrintDetails";
 import { Dropdown } from "semantic-ui-react";
-import { useLocation } from "react-router";
 
 const PaymentDetail = ({
   edit,
@@ -20,7 +19,9 @@ const PaymentDetail = ({
   accountPayList,
   handleChangePaymentCash,
 }) => {
-  const [paymentNav, setPaymentNav] = useState(paymentAdd.cash_bank_account_name == "CASH IN BANK"?1:2);
+  const [paymentNav, setPaymentNav] = useState(
+    paymentAdd.cash_bank_account_name == "CASH IN BANK" ? 1 : 2
+  );
   // const [paymentContent, setPaymentContent] = useState("");
   const formRef = useRef(null);
 
@@ -31,43 +32,11 @@ const PaymentDetail = ({
   //     {text:"Bank Transfer",value:"TRANSFER"},
   // ]
 
-  useEffect(()=>{
-    if(paymentAdd?.cash_bank_account_name !== "CASH IN BANK"){
-      setPaymentNav(2)
+  useEffect(() => {
+    if (paymentAdd?.cash_bank_account_name !== "CASH IN BANK") {
+      setPaymentNav(2);
     }
-  },[paymentAdd.cash_bank_account_name])
-
-  // useEffect(() => {
-  //   switch (paymentNav) {
-  //     case 1:
-  //       setPaymentContent(
-  //         <PaymentChequeDetails {...{ handleChange, paymentAdd }} />
-  //       );
-  //       break;
-  //     case 2:
-  //       setPaymentContent(
-  //         <PaymentSalesmanDetails {...{ handleChange, paymentAdd }} />
-  //       );
-  //       break;
-  //     case 3:
-  //       setPaymentContent(
-  //         <PaymentDiscountDetails {...{ handleChange, paymentAdd }} />
-  //       );
-  //       break;
-  //     case 4:
-  //       setPaymentContent(
-  //         <PaymentTaxDetails {...{ handleChange, paymentAdd, setPaymentAdd }} />
-  //       );
-  //       break;
-  //     case 5:
-  //       setPaymentContent(
-  //         <PaymentPrintDetails {...{ handleChange, paymentAdd }} />
-  //       );
-  //       break;
-  //     default:
-  //       break;
-  //   }
-  // }, [paymentNav, paymentAdd]);
+  }, [paymentAdd.cash_bank_account_name]);
 
   const search = (options, searchValue) => {
     searchValue = searchValue.toUpperCase();
@@ -78,6 +47,8 @@ const PaymentDetail = ({
       );
     });
   };
+
+  console.log(paymentAdd.cash_bank_account)
 
   return (
     <form
@@ -103,63 +74,35 @@ const PaymentDetail = ({
               </select>
             </div>
           </div>
-          {/* --- */}
-          {/* <div className="col-6 row mx-0 px-0 pe-4">
-            <div className="mx-0 px-3 col-5 text-end">Date</div>
+          <div className="col-6 col-7 row ps-4 mx-0 px-0">
+            <div className="mx-0 px-0 col-5">Date</div>
             <div className="mx-0 px-0 col-7">
               <input
                 onChange={handleChange}
                 name="date"
-                value={paymentAdd.date ? paymentAdd.date.slice(0, 10) : !edit && (new Date().toISOString().slice(0,10))}
-                type="date"
-                className="item_input names"
-              />
-            </div>
-          </div> */}
-          {/* --- */}
-          <div className="col-6 col-7 row ps-4 mx-0 px-0">
-            <div className="mx-0 px-0 col-5">Date</div>
-            <div className="mx-0 px-0 col-7">
-            <input
-                onChange={handleChange}
-                name="date"
-                value={paymentAdd.date ? paymentAdd.date.slice(0, 10) : !edit && (new Date().toISOString().slice(0,10))}
+                value={
+                  paymentAdd.date
+                    ? paymentAdd.date.slice(0, 10)
+                    : !edit && new Date().toISOString().slice(0, 10)
+                }
                 type="date"
                 className="item_input names"
               />
             </div>
           </div>
-
-          {/* <div className="col-6 col-7 row ps-4 mx-0 px-0">
-            <div className="mx-0 px-0 col-5">Voucher No</div>
-            <div className="mx-0 px-0 col-7">
-              <input
-                required
-                onChange={handleChange}
-                name="voucher_number"
-                value={
-                  paymentAdd.voucher_number ? paymentAdd.voucher_number : ""
-                }
-                type="text"
-                className="item_input names"
-              />
-            </div>
-          </div> */}
         </div>
 
         <div className="d-flex align-items-center px-0 row mx-0 my-2">
           <div className="mx-0 px-0 col-3">Voucher No</div>
           <div className="mx-0 px-0 col-4">
-          <input
-                required
-                onChange={handleChange}
-                name="voucher_number"
-                value={
-                  paymentAdd.voucher_number ? paymentAdd.voucher_number : ""
-                }
-                type="text"
-                className="item_input names"
-              />
+            <input
+              required
+              onChange={handleChange}
+              name="voucher_number"
+              value={paymentAdd.voucher_number ? paymentAdd.voucher_number : ""}
+              type="text"
+              className="item_input names"
+            />
           </div>
         </div>
         <div className="d-flex align-items-center px-0 row mx-0 my-2">
@@ -228,20 +171,22 @@ const PaymentDetail = ({
       {/* right column ----------------------------------------------------------------------------------------------------------- */}
 
       <div className="item_add_form_part2 row mx-0 ps-4 pe-0 me-0 col-6 border-0">
-        <div className="d-flex align-items-center px-0 ps-1 row mx-0 my-2">
-          
-        </div>
+        <div className="d-flex align-items-center px-0 ps-1 row mx-0 my-2"></div>
         <div className="d-flex align-items-center px-0 ps-2 row mx-0 mt-3">
           <div className="col-12 row mx-0 px-0">
             <div className="mx-0 px-0 ps-0 col-2 col-3">
-              {paymentAdd.cash_bank_account_name == "CASH IN BANK" && <div
-                className={`btn btn-sm btn-secondary payment-nav-btn ${
-                  paymentNav === 1 && paymentAdd.cash_bank_account_name == "CASH IN BANK" && "active"
-                }`}
-                onClick={() => setPaymentNav(1)}
-              >
-                Cheque Details
-              </div>}
+              {paymentAdd.cash_bank_account_name == "CASH IN BANK" && (
+                <div
+                  className={`btn btn-sm btn-secondary payment-nav-btn ${
+                    paymentNav === 1 &&
+                    paymentAdd.cash_bank_account_name == "CASH IN BANK" &&
+                    "active"
+                  }`}
+                  onClick={() => setPaymentNav(1)}
+                >
+                  Cheque Details
+                </div>
+              )}
             </div>
             <div className="mx-0 px-0 ps-1 col-2 col-3">
               <div
@@ -286,16 +231,22 @@ const PaymentDetail = ({
           </div>
           {/* {paymentContent} */}
           {/* ----------------------------------- */}
-          {(paymentNav == 1 && paymentAdd?.cash_bank_account_name == "CASH IN BANK")?
+          {paymentNav == 1 &&
+          paymentAdd?.cash_bank_account_name == "CASH IN BANK" ? (
             <PaymentChequeDetails {...{ handleChange, paymentAdd }} />
-          :paymentNav == 2 ?
+          ) : paymentNav == 2 ? (
             <PaymentSalesmanDetails {...{ handleChange, paymentAdd }} />
-          :paymentNav == 3 ?
+          ) : paymentNav == 3 ? (
             <PaymentDiscountDetails {...{ handleChange, paymentAdd }} />
-          :paymentNav == 4 ?
-            <PaymentTaxDetails {...{ handleChange, paymentAdd, setPaymentAdd }} />
-          :paymentNav == 5 && <PaymentPrintDetails {...{ handleChange, paymentAdd }} />
-          }
+          ) : paymentNav == 4 ? (
+            <PaymentTaxDetails
+              {...{ handleChange, paymentAdd, setPaymentAdd }}
+            />
+          ) : (
+            paymentNav == 5 && (
+              <PaymentPrintDetails {...{ handleChange, paymentAdd }} />
+            )
+          )}
           {/* ----------------------------------- */}
         </div>
       </div>

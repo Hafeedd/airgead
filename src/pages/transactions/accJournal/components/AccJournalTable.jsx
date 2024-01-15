@@ -7,6 +7,10 @@ import Swal from "sweetalert2";
 
 export const AccJournalTable = (props) => {
   const {
+    edit,
+    setEdit,
+    accJnlList,
+    handleClearAll,
     accJnlTable,
     setAccJnlTable,
     accNameList,
@@ -76,14 +80,9 @@ export const AccJournalTable = (props) => {
       });
       return 0;
     }
-    // if (tableEdit && edit) {
-    //   let submitData = { ...stockJAdd, item: [accJnlTable] };
-    //   const response = await putStockJ(submitData, edit.id);
-    //   if (!response.success) return 0;
-    // }
     const values = Object.values(accJnlTable).filter((x) => x !== null);
     if (values?.length > 1) {
-      const tempList = tableList;
+      const tempList = [...tableList];
       tempList.unshift(accJnlTable);
       setTableList([...tempList]);
       handleResetAccTable();
@@ -103,6 +102,44 @@ export const AccJournalTable = (props) => {
     tempTable.splice(i, 1);
     setTableList([...tempTable])
     setAccJnlTable(data);
+  };
+
+  const handlePrev = () => {
+    if (accJnlList?.length > 0) {
+      if (!edit) {
+        setEdit(accJnlList[0]);
+      } else {
+        let ind = accJnlList?.findIndex((x) => edit.id == x.id);
+        if (ind !== accJnlList?.length - 1) {
+          handleClearAll();
+          // handleResetStockTabe();
+          setEdit(accJnlList[ind + 1]);
+        } else {
+          Swal.fire("No more stock to edit", "go for next", "warning");
+        }
+      }
+    } else {
+      setEdit(false);
+      Swal.fire("No more stock to edit", "go for next", "warning");
+    }
+  };
+
+  const handleNext = () => {
+    if (!edit) {
+      Swal.fire("No more stock to edit", "go for prev", "warning");
+    } else if (edit?.id == accJnlList[0].id) {
+      setEdit(false);
+      handleClearAll();
+    } else {
+      handleClearAll();
+      let ind = accJnlList?.findIndex((x) => edit.id == x.id);
+      if (ind !== accJnlList[0]) {
+        setEdit(accJnlList[ind - 1]);
+      } else {
+        setEdit(false);
+        Swal.fire("No more stock to edit", "go for prev", "warning");
+      }
+    }
   };
 
   return (
@@ -173,6 +210,7 @@ export const AccJournalTable = (props) => {
             </td>
             <td>
               <MdDeleteForever
+                onClick={handleResetAccTable}
                 size={21}
                 className="p-0 m-0 text-danger cursor"
               />
@@ -196,10 +234,11 @@ export const AccJournalTable = (props) => {
             ))}
           <AdjustTableHeight />
           <tr>
-            <td className="text-start p-1 ps-4">
+            <td className="text-start p-1 ps-4 align-middle">
               <div
                 style={{ background: "#4A00A8" }}
                 className="col-4 col-3 text-light cursor text-center px-2 py-1"
+                onClick={handlePrev}
               >
                 {"< " + " Previous"}
               </div>
@@ -214,6 +253,7 @@ export const AccJournalTable = (props) => {
             <td className="py-1 align-middle">
               <div
                 style={{ background: "#4A00A8" }}
+                onClick={handleNext}
                 className="col-10 text-light cursor text-center px-2 py-1"
               >
                 {"Next " + " >"}

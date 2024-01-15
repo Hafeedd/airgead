@@ -50,7 +50,7 @@ const initialSalesState = {
   discount: null,
   roundoff: null,
   paid_cash: null,
-  change_due: null,
+  change_due: null, 
   vehicle_no: null,
   total_margin: null,
   total_items: null,
@@ -157,8 +157,6 @@ const SalesTransaction = () => {
     }
   }, [edit]);
 
-  console.log(salesAdd.fk_bank)
-
   // console.log(salesAdd.fk_bill_type)
 
   useEffect(() => {
@@ -173,6 +171,7 @@ const SalesTransaction = () => {
   }, [tableItemList]);
 
   const handleSalesAddCalc = (editStatus) => {
+    // if editStatus == "edit" then this useEffect is loading because of edit state has changed
     if (tableItemList?.length > 0) {
       let netAmount = tableItemList?.reduce((a, b) => {
         return b.total || b.total >= 0
@@ -304,17 +303,18 @@ const SalesTransaction = () => {
       if (roundOff == 0 || !roundOff) roundOff = null;
       else if (roundOff < 0) roundOff = Math.abs(roundOff);
 
-      let paidCash = netAmount?.toFixed(0);
+      let paidCash = netAmount?.toFixed(0) ||0;
       if (editStatus == "edit") {
-        paidCash = edit.paid_cash;
+        paidCash = edit.paid_cash ||0;
       }
 
-      let changeDue;
-      if (paidCash) {
+      let changeDue = edit?.change_due||0
+
+      if(paidCash){
         changeDue =
-          (netAmount?.toFixed(0) - salesAdd.discount || 0) -
-          paidCash -
-          salesAdd.bank_amount;
+        (netAmount?.toFixed(0) - salesAdd.discount || 0) -
+        paidCash -
+        salesAdd.bank_amount;
       }
       
       let tempSalesAdd = {

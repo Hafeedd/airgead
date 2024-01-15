@@ -24,7 +24,7 @@ export const AccountsTable = (props) => {
               let searchInString = `${
                 x?.opp_code?.toLowerCase() +
                 " " +
-                x?.opp_account?.toLowerCase() +
+                x?.doc_no?.toLowerCase() +
                 " " +
                 x?.debit?.toString().toLowerCase() +
                 " " +
@@ -108,7 +108,11 @@ export const AccountsTable = (props) => {
         <tbody>
           {searchedList?.length > 0 ? (
             searchedList.map((data, i) => {
+
               let tempBalance = data?.opening_balance;
+              let totalCredit = 0
+              let totalDebit = 0
+
               return (
                 <>
                   <tr key={i}>
@@ -178,10 +182,13 @@ export const AccountsTable = (props) => {
                       //   balance = Math.abs(tempBalance) - Math.abs(item?.debit) || 0;
                       // else balance = Math.abs(tempBalance) + Math.abs(item?.debit) || 0;
                       tempBalance = balance;
-                      return (
+                      totalCredit +=  +item?.credit||0
+                      totalDebit += +item?.debit||0
+                      
+                      return (item?.credit || item?.debit) && (
                         <tr key={i}>
                           <td className="text-start">
-                            {new Date(item?.date).toLocaleDateString()}
+                            {new Date(item?.date)?.toLocaleDateString()}
                           </td>
                           <td className="text-center">{item?.doc_no}</td>
                           <td className="text-center">{item?.opp_code}</td>
@@ -201,18 +208,25 @@ export const AccountsTable = (props) => {
                   )}
                   <tr>
                     <td
-                      style={{ background: "#CECECE" }}
-                      className="text-end"
-                      colSpan={6}
+                      style={{ background: "#CECECE" }}                    
+                      colSpan={4}
                     >
-                      Closing balance
+                    </td>
+                    <td
+                      style={{ background: "#CECECE" }}
+                    >
+                     {totalDebit+" Dr"}
+                    </td>
+                    <td
+                      style={{ background: "#CECECE" }}
+                    >
+                     {totalCredit+" Cr"}
                     </td>
                     <td
                       style={{ background: "#CECECE" }}
                       className="text-end"
-                      colSpan={1}
                     >
-                      {tempBalance?.toFixed(2)}
+                      {tempBalance?.toFixed(2)+ (tempBalance>0 ?" Db" : " Cr")}
                     </td>
                   </tr>
                 </>

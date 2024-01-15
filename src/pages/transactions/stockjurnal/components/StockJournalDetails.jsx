@@ -141,7 +141,6 @@ export const StockJournalDetails = (props) => {
   };
 
   const handleNext = () => {
-    console.log(edit)
     if (!edit) {
       Swal.fire("No more stock to edit", "go for prev", "warning");
     } else if (edit?.id == stockJList[0].id) {

@@ -7,12 +7,38 @@ import useCustomerServices from "../../../../services/master/customerServices";
 import SearchDropDown from "../../../../components/searchDropDown/SearchDropDown";
 import useItemServices from "../../../../services/master/itemServices";
 
+const initialCustomerState = {
+  code: null,
+  name: null,
+  address: null,
+  post: null,
+  pin: null,
+  pin_distance: null,
+  contact_person: null,
+  email: null,
+  mobile: null,
+  alt_mobile: null,
+  gst_in: null,
+  disc: null,
+  remark: null,
+  opening_balance: "0.00",
+  payment_type: "TO_GIVE",
+  district: null,
+  route: null,
+  city: null,
+  town: null,
+  types: null,
+  rate_types: null,
+  bill_types: null,
+  credit_limit_in_amt: null,
+  credit_limit_in_days: null,
+}
+
 const CustomerAddForm = (props) => {
   const { edit, refresh, setEdit } = props
 
   const [showDropdown, setShowDropdown] = useState(1);
   const [showRates, setShowRates] = useState(false);
-  // const [code, setCode] = useState(null)
   const [ratesEdit, setRatesEdit] = useState(false);
   const [ratesTempList, setRatesTempList] = useState([]);
   const [itemNameList, setItemNameList] = useState([]);
@@ -41,32 +67,7 @@ const CustomerAddForm = (props) => {
     bill_types: [],
   });
 
-  const [customerAdd, setCustomerAdd] = useState({
-    code: null,
-    name: null,
-    address: null,
-    post: null,
-    pin: null,
-    pin_distance: null,
-    contact_person: null,
-    email: null,
-    mobile: null,
-    alt_mobile: null,
-    gst_in: null,
-    disc: null,
-    remark: null,
-    opening_balance: "0.00",
-    payment_type: "TO_GIVE",
-    district: null,
-    route: null,
-    city: null,
-    town: null,
-    types: null,
-    rate_types: null,
-    bill_types: null,
-    credit_limit_in_amt: null,
-    credit_limit_in_days: null,
-  });
+  const [customerAdd, setCustomerAdd] = useState(initialCustomerState);
 
   const { postCustomer, putCustomer, putSetRate, postSetRate, deleteCustomer } =
     useCustomerServices();
@@ -74,10 +75,9 @@ const CustomerAddForm = (props) => {
   const { getProperty, postProperty, getCode, getItemNameList } =
     useItemServices();
 
-  useEffect(() => {
-    if (!edit) handleGetCode();
-    getData();
-  }, [edit]);
+  useEffect(()=>{
+    getData()
+  },[])
 
   useEffect(() => {
     let op_balance = "0.00";
@@ -110,6 +110,11 @@ const CustomerAddForm = (props) => {
         setRatesTempList(b);
       }
     }
+    if (!edit) handleGetCode();
+  }, [edit]);
+
+  useEffect(() => {
+
   }, [edit]);
 
   const { handleKeyDown, formRef } = useOnKey(ref, setRef);
@@ -311,32 +316,7 @@ const CustomerAddForm = (props) => {
   
   const handleReset = async () => {
     refresh();
-    setCustomerAdd({
-      code: null,
-      name: null,
-      address: null,
-      post: null,
-      pin: null,
-      pin_distance: null,
-      contact_person: null,
-      email: null,
-      mobile: null,
-      alt_mobile: null,
-      gst_in: null,
-      disc: null,
-      remark: null,
-      opening_balance: "0.00",
-      payment_type: "TO_GIVE",
-      district: null,
-      route: null,
-      city: null,
-      town: null,
-      types: null,
-      rate_types: null,
-      bill_types: null,
-      credit_limit_in_amt: null,
-      credit_limit_in_days: null,
-    });
+    setCustomerAdd(initialCustomerState);
     setEdit(false);
     getData();
   };
@@ -581,7 +561,6 @@ const CustomerAddForm = (props) => {
                     onChange={handleChange}
                     name="payment_type"
                     value={customerAdd.payment_type}
-                    placeholder="To Recieve"
                     className="pay-type-select ms-0 pe-0"
                   >
                     <option value="TO_GIVE">To Give</option>

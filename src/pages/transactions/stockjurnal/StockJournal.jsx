@@ -347,6 +347,7 @@ export const StockJournal = () => {
             setShow = {setShowJournalFilter}
               {...{
                 edit,
+                getData,
                 setEdit,
                 handleClearAll,
               }}

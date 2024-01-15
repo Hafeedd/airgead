@@ -12,39 +12,39 @@ import { formValidation } from "../../../hooks/formValidation/formValidation";
 
 const PaymentTransaction = ({ method }) => {
   const initialPaymentState = {
-      id: null,
-      method: method,
-      voucher_number: null,
-      account_id: null,
-      account_name: null,
-      account_code: null,
-      narration: null,
-      cash_bank_account_name: null,
-      cash_bank_account: null,
-      amount: 0,
-      amount_word: null,
-      date: null,
-      project: null,
-      cheque_no: null,
-      draw_no: null,
-      cheque_date: null,
-      salesman: null,
-      commision: null,
-      discount: null,
-      tax_percent: null,
-      taxable: null,
-      tax_type: "GST",
-      cgst: null,
-      sgst: null,
-      tax_amount: null,
-      print_style: null,
-      printer: null,
-      print_copies: null,
-      print_preview: false,
-      print: false,
-      op_balance: null,
-      cl_balance: null,
-  }
+    id: null,
+    method: method,
+    voucher_number: null,
+    account_id: null,
+    account_name: null,
+    account_code: null,
+    narration: null,
+    cash_bank_account_name: null,
+    cash_bank_account: null,
+    amount: 0,
+    amount_word: null,
+    date: null,
+    project: null,
+    cheque_no: null,
+    draw_no: null,
+    cheque_date: null,
+    salesman: null,
+    commision: null,
+    discount: null,
+    tax_percent: null,
+    taxable: null,
+    tax_type: "GST",
+    cgst: null,
+    sgst: null,
+    tax_amount: null,
+    print_style: null,
+    printer: null,
+    print_copies: null,
+    print_preview: false,
+    print: false,
+    op_balance: null,
+    cl_balance: null,
+  };
   const [accountList, setAccountList] = useState([]);
   const [payReciptList, setPayRecieptList] = useState([]);
   const [pathOfPage, setPathOfPage] = useState();
@@ -58,9 +58,9 @@ const PaymentTransaction = ({ method }) => {
   useEffect(() => {
     getData();
   }, []);
-  
+
   useEffect(() => {
-    setPaymentAdd(data=>({...data,method:method}))
+    setPaymentAdd((data) => ({ ...data, method: method }));
     getData2();
   }, [method]);
 
@@ -98,8 +98,8 @@ const PaymentTransaction = ({ method }) => {
               value: item.code,
               text: item.name,
               description: item.code,
-              op_balance: Math.abs(item?.opening_balance)||null,
-              cl_balance: Math.abs(item?.closing_balance)||null
+              op_balance: Math.abs(item?.opening_balance) || null,
+              cl_balance: Math.abs(item?.closing_balance) || null,
             };
             tempList.push(a);
           }
@@ -132,7 +132,7 @@ const PaymentTransaction = ({ method }) => {
       let payRecCode;
       setPaymentAdd((data) => {
         payRecCode = data.code;
-        return data
+        return data;
       });
       if (response2.success && (!edit || !payRecCode)) {
         if (paymentAdd.method) {
@@ -208,7 +208,7 @@ const PaymentTransaction = ({ method }) => {
         cash_bank_account: item?.daybook[1]?.cash_bank_account,
         amount: item?.daybook[0]?.amount,
         amount_word: null,
-        date: item?.daybook[0]?.date||item?.daybook[0]?.created_at,
+        date: item?.daybook[0]?.date || item?.daybook[0]?.created_at,
         project: item?.daybook[0]?.project,
         cheque_no: item?.cheque_no,
         draw_no: item?.draw_no,
@@ -403,7 +403,8 @@ const PaymentTransaction = ({ method }) => {
   };
 
   const handleEdit = (data) => {
-    let tempPayRecAdd, tempMethod = paymentAdd.method
+    let tempPayRecAdd,
+      tempMethod = paymentAdd.method;
     if (data) {
       tempPayRecAdd = { ...data, method: tempMethod };
       setPaymentAdd(tempPayRecAdd);

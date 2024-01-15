@@ -279,6 +279,7 @@ const SalesTable = (props) => {
         retail_rate = 0;
       }
       let gross = retail_rate;
+
       if (tax_gst && !tax_inclusive) {
         gross = retail_rate + tax_gst * (retail_rate / 100);
       }
@@ -289,7 +290,6 @@ const SalesTable = (props) => {
       if (others.retail_rate) {
         others.value = gross;
       }
-
       tempItem = {
         ...tempItem,
         ...others,
@@ -300,7 +300,7 @@ const SalesTable = (props) => {
         sales_rate: retail_rate || 0,
         rate: retail_rate || 0,
         gross: gross || 0,
-        tax_gst: tax_gst,
+        tax_gst: tax_gst || 0,
         quantity: 1,
       };
     } else if (data?.value == "") {
@@ -972,12 +972,12 @@ const SalesTable = (props) => {
                 <td></td>
                 <td className="item">
                   <div className="purch-green-table-item">
-                    {salesAdd.total_sgst || 0}%
+                    {salesAdd.total_sgst || 0}
                   </div>
                 </td>
                 <td className="item">
                   <div className="purch-green-table-item">
-                    {salesAdd.total_sgst || 0}%
+                    {salesAdd.total_sgst || 0}
                   </div>
                 </td>
                 <td className="item">

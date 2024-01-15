@@ -169,7 +169,7 @@ export const OpStockTable = (props) => {
                 />
               </td>
             </tr>)):
-            <tr><td className="fs-5 py-2 text-center" colSpan={9}>No Items Added Yet</td></tr>}
+            <tr><td className="fs-5 py-2 text-center" colSpan={11}>No Items Added Yet</td></tr>}
             <AdjustTableHeight/>
           </tbody>
         </table>

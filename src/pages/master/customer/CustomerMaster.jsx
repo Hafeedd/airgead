@@ -8,7 +8,7 @@ import useCustomerServices from "../../../services/master/customerServices";
 
 const CustomerList = () => {
   const [pageHeadCustomer, setPageHeadCustomer] = useState(1);
-  const [toEdit, setToEdit] = useState(false);
+  const [edit, setEdit] = useState(false);
   const [listCustomer, setListCustomer] = useState([]);
   const [search, setSearch] = useState();
   // const [showCustomerAdd,setShowCustomerAdd] = useState(false)
@@ -20,58 +20,6 @@ const CustomerList = () => {
   useEffect(() => {
     getData();
   }, []);
-
-  useEffect(() => {
-    if (toEdit) {
-      listCustomer.map((x) => {
-        if (x.id === toEdit.id) {
-          setToEdit(x);
-        }
-      });
-    } else {
-      setToEdit(null);
-    }
-  }, [listCustomer]);
-
-  // const handleDelete = (id, e) => {
-  //   Swal.fire({
-  //     title: "Are you sure?",
-  //     text: "You won't be able to revert this!",
-  //     icon: "warning",
-  //     showCancelButton: true,
-  //     confirmButtonColor: "#3085d6",
-  //     cancelButtonColor: "#d33",
-  //     confirmButtonText: "Yes, delete it!",
-  //   }).then((result) => {
-  //     if (result.isConfirmed) {
-  //       handleDeleteConfirm(id, e);
-  //     }
-  //   });
-  // };
-
-  // const handleDeleteConfirm = async (id, e) => {
-  //   e.preventDefault();
-  //   try {
-  //     let res = await deleteCustomer(id);
-  //     if (res.success)
-  //       Swal.fire("Customer deleted Successfully", "", "success");
-  //     else {
-  //       Swal.fire(
-  //         "Warning",
-  //         res.message ||
-  //           "This account may contain transaction. Therefore it cant be deleted",
-  //         "info"
-  //       );
-  //     }
-  //     getData();
-  //   } catch (err) {
-  //     Swal.fire(
-  //       "Warning",
-  //       "This account may contain transaction. Therefore it cant be deleted",
-  //       "warning"
-  //     );
-  //   }
-  // };
 
   const getData = async () => {
     try {
@@ -88,13 +36,8 @@ const CustomerList = () => {
 
   const handleEdit = (data) => {
     navigate("/customer-add");
-    setToEdit(data);
+    setEdit(data);
   };
-
-  // const handleClose = () =>{
-  //     setToEdit(false);
-  //     setShowCustomerAdd(false)
-  // }
 
   return (
     <div className="item_add">
@@ -119,7 +62,7 @@ const CustomerList = () => {
             <div
               onClick={() => {
                 navigate("/customer-add");
-                setToEdit(false);
+                setEdit(false);
               }}
               className="btn btn-primary add-btn px-2 py-1 w-auto"
             >
@@ -129,11 +72,11 @@ const CustomerList = () => {
         </div>
       </div>
       {
-        /* toEdit||showCustomerAdd */ location === "/customer-add" ? (
+        /* edit||showCustomerAdd */ location === "/customer-add" ? (
           <CustomerAddForm
             refresh={getData}
-            edit={toEdit}
-            setEdit={setToEdit}
+            edit={edit}
+            setEdit={setEdit}
           />
         ) : (
           <CustomerTable
@@ -144,8 +87,7 @@ const CustomerList = () => {
               setSearch,
               navigate,
               handleEdit,
-              // handleDelete,
-              toEdit,
+              edit,
             }}
           />
         )

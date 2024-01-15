@@ -44,12 +44,4 @@
 
 .daybook-table tbody tr td {
   padding: 1rem;
-  /* position: sticky; */
 }
-
-
-/* scroll */
-
-/* .day-book-table-cont::-webkit-scrollbar{
- display: none !important;
-} */

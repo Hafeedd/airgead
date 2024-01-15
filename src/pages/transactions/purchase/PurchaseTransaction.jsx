@@ -182,11 +182,6 @@ const PurchaseTransaction = () => {
       let total_total = tableItemList?.reduce((a, b) => {
         return b.value ? parseFloat(a) + parseFloat(b.total) : 0;
       }, 0);
-      // let total_disc = tableItemList?.reduce((a, b) => {
-      //   return b.discount_1_amount
-      //     ? parseFloat(a) + parseFloat(b.discount_1_amount)
-      //     : 0;
-      // }, 0);
 
       let roundOff = (
         Math.round(parseFloat(netAmount)).toFixed(2) - parseFloat(netAmount)
@@ -198,10 +193,6 @@ const PurchaseTransaction = () => {
       if (status == "edit") {
         paidCash = edit.paid_cash;
       }
-
-      // if (status == "edit" && purchaseAdd.discount>0) {
-      //   netAmount = +edit.total_amount - purchaseAdd.discount;
-      // }
 
       let changeDue;
 
@@ -225,7 +216,7 @@ const PurchaseTransaction = () => {
         total_scGst: total_scGst?.toFixed(2),
         total_items: totalItem,
         roundoff: roundOff,
-        change_due: changeDue,
+        change_due: changeDue?.toFixed(0),
         // total_disc: total_disc?.toFixed(0),
         // discount: total_disc?.toFixed(2),
       };
@@ -255,9 +246,6 @@ const PurchaseTransaction = () => {
     postPurchase,
     putPurchase,
     getPurchase,
-    deletePurchase,
-    deletePurchaseItem,
-    deletePurchaseItemBatch,
   } = usePurchaseServices();
   const { getSupplier } = useCustomerServices();
 
