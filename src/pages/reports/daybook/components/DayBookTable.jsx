@@ -83,67 +83,62 @@ export const DayBookTable = (props) => {
             <tbody>
               {searchedList?.length > 0 ? (
                 searchedList?.map((data, i) => {
-                  return (
-                    data.account_data.length > 0 &&
-                    data.account_data.filter((x) => x.debit > 0 || x.credit > 0)
-                      .length > 0 && (
-                      <>
-                        <tr>
-                          <td
-                            style={{ background: "#BD93F3", color: "white" }}
-                            colSpan={4}
-                          >
-                            <div className="d-flex">
-                              <div
-                                className="me-4 d-flex"
-                                style={{ width: "fit-content" }}
-                              >
-                                {"Date: " +
-                                  new Date(
-                                    data.account_data[0]?.date
-                                  ).toLocaleDateString()}
-                              </div>
-                              <div style={{ width: "fit-content" }}>
-                                {"Doc: " + data.account_data[0]?.document_no}
-                              </div>
+                  return(
+                    (data.account_data.length>0 && 
+                      (data.account_data.filter(x=>x.debit>0 || x.credit>0).length>0))&&
+                    <>
+                      <tr>
+                        <td
+                          style={{ background: "#BD93F3", color: "white" }}
+                          colSpan={4}
+                        >
+                          <div className="d-flex">
+                            <div
+                              className="me-4 d-flex"
+                              style={{ width: "fit-content" }}
+                            >
+                              {"Date: " +
+                                new Date(
+                                  data.account_data[0]?.date
+                                ).toLocaleDateString()}
                             </div>
-                          </td>
-                        </tr>
-                        {data?.account_data?.length > 0 &&
-                          data?.account_data?.map((daybookData) => {
-                            return (
-                              (daybookData?.debit > 0 ||
-                                daybookData?.credit > 0) && (
-                                <tr className="borde border-secondary">
-                                  <td>{daybookData?.account_name}</td>
-                                  <td>{daybookData?.narrations}</td>
-                                  <td className="text-center">
-                                    {daybookData?.debit || ""}
-                                  </td>
-                                  <td className="text-center">
-                                    {daybookData?.credit || ""}
-                                  </td>
-                                </tr>
-                              )
-                            );
-                          })}
-                        <tr className="foot">
-                          <td></td>
-                          <td></td>
-                          <td>
-                            <dvi className="daybook-foot-data text-center">
-                              {data?.account_total?.total_debit?.toFixed(2)}
-                            </dvi>
-                          </td>
-                          <td>
-                            <dvi className="daybook-foot-data text-center">
-                              {data?.account_total?.total_credit?.toFixed(2)}
-                            </dvi>
-                          </td>
-                        </tr>
-                      </>
-                    )
-                  );
+                            <div style={{ width: "fit-content" }}>
+                              {"Doc: " + data.account_data[0]?.document_no}
+                            </div>
+                          </div>
+                        </td>
+                      </tr>
+                      {data?.account_data?.length > 0 &&
+                        data?.account_data?.map((daybookData) => {                          
+                          return (daybookData?.debit>0 || daybookData?.credit>0) &&(
+                            <tr className="border border-secondary">
+                              <td>{daybookData?.account_name}</td>
+                              <td>{daybookData?.narrations}</td>
+                              <td className="text-center">
+                                {daybookData?.debit||''}
+                              </td>
+                              <td className="text-center">
+                                {daybookData?.credit||''}
+                              </td>
+                            </tr>
+                          );
+                        })}
+                      <tr className="foot">
+                        <td></td>
+                        <td></td>
+                        <td>
+                          <dvi className="daybook-foot-data text-center">
+                            {data?.account_total?.total_credit?.toFixed(2)}
+                          </dvi>
+                        </td>
+                        <td>
+                          <dvi className="daybook-foot-data text-center">
+                            {data?.account_total?.total_debit?.toFixed(2)}
+                          </dvi>
+                        </td>
+                      </tr>
+                    </>
+                  )
                 })
               ) : (
                 <tr>
