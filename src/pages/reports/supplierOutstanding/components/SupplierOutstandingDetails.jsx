@@ -229,20 +229,20 @@ const SupplierOutstandingDetails = (props) => {
                       {columnVisibility?.opbal && (
                         <td>
                           {data?.opening_balance_new < 0
-                            ? Math.abs(data?.opening_balance_new) + " Cr"
+                            ? Math.abs(data?.opening_balance_new).toFixed(2) + " Cr"
                             : data?.opening_balance_new > 0
-                            ? data?.opening_balance_new + " Db"
+                            ? data?.opening_balance_new.toFixed(2) + " Db"
                             : 0}
                         </td>
                       )}
-                      {columnVisibility?.debit && <td>{data?.sum_debit}</td>}
-                      {columnVisibility?.credit && <td>{data?.sum_credit}</td>}
+                      {columnVisibility?.debit && <td>{data?.sum_debit.toFixed(2)}</td>}
+                      {columnVisibility?.credit && <td>{data?.sum_credit.toFixed(2)}</td>}
                       {columnVisibility?.clbal && (
                         <td>
                           {data?.closing_balance < 0
-                            ? Math.abs(data?.closing_balance) + " Cr"
+                            ? Math.abs(data?.closing_balance).toFixed(2) + " Cr"
                             : data?.closing_balance > 0
-                            ? data?.closing_balance + " Db"
+                            ? data?.closing_balance.toFixed(2) + " Db"
                             : 0}
                         </td>
                       )}
@@ -280,24 +280,24 @@ const SupplierOutstandingDetails = (props) => {
                   {columnVisibility?.opbal && (
                     <td>
                       {supOutstanding?.total_opening_balance < 0
-                        ? Math.abs(supOutstanding?.total_opening_balance) + " Cr"
+                        ? Math.abs(supOutstanding?.total_opening_balance).toFixed(2) + " Cr"
                         : supOutstanding?.total_opening_balance > 0
-                        ? supOutstanding?.total_opening_balance + " Db"
+                        ? supOutstanding?.total_opening_balance.toFixed(2) + " Db"
                         : 0}
                     </td>
                   )}
                   {columnVisibility?.debit && (
-                    <td>{supOutstanding?.total_user_debit || 0}</td>
+                    <td>{supOutstanding?.total_user_debit||0}</td>
                   )}
                   {columnVisibility?.credit && (
-                    <td>{supOutstanding?.total_user_credit || 0}</td>
+                    <td>{supOutstanding?.total_user_credit||0}</td>
                   )}
                   {columnVisibility?.clbal && (
                     <td>
                       {supOutstanding?.total_closing_balance < 0
-                        ? Math.abs(supOutstanding?.total_closing_balance) + " Cr"
+                        ? Math.abs(supOutstanding?.total_closing_balance).toFixed(2) + " Cr"
                         : supOutstanding?.total_closing_balance > 0
-                        ? supOutstanding?.total_closing_balance + " Db"
+                        ? supOutstanding?.total_closing_balance.toFixed(2) + " Db"
                         : 0}
                     </td>
                   )}
@@ -311,24 +311,24 @@ const SupplierOutstandingDetails = (props) => {
                   {columnVisibility?.opbal && (
                     <td>
                       {staffOutstanding?.total_opening_balance < 0
-                        ? Math.abs(staffOutstanding?.total_opening_balance) + " Cr"
+                        ? Math.abs(staffOutstanding?.total_opening_balance).toFixed(2) + " Cr"
                         : staffOutstanding?.total_opening_balance > 0
-                        ? staffOutstanding?.total_opening_balance + " Db"
+                        ? staffOutstanding?.total_opening_balance.toFixed(2) + " Db"
                         : 0}
                     </td>
                   )}
                   {columnVisibility?.debit && (
-                    <td>{staffOutstanding?.total_user_debit || 0}</td>
+                    <td>{staffOutstanding?.total_user_debit||0}</td>
                   )}
                   {columnVisibility?.credit && (
-                    <td>{staffOutstanding?.total_user_credit || 0}</td>
+                    <td>{staffOutstanding?.total_user_credit||0}</td>
                   )}
                   {columnVisibility?.clbal && (
                     <td>
                       {staffOutstanding?.total_closing_balance < 0
-                        ? Math.abs(staffOutstanding?.total_closing_balance) + " Cr"
+                        ? Math.abs(staffOutstanding?.total_closing_balance).toFixed(2) + " Cr"
                         : staffOutstanding?.total_closing_balance > 0
-                        ? staffOutstanding?.total_closing_balance + " Db"
+                        ? staffOutstanding?.total_closing_balance.toFixed(2) + " Db"
                         : 0}
                     </td>
                   )}
