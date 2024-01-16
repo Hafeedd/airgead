@@ -1,190 +1,780 @@
-import React from 'react'
-import { Form } from 'react-bootstrap';
-import { BsFiletypePdf, BsWhatsapp } from "react-icons/bs";
-import { RiFileExcel2Line } from "react-icons/ri";
-import { TfiEmail, TfiPrinter } from "react-icons/tfi";
-import SearchDropDown from '../../../../components/searchDropDown/SearchDropDown';
-const MaterialCompositionOfProduct = () => {
-    return (
-        <div className="px-0">
-            <div className="d-flex row mx-0 justify-content-start align-items-center">
-                <div className="col-12 mt-1 d-flex justify-content-start px-0">
-                    <div
-                        style={{ background: "#4B4B4B" }}
-                        className="reports-btn btn rounded-1 col-1 col-2 py-0 me-3 mx-0"
-                    >
-                        <BsFiletypePdf className="me-2 text-" size={18} />
-                        PDF
-                    </div>
-                    <div
-                        style={{ background: "#4B4B4B" }}
-                        className="reports-btn btn rounded-1 col-1 col-2 py-0 me-3"
-                    >
-                        <RiFileExcel2Line className="me-2" size={18} />
-                        Excel
-                    </div>
-                    <div
-                        style={{ background: "#4B4B4B" }}
-                        className="reports-btn btn rounded-1 col-1 col-2 py-0 me-3"
-                    >
-                        <TfiPrinter size={18} className="me-2 h-100" />
-                        Print
-                    </div>
-                    <div
-                        style={{ background: "#4B4B4B" }}
-                        className="reports-btn btn rounded-1 col-1 col-2 py-0 me-3"
-                    >
-                        <TfiEmail size={18} className="me-2 h-100" />
-                        Email
-                    </div>
-                    <div
-                        style={{ background: "#4B4B4B" }}
-                        className="reports-btn btn rounded-1 col-1 col-2 py-0"
-                    >
-                        <BsWhatsapp size={18} className="me-2 h-100" />
-                        Whatsapp
-                    </div>
-                </div>
-            </div>
-            <div>
+import React, { useEffect, useState } from "react";
+import { Form, Modal } from "react-bootstrap";
+import { Dropdown } from "semantic-ui-react";
+import { MdDelete } from "react-icons/md";
+import { RiAddBoxFill } from "react-icons/ri";
+import Swal from "sweetalert2";
+import useItemServices from "../../../../services/master/itemServices";
+import editBtn from "../../../../assets/icons/edit-black.svg";
+import useProductionServices from "../../../../services/master/productionSerivices";
+const MaterialCompositionOfProduct = (props) => {
+  const {
+    typeList,
+    allItem,
+    allRaw,
+    unitList,
+    bankAccList,
+    allPropertiesTypes,
+    editComposition,
+    setEditComposition,
+  } = props;
+  const [itemQuantity, setItemQuantity] = useState("");
+  const [itemQuantityUnit, setItemQuantityUnit] = useState("");
+  const [rawQuantity, setRawQuantity] = useState("");
+  const [byproductQuantity, setByProductQuantity] = useState("");
+  const [selectedType, setSelectedType] = useState("");
+  const [selectedItem, setSelectedItem] = useState("");
+  const [selectedRaw, setSelectedRaw] = useState("");
+  const [selectedUnit, setSelectedUnit] = useState("");
+  const [selectedByProduct, setSelectedByProduct] = useState("");
+  const [selectedByProductUnit, setSelectedByProductUnit] = useState("");
+  const [rawList, setRawList] = useState([]);
+  const [byProductList, setByproductList] = useState([]);
+  const [expenseList, setExpenseList] = useState([]);
+  const [show, setShow] = useState(false);
+  const { postProperty, putProperty } = useItemServices();
+  const [typeData, SetTypeData] = useState("");
+  const [edit, setEdit] = useState(false);
+  const [selectDebitAccount, setSelectedDebitAccount] = useState("");
+  const [selectCreditAccount, setSelectedCreditAccount] = useState("");
+  const [expenseAmount, setExpenseAmount] = useState("");
 
-                <div className="col-6 col-7 border-2 pe-5 mt-3">
-                    <Form.Group className="col-11 pe-4 ps-0 mx-0 d-flex align-items-start mt-1">
-                        <Form.Label className="col-2 purchase-input-label pb-1">
-                            Type
-                        </Form.Label>
-                        {/* <div className="purchase-input-text op-stock-dropdown me-1 w-100">
-                            <SearchDropDown
-                                // id="company"
-                                // noAdd={true}
-                                options={'propertyList'}
-                                // {...{ showDropdown, setShowDropdown, handleKeyDown }}
-                                // setDataValue={setFilter}
-                                 selectedValue={'filter'}
-                            />
-                        </div> */}
-                        <div>
-                            <input type="text" className='rounded  mx-2 border w-100 '/>
-                        </div>
-                    </Form.Group>
+  const handleByProductAdd = () => {
+    let tempList = [...byProductList];
+    let tempData = {
+      fk_item: selectedByProduct,
+      qty: byproductQuantity,
+      fk_unit: selectedByProductUnit,
+    };
+    tempList.push(tempData);
+    setByproductList([...tempList]);
+    setSelectedByProduct("");
+    setSelectedByProductUnit("");
+    setByProductQuantity("");
+  };
+
+  const handleRawAdd = () => {
+
+      let tempList = [...rawList];
+      let tempData = {
+        fk_item: selectedRaw,
+      qty: rawQuantity,
+      fk_unit: selectedUnit,
+    };
+    tempList.push(tempData);
+    setRawList([...tempList]);
+    setSelectedRaw("");
+    setSelectedUnit("");
+    setRawQuantity("");
+  };
+
+  const handleExpenseAdd = () => {
+    let tempList = [...expenseList];
+    let tempData = {
+      fk_debit_account: selectDebitAccount,
+      fk_credit_account: selectCreditAccount,
+      amount: expenseAmount,
+    };
+    tempList.push(tempData);
+    setExpenseList([...tempList]);
+    setSelectedCreditAccount("");
+    setSelectedDebitAccount("");
+    setExpenseAmount("");
+  };
+
+  const handleDropdownChangeDebitAccount = (event, data) => {
+    setSelectedDebitAccount(data.value);
+  };
+
+  const handleDropdownChangeCreditAccount = (event, data) => {
+    setSelectedCreditAccount(data.value);
+  };
+
+  const handleDropdownChangeType = (event, data) => {
+    setSelectedType(data.value);
+  };
+  const handleDropdownChangeItem = (event, data) => {
+    setSelectedItem(data.value);
+  };
+
+  const handleDropdownChangeRaw = (event, data) => {
+    setSelectedRaw(data.value);
+  };
+  const handleDropdownChangeUnit = (event, data) => {
+    setSelectedUnit(data.value);
+  };
+  const handleDropdownChangeByProduct = (event, data) => {
+    setSelectedByProduct(data.value);
+  };
+  const handleDropdownChangeByProductUnit = (event, data) => {
+    setSelectedByProductUnit(data.value);
+  };
+  const handleDropdownItemQuantityUnit = (event, data) => {
+    setItemQuantityUnit(data.value);
+  };
+
+  const handleTypeAdd = async (e) => {
+    try {
+      if (edit) {
+        let submitData = {
+          id: edit,
+          property_value: typeData,
+          property_type: "composition_type",
+        };
+        let result = await putProperty(submitData, edit);
+        if (result?.success) {
+          Swal.fire("Option Updated Successfylly", "", "success");
+          setEdit(false);
+        } else {
+          Swal.fire(result?.message, "", "error");
+        }
+        allPropertiesTypes();
+        SetTypeData("");
+      } else {
+        let submitData = {
+          property_value: typeData,
+          property_type: "composition_type",
+        };
+        let result = await postProperty(submitData);
+        if (result?.success) {
+          Swal.fire("Option Added Successfylly", "", "success");
+        } else {
+          Swal.fire(result?.message, "", "error");
+        }
+        allPropertiesTypes();
+        SetTypeData("");
+      }
+    } catch (err) {
+      Swal.fire(err?.response?.data?.message, "", "error");
+    }
+  };
+
+  const handleEdit = (data) => {
+    console.log(data.id);
+    setEdit(data.id);
+    SetTypeData(data.property_value);
+  };
+
+  const handleClose = () => {
+    setShow(false);
+    setEdit(false);
+  };
+  const { postMaterialComposition,putMaterialComposition } = useProductionServices();
+  
+  useEffect(()=>{
+    setSelectedItem(editComposition?.fk_item);
+    setSelectedType(editComposition?.fk_type);
+    setItemQuantity(editComposition?.qty);
+    setItemQuantityUnit(editComposition?.fk_unit);
+    setRawList(editComposition?.raw_materials||[])
+    setByproductList(editComposition?.by_products||[])
+    setExpenseList(editComposition?.expense_accounts||[])
+  },[editComposition])
+
+  const handleMaterialSave = async () => {
+    if (editComposition) {
+      let id=editComposition.id;
+      let submitData = {
+        fk_item: selectedItem,
+        fk_type: selectedType,
+        qty: itemQuantity,
+        fk_unit: itemQuantityUnit,
+        raw_materials: rawList,
+        by_products: byProductList,
+        expense_accounts: expenseList,
+      };
+      let response = await putMaterialComposition(id,submitData);
+      if (response.success) {
+        Swal.fire("Material Composition Updated Successfully", "", "success");
+        setSelectedItem("");
+        setSelectedType("");
+        setItemQuantity("");
+        setItemQuantityUnit("");
+        setRawList([]);
+        setByproductList([]);
+        setExpenseList([]);
+        setEditComposition(false);
+      } else {
+        Swal.fire(response?.message, "", "error");
+      }
+    } else {
+      let submitData = {
+        fk_item: selectedItem,
+        fk_type: selectedType,
+        qty: itemQuantity,
+        fk_unit: itemQuantityUnit,
+        raw_materials: rawList,
+        by_products: byProductList,
+        expense_accounts: expenseList,
+      };
+      let response = await postMaterialComposition(submitData);
+      if (response.success) {
+        Swal.fire("Material Composition Added Successfully", "", "success");
+        setSelectedItem("");
+        setSelectedType("");
+        setItemQuantity("");
+        setItemQuantityUnit("");
+        setRawList([]);
+        setByproductList([]);
+        setExpenseList([]);
+      } else {
+        Swal.fire(response?.message, "", "error");
+      }
+    }
+  };
+  const handleMaterialClear = ()=>{
+    Swal.fire("Material Composition Cleared", "", "info");
+    setSelectedItem("");
+    setSelectedType("");
+    setItemQuantity("");
+    setItemQuantityUnit("");
+    setRawList([]);
+    setByproductList([]);
+    setExpenseList([]);
+  }
+  return (
+    <div className="px-0">
+      <div className="col-12">
+        <div className="col-12 d-flex">
+          <div className="col-3 border-2 pe-5 mt-2">
+            <Form.Group className="col-11  ps-0 mx-0 d-flex align-items-start mt-1">
+              <Form.Label className=" col-2 purchase-input-label pb-1 ps-1">
+                Type
+              </Form.Label>
+              <div className="col-3 mx-0 d-flex align-items-center">
+                <Dropdown
+                  clearable
+                  selection
+                  required
+                  // search={search}
+                  // onKeyDown={handleKeyDown}
+                  onChange={handleDropdownChangeType}
+                  className="purchase-input-text table-drop d-flex align-items-center py-0 form-control "
+                  name="type"
+                  placeholder="Select"
+                  value={selectedType}
+                  options={typeList}
+                />
+                <div>
+                  <RiAddBoxFill
+                    size={29}
+                    className="rounded-5 "
+                    onClick={() => setShow(true)}
+                  />
                 </div>
-                <div className='col-12 d-flex'>
-                <div className="col-6 col-7  border-2 pe-5">
-                    <Form.Group className="col-11 pe-4 ps-0 mx-0 d-flex align-items-start mt-2">
-                        <Form.Label className="col-2 purchase-input-label pb-1">
-                            Item
-                        </Form.Label>
-                        {/* <div className="purchase-input-text op-stock-dropdown a b c me-1 w-100">
-                            <SearchDropDown
-                                // id="category"
-                                // noAdd={true}
-                                options={'n'}
-                                // {...{ showDropdown, setShowDropdown, handleKeyDown }}
-                                // setDataValue={setFilter}
-                                selectedValue={'filter'}
-                            />
-                        </div> */}
-                        <div>
-                            <input type="text" className='rounded  mx-2 border w-100 '/>
-                        </div>
-                    </Form.Group>
-                </div>
-                <div className='col-5 col-6 '>
-                    <Form.Group className="col-6 pe-4 ps-0 mx-0 d-flex align-items-start mt-2">
-                        <Form.Label className="col-2 purchase-input-label pb-1">
-                            Qty 
-                        </Form.Label>
-                        <div>
-                            <input type="text" className='rounded  mx-2 border'/>
-                        </div>  
-                     </Form.Group>
-                </div>
-                </div>
-                <div className='col-12 d-flex mt-2'>
-                        <div className='col-6 px-1 '>
-                            <div className='mx-0 TabHead border-bottom py-3  text-center rounded-top'>Quantity of a material used</div>
-                            <table className='materials w-100'>
-                                <thead className='text-light'>
-                                    <tr>
-                                        <th>Raw material</th>
-                                        <th>Qty</th>
-                                        <th>Unit</th>
-                                        <th></th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                <tr>
-                                        <td>Item Name</td>
-                                        <td>Qty</td>
-                                        <td>kg</td>
-                                        <td>del</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Item Name</td>
-                                        <td>Qty</td>
-                                        <td>kg</td>
-                                        <td>del</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Item Name</td>
-                                        <td>Qty</td>
-                                        <td>kg</td>
-                                        <td>del</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Item Name</td>
-                                        <td>Qty</td>
-                                        <td>kg</td>
-                                        <td>del</td>
-                                    </tr>
-                                </tbody>
-                                    
-                            </table>
-                        </div>
-                        <div className='col-6'>
-                            <div className='mx-0 TabHead text-center border-bottom  py-3 w-100 rounded-top'>By product in the production</div>
-                        <table className='materials w-100'>
-                                <thead className='text-light'>
-                                    <tr>
-                                        <th>Raw material</th>
-                                        <th>Qty</th>
-                                        <th>Unit</th>
-                                        <th></th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                <tr>
-                                        <td>Item Name</td>
-                                        <td>Qty</td>
-                                        <td>kg</td>
-                                        <td>del</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Item Name</td>
-                                        <td>Qty</td>
-                                        <td>kg</td>
-                                        <td>del</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Item Name</td>
-                                        <td>Qty</td>
-                                        <td>kg</td>
-                                        <td>del</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Item Name</td>
-                                        <td>Qty</td>
-                                        <td>kg</td>
-                                        <td>del</td>
-                                    </tr>
-                                </tbody>
-                                    
-                            </table>
-                        </div>
-                </div>
-            </div>
+              </div>
+            </Form.Group>
+          </div>
+          <div className="col-3 border-2 mx-0 mt-2">
+            <Form.Group className="col-11 ps-0 mx-0 d-flex align-items-start mt-2">
+              <Form.Label className=" col-2  purchase-input-label pb-1 ps-1">
+                Item
+              </Form.Label>
+              <div className="col-3 mx-0  d-flex align-items-center">
+                <Dropdown
+                  clearable
+                  selection
+                  required
+                  // search={search}
+                  // onKeyDown={handleKeyDown}
+                  onChange={handleDropdownChangeItem}
+                  className="purchase-input-text table-drop d-flex align-items-center py-0 form-control"
+                  name="item"
+                  placeholder="select"
+                  value={selectedItem}
+                  options={allItem}
+                />
+              </div>
+            </Form.Group>
+          </div>
+          <div className="col-3 border-2 mx-0 mt-2">
+            <Form.Group className="col-5  ps-0 mx-0 d-flex align-items-center mt-2">
+              <Form.Label className="col-2 me-2 ms-1 purchase-input-label pb-1">
+                Qty
+              </Form.Label>
+              <div className="col-5 me-1">
+                <input
+                  type="text"
+                  className="rounded border border-dark w-100 h-125"
+                  value={itemQuantity}
+                  onChange={(e) => setItemQuantity(e.target.value)}
+                />
+              </div>
+
+              <Dropdown
+                clearable
+                selection
+                required
+                // search={search}
+                // onKeyDown={handleKeyDown}
+                onChange={handleDropdownItemQuantityUnit}
+                className="purchase-input-text table-drop d-flex align-items-center py-0 form-control"
+                name="code"
+                placeholder="select"
+                value={itemQuantityUnit}
+                options={unitList}
+              />
+            </Form.Group>
+          </div>
         </div>
-    )
-}
 
-export default MaterialCompositionOfProduct
+        <div className="col-12 d-flex mt-2">
+          <div
+            className="col-6 pe-1 ms-1 "
+            style={{ height: "250px", overflowY: "scroll" }}
+          >
+            <div
+              className="mx-0 TabHead  border-bottom border-light border-2 py-3  text-center rounded-top"
+              style={{ top: "0", position: "sticky", zIndex: 1 }}
+            >
+              Quantity of a material used
+            </div>
+            <table className="materials w-100 rounded-bottom">
+              <thead className="text-light">
+                <tr>
+                  <th>Raw material</th>
+                  <th>Qty</th>
+                  <th>Unit</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody>
+                {rawList?.length > 0 &&
+                  rawList.map((data, key) => {
+                    const handleRawDelete = () => {
+                      let tempList = [...rawList];
+                      tempList.splice(key, 1);
+                      setRawList([...tempList]);
+                    };
+                    const handleRawEdit = (e, drop_data) => {
+                      if (drop_data)
+                        data = { ...data, [drop_data.name]: drop_data.value };
+                      else data = { ...data, [e.target.name]: e.target.value };
+                      let tempList = [...rawList];
+                      tempList.splice(key, 1, data);
+                      setRawList([...tempList]);
+                    };
+                    return (
+                      <tr key={key}>
+                        <td>
+                          <Dropdown
+                            clearable
+                            selection
+                            required
+                            // search={search}
+                            // onKeyDown={handleKeyDown}
+                            onChange={handleRawEdit}
+                            className="purchase-input-text table-drop d-flex align-items-center py-0 form-control"
+                            name="fk_item"
+                            placeholder="select"
+                            value={data.fk_item}
+                            options={allRaw}
+                          />
+                        </td>
+                        <td>
+                          <input
+                            name="qty"
+                            type="text"
+                            value={data.qty}
+                            onChange={handleRawEdit}
+                            className="rounded-1 border border-dark"
+                          />
+                        </td>
+                        <td>
+                          <Dropdown
+                            clearable
+                            selection
+                            required
+                            // search={search}
+                            // onKeyDown={handleKeyDown}
+                            onChange={handleRawEdit}
+                            className="purchase-input-text table-drop d-flex align-items-center py-0 form-control"
+                            name="fk_unit"
+                            placeholder="select"
+                            value={data.fk_unit}
+                            options={unitList}
+                          />
+                        </td>
+                        <td>
+                          <MdDelete size={20} onClick={handleRawDelete} />
+                        </td>
+                      </tr>
+                    );
+                  })}
+                <tr>
+                  <td>
+                    <Dropdown
+                      clearable
+                      selection
+                      required
+                      // search={search}
+                      // onKeyDown={handleKeyDown}
+                      onChange={handleDropdownChangeRaw}
+                      className="purchase-input-text table-drop d-flex align-items-center py-0 form-control"
+                      name="code"
+                      placeholder="select"
+                      value={selectedRaw}
+                      options={allRaw}
+                    />
+                  </td>
+                  <td>
+                    <input
+                      type="text"
+                      value={rawQuantity}
+                      onChange={(e) => setRawQuantity(e.target.value)}
+                      className="rounded-1 border border-dark"
+                    />
+                  </td>
+                  <td>
+                    <Dropdown
+                      clearable
+                      selection
+                      required
+                      // search={search}
+                      // onKeyDown={handleKeyDown}
+                      onChange={handleDropdownChangeUnit}
+                      className="purchase-input-text table-drop d-flex align-items-center py-0 form-control"
+                      name="code"
+                      placeholder="select"
+                      value={selectedUnit}
+                      options={unitList}
+                    />
+                  </td>
+                  <td>
+                    <RiAddBoxFill size={20} onClick={handleRawAdd} />
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div
+            className="col-6 pe-1"
+            style={{ height: "250px", overflowY: "scroll" }}
+          >
+            <div
+              className="mx-0 TabHead text-center border-bottom border-light border-2 py-3 w-100 rounded-top"
+              style={{ top: "0", position: "sticky", zIndex: 1 }}
+            >
+              By product in the production
+            </div>
+            <table className="materials w-100 rounded-bottom">
+              <thead className="text-light">
+                <tr>
+                  <th>Item Name</th>
+                  <th>Qty</th>
+                  <th>Unit</th>
+                  <th></th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody>
+                {byProductList?.length > 0 &&
+                  byProductList.map((data, key) => {
+                    const handleByProductDelete = () => {
+                      let tempList = [...byProductList];
+                      tempList.splice(key, 1);
+                      setByproductList([...tempList]);
+                    };
+
+                    const handleByProductEdit = (e, drop_data) => {
+                      if (drop_data)
+                        data = { ...data, [drop_data.name]: drop_data.value };
+                      else data = { ...data, [e.target.name]: e.target.value };
+                      let tempList = [...rawList];
+                      tempList.splice(key, 1, data);
+                      setByproductList([...tempList]);
+                    };
+                    return (
+                      <tr key={key}>
+                        <td>
+                          <Dropdown
+                            clearable
+                            selection
+                            required
+                            // search={saerch}
+                            // onKeyDown={handleKeyDown}
+                            onChange={handleByProductEdit}
+                            className="purchase-input-text table-drop d-flex align-items-center py-0 form-control"
+                            name="fk_item"
+                            placeholder="select"
+                            value={data.fk_item}
+                            options={allItem}
+                          />
+                        </td>
+                        <td>
+                          <input
+                            name="qty"
+                            type="text"
+                            value={data.qty}
+                            onChange={handleByProductEdit}
+                            className="rounded-1 border border-dark"
+                          />
+                        </td>
+                        <td>
+                          <Dropdown
+                            clearable
+                            selection
+                            required
+                            // search={search}
+                            // onKeyDown={handleKeyDown}
+                            onChange={handleByProductEdit}
+                            className="purchase-input-text table-drop d-flex align-items-center py-0 form-control"
+                            name="fk_unit"
+                            placeholder="select"
+                            value={data.fk_unit}
+                            options={unitList}
+                          />
+                        </td>
+                        <td>
+                          <MdDelete size={20} onClick={handleByProductDelete} />
+                        </td>
+                      </tr>
+                    );
+                  })}
+                <tr>
+                  <td>
+                    <Dropdown
+                      clearable
+                      selection
+                      required
+                      // search={saerch}
+                      // onKeyDown={handleKeyDown}
+                      onChange={handleDropdownChangeByProduct}
+                      className="purchase-input-text table-drop d-flex align-items-center py-0 form-control"
+                      name="code"
+                      placeholder="select"
+                      value={selectedByProduct}
+                      options={allItem}
+                    />
+                  </td>
+                  <td>
+                    <input
+                      type="text"
+                      value={byproductQuantity}
+                      onChange={(e) => setByProductQuantity(e.target.value)}
+                      className="rounded-1 border border-dark"
+                    />
+                  </td>
+                  <td>
+                    <Dropdown
+                      clearable
+                      selection
+                      required
+                      // search={search}
+                      // onKeyDown={handleKeyDown}
+                      onChange={handleDropdownChangeByProductUnit}
+                      className="purchase-input-text table-drop d-flex align-items-center py-0 form-control"
+                      name="code"
+                      placeholder="select"
+                      value={selectedByProductUnit}
+                      options={unitList}
+                    />
+                  </td>
+                  <td>
+                    <RiAddBoxFill size={20} onClick={handleByProductAdd} />
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div
+          className="col-12 px-1 mt-2"
+          style={{ height: "120px", overflowY: "scroll" }}
+        >
+          <div
+            className="mx-0 text-light ps-4 py-2 w-100 rounded-top"
+            style={{
+              backgroundColor: "#51385D",
+              position: "sticky",
+              top: 0,
+              zIndex: 2,
+            }}
+          >
+            Labour and Expenses
+          </div>
+          <table className="materialsub w-100 border border-bottom border-2">
+            <thead className="text-light">
+              <tr>
+                <th>Debit Account</th>
+                <th>Amount</th>
+                <th>Credit Account</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              {expenseList?.length > 0 &&
+                expenseList.map((data, key) => {
+                  console.log("Hooi", data);
+
+                  const handleExpenseDelete = () => {
+                    let tempList = [...expenseList];
+                    tempList.splice(key, 1);
+                    setExpenseList([...tempList]);
+                  };
+
+                  const handleExpenseEdit = (e, drop_data) => {
+                    if (drop_data)
+                      data = { ...data, [drop_data.name]: drop_data.value };
+                    else data = { ...data, [e.target.name]: e.target.value };
+                    let tempList = [...expenseList];
+                    tempList.splice(key, 1, data);
+                    setExpenseList([...tempList]);
+                  };
+                  return (
+                    <tr key={key}>
+                      <td>
+                        <Dropdown
+                          clearable
+                          selection
+                          required
+                          //search={search}
+                          // onKeyDown={handleKeyDown}
+                          onChange={handleExpenseEdit}
+                          className="purchase-input-text table-drop d-flex align-items-center py-0 form-control"
+                          name="fk_debit_account"
+                          placeholder="select"
+                          value={data.fk_debit_account}
+                          options={bankAccList}
+                        />
+                      </td>
+                      <td>
+                        <input
+                          type="text"
+                          className="rounded-1 border border-dark w-75 ps-4"
+                          onChange={handleExpenseEdit}
+                          value={data.amount}
+                          name="amount"
+                        />
+                      </td>
+                      <td>
+                        <Dropdown
+                          clearable
+                          selection
+                          required
+                          //search={search}
+                          // onKeyDown={handleKeyDown}
+                          onChange={handleExpenseEdit}
+                          className="purchase-input-text table-drop d-flex align-items-center py-0 form-control"
+                          name="fk_credit_account"
+                          placeholder="select"
+                          value={data.fk_credit_account}
+                          options={bankAccList}
+                        />
+                      </td>
+                      <td>
+                        <MdDelete size={20} onClick={handleExpenseDelete} />
+                      </td>
+                    </tr>
+                  );
+                })}
+              <tr>
+                <td>
+                  <Dropdown
+                    clearable
+                    selection
+                    required
+                    //search={search}
+                    // onKeyDown={handleKeyDown}
+                    onChange={handleDropdownChangeDebitAccount}
+                    className="purchase-input-text table-drop d-flex align-items-center py-0 form-control"
+                    name="fk_debit_account"
+                    placeholder="select"
+                    value={selectDebitAccount}
+                    options={bankAccList}
+                  />
+                </td>
+                <td>
+                  <input
+                    type="text"
+                    className="rounded-1 border border-dark w-75 ps-4"
+                    onChange={(e) => setExpenseAmount(e.target.value)}
+                    value={expenseAmount}
+                    name="amount"
+                  />
+                </td>
+                <td>
+                  <Dropdown
+                    clearable
+                    selection
+                    required
+                    //search={search}
+                    // onKeyDown={handleKeyDown}
+                    onChange={handleDropdownChangeCreditAccount}
+                    className="purchase-input-text table-drop d-flex align-items-center py-0 form-control"
+                    name="fk_credit_account"
+                    placeholder="select"
+                    value={selectCreditAccount}
+                    options={bankAccList}
+                  />
+                </td>
+                <td>
+                  <RiAddBoxFill size={20} onClick={handleExpenseAdd} />
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div className="col-12 d-flex justify-content-end mt-3">
+          <div 
+            className="btn btn-md mx-1 bg-secondary text-light col-1 col-2 py-1"
+            onClick={handleMaterialClear}
+          >
+            Clear
+          </div>
+          <div
+            className="btn btn-md ms-3 me-1 bg-secondary text-light col-1 col-2 py-1"
+            onClick={handleMaterialSave}
+          >
+            Save
+          </div>
+        </div>
+      </div>
+      <Modal
+        size="md"
+        centered
+        onHide={handleClose}
+        show={show}
+        contentClassName="search-dropdown"
+      >
+        <Modal.Body className="dropdown-body p-0 pb-2">
+          <div className="dropdown-header">Add Design</div>
+          <div className="px-4 pt-1 w-100">
+            <div className="drop-input-cont position-relative align-items-center d-flex mt-2">
+              <input
+                onChange={(e) => SetTypeData(e.target.value)}
+                placeholder="Add category here"
+                type="text"
+                className="item_input height ms-0 position-relative"
+                value={typeData}
+              />
+              <div onClick={handleTypeAdd} className="btn drop-add-btn">
+                {edit !== false ? "Edit" : "Add"}
+              </div>
+            </div>
+            <div className="dropdown-add-items rounded-2 p-2 pb-1 mt-4">
+              {typeList?.length > 0 ? (
+                typeList.map((item, i) => (
+                  <div key={i} className="dropdown-add-item ms-0 mb-2 p-1 px-2">
+                    {item.property_value}
+                    <img
+                      onClick={() => handleEdit(item)}
+                      className="cursor"
+                      src={editBtn}
+                    />
+                  </div>
+                ))
+              ) : (
+                <div className="dropdown-add-item ms-0 mb-2 p-1 px-2">
+                  No Item Added yet
+                </div>
+              )}
+            </div>
+          </div>
+        </Modal.Body>
+      </Modal>
+    </div>
+  );
+};
+
+export default MaterialCompositionOfProduct;

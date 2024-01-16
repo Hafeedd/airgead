@@ -6,8 +6,8 @@ import useStaffAttendanceServices from "../../../services/transactions/staffAtte
 const StaffAttendance = () => {
   const [year, setYear] = useState(new Date().getFullYear());
   const [month, setMonth] = useState(new Date().getMonth());
-  const [startDate, setStartDate] = useState(new Date(year, month, 1).toDateString().slice(8, 10));
-  const [endDate, setEndDate] = useState(new Date(year, month + 1, 0).toDateString().slice(8, 10));
+  const [startDate, setStartDate] = useState(new Date(year, month+1, 1).toDateString().slice(8, 10));
+  const [endDate, setEndDate] = useState(new Date(year, month, 0).toDateString().slice(8, 10));
 
 
   const months = [
@@ -31,12 +31,13 @@ const StaffAttendance = () => {
   const getData = async () => {
     try {
       const paramsToReport = {
-        from_date: new Date().toISOString().slice(0, 8) + "0" + startDate,
-        to_date: new Date().toISOString().slice(0, 8) + endDate,
+        from_date:  year+'-'+((parseInt(month)+1)<10?'0'+(parseInt(month)+1).toString(): (parseInt(month)+1).toString() )+'-'+startDate,
+        end_date: year+'-'+((parseInt(month)+1)<10?'0'+(parseInt(month)+1).toString(): (parseInt(month)+1).toString() )+'-'+endDate,
       };
+      console.log("params",paramsToReport)
       const response = await getAllStaffAttendance(paramsToReport);
       if (response?.success) {
-        console.log("hoi hoi:",response.data);
+        console.log("get all",response.data);
         setAllStaff(response.data);
       }
     } catch (err) {
@@ -44,8 +45,9 @@ const StaffAttendance = () => {
     }
   };
   useEffect(() => {
+    console.log("useEffect")
     getData();
-  }, [startDate]);
+  }, [startDate,endDate,month,year]);
   return (
     <div className="item_add">
       <div className="itemList_header row mx-0 my-0 mb-o pb-0">
