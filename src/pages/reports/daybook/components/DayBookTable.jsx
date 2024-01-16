@@ -115,10 +115,10 @@ export const DayBookTable = (props) => {
                               <td>{daybookData?.account_name}</td>
                               <td>{daybookData?.narrations}</td>
                               <td className="text-center">
-                                {daybookData?.debit||''}
+                                {daybookData?.debit>0?daybookData?.debit?.toFixed(2):''}
                               </td>
                               <td className="text-center">
-                                {daybookData?.credit||''}
+                                {daybookData?.credit>0?daybookData?.credit?.toFixed(2):''}
                               </td>
                             </tr>
                           );

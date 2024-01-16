@@ -274,6 +274,9 @@ td.clr{
     border: 0;
 }
 
+.purchase-table tbody tr.input-tr td{
+    background: #a6cdec !important;
+}
 
 .btn-primary.purchase-add-btn{
     border-radius: 0.125rem;

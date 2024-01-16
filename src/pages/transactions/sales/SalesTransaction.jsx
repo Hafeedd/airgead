@@ -50,7 +50,7 @@ const initialSalesState = {
   discount: null,
   roundoff: null,
   paid_cash: null,
-  change_due: null, 
+  change_due: null,
   vehicle_no: null,
   total_margin: null,
   total_items: null,
@@ -171,6 +171,7 @@ const SalesTransaction = () => {
   }, [tableItemList]);
 
   const handleSalesAddCalc = (editStatus) => {
+    console.log(tableItemList);
     // if editStatus == "edit" then this useEffect is loading because of edit state has changed
     if (tableItemList?.length > 0) {
       let netAmount = tableItemList?.reduce((a, b) => {
@@ -187,6 +188,9 @@ const SalesTransaction = () => {
         return (b.total || b.total >= 0) && (b.value || b.total >= 0)
           ? parseFloat(a) + parseFloat((b.total - b.value) / 2)
           : 0;
+      }, 0);
+      let total_rate = tableItemList?.reduce((a, b) => {
+        return b.rate || b.rate >= 0 ? parseFloat(a) + parseFloat(b.rate) : 0;
       }, 0);
       let totalItem = tableItemList?.reduce((a, b) => {
         return a + 1;
@@ -301,22 +305,23 @@ const SalesTransaction = () => {
       ).toFixed(2);
 
       if (roundOff == 0 || !roundOff) roundOff = null;
-      else if (roundOff < 0) roundOff = Math.abs(roundOff);
+      else if (roundOff < 0) roundOff = Math.abs(roundOff)?.toFixed(2);
 
-      let paidCash = netAmount?.toFixed(0) ||0;
+      // console.log(netAmount)
+      let paidCash = +netAmount?.toFixed(0) || 0;
       if (editStatus == "edit") {
-        paidCash = edit.paid_cash ||0;
+      paidCash = edit.paid_cash || netAmount?.toFixed(0) || 0;
       }
 
-      let changeDue = edit?.change_due||0
+      let changeDue = edit?.changeDue || 0;
 
-      if(paidCash){
+      if (paidCash) {
         changeDue =
-        (netAmount?.toFixed(0) - salesAdd.discount || 0) -
-        paidCash -
-        salesAdd.bank_amount;
+          (netAmount?.toFixed(0) - salesAdd.discount || 0) -
+          paidCash -
+          salesAdd.bank_amount;
       }
-      
+
       let tempSalesAdd = {
         hsnCalc: hsnWiseCalc,
         total_cgst: total_cgst_amnt?.toFixed(2),
@@ -329,17 +334,18 @@ const SalesTransaction = () => {
         total_total: total_total?.toFixed(2),
         total_scGst: total_sgst?.toFixed(2),
         total_sgst: total_sgst?.toFixed(2),
-        total_items: totalItem,
         tax_gst: total_gst_perc?.toFixed(2),
+        total_rate: total_rate,
+        total_items: totalItem,
         roundoff: roundOff,
         total_discount: total_disc?.toFixed(2),
         paid_cash: paidCash,
-        change_due: changeDue,
+        change_due: changeDue?.toFixed(2),
       };
       setSalesAdd((data) => ({ ...data, ...tempSalesAdd }));
     } else {
-      setSalesAdd((data) => ({ 
-        ...data, 
+      setSalesAdd((data) => ({
+        ...data,
         total_amount: null,
         total_cgst: null,
         total_value: null,
