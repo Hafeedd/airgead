@@ -5,6 +5,8 @@ import useChequeRegister from '../../../../services/transactions/chequeRegister'
 import { Form } from "react-bootstrap";
 import { formValidation } from '../../../../hooks/formValidation/formValidation';
 import Swal from 'sweetalert2';
+import DatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
 
 const ChequeRegisterReportTable = (props) => {
 	const { chequeRegisterList, setChequeRegisterList } = props
@@ -81,6 +83,15 @@ const ChequeRegisterReportTable = (props) => {
 
 		let tempChequeRegisterList = [...chequeRegisterList]
 		let a = { ...tempChequeRegisterList[i] }
+		
+		console.log(a.status)
+
+		if (e.target.name === 'isd_date') {
+			a.status = 'ISSUED'
+		}
+		else if (e.target.name === 'pst_date') {
+			a.status = 'POSTED'
+		}
 
 		if (e.target.value === 'ISSUED') {
 			let date = new Date().toISOString().slice(0, 10)
@@ -175,6 +186,7 @@ const ChequeRegisterReportTable = (props) => {
 	// countDatesInRange((data?.created_at.slice(0, 10).split('-').reverse().join('/')),(data?.cheque_date));
 	return (
 		<div className=" mx-0 mt-3 tax-report
+		
 		-cont">
 			<div
 				style={{ background: "#000" }}
@@ -201,6 +213,7 @@ const ChequeRegisterReportTable = (props) => {
 				</div>
 			</div>
 			<div className='table-cheque-report-head'>
+			
 				<table className='table bg-black text-white'>
 					<thead >
 						<tr className='table-head-bg'>
@@ -231,6 +244,7 @@ const ChequeRegisterReportTable = (props) => {
 
 									return (
 										<>
+											
 											<tr className='border'>
 												<td >{data?.created_at?.slice(0, 10).split('-').reverse().join('/')}</td>
 												<td>{data?.code}</td>
@@ -263,7 +277,9 @@ const ChequeRegisterReportTable = (props) => {
 														>
 														</Form.Control>
 													</Form.Group>
+
 												</td>
+
 												<td>
 													<Form.Group>
 														<Form.Control

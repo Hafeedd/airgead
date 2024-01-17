@@ -58,7 +58,7 @@ const ChequeRegisterForm = ({
                                         placeholder="Select Account Details"
                                         value={chequeRegisterAdd.fk_account || ""}
                                         options={accountList}
-
+                                        
                                     />
                                 </div>
                             </div>
@@ -91,6 +91,7 @@ const ChequeRegisterForm = ({
                                         placeholder="Select Bank Account"
                                         value={chequeRegisterAdd.fk_bank || ""}
                                         options={bankAccList}
+                                        
                                     />
                                 </div>
                             </div>
