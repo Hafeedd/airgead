@@ -121,6 +121,7 @@ const SalesTable = (props) => {
   };
 
   const handleTableItemEdit = (data) => {
+    console.log(data)
     setTableItem(data);
     setTableEdit(data.id);
   };
@@ -833,7 +834,7 @@ const SalesTable = (props) => {
               </td> */}
               <td>
                 {tableEdit ? (
-                  <button onClick={handleAddSalesItem} className="text-center">
+                  <button onClick={handleAddSalesItem} className="text-center border-0 bg-transparent">
                     <FiEdit className="mb-1 btn p-0" size={"16px"} />
                   </button>
                 ) : (

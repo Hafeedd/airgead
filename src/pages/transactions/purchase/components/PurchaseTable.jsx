@@ -202,17 +202,18 @@ const PurchaseTable = (props) => {
       tempItem = { ...tempItem, ...value };
       // if (name == 'tax_gst' || name == 'sales_rate' || name == 'margin') {
       if (tempItem.tax_gst) {
-        let totalTaxAmnt = tempItem.tax_gst * (tempItem.value / 100);
+        let totalTaxAmnt = +tempItem.tax_gst * (+tempItem.value / 100)
+
         value = {
           ...value,
-          ["total"]: tempItem.value + tempItem.tax_gst * (tempItem.value / 100),
+          ["total"]: +tempItem.value + +totalTaxAmnt,
           ["cost"]:
-            tempItem.rate -
-            tempItem.discount_1_amount_per_item +
-            tempItem.tax_gst *
-              ((tempItem.rate - tempItem.discount_1_amount_per_item) / 100),
-          ["cgst_or_igst"]: totalTaxAmnt / 2,
-          ["sgst"]: totalTaxAmnt / 2,
+            +tempItem.rate -
+            +tempItem.discount_1_amount_per_item +
+            +tempItem.tax_gst *
+              ((+tempItem.rate - +tempItem.discount_1_amount_per_item) / 100),
+          ["cgst_or_igst"]: +totalTaxAmnt / 2,
+          ["sgst"]: +totalTaxAmnt / 2,
         };
       } else {
         value = { ...value, cgst_or_igst: 0, sgst: 0 };

@@ -198,17 +198,17 @@ const PurchaseTransaction = () => {
       //   roundOff = roundOff.toFixed(2)
       // }
 
-      let paidCash = netAmount;
+      let paidCash = +netAmount?.toFixed(0) || 0;
       if (status == "edit") {
-        paidCash = edit.paid_cash;
+      paidCash = edit.paid_cash || netAmount?.toFixed(0) || 0;
       }
 
       // if (status == "edit" && purchaseAdd.discount>0) {
       //   netAmount = +edit.total_amount - purchaseAdd.discount;
       // }
 
-      let changeDue;
-
+      let changeDue = edit?.changeDue || 0;
+      
       if (paidCash) {
         changeDue =
           (netAmount?.toFixed(0) - purchaseAdd.discount || 0) -
@@ -251,6 +251,8 @@ const PurchaseTransaction = () => {
       }));
     }
   };
+
+  console.log(purchaseAdd)
 
   const { getAccountList } = useAccountServices();
   const {
@@ -428,7 +430,7 @@ const PurchaseTransaction = () => {
       setPurchaseAdd((data) => ({
         ...data,
         paid_cash: +totalAmount - value,
-        change_due: purchaseAdd.total_amount - (value + +totalAmount - value),
+        change_due: +purchaseAdd.total_amount - (value + +totalAmount - value),
         bank_amount: value,
       }));
     } else if (e.target.name == "paid_cash") {
@@ -443,15 +445,15 @@ const PurchaseTransaction = () => {
           timer: 1560,
         });
       } else {
-        let value = e.target.value == "" ? null : e.target.value;
+        let value = e.target.value == "" ? null : +e.target.value;
         setPurchaseAdd((data) => ({
           ...data,
           change_due:
-            Number(purchaseAdd.change_due) +
-            Number(purchaseAdd.total_amount) +
-            Number(purchaseAdd.paid_cash) -
+            (+purchaseAdd.change_due) +
+            (+purchaseAdd.total_amount) +
+            (+purchaseAdd.paid_cash) -
             value -
-            purchaseAdd.total_amount,
+            +purchaseAdd.total_amount,
           paid_cash: value,
         }));
       }

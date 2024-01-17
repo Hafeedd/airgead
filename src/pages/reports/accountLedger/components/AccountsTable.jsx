@@ -159,7 +159,7 @@ export const AccountsTable = (props) => {
                       Opening Balance:
                     </td>
                     <td className="text-end">
-                      {data?.opening_balance?data?.opening_balance?.toFixed(2)
+                      {data?.opening_balance? Math.abs(data?.opening_balance?.toFixed(2))
                       +(data?.opening_balance?.toFixed(2)>0?" Db":" Cr"):'0'}
                     </td>
                   </tr>
@@ -194,8 +194,8 @@ export const AccountsTable = (props) => {
                           <td className="text-center">{item?.opp_code}</td>
                           <td className="text-center">{item?.narration}</td>
                           <td className="text-center">{item?.debit?Math.abs(item?.debit) +" Db" : ''}</td>
-                          <td className="text-center">{item?.credit ?item?.credit + " Cr" : ''}</td>
-                          <td className="text-end">{balance?.toFixed(2)+ (balance>0 ?" Db" : " Cr")}</td>
+                          <td className="text-center">{item?.credit ? Math.abs(item?.credit) + " Cr" : ''}</td>
+                          <td className="text-end">{Math.abs(balance?.toFixed(2))+ (balance>0 ?" Db" : " Cr")}</td>
                         </tr>
                       );
                     })
@@ -215,18 +215,18 @@ export const AccountsTable = (props) => {
                     <td
                       style={{ background: "#CECECE" }}
                     >
-                     {totalDebit+" Dr"}
+                     {Math.abs(totalDebit)+" Dr"}
                     </td>
                     <td
                       style={{ background: "#CECECE" }}
                     >
-                     {totalCredit+" Cr"}
+                     {Math.abs(totalCredit)+" Cr"}
                     </td>
                     <td
                       style={{ background: "#CECECE" }}
                       className="text-end"
                     >
-                      {tempBalance?.toFixed(2)+ (tempBalance>0 ?" Db" : " Cr")}
+                      {Math.abs(tempBalance?.toFixed(2))+ (tempBalance>0 ?" Db" : " Cr")}
                     </td>
                   </tr>
                 </>
