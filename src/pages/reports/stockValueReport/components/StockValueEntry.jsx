@@ -7,7 +7,7 @@ import useItemServices from '../../../../services/master/itemServices'
 const StockValueEntry = (props) => {
 
     const { params, setParams, selectionChange,
-        rateType, setRateType } = props
+        rateType, setRateType, stockType, setStockType } = props
     const { getProperty } = useItemServices()
 
     const [categories, setCategories] = useState([])
@@ -21,21 +21,25 @@ const StockValueEntry = (props) => {
     const handleChange = (e, data) => {
         console.log(e.target.value)
 
-        if (e.target.value === "") {
-            setParams({ ...params, [data.name]: null })
+        if (data) {
+            if (e.target.value === "") {
+                setParams({ ...params, [data?.name]: null })
+            } else {
+                setParams({ ...params, [data?.name]: data?.value })
+            }
         }
-        else if (e.target.value){
-            console.log(e.target.value)
-            setParams({...params,[e.target.name]:e.target.value})
-        }
-        else {
-            setParams({ ...params, [data.name]: data.value })
-            console.log(e.target.value)
+        else if (e.target.value !== "") {
+            console.log(e.target.name)
+            setParams({ ...params, [e.target.name]: e.target.value })
+        }else
+            setParams({ ...params, [e.target.name]: null })
          
-        }
+        // if (e.target.value === "ALL") {
+        //     console.log(e.target.value)
+        // }
     }
 
-    
+
 
     const getDropDownData = async () => {
         const response = await getProperty()
@@ -73,7 +77,7 @@ const StockValueEntry = (props) => {
                 else if (item.property_type == "rack") {
                     f = { value: item.property_value, text: item.property_value }
                     tempGodown.push(f)
-                }    
+                }
             })
             setCategories(tempCategory)
             setSubCategories(tempSubCategory)
@@ -98,6 +102,7 @@ const StockValueEntry = (props) => {
                     <Dropdown
                         name='category'
                         selection
+                        clearable
                         className='cheque-reg-select item d-flex align-items-center py-0 form-control text-black'
                         placeholder="Select"
                         options={categories}
@@ -112,6 +117,7 @@ const StockValueEntry = (props) => {
                     <Dropdown
                         name='color'
                         selection
+                        clearable
                         className='cheque-reg-select item d-flex align-items-center py-0 form-control text-black'
                         placeholder="Select"
                         options={color}
@@ -128,7 +134,7 @@ const StockValueEntry = (props) => {
                     </select>
                 </div>
                 <div className='col-2'>
-                    <select value={rateType} onChange={(e)=>setRateType(e.target.value)} name="" id="" className='item_input'>
+                    <select value={rateType} onChange={(e) => setRateType(e.target.value)} name="" id="" className='item_input'>
                         <option value="cost">Cost</option>
                         <option value="r_rate">R.Rate</option>
                         <option value="p_rate">P.Rate</option>
@@ -142,6 +148,7 @@ const StockValueEntry = (props) => {
                     <Dropdown
                         name='sub_category'
                         selection
+                        clearable
                         className='cheque-reg-select item d-flex align-items-center py-0 form-control text-black'
                         placeholder="Select"
                         options={subCategories}
@@ -155,6 +162,7 @@ const StockValueEntry = (props) => {
                     <Dropdown
                         name='rack'
                         selection
+                        clearable
                         className='cheque-reg-select item d-flex align-items-center py-0 form-control text-black'
                         placeholder="Select"
                         options={godown}
@@ -166,15 +174,9 @@ const StockValueEntry = (props) => {
                 <div className='row col-2 m-0 p-0'>
                     <div className='col p-0 ps-5 m-0'>Tax %</div>
                     <div className='col'>
-                        <select name="tax" id="" onChange={handleChange} className='item_input'>
-                            <option value={0}>0%</option>
-                            <option value={5}>5%</option>
-                            <option value={12}>12%</option>
-                            <option value={18}>18%</option>
-                            <option value={28}>28%</option>
-                        </select>
+                        <input type="text" onChange={handleChange} className='item_input' name='tax' />
                     </div>
-                    
+
                 </div>
                 <div className='col-2'>
                     <input className='item_input' type="button" value='Barcode' />
@@ -197,11 +199,11 @@ const StockValueEntry = (props) => {
                 </div>
                 <div className='col-1 ps-5'></div>
                 <div className='col-3'>
-                    <select name="" id="" className='item_input'>
-                        <option value="all">All</option>
-                        <option value="all">With Stock Only</option>
-                        <option value="all">With -ve Stock</option>
-                        <option value="all">with Zero Stock</option>
+                    <select value={stockType} id="" className='item_input' onChange={(e) => setStockType(e.target.value)}>
+                        <option value="ALL">All</option>
+                        <option value="POSITIVE_STOCK">With Stock Only</option>
+                        <option value="NEGATIVE_STOCK">With -ve Stock</option>
+                        <option value="ZERO_STOCK">with Zero Stock</option>
                     </select>
                 </div>
                 <div className='col-4'></div>
@@ -222,12 +224,12 @@ const StockValueEntry = (props) => {
                 </div>
                 <div className='col-1 ps-5'>Up To</div>
                 <div className='col-3'>
-                    <input 
-                        className='item_input' 
-                        type="date" 
+                    <input
+                        className='item_input'
+                        type="date"
                         name="to_date"
                         onChange={handleChange}
-                        value={params?.to_date && new Date(params?.to_date)?.toISOString().slice(0,10) || new Date().toISOString().slice(0,10)}
+                        value={params?.to_date && new Date(params?.to_date)?.toISOString().slice(0, 10) || new Date().toISOString().slice(0, 10)}
                     />
                     {/* <Form.Group>
                         <Form.Control
