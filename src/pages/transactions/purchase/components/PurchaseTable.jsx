@@ -475,24 +475,6 @@ const PurchaseTable = (props) => {
               tableItemList.map((data) => (
                 <tr>
                   <td className="text-start ps-3" colSpan={2}>
-                    {/* <select
-                      style={{
-                        WebkitAppearance: "none",
-                        MozAppearance: "none",
-                        fontSize: "10px",
-                        padding: "3.5px 1px",
-                      }}
-                      value={data.fk_items}
-                      className="purchase_input border-0 w-100"
-                    >
-                      <option value={null}>Select</option>
-                      {itemNameList?.length > 0 &&
-                        itemNameList.map((item, index) => (
-                          <option key={index} value={item.value}>
-                            {item.text}
-                          </option>
-                        ))}
-                    </select> */}
                     <Dropdown
                       // onClick={()=>setShowStock(data=>!data)}
                       selection
@@ -628,7 +610,7 @@ const PurchaseTable = (props) => {
                   </td>
                 </tr>
               ))}
-            <tr>
+            <tr className="input-tr">
               <td
                 className="purchase_search_drop_td text-start ps-3"
                 colSpan={2}

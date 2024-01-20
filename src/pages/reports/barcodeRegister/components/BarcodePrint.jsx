@@ -87,10 +87,7 @@ const handleConvertToPdf = async (status) => {
 };
 
   return (
-    <div
-      // style={{ minHeight: "30rem" ,margin:'41.57480315px',marginLeft:"1rem"}}
-      // className="barcode-container"
-      >
+    <div>
       <div
         id="new"
         className="barcode-container"
@@ -98,29 +95,29 @@ const handleConvertToPdf = async (status) => {
       >
         {
         barcodeList &&
-          barcodeList?.map((data,index) => {            
+          barcodeList?.map((data) => {            
             let a = [];
             for (let i = 0; i < data.number; i++) {
               a.push(
-                <div key={i} style={{margin:"5px",marginBottom:"21px", maxHeight:"8rem"}} className={`text-center mt-0 barcode-item ${rowCount<1&& "next-line"}`}>
+                <div key={i} className={`text-center barcode-item ${rowCount<1&& "next-line"}`}>
                   <Barcode
                     value={data?.barcode}
                     width={1.0178}
-                    height={19.8}
+                    height={15.8}
                     margin={0}
                     textMargin={0}
-                    fontSize={13}
+                    fontSize={10.5}
                   />
                     <div className="d-flex flex-column h-auto text-start">
-                      <div style={{fontSize:"10px", height:"1rem"}} className="py-0 my-0">{data?.item_name}</div>
-                      <div style={{fontSize:"12px", height:"1rem"}} className="py-0 my-0">₹{data?.cost}</div>
+                      <div style={{fontSize:"10px"}} className="py-0 my-0">{data?.item_name}</div>
+                      <div style={{fontSize:"12px"}} className="py-0 my-0">₹{data?.cost}</div>
                     </div>
                 </div>
               );
               barcodeCount++          
               if(parseFloat(barcodeCount % 65) < 5 && barcodeCount>5){
                 rowCount = 0
-              } 
+              }
               else rowCount = 1
             }
             return [...a];
@@ -130,12 +127,12 @@ const handleConvertToPdf = async (status) => {
         className="col-12 d-flex justify-content-center position-absolute gap-2"
         style={{ bottom: "5px" }}
       >
-        <div
+        {/* <div
           className="btn btn-sm btn-dark"
           onClick={() => handleConvertToPdf("pdf")}
         >
           Pdf
-        </div>
+        </div> */}
         <ReactToPrint
           trigger={() => <button className="btn btn-sm btn-dark">Print</button>}
           content={()=>barcodeRef.current}

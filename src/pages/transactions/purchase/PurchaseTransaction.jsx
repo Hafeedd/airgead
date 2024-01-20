@@ -182,17 +182,30 @@ const PurchaseTransaction = () => {
       let total_total = tableItemList?.reduce((a, b) => {
         return b.value ? parseFloat(a) + parseFloat(b.total) : 0;
       }, 0);
+      // let total_disc = tableItemList?.reduce((a, b) => {
+      //   return b.discount_1_amount
+      //     ? parseFloat(a) + parseFloat(b.discount_1_amount)
+      //     : 0;
+      // }, 0);
 
       let roundOff = (
         Math.round(parseFloat(netAmount)).toFixed(2) - parseFloat(netAmount)
-      ).toFixed(2);
+      ).toFixed(2)
       if (roundOff == 0 || !roundOff) roundOff = null;
       else if (roundOff < 0) roundOff = Math.abs(roundOff);
+
+      // if(roundOff){
+      //   roundOff = roundOff.toFixed(2)
+      // }
 
       let paidCash = netAmount;
       if (status == "edit") {
         paidCash = edit.paid_cash;
       }
+
+      // if (status == "edit" && purchaseAdd.discount>0) {
+      //   netAmount = +edit.total_amount - purchaseAdd.discount;
+      // }
 
       let changeDue;
 
@@ -216,9 +229,7 @@ const PurchaseTransaction = () => {
         total_scGst: total_scGst?.toFixed(2),
         total_items: totalItem,
         roundoff: roundOff,
-        change_due: changeDue?.toFixed(0),
-        // total_disc: total_disc?.toFixed(0),
-        // discount: total_disc?.toFixed(2),
+        change_due: changeDue?.toFixed(2),
       };
       setPurchaseAdd((data) => ({ ...data, ...tempPurchaseAdd }));
     } else {

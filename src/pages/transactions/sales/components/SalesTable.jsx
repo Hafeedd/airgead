@@ -231,7 +231,7 @@ const SalesTable = (props) => {
         let itemTempList = [...tableItemList];
         itemTemp = { ...itemTemp, ["cstm_id"]: cstm_id, id: response.data.id };
         itemTempList.unshift(itemTemp);
-        setTableItemList(itemTempList);
+        setTableItemList([...itemTempList]);
         setCstm_id(cstm_id + 1);
         handleTableItemReset();
       } else if (response?.success && tableEdit) {
@@ -241,7 +241,7 @@ const SalesTable = (props) => {
           ind = itemTempList.findIndex((item) => item.id == tableEdit);
         itemTempList.splice(ind, 1);
         itemTempList.unshift(tableItem);
-        setTableItemList(itemTempList);
+        setTableItemList([...itemTempList]);
         setTableEdit(false);
         handleTableItemReset();
       } else {
@@ -493,7 +493,7 @@ const SalesTable = (props) => {
   };
 
   const handlePrev = () => {
-    if (salesList.length > 0) {
+    if (salesList?.length > 0) {
       if (!edit) {
         setEdit(salesList[0]);
       } else {
@@ -565,7 +565,7 @@ const SalesTable = (props) => {
             </tr>
           </thead>
           <tbody className="purchase-table-body">
-            <tr>
+            <tr className="input-tr">
               <td
                 colSpan={3}
                 className="purchase_search_drop_td text-start ps-3"
@@ -1003,7 +1003,7 @@ const SalesTable = (props) => {
         <div className="col-1 col-2 mx-0 item">
           <div className="col-4">PR</div>
           <div className="col-1">:</div>
-          <div className="col-7">323</div>
+          <div className="col-7">{salesAdd.total_rate}</div>
         </div>
         <div className="col-1 col-2 mx-0 item">
           <div className="col-4">CT</div>
