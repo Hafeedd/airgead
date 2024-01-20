@@ -8,6 +8,8 @@ import { Dropdown } from "semantic-ui-react";
 import { useState } from "react";
 import Swal from "sweetalert2";
 import useOnKey from "../../../../hooks/onKeyFunct/onKeyFunct";
+import editIcon from "../../../../assets/icons/edit-black.svg";
+import delteIcon from "../../../../assets/icons/delete.svg";
 
 export const StockJournalDetails = (props) => {
   const {
@@ -21,6 +23,7 @@ export const StockJournalDetails = (props) => {
     handleSubmit,
     handleResetStockTabe,
     stockTableItemList,
+    setStockTableItemList,
     handleClearAll,
     unitList,
     handleAddToTableList,
@@ -53,27 +56,7 @@ export const StockJournalDetails = (props) => {
   };
 
   const handleTrashButton = async () => {
-    // try{
-    //     if(edit){
-    //         const response = await deleteStockJ(edit?.id)
-    //         if(!response.success)
-    //         Swal.fire('Error',response.data,'error')
-    //     }
-    // }catch(err){}
     handleResetStockTabe();
-  };
-
-  const handleEditTableItem = (data, i) => {
-    setTableEdit(stockTableItem);
-    let tempTable = stockTableItemList;
-    tempTable.splice(i, 1);
-    console.log(tempTable)
-    if(!tableEdit){
-      tempTable = stockTableItem
-      tempTable.push(tableEdit)
-    }
-      setStockTableItem(data);
-
   };
 
   const handleChangeTableItem = (e, data) => {
@@ -104,8 +87,7 @@ export const StockJournalDetails = (props) => {
         ["code"]: item_data?.value,
         unit: item_data?.unit,
       }));
-    }
-    if (e.target.value === "")
+    } else if (e.target.value === "")
       setStockJAdd({ ...stockJAdd, [e.target.name]: null });
     else setStockJAdd((data) => ({ ...data, [e.target.name]: e.target.value }));
   };
@@ -158,7 +140,6 @@ export const StockJournalDetails = (props) => {
     }
   };
 
-
   return (
     <div className="stock-jdetails-cont p-1 ps-4 rounded-1 w-100 bg-light h-100">
       Stock Journal
@@ -192,7 +173,9 @@ export const StockJournalDetails = (props) => {
             required
             name="date"
             value={
-              stockJAdd.date? new Date(stockJAdd.date).toISOString().slice(0,10) : !edit
+              stockJAdd.date
+                ? new Date(stockJAdd.date).toISOString().slice(0, 10)
+                : !edit
                 ? new Date().toISOString().slice(0, 10)
                 : ""
             }
@@ -326,6 +309,7 @@ export const StockJournalDetails = (props) => {
                   }}
                   className="purchase_input border-0 w-100 text-center"
                   value={stockTableItem?.unit || ""}
+                  name="unit"
                 >
                   {unitList &&
                     unitList.map((x, i) => (
@@ -351,96 +335,124 @@ export const StockJournalDetails = (props) => {
                   <option value="less">Less</option>
                 </select>
               </td>
-              {tableEdit && !edit ? (
+              {/* {tableEdit && !edit ? (
                 <td className="align-middle ps-0 text-start">
                   <BiSolidTrashAlt
                     size={20}
                     onClick={() => handleTrashButton()}
                   />
                 </td>
-              ):tableEdit&&
-              <td></td>}
-              {!tableEdit &&<td className="align-middle">
-              </td>}
+              ) : (
+                tableEdit && <td></td>
+              )}
+              {!tableEdit && <td className="align-middle"></td>} */}
+              <td></td>
             </tr>
             {stockTableItemList?.length > 0 &&
-              stockTableItemList?.map((data, i) => (
-                <tr key={i}>
-                  <td colSpan={2}>
-                    <div className="item-search-drop">
+              stockTableItemList?.map((data, i) => {
+
+                const handleEdit = (e, a) => {
+                  let tempData = { ...data };
+                  if (a) {
+                    console.log(a.options)
+                    let item_data = a.options.filter(
+                      (x) => x.value === a.value
+                    )[0];
+                    tempData = {
+                      ...tempData,
+                      code: item_data?.value,
+                      unit: item_data?.unit,
+                    };
+                  } else if (e.target.value == "")
+                    tempData = { ...data, [e.target.name]: null };
+                    else tempData = { ...data, [e.target.name]: e.target.value };                  
+                  let tempTable = stockTableItemList || [];
+                  tempTable.splice(i, 1, tempData);
+                  setStockTableItemList([...tempTable]);
+                };
+
+                const handleRemove = () =>{
+                  let tempList = stockTableItemList||[]
+                  tempList.splice(i,1)
+                  setStockTableItemList([...tempList])
+                }
+
+                return (
+                  <tr key={i}>
+                    <td colSpan={2}>
+                      <div className="item-search-drop">
+                        <Dropdown
+                          clearable
+                          selection
+                          required
+                          search={search}
+                          onKeyDown={handleKeyDown}
+                          onChange={handleEdit}
+                          className="purchase-input-text table-drop d-flex align-items-center py-0 form-control"
+                          name="code"
+                          placeholder="select"
+                          value={data?.code || ""}
+                          options={itemNameList}
+                        />
+                      </div>
+                    </td>
+                    <td className="align-middle">
                       <input
-                        required
-                        disabled
-                        style={{ border: "1px solid #4d4d4d" }}
-                        className="py-2 w-100 rounded-2 border-1 ps-3 text-dark"
-                        value={data?.name + "    " + data?.code || ""}
+                        onChange={handleEdit}
+                        value={data.qty || ""}
+                        className="col-7 py-2 rounded-2 border-0 text-center "
+                        name="qty"
+                        type="text"
                       />
-                    </div>
-                  </td>
-                  <td className="align-middle">
-                    <input
-                      value={data.qty || ""}
-                      className="col-7 py-2 rounded-2 border-0 text-center "
-                      type="text"
-                    />
-                  </td>
-                  <td className="align-middle">
-                    <select
-                      style={{
-                        WebkitAppearance: "none",
-                        fontSize: "10px",
-                        padding: "3.5px 1px",
-                      }}
-                      className="purchase_input border-0 w-100 text-center"
-                      value={data.unit || ""}
-                    >
-                      {unitList &&
-                        unitList.map((x, i) => (
-                          <option key={i} value={x.value}>
-                            {x.text}
-                          </option>
-                        ))}
-                    </select>
-                  </td>
-                  <td className="align-middle">{data.cost || "0.00"}</td>
-                  <td className="align-middle">{data.value || "0.00"}</td>
-                  {/* <td className="align-middle">{data.godown||'0.00'}</td> */}
-                  {/* <td className="align-middle">
+                    </td>
+                    <td className="align-middle">
+                      <select
+                        disabled
+                        name="unit"
+                        style={{
+                          WebkitAppearance: "none",
+                          fontSize: "10px",
+                          padding: "3.5px 1px",
+                        }}
+                        className="purchase_input border-0 w-100 text-center"
+                        value={data.unit || ""}
+                      >
+                        {unitList &&
+                          unitList.map((x, i) => (
+                            <option key={i} value={x.value}>
+                              {x.text}
+                            </option>
+                          ))}
+                      </select>
+                    </td>
+                    <td className="align-middle">{data.cost || "0.00"}</td>
+                    <td className="align-middle">{data.value || "0.00"}</td>
+                    {/* <td className="align-middle">{data.godown||'0.00'}</td> */}
+                    {/* <td className="align-middle">
                     {data.unit || ''}
                   </td> */}
-                  <td className="align-middle">
-                    <select
-                      className="add-less-btn"
-                      value={data.qty_type || "add"}
-                    >
-                      <option value="add">Add</option>
-                      <option value="less">Less</option>
-                    </select>
-                  </td>
-                  <td className="align-middle ps-0 text-start">
-                    <div
-                      className="btn p-0 text-start"
-                      onClick={() => handleEditTableItem(data)}
-                    >
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="20"
-                        height="20"
-                        viewBox="0 0 24 24"
-                        fill="none"
+                    <td className="align-middle">
+                      <select
+                        onChange={handleEdit}
+                        className="add-less-btn"
+                        value={data.qty_type || "add"}
+                        name="qty_type"
                       >
-                        <path
-                          d="M20.9524 3.04801C20.2814 2.37702 19.3713 2.00006 18.4224 2.00006C17.4734 2.00006 16.5634 2.37702 15.8924 3.04801L3.94036 15C3.53415 15.4062 3.24856 15.9172 3.11536 16.476L2.02036 21.078C1.99071 21.2027 1.99349 21.3328 2.02843 21.4561C2.06337 21.5794 2.12931 21.6916 2.21996 21.7822C2.31061 21.8727 2.42295 21.9385 2.54626 21.9734C2.66957 22.0082 2.79974 22.0108 2.92436 21.981L7.52536 20.885C8.08454 20.752 8.59584 20.4664 9.00236 20.06L20.9524 8.11C21.6233 7.439 22.0003 6.52894 22.0003 5.58C22.0003 4.63107 21.6233 3.72101 20.9524 3.05V3.04801ZM16.9524 4.108C17.1454 3.91496 17.3746 3.76183 17.6268 3.65736C17.879 3.55288 18.1494 3.49911 18.4224 3.49911C18.6954 3.49911 18.9657 3.55288 19.2179 3.65736C19.4701 3.76183 19.6993 3.91496 19.8924 4.108C20.0854 4.30105 20.2385 4.53022 20.343 4.78245C20.4475 5.03467 20.5012 5.305 20.5012 5.57801C20.5012 5.85101 20.4475 6.12134 20.343 6.37356C20.2385 6.62579 20.0854 6.85496 19.8924 7.04801L19.0004 7.939L16.0604 5.00001L16.9524 4.10901V4.108ZM15.0004 6.06201L17.9404 9L7.94036 19C7.73036 19.21 7.46636 19.357 7.17736 19.426L3.76136 20.24L4.57436 16.824C4.64336 16.534 4.79136 16.27 5.00136 16.06L15.0004 6.06001V6.06201Z"
-                          fill="#4E4E4E"
-                          stroke="#4E4E4E"
-                          strokeWidth="0.5"
-                        />
-                      </svg>
-                    </div>
-                  </td>
-                  {/* <td className=""></td> */}
-                </tr>
-              ))}
+                        <option value="add">Add</option>
+                        <option value="less">Less</option>
+                      </select>
+                    </td>
+                    <td className="align-middle ps-0 text-start">
+                      <div
+                        className="btn p-0 text-start"
+                        onClick={() => handleRemove()}
+                      >
+                        <img src={delteIcon} alt="editbtn" />
+                      </div>
+                    </td>
+                  </tr>
+                );
+              })}
             <AdjustTableHeight />
             <tr>
               <td className="p-2 text-start">

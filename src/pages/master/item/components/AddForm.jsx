@@ -12,7 +12,7 @@ const editBtn = (
     </svg>)
 
 export const ItemAddForm = ({edit,refresh,setToEdit}) =>{
-
+    const [submitLoading, setSubmitLoading] = useState(false)
     const [showDropdown, setShowDropdown] = useState('')
     const typesOptions = [{text:"PRODUCT",value:"PRODUCT"},{text:"RAW MATERIAL",value:"RAW_MATERIAL"},{text:"SERVICE",value:"SERVICE"}]
     const rentOptions = [{text:"HOUR",value:"HOUR"},{text:"MONTH",value:"MONTH"}]
@@ -52,7 +52,7 @@ export const ItemAddForm = ({edit,refresh,setToEdit}) =>{
         rent_type:[]
     })
 
-    const {formRef , handleKeyDown} = useOnKey(ref, setRef)
+    const [ handleKeyDown , formRef ] = useOnKey(ref, setRef)
 
     const [itemadd,setItemAdd] = useState({
         code:null,
@@ -312,6 +312,7 @@ export const ItemAddForm = ({edit,refresh,setToEdit}) =>{
             let res, res2 = 1, res3 = 1
             const names = ['second_name','category','sub_category','company','size','color','group','tax_group','rack','unit','purchase']
             var data = handleChangeFk(names,submitData)
+            setSubmitLoading(true)
             if(edit){
                 res = await putItemAdd(edit?.id,data)
             }else{
@@ -344,8 +345,10 @@ export const ItemAddForm = ({edit,refresh,setToEdit}) =>{
                 handleReset()
             }
             else
-            Swal.fire(res?.data[0],'','error')
+                Swal.fire(res?.data[0],'','error')
+            setSubmitLoading(false)
         }catch(err){
+            setSubmitLoading(false)
             let a = Object.keys(err?.response?.data.data)
             Swal.fire(a[0] +` ${err?.response?.data?.data[a[0]][0]}`,'','error')
         }
@@ -689,7 +692,7 @@ export const ItemAddForm = ({edit,refresh,setToEdit}) =>{
             </div>
                 <div className='d-flex gap-2 justify-content-end pt-2'>
                     <button type='reset' onClick={handleReset} className='clear_btn btn'>Clear</button>
-                    <button type='submit' className='save_btn btn'>{edit?"Update":"Submit"}</button>
+                    <button disabled={submitLoading} type='submit' className='save_btn btn'>{edit?"Update":"Submit"}</button>
                 </div>
                 <Modal
                 contentClassName="unit_modal px-0 bg-dark"

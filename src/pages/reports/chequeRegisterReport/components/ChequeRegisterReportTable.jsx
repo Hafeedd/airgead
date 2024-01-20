@@ -5,8 +5,6 @@ import useChequeRegister from '../../../../services/transactions/chequeRegister'
 import { Form } from "react-bootstrap";
 import { formValidation } from '../../../../hooks/formValidation/formValidation';
 import Swal from 'sweetalert2';
-import DatePicker from 'react-datepicker';
-import 'react-datepicker/dist/react-datepicker.css';
 
 const ChequeRegisterReportTable = (props) => {
 	const { chequeRegisterList, setChequeRegisterList } = props

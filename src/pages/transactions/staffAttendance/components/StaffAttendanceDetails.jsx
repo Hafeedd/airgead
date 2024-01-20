@@ -295,8 +295,8 @@ const StaffAttendanceDetails = (props) => {
     );
   };
   return (
-    <div className="mx-0 px-0 fs-5">
-      <b>Staff Attendance Details</b>
+    <div className="mx-0 col-11 col-12 px-0">
+      <b className="fs-5">Staff Attendance Details</b>
       <div className="col-12 d-flex justify-content-center align-items-md-center mx-0 mt-3">
         <div
           className="col-4 col-5 d-flex justify-content-end"
@@ -378,18 +378,19 @@ const StaffAttendanceDetails = (props) => {
       <div
         style={{
           height: "29.5rem",
-          width: "85rem",
+          width: "100%",
+          overflow:"hidden",
           overflowX: "scroll",
           overflowY: "scroll",
         }}
         className="mt-2"
       >
         <table
-          className="StaffTable w-100 p-0 m-0"
-          style={{ tableLayout: "fixed" }}
+          className="StaffTable p-0 m-0 "
+          // style={{ tableLayout: "fixed" }}
           ref={tableRef}
         >
-          <thead>
+          {/* <thead>
             <tr>
               <th style={{zIndex:10}}>Name</th>
               {<DateHeading />}
@@ -405,7 +406,7 @@ const StaffAttendanceDetails = (props) => {
                   </tr>
                 );
               })}
-          </tbody>
+          </tbody> */}
         </table>
       </div>
       <Modal

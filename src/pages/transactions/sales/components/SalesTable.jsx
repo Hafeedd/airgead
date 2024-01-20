@@ -39,7 +39,7 @@ const SalesTable = (props) => {
   const { deleteSalesItem } = useSalesServices();
   const { postSalesItem, putSalesItem } = useSalesServices();
 
-  const { formRef, handleKeyDown } = useOnKey(ref, setRef);
+  const [ handleKeyDown , formRef ] = useOnKey(ref, setRef);
 
   useEffect(() => {
     getTableData();
@@ -576,7 +576,6 @@ const SalesTable = (props) => {
                   options={itemNameList}
                   selection
                   scrolling
-                  required
                   search={search}
                   placeholder="SELECT"
                   className="purchase_search_drop border-0 w-100 ps-2"
@@ -1004,7 +1003,7 @@ const SalesTable = (props) => {
         <div className="col-1 col-2 mx-0 item">
           <div className="col-4">PR</div>
           <div className="col-1">:</div>
-          <div className="col-7">{salesAdd.total_rate}</div>
+          <div className="col-7">{salesAdd.total_rate?.toFixed(2)}</div>
         </div>
         <div className="col-1 col-2 mx-0 item">
           <div className="col-4">CT</div>

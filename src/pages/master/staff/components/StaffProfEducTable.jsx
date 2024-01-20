@@ -28,7 +28,7 @@ export const StaffProfEducTable = (props) => {
   const [ref, setRef] = useState(null);
   const [tableEdit, setTableEdit] = useState(false);
 
-  const { formRef, handleKeyDown } = useOnKey(ref, setRef);
+  const [ handleKeyDown , formRef ] = useOnKey(ref, setRef);
   const {
     postStaffEducation,
     putStaffEducation,

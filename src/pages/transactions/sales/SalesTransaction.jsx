@@ -14,7 +14,7 @@ import SalesDetailFooter from "./components/SalesDetailFooter";
 import useCustomerServices from "../../../services/master/customerServices";
 import useSalesServices from "../../../services/transactions/salesServices";
 import useOnKey from "../../../hooks/onKeyFunct/onKeyFunct";
-import { formValidation } from "../../../hooks/formValidation/formValidation";
+// import { formValidation } from "../../../hooks/formValidation/formValidation";
 import Swal from "sweetalert2";
 import usePurchaseServices from "../../../services/transactions/purchcaseServices";
 import useItemServices from "../../../services/master/itemServices";
@@ -310,7 +310,7 @@ const SalesTransaction = () => {
       // console.log(netAmount)
       let paidCash = +netAmount?.toFixed(0) || 0;
       if (editStatus == "edit") {
-      paidCash = edit.paid_cash || netAmount?.toFixed(0) || 0;
+        paidCash = edit.paid_cash || netAmount?.toFixed(0) || 0;
       }
 
       let changeDue = edit?.changeDue || 0;
@@ -327,11 +327,11 @@ const SalesTransaction = () => {
         total_cgst: total_cgst_amnt?.toFixed(2),
         total_value: total_value?.toFixed(2),
         total_margin: netMargin?.toFixed(0),
-        total_amount: netAmount?.toFixed(0) - salesAdd.discount,
+        total_amount: Number(netAmount?.toFixed(0) - salesAdd.discount),
         total_CTC: totalCTC?.toFixed(2),
         total_qty: totalQty?.toFixed(0),
         total_value: total_value?.toFixed(2),
-        total_total: total_total?.toFixed(2),
+        total_total: Number(total_total?.toFixed(2)),
         total_scGst: total_sgst?.toFixed(2),
         total_sgst: total_sgst?.toFixed(2),
         tax_gst: total_gst_perc?.toFixed(2),
@@ -497,6 +497,16 @@ const SalesTransaction = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
+      if(salesAdd.change_due>0 && !salesAdd.fk_customer ){
+        Swal.fire({
+          title: "Customer not selected",
+          icon: "warning",
+          text: "Please select customer to while balance is due",
+          showConfirmButton: false,
+          timer: 1500,
+        });
+        return 0 
+      }
       if (tableItemKeys?.length < 1 && !edit) {
         Swal.fire({
           title: "Item not added",
@@ -507,7 +517,8 @@ const SalesTransaction = () => {
         });
         return 0;
       }
-      formValidation(formRef.current);
+      // const isValidForm = formValidation(formRef.current);
+      // if (!isValidForm) return false;
       let submitData = { ...salesAdd, items: tableItemKeys };
       let response;
 
@@ -655,7 +666,8 @@ const SalesTransaction = () => {
               </div>
             </div>
           </div>
-          {pageHeadItem == 1 ? (
+          {/* --------------------- */}
+          <div className={`col-9 ${pageHeadItem !==1 && 'd-none'}`}>
             <SalesInvoiceDetails
               {...{
                 billType,
@@ -675,12 +687,15 @@ const SalesTransaction = () => {
                 handleChange,
                 edit,
               }}
-            />
-          ) : pageHeadItem == 3 ? (
+            />{" "}
+          </div>
+          <div className={`col-9 ${pageHeadItem !==3 && 'd-none'}`}>
             <SalesDeliveryDetails
               {...{ salesAdd, setSalesAdd, handleChange }}
             />
-          ) : pageHeadItem == 2 ? (
+          </div>
+          <div className={`col-9 ${pageHeadItem !==2 && 'd-none'}`}>
+            {" "}
             <SalesCustomerDetails
               {...{
                 edit,
@@ -695,13 +710,14 @@ const SalesTransaction = () => {
                 setCstClsOpn,
               }}
             />
-          ) : pageHeadItem == 4 ? (
+          </div>
+          <div className={`col-9 ${pageHeadItem !==4 && 'd-none'}`}>
             <SalesInvoiceDetails />
-          ) : pageHeadItem == 5 ? (
+          </div>
+          <div className={`col-9 ${pageHeadItem !==5 && 'd-none'}`}>
             <SalesPrintingDetails />
-          ) : (
-            <div></div>
-          )}
+          </div>
+          {/* ------------------------- */}
         </div>
         <SalesTable
           {...{

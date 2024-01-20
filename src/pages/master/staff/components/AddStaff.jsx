@@ -426,7 +426,7 @@ function removeNullValues(obj) {
                   className="staff-select bg-dark border-0 rounded-2 py-1 text-light px-2"
                 >
                   <option value="TO_RECIEVE">TO RECIEVE</option>
-                  <option value="TO_SEND">TO SEND</option>
+                  <option value="TO_GIVE">TO GIVE</option>
                 </select>
               </div>
             </div>

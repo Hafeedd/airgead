@@ -100,6 +100,7 @@ const handleConvertToPdf = async (status) => {
             for (let i = 0; i < data.number; i++) {
               a.push(
                 <div key={i} className={`text-center barcode-item ${rowCount<1&& "next-line"}`}>
+                  <div style={{fontSize:"11px"}} className="text-start">Company name</div>
                   <Barcode
                     value={data?.barcode}
                     width={1.0178}

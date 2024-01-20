@@ -136,7 +136,7 @@ const PurchaseTransaction = () => {
     let paymentType = "CASH";
     if (purchaseAdd.change_due > 0) paymentType = "CREDIT";
     setPurchaseAdd((data) => ({ ...data, payment_type: paymentType }));
-  }, [purchaseAdd.total_amount]);
+  }, [purchaseAdd.change_due]);
 
   useEffect(() => {
     getData();
@@ -219,8 +219,8 @@ const PurchaseTransaction = () => {
       let tempPurchaseAdd = {
         ...purchaseAdd,
         total_margin: netMargin?.toFixed(0),
-        total_amount: netAmount?.toFixed(0) - purchaseAdd.discount,
-        total_amount2: netAmount?.toFixed(2) - purchaseAdd.discount,
+        total_amount: Number(netAmount?.toFixed(0) - purchaseAdd.discount),
+        total_amount2: Number(netAmount?.toFixed(2) - purchaseAdd.discount),
         paid_cash: paidCash?.toFixed(0),
         total_CTC: totalCTC?.toFixed(2),
         total_qty: totalQty?.toFixed(0),
@@ -229,7 +229,7 @@ const PurchaseTransaction = () => {
         total_scGst: total_scGst?.toFixed(2),
         total_items: totalItem,
         roundoff: roundOff,
-        change_due: changeDue?.toFixed(2),
+        change_due: changeDue>0?changeDue?.toFixed(2):null,
       };
       setPurchaseAdd((data) => ({ ...data, ...tempPurchaseAdd }));
     } else {
@@ -252,7 +252,7 @@ const PurchaseTransaction = () => {
     }
   };
 
-  console.log(purchaseAdd)
+  // console.log(purchaseAdd)
 
   const { getAccountList } = useAccountServices();
   const {
@@ -525,6 +525,16 @@ const PurchaseTransaction = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
+      if (purchaseAdd.change_due>0 && !purchaseAdd.fk_supplier ){
+        Swal.fire({
+          title: "Supplier not selected",
+          icon: "warning",
+          text: "Please select a supplier if balance is due",
+          showConfirmButton: false,
+          timer: 1500,
+        });
+        return 0;        
+      }
       if (tableItemList.length <= 0) {
         Swal.fire({
           title: "Item not added",
@@ -535,7 +545,7 @@ const PurchaseTransaction = () => {
         });
         return 0;
       }
-      formValidation(formRef.current);
+      // formValidation(formRef.current);
       let submitData = { ...purchaseAdd, items: tebleItemKeys };
       let response;
       // console.log(submitData.change_due)
@@ -598,8 +608,6 @@ const PurchaseTransaction = () => {
         let response;
         if (!tableEdit) {
           response = await postPurchaseItem(submitData);
-        } else {
-          response = await putPurchaseItem(tableEdit, submitData);
         }
         if (response?.success && !tableEdit) {
           let tempItemKeys = [...tebleItemKeys];
@@ -614,21 +622,23 @@ const PurchaseTransaction = () => {
               setTableItemList(tempItems);
             }
           });
-        } else if ((edit || tableEdit) && response.success) {
-          const data = await getData();
-          // setEdit(data);
-          tempItems?.map((x, i) => {
-            if (x.id == tableEdit) {
-              x = { ...x, ...tableItem };
-              tempItems.splice(i, 1);
-              tempItems.push({ ...x });
-              setTableItemList(tempItems);
-            }
-          });
-          setTableEdit(false);
-          // }else if(edit){
-          //   setEdit(false)
-        } else {
+        } 
+        // else if ((edit || tableEdit) && response.success) {
+        //   const data = await getData();
+        //   // setEdit(data);
+        //   tempItems?.map((x, i) => {
+        //     if (x.id == tableEdit) {
+        //       x = { ...x, ...tableItem };
+        //       tempItems.splice(i, 1);
+        //       tempItems.push({ ...x });
+        //       setTableItemList(tempItems);
+        //     }
+        //   });
+        //   setTableEdit(false);
+        //   // }else if(edit){
+        //   //   setEdit(false)
+        // } 
+        else {
           Swal.fire(
             "Error",
             response.message ||

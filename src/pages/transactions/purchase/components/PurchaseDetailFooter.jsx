@@ -60,7 +60,7 @@ const PurchaseDetailFooter = (props) => {
               onKeyDown={handleKeyDown}
               onChange={handleChange}
               className="purchase-input-text"
-              type="numeric"
+              type="number"
             />
           </div>
         </Form.Group>
@@ -127,7 +127,7 @@ const PurchaseDetailFooter = (props) => {
             onKeyDown={handleKeyDown}
             onChange={handleChange}
             className="purchase-input-text"
-            type="numeric"
+            type="number"
           />
         </Form.Group>
         <Form.Group className="col-12 mx-0 d-flex align-items-center mt-1">
@@ -170,7 +170,7 @@ const PurchaseDetailFooter = (props) => {
             onChange={handleChange}
             // max={purchaseAdd?.total_amount}
             className="purchase-input-text"
-            type="numeric"
+            type="number"
           />
         </Form.Group>
         <Form.Group className="col-12 mx-0 d-flex align-items-center mt-1 px-0">
@@ -211,25 +211,6 @@ const PurchaseDetailFooter = (props) => {
           </div>
         </div>
       </div>
-      {/* <div className="col-2 purchase-total-container pe-0 me-0">
-        <div className="col-12 row px-0 mx-0 mt-3">
-          <div className="mx-0 px-0 col-4" />
-          <div className="mx-0 px-1 col-4">
-            <button
-              type="reset"
-              onClick={handlePurchaseAllReset}
-              className="btn btn-sm btn-outline-dark w-100"
-            >
-              Clear
-            </button>
-          </div>
-          <div className="mx-0 px-1 pe-0 col-4">
-            <button type="submit" className="btn btn-sm btn-dark w-100">
-              {edit ? "Update" : "Save"}
-            </button>
-          </div>
-        </div>
-      </div> */}
     </div>
   );
 };

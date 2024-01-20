@@ -1,15 +1,21 @@
 .barcode-container{
     display: grid;
     grid-template-columns: auto auto auto auto auto;
-    padding: 49px 30px;
+    padding: 49px 27px;
+    padding-bottom: 0px !important;
 }
 
 .barcode-item.next-line{
-    margin-top: 4rem;
+    margin-top: 3.5rem;
 }
 
 .barcode-item{
+    /* border: 1px solid black; */
     width: 38mm;
     height: 21mm;
-    padding: 0 5px;
+    display: flex;
+    flex-direction: column;
+    text-align: bottom;
+    padding: 0 3px;
+    margin-right:7px;
 }

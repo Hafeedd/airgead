@@ -37,7 +37,7 @@ export const StaffPayScale = (props) => {
 
   const { getProperty } = useItemServices();
   const { postStaffPayScale } = useStaffServices();
-  const { formRef, handleKeyDown } = useOnKey(ref, setRef);
+  const [ handleKeyDown , formRef ] = useOnKey(ref, setRef);
 
   useEffect(() => {
     getDataOfProperty();

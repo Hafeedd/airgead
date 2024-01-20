@@ -64,10 +64,8 @@ const StaffAttendance = () => {
           </div>
         </div>
       </div>
-      <div className="p-3 py-0 ps-4">
-        <div className="stock-jdetails-cont col-12 p-1 pt-0 ps-2 rounded-1 w-100 bg-light h-100 pe-2">
-          <div className="row mt-3 mx-0">
-            <div className="w-100 mb-3 mt-2">
+      <div className="p-4 py-3 ">
+        <div className="stock-jdetails-cont p-3">
               <StaffAttendanceDetails
                 {...{
                   startDate,
@@ -84,8 +82,6 @@ const StaffAttendance = () => {
                   setEndDate,
                 }}
               />
-            </div>
-          </div>
         </div>
       </div>
     </div>
