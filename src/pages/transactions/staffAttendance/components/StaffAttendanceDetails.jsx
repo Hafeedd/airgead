@@ -41,7 +41,7 @@ const StaffAttendanceDetails = (props) => {
   const [searchedList, setSearchedList] = useState([]);
 
   useEffect(() => {
-    const thElement = tableRef.current.querySelector(
+    const thElement = tableRef?.current?.querySelector(
       `th:nth-child(${today + 1})`
     );
     if (thElement) {
@@ -294,8 +294,9 @@ const StaffAttendanceDetails = (props) => {
       </div>
     );
   };
+  
   return (
-    <div className="mx-0 col-11 col-12 px-0">
+    <div className="mx-0 stock-jdetails-cont p-3">
       <b className="fs-5">Staff Attendance Details</b>
       <div className="col-12 d-flex justify-content-center align-items-md-center mx-0 mt-3">
         <div
@@ -375,19 +376,12 @@ const StaffAttendanceDetails = (props) => {
           </div>
         </div>
       </div>
-      <div
-        style={{
-          height: "29.5rem",
-          width: "100%",
-          overflow:"hidden",
-          overflowX: "scroll",
-          overflowY: "scroll",
-        }}
-        className="mt-2"
+      <div      
+        className="staff-table-cont px-0"
       >
         <table
-          className="StaffTable p-0 m-0 "
-          // style={{ tableLayout: "fixed" }}
+          className="StaffTable w-100 p-0 m-0 px-0"
+          style={{ tableLayout: "fixed" }}
           ref={tableRef}
         >
           {/* <thead>

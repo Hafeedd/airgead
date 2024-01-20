@@ -183,7 +183,7 @@ const PayrollTransactionEdit = (props) => {
       <div
         style={{
           height: "28.8rem",
-          width: "85rem",
+          // width: "85rem",
           overflowX: "hidden",
           overflowY: "scroll",
         }}

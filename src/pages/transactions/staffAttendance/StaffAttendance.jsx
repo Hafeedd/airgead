@@ -64,8 +64,8 @@ const StaffAttendance = () => {
           </div>
         </div>
       </div>
-      <div className="p-4 py-3 ">
-        <div className="stock-jdetails-cont p-3">
+      <div className="p-4 pt-3">
+        {/* <div className=""> */}
               <StaffAttendanceDetails
                 {...{
                   startDate,
@@ -82,7 +82,7 @@ const StaffAttendance = () => {
                   setEndDate,
                 }}
               />
-        </div>
+            {/* </div> */}
       </div>
     </div>
   );
