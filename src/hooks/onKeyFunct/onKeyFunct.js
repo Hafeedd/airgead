@@ -4,6 +4,7 @@ const useOnKey = (ref, setRef) =>{
     const formRef = useRef(null)
 
     useEffect(()=>{
+        console.log(formRef)
         if(formRef.current) getRefValue(formRef,setRef)
         }
       ,[formRef])
@@ -21,7 +22,7 @@ const useOnKey = (ref, setRef) =>{
     }
 
     const handleKeyDown = (e) => {
-            if(e.key === "Enter") {
+            if(e?.key === "Enter") {
                 if (e.keyCode == 13 && e.shiftKey) {
                     return 0
                 }
@@ -39,7 +40,7 @@ const useOnKey = (ref, setRef) =>{
             }
         }
 
-    return{handleKeyDown,formRef}
+    return [ handleKeyDown, formRef ]
 }
 
 export default useOnKey

@@ -261,7 +261,7 @@ const PayrollTransactionDetails = (props) => {
       <div
         style={{
           height: "24rem",
-          width: "85rem",
+          // width: "85rem",
           overflowX: "hidden",
           overflowY: "scroll",
         }}

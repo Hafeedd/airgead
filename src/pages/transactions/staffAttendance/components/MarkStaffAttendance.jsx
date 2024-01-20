@@ -79,7 +79,7 @@ export const MarkStaffAttendance = (props) => {
                   </label>
             </div>
           </div>
-
+          {/* {error && <div style={{ color: 'red' }}>{error}</div>} */}
           <div>
             <div className="my-3">Work Type</div>
             <select
@@ -165,12 +165,13 @@ export const MarkStaffAttendance = (props) => {
               Exit
             </div>
             <span className="col-1"></span>
-            <div
+            <button
               className="col-3 col-4 btn btn-dark"
               onClick={() => handleSingleAttendance(selectedDate, show)}
+              disabled={!leaveType && !workType ?true:false}
             >
               Save
-            </div>
+            </button>
           </div>
         </div>
       </>
