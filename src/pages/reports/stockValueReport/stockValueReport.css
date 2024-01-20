@@ -14,4 +14,30 @@
     background-color: rgb(107, 107, 107);
     color: white;
     font-size: 1.2rem;
+    position: sticky;
+    bottom: 0;
+}
+.stock_value_register_head{
+    position: sticky;
+    top: 0;
+}
+
+.table-head-scrolls{
+    /* width: 100%; */
+    margin: 0;
+    padding: 0;
+    height: 26rem;
+    /* overflow: auto; */
+    overflow-y: auto;
+    overflow-x: hidden;
+   
+}
+
+.stock-value-table-bottom td span{
+    background-color: rgb(248, 250, 247);
+    color: black;
+    padding: 2px;
+    padding-left: 5px;
+    padding-right: 5px;
+    border-radius: 5px;
 }

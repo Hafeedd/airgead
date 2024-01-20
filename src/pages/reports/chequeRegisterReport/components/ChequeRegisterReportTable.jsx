@@ -6,6 +6,7 @@ import { Form } from "react-bootstrap";
 import { formValidation } from '../../../../hooks/formValidation/formValidation';
 import Swal from 'sweetalert2';
 
+
 const ChequeRegisterReportTable = (props) => {
 	const { chequeRegisterList, setChequeRegisterList } = props
 	const { putChequeRegisterReport } = useChequeRegister()
@@ -257,7 +258,6 @@ const ChequeRegisterReportTable = (props) => {
 													<select className='py-1' onChange={(e) => handleChange(e, i)}
 														name='status' value={data.status || "PENDING"}
 													>
-
 														<option value="PENDING">Pending</option>
 														<option value="ISSUED">Issued</option>
 														<option value="POSTED">Posted</option>

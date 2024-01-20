@@ -9,6 +9,7 @@ const StockValueReport = () => {
   const { getStockValueReport } = useReportsServices()
   const [stockValueList, setStockValueList] = useState([])
   const [rateType, setRateType] = useState()
+  const [stockType, setStockType] = useState("ALL")
   const [params, setParams] = useState({})
 
   useEffect(() => {
@@ -51,8 +52,8 @@ const StockValueReport = () => {
       <div className="p-3">
         <div className=" col-12 p-2 px-3 rounded-1 w-100 bg-light pb-1">
           <div className="w-100 mb-3">
-            <StockValueEntry {...{ params, setParams, selectionChange, rateType, setRateType}} />
-            <StockValueTable {...{ setStockValueList, stockValueList, rateType, setRateType,params }} />
+            <StockValueEntry {...{ params, setParams, selectionChange, rateType, setRateType, stockType, setStockType}} />
+            <StockValueTable {...{ setStockValueList, stockValueList, rateType, setRateType,params,stockType }} />
           </div>
         </div>
       </div>
