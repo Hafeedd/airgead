@@ -171,7 +171,6 @@ const SalesTransaction = () => {
   }, [tableItemList]);
 
   const handleSalesAddCalc = (editStatus) => {
-    console.log(tableItemList);
     // if editStatus == "edit" then this useEffect is loading because of edit state has changed
     if (tableItemList?.length > 0) {
       let netAmount = tableItemList?.reduce((a, b) => {

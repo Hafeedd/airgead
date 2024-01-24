@@ -42,8 +42,9 @@ const PurchaseTransaction = () => {
   const [purchaseList, setPurchaseList] = useState();
   const [tableItemList, setTableItemList] = useState([]);
   const [tableItemBatchList, setTableItemBatchList] = useState([]);
-
+  // console.log()
   const { handleKeyDown, formRef } = useOnKey(ref, setRef);
+
   const [purchaseAdd, setPurchaseAdd] = useState({
     cstm_id: null,
     fk_supplier: null,
@@ -115,7 +116,7 @@ const PurchaseTransaction = () => {
     color: null,
   });
 
-  const { postPurchaseItem, putPurchaseItem } = usePurchaseServices();
+  const { postPurchaseItem } = usePurchaseServices();
   const { getCode } = useItemServices();
 
   useEffect(() => {
@@ -221,7 +222,7 @@ const PurchaseTransaction = () => {
         total_margin: netMargin?.toFixed(0),
         total_amount: Number(netAmount?.toFixed(0) - purchaseAdd.discount),
         total_amount2: Number(netAmount?.toFixed(2) - purchaseAdd.discount),
-        paid_cash: paidCash?.toFixed(0),
+        paid_cash: Number(paidCash||0)?.toFixed(0),
         total_CTC: totalCTC?.toFixed(2),
         total_qty: totalQty?.toFixed(0),
         total_value: total_value?.toFixed(2),

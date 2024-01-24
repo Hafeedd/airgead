@@ -35,7 +35,7 @@ export const StockJournalDetails = (props) => {
 
   const [ref, setRef] = useState(null);
 
-  const { handleKeyDown, formRef } = useOnKey(ref, setRef);
+  const [ handleKeyDown, formRef ] = useOnKey(ref, setRef);
 
   const AdjustTableHeight = () => {
     let a = [];

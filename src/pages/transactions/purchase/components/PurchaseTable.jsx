@@ -1,5 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
-import PurchaseTableItemList from "./PurchaseTableItemList";
+import React, { useEffect, useState } from "react";
 import useItemServices from "../../../../services/master/itemServices";
 import { Dropdown } from "semantic-ui-react";
 import { FiEdit } from "react-icons/fi";
@@ -48,11 +47,21 @@ const PurchaseTable = (props) => {
   }, []);
 
   const [handleKeyDown, formRef] = useOnKey(ref, setRef);
-  const [handleKeyDown2, formRef2] = useOnKey(ref2, setRef2);
+  const [handleKeyDown2, formRef2] = useOnKey(ref2, setRef2, tableItemList);
 
   const { getItemNameList, getProperty } = useItemServices();
 
   const { deletePurchaseItem, putPurchaseItem } = usePurchaseServices();
+
+  const handleKeyTableItemEdit = async (e,data,i) =>{
+    if(e.key == "Enter" && !e.ctrlKey){
+      e.preventDefault()
+      handleTableItemEdit(e,data,i)
+    }
+    else
+    handleKeyDown2(e)
+  }
+
 
   const handleTableItemEdit = async (e, data, i) => {
     try {
@@ -64,12 +73,12 @@ const PurchaseTable = (props) => {
           // showConfirmButton: false,
           timer: 1500,
         });
-        handleKeyDown(e);
+        handleKeyDown2(e);
         return 0;
       }
       let response = await putPurchaseItem(data.id, data);
       if (response.success) {
-        handleKeyDown(e);
+        handleKeyDown2(e);
         getData();
       } else {
         Swal.fire({
@@ -502,7 +511,7 @@ const PurchaseTable = (props) => {
               <th className="py-1 text-end">
                 <div
                   className="btn btn-primary purchase-add-btn my-0 py-0"
-                  onClick={() => setPurchaseItemModal(true)}
+                  // onClick={() => setPurchaseItemModal(true)}
                 >
                   +
                 </div>
@@ -513,7 +522,7 @@ const PurchaseTable = (props) => {
           <tbody className="purchase-table-body">
             {tableItemList?.length > 0 &&
               tableItemList.map((data, i) => (
-                <tr ref={formRef2}>
+                <tr id="editTr" ref={(el) => (formRef2.current[i] = el)}>
                   <td className="text-start ps-3" colSpan={2}>
                     <Dropdown
                       // onClick={()=>setShowStock(data=>!data)}
@@ -661,12 +670,13 @@ const PurchaseTable = (props) => {
                   </td>
                   <td>
                     {data.edited ? (
-                      <div
+                      <button
+                        onKeyDown={(e)=> handleKeyTableItemEdit(e,data,i)}
                         onClick={(e) => handleTableItemEdit(e, data, i)}
-                        className="text-center"
+                        className="text-center border-0 bg-transparent"
                       >
                         <FiEdit className="mb-1 btn p-0" size={"16px"} />
-                      </div>
+                      </button>
                     ) : (
                       <div
                         onClick={() => confirmDelete(data)}

@@ -13,35 +13,8 @@ const PurchaseInvoiceDetails = (props) => {
 
     
     const navigate = useNavigate()
-
-    // useEffect(()=>{
-    //     getData()
-    // },[])
-
-    const {handleKeyDown,  formRef } = useOnKey(ref, setRef);
     
-    // const getData = async () =>{
-    //     let res = await getSupplier()
-    //     if(!res?.success) return 0
-    //     let tempList = []
-    //     res.data.map(item=>{
-    //         let a = {value:item.id,text:item.code,name:item.name,description:item.name}
-    //         tempList.push(a)
-    //     })
-    //     setSupplierList(tempList)
-    // }
-
-    // const supplierNameFilter = () =>{
-    //     if(purchaseAdd.fk_supplier && supplierList?.length>0){
-    //         for (let i of supplierList){
-    //             if(i.value==purchaseAdd.fk_supplier){
-    //                 return i.name
-    //             }
-    //         }
-    //     }else{
-    //         return null
-    //     }
-    // }
+    const {handleKeyDown,  formRef } = useOnKey(ref, setRef);
     
     const search = (options, searchValue) => {
         searchValue = searchValue.toUpperCase()
@@ -77,7 +50,6 @@ const PurchaseInvoiceDetails = (props) => {
                 <Dropdown
                     clearable
                     selection
-                    required={true}
                     search={search}
                     onKeyDown={handleKeyDown}
                     onChange={handleChange}
@@ -91,12 +63,12 @@ const PurchaseInvoiceDetails = (props) => {
             <Form.Group className='col-3 ps-4 mx-0 d-flex align-items-center mt-1'>
                 <Form.Label className='col-3 purchase-input-label'>Supplier</Form.Label>
                 <Form.Control
-                    // disabled
-                    // required={true}
+                    disabled
                     style={{cursor:'none'}}
                     required={purchaseAdd?.change_due>0 ? true : false}
                     name="fk_supplier" value={supplierList?.filter(x=>x.value == purchaseAdd.fk_supplier)[0]?.name||''}
                     onKeyDown={handleKeyDown}
+                    onChange={(e)=>e.target.value}
                     className='purchase-input-text'
                     placeholder='Name'
                     type='text'

@@ -1,25 +1,24 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 
-const useOnKey = (ref, setRef) => {
-  const formRef = useRef(null);
+const useOnKey = (ref, setRef,...otherChangableState) => {
+  let formRef = useRef([]);
 
   useEffect(() => {
-    console.log(formRef)
-    if (formRef.current) getRefValue(formRef, setRef);
-  }, [formRef]);
+    if (formRef?.current) getRefValue(formRef, setRef);
+  }, [formRef, ...otherChangableState]);
 
-  const getRefValue = (ref, set) => {
-    const data = [...ref.current.children];
-    let newList = [];
-    if (data.length > 0) {
-      data.map((x) =>
-        newList.push(
-          ...x.querySelectorAll(
-            "input:not([disabled]), select:not([disabled]), textarea, button"
-          )
-        )
-      );
-    }
+  const getRefValue = (fRef, set) => {
+    let newList = []
+    // const data = [...fRef?.current?.children];
+    if(formRef.current?.length >= 0){  
+      formRef?.current?.map(data=>{if(data)newList.push(...data?.querySelectorAll(
+        "input:not([disabled]), select:not([disabled]), textarea, button"
+        ))})
+    }else{
+      newList = [...fRef?.current?.querySelectorAll(
+        "input:not([disabled]), select:not([disabled]), textarea, button"
+        )||[]]
+      }
     set(newList);
   };
 

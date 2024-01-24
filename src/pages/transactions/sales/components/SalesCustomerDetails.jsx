@@ -110,8 +110,6 @@ const SalesCustomerDetails = (props) => {
     else setSalesAdd((data) => ({ ...data, [e.target.name]: e.target.value }));
   };
 
-  console.log(salesAdd?.fk_customer)
-
   return (
     <div ref={formRef} className="col-12 mx-0 ps-0 pe-0 row ">
       <div className="col-7 mx-0 pe-0 row">
