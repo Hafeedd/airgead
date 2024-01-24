@@ -1,5 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
-import PurchaseTableItemList from "./PurchaseTableItemList";
+import React, { useEffect, useState } from "react";
 import useItemServices from "../../../../services/master/itemServices";
 import { Dropdown } from "semantic-ui-react";
 import { FiEdit } from "react-icons/fi";
@@ -20,25 +19,26 @@ const PurchaseTable = (props) => {
     setCstm_id,
     tableItemList,
     setTableItemList,
-    tableItemBatchList,
-    setTableItemBatchList,
     tableEdit,
     setTableEdit,
     setEdit,
     handleBatchSubmit,
     itemNameList,
     setItemNameList,
-    setShowStock,
     purchaseList,
-    setPurchaseList,
     getData,
     handlePurchaseAllReset,
     handleResetTable,
-    showBatch,
     setShowBatch,
+    setShowStock,
+    setPurchaseList,
+    showBatch,
+    tableItemBatchList,
+    setTableItemBatchList,
   } = props;
 
   const [ref, setRef] = useState();
+  const [ref2, setRef2] = useState();
   // const [itemNameList, setItemNameList] = useState([])
   const [unitList, setUnitList] = useState();
 
@@ -46,32 +46,54 @@ const PurchaseTable = (props) => {
     getTableData();
   }, []);
 
-  const { handleKeyDown, formRef } = useOnKey(ref, setRef);
+  const [handleKeyDown, formRef] = useOnKey(ref, setRef);
+  const [handleKeyDown2, formRef2] = useOnKey(ref2, setRef2, tableItemList);
 
   const { getItemNameList, getProperty } = useItemServices();
 
-  const { deletePurchaseItem } = usePurchaseServices();
+  const { deletePurchaseItem, putPurchaseItem } = usePurchaseServices();
 
-  const handleTableItemEdit = (data) => {
-    let { batches, ...others } = data;
-    if (data?.batches) {
-      setTableItemBatchList([...data?.batches]);
+  const handleKeyTableItemEdit = async (e,data,i) =>{
+    if(e.key == "Enter" && !e.ctrlKey){
+      e.preventDefault()
+      handleTableItemEdit(e,data,i)
     }
-    setTableItem(others);
-    setTableEdit(data.id);
-  };
+    else
+    handleKeyDown2(e)
+  }
 
-  // const setItemNameListState = (data) => {
-  //     let tempList = []
-  //     data.map(item=>{
-  //         item['value'] = item.id
-  //         delete item.id
-  //         item['text'] = item.name
-  //         delete item.name
-  //         tempList.push(item)
-  //     })
-  //     setItemNameList(tempList)
-  // }
+
+  const handleTableItemEdit = async (e, data, i) => {
+    try {
+      if (!data.item_name || !data.quantity || !data.rate) {
+        Swal.fire({
+          title: "please enter Essential details firs",
+          text: "Enter Rate , Quantity and Select Item First",
+          icon: "warning",
+          // showConfirmButton: false,
+          timer: 1500,
+        });
+        handleKeyDown2(e);
+        return 0;
+      }
+      let response = await putPurchaseItem(data.id, data);
+      if (response.success) {
+        handleKeyDown2(e);
+        getData();
+      } else {
+        Swal.fire({
+          title: "Failed to edit",
+          text: response.message || "Something went wrong! please try again",
+          icon: "warning",
+          timer: 1500,
+        });
+      }
+      let tempList = [...tableItemList];
+      let { edited, ...others } = data;
+      tempList.splice(i, 1, others);
+      setTableItemList([...tempList]);
+    } catch (err) {}
+  };
 
   const getTableData = async () => {
     const minFunct = (data) => {
@@ -109,8 +131,10 @@ const PurchaseTable = (props) => {
 
   // handle table item changing-----------------------------------
 
-  const handleChangeTableItem = (e, data) => {
-    let tempItem = { ...tableItem };
+  const handleChangeTableItem = (e, data, state, totableItem) => {
+    // totableItem is used to check if the state to be set to tableItem or tableItemList
+    // if totableItem is not true then it contains the index of tableItemList
+    let tempItem = { ...state };
     if (data) {
       let Item_data = data.options.filter((x) => x?.value === data?.value)[0];
       tempItem = {
@@ -128,13 +152,18 @@ const PurchaseTable = (props) => {
     } else {
       tempItem = { ...tempItem, [e.target.name]: e.target.value };
     }
-    const calculatedData = handleAmountCalculation(tempItem, e);
-    setTableItem(calculatedData)
+    const calculatedData = handleAmountCalculation(tempItem, e, state);
+    if (totableItem === true) setTableItem(calculatedData);
+    else {
+      let tempList = [...tableItemList];
+      tempList.splice(totableItem, 1, { ...calculatedData, edited: true });
+      setTableItemList([...tempList]);
+    }
   };
 
   //  calculating table item values
 
-  const handleAmountCalculation = (tempItem, e ,setState ) => {
+  const handleAmountCalculation = (tempItem, e, state) => {
     let name = e.target.name;
     let value = {};
     let total, cost;
@@ -200,33 +229,35 @@ const PurchaseTable = (props) => {
         };
       }
       tempItem = { ...tempItem, ...value };
-      // if (name == 'tax_gst' || name == 'sales_rate' || name == 'margin') {
+
       if (tempItem.tax_gst) {
-        let totalTaxAmnt = tempItem.tax_gst * (tempItem.value / 100);
+        let totalTaxAmnt = +tempItem.tax_gst * (+tempItem.value / 100);
+        let sgst = (totalTaxAmnt / 2)?.toFixed(2);
         value = {
           ...value,
-          ["total"]: tempItem.value + tempItem.tax_gst * (tempItem.value / 100),
+          ["total"]: +tempItem.value + sgst * 2,
           ["cost"]:
-            tempItem.rate -
-            tempItem.discount_1_amount_per_item +
-            tempItem.tax_gst *
-              ((tempItem.rate - tempItem.discount_1_amount_per_item) / 100),
-          ["cgst_or_igst"]: totalTaxAmnt / 2,
-          ["sgst"]: totalTaxAmnt / 2,
+            +tempItem.rate -
+            +tempItem.discount_1_amount_per_item +
+            +tempItem.tax_gst *
+              ((+tempItem.rate - +tempItem.discount_1_amount_per_item) / 100),
+          ["cgst_or_igst"]: sgst,
+          ["sgst"]: sgst,
         };
       } else {
         value = { ...value, cgst_or_igst: 0, sgst: 0 };
       }
-      // }
+
       tempItem = { ...tempItem, ...value };
       if (name !== "sales_rate") {
         if (tempItem.margin) {
           value = {
             ...tempItem,
             ["sales_rate"]:
-              parseFloat(tableItem.cost) +
-              parseFloat(tableItem.cost * (tempItem.margin / 100)),
+              +state.cost?.toFixed(2) +
+              +state.cost?.toFixed(2) * (+tempItem.margin / 100),
           };
+          console.log(value.sales_rate);
         } else {
           value = { ...value, ["sales_rate"]: 0 };
         }
@@ -245,7 +276,14 @@ const PurchaseTable = (props) => {
         }
       }
     } else {
-      tempItem = { ...tempItem, value: 0 };
+      tempItem = {
+        ...tempItem,
+        value: 0,
+        /* tax_gst:0, */ sgst: 0,
+        cgst_or_igst: 0,
+        total: 0,
+        cost: 0,
+      };
     }
     tempItem = { ...tempItem, ...value };
     let tempItemKeys = Object.keys(tempItem);
@@ -255,8 +293,8 @@ const PurchaseTable = (props) => {
         tempItem = { ...tempItem, [key]: parseFloat(number?.toFixed(2)) };
       }
     });
-    // tempItem = { ...tempItem };
-    return tempItem
+
+    return tempItem;
   };
 
   // -----------------------------------------------------
@@ -294,6 +332,7 @@ const PurchaseTable = (props) => {
         showConfirmButton: false,
         timer: 1500,
       });
+      handleKeyDown(e);
       return 0;
     }
     if (!tableEdit) {
@@ -309,6 +348,7 @@ const PurchaseTable = (props) => {
     }
     if (purchaseAdd.isBatch) setShowBatch(true);
     else handleBatchSubmit(itemTempList);
+    handleKeyDown(e);
   };
 
   const handlePrev = () => {
@@ -319,7 +359,7 @@ const PurchaseTable = (props) => {
         let ind = purchaseList?.findIndex((x) => edit.id == x.id);
         if (ind !== purchaseList?.length - 1) {
           handlePurchaseAllReset();
-          setEdit(purchaseList[ind + 1]);        
+          setEdit(purchaseList[ind + 1]);
         } else {
           Swal.fire("No more purchase to edit", "go for next", "warning");
         }
@@ -382,6 +422,15 @@ const PurchaseTable = (props) => {
   };
 
   const handleTableItemDelete = async (data) => {
+    if (tableItemList?.length < 2) {
+      Swal.fire({
+        title: "There is only one item exist.",
+        text: "You cant delete.",
+        icon: "warning",
+        timer: 1500,
+      });
+      return 0;
+    }
     if (!data.created_at) {
       let tempList = [...tableItemList];
       let listAfterItemRem = [];
@@ -462,28 +511,29 @@ const PurchaseTable = (props) => {
               <th className="py-1 text-end">
                 <div
                   className="btn btn-primary purchase-add-btn my-0 py-0"
-                  onClick={() => setPurchaseItemModal(true)}
+                  // onClick={() => setPurchaseItemModal(true)}
                 >
                   +
                 </div>
               </th>
-              <th className="py-1 text-end"></th>
+              {/* <th className="py-1 text-end"></th> */}
             </tr>
           </thead>
-          <tbody className="purchase-table-body" ref={formRef}>
+          <tbody className="purchase-table-body">
             {tableItemList?.length > 0 &&
-              tableItemList.map((data) => (
-                <tr>
+              tableItemList.map((data, i) => (
+                <tr id="editTr" ref={(el) => (formRef2.current[i] = el)}>
                   <td className="text-start ps-3" colSpan={2}>
                     <Dropdown
                       // onClick={()=>setShowStock(data=>!data)}
                       selection
+                      onChange={(e, a) => handleChangeTableItem(e, a, data, i)}
                       required
                       upward={purchaseAdd.total_items > 4 ? true : false}
                       search={search}
+                      onKeyDown={handleKeyDown2}
                       placeholder="SELECT"
                       className="purchase_search_drop border-0 w-100 ps-2"
-                      onKeyDown={handleKeyDown}
                       name={"name"}
                       value={data.fk_items || data.name}
                       options={itemNameList}
@@ -491,6 +541,8 @@ const PurchaseTable = (props) => {
                   </td>
                   <td>
                     <input
+                      onChange={(e) => handleChangeTableItem(e, null, data, i)}
+                      onKeyDown={handleKeyDown2}
                       name="quantity"
                       className="purchase-table-items-input"
                       value={data.quantity}
@@ -498,6 +550,8 @@ const PurchaseTable = (props) => {
                   </td>
                   <td>
                     <select
+                      onChange={(e) => handleChangeTableItem(e, null, data, i)}
+                      onKeyDown={handleKeyDown2}
                       name="unit"
                       value={data.unit}
                       style={{
@@ -517,6 +571,8 @@ const PurchaseTable = (props) => {
                   </td>
                   <td>
                     <input
+                      onChange={(e) => handleChangeTableItem(e, null, data, i)}
+                      onKeyDown={handleKeyDown2}
                       name="rate"
                       className="purchase-table-items-input"
                       value={data.rate}
@@ -524,13 +580,17 @@ const PurchaseTable = (props) => {
                   </td>
                   <td>
                     <input
+                      onKeyDown={handleKeyDown2}
+                      onChange={(e) => handleChangeTableItem(e, null, data, i)}
                       name="discount_1_percentage"
                       className="purchase-table-items-input"
-                      value={data.discount_1_percentage + "%"}
+                      value={data.discount_1_percentage}
                     />
                   </td>
                   <td>
                     <input
+                      onKeyDown={handleKeyDown2}
+                      onChange={(e) => handleChangeTableItem(e, null, data, i)}
                       name="discount_1_amount"
                       className="purchase-table-items-input"
                       value={data.discount_1_amount}
@@ -538,6 +598,8 @@ const PurchaseTable = (props) => {
                   </td>
                   <td>
                     <input
+                      disabled
+                      onChange={(e) => handleChangeTableItem(e, null, data, i)}
                       name="value"
                       className="purchase-table-items-input"
                       value={data.value}
@@ -545,13 +607,17 @@ const PurchaseTable = (props) => {
                   </td>
                   <td>
                     <input
+                      onKeyDown={handleKeyDown2}
+                      onChange={(e) => handleChangeTableItem(e, null, data, i)}
                       name="tax_gst"
                       className="purchase-table-items-input"
-                      value={data.tax_gst + "%"}
+                      value={data.tax_gst}
                     />
                   </td>
                   <td>
                     <input
+                      disabled
+                      onChange={(e) => handleChangeTableItem(e, null, data, i)}
                       name="cgst_or_igst"
                       className="purchase-table-items-input"
                       value={data.cgst_or_igst}
@@ -559,6 +625,8 @@ const PurchaseTable = (props) => {
                   </td>
                   <td>
                     <input
+                      disabled
+                      onChange={(e) => handleChangeTableItem(e, null, data, i)}
                       name="sgst"
                       className="purchase-table-items-input"
                       value={data.sgst}
@@ -566,6 +634,8 @@ const PurchaseTable = (props) => {
                   </td>
                   <td>
                     <input
+                      disabled
+                      onChange={(e) => handleChangeTableItem(e, null, data, i)}
                       name="total"
                       className="purchase-table-items-input"
                       value={data.total}
@@ -573,6 +643,8 @@ const PurchaseTable = (props) => {
                   </td>
                   <td>
                     <input
+                      disabled
+                      onChange={(e) => handleChangeTableItem(e, null, data, i)}
                       name="cost"
                       className="purchase-table-items-input"
                       value={data.cost}
@@ -580,6 +652,8 @@ const PurchaseTable = (props) => {
                   </td>
                   <td>
                     <input
+                      onKeyDown={handleKeyDown2}
+                      onChange={(e) => handleChangeTableItem(e, null, data, i)}
                       name="margin"
                       className="purchase-table-items-input"
                       value={data.margin}
@@ -587,30 +661,36 @@ const PurchaseTable = (props) => {
                   </td>
                   <td>
                     <input
+                      onKeyDown={handleKeyDown2}
+                      onChange={(e) => handleChangeTableItem(e, null, data, i)}
                       name="sales_rate"
                       className="purchase-table-items-input"
                       value={data.sales_rate}
                     />
                   </td>
                   <td>
-                    <div
-                      onClick={() => handleTableItemEdit(data)}
-                      className="text-center"
-                    >
-                      <FiEdit className="mb-1 btn p-0" size={"16px"} />
-                    </div>
+                    {data.edited ? (
+                      <button
+                        onKeyDown={(e)=> handleKeyTableItemEdit(e,data,i)}
+                        onClick={(e) => handleTableItemEdit(e, data, i)}
+                        className="text-center border-0 bg-transparent"
+                      >
+                        <FiEdit className="mb-1 btn p-0" size={"16px"} />
+                      </button>
+                    ) : (
+                      <div
+                        onClick={() => confirmDelete(data)}
+                        className="text-center w-100"
+                      >
+                        <BsTrashFill className="mb-1 btn p-0" size={"16px"} />
+                      </div>
+                    )}
                   </td>
-                  <td className="p-0">
-                    <div
-                      onClick={() => confirmDelete(data)}
-                      className="text-start w-100"
-                    >
-                      <BsTrashFill className="mb-1 btn p-0" size={"16px"} />
-                    </div>
-                  </td>
+                  {/* <td className="p-0">
+                  </td> */}
                 </tr>
               ))}
-            <tr className="input-tr">
+            <tr className="input-tr" ref={formRef}>
               <td
                 className="purchase_search_drop_td text-start ps-3"
                 colSpan={2}
@@ -627,7 +707,9 @@ const PurchaseTable = (props) => {
                   className="purchase_search_drop border-0 w-100 ps-2"
                   onKeyDown={handleKeyDown}
                   name={"name"}
-                  onChange={handleChangeTableItem}
+                  onChange={(e, data) =>
+                    handleChangeTableItem(e, data, tableItem, true)
+                  }
                   value={
                     tableItem.fk_items == "" || tableItem.fk_items
                       ? tableItem.fk_items
@@ -640,7 +722,9 @@ const PurchaseTable = (props) => {
                 <input
                   onKeyDown={handleKeyDown}
                   name={"quantity"}
-                  onChange={handleChangeTableItem}
+                  onChange={(e) =>
+                    handleChangeTableItem(e, null, tableItem, true)
+                  }
                   onFocus={handleFocus}
                   onBlur={handleBlur}
                   value={
@@ -658,7 +742,9 @@ const PurchaseTable = (props) => {
                 <select
                   onKeyDown={handleKeyDown}
                   name={"unit"}
-                  onChange={handleChangeTableItem}
+                  onChange={(e) =>
+                    handleChangeTableItem(e, null, tableItem, true)
+                  }
                   value={
                     tableItem.unit == "" || tableItem.unit ? tableItem.unit : ""
                   }
@@ -682,7 +768,9 @@ const PurchaseTable = (props) => {
                 <input
                   onKeyDown={handleKeyDown}
                   name={"rate"}
-                  onChange={handleChangeTableItem}
+                  onChange={(e) =>
+                    handleChangeTableItem(e, null, tableItem, true)
+                  }
                   value={
                     tableItem.rate == "" || tableItem.rate ? tableItem.rate : ""
                   }
@@ -696,7 +784,9 @@ const PurchaseTable = (props) => {
                 <input
                   onKeyDown={handleKeyDown}
                   name={"discount_1_percentage"}
-                  onChange={handleChangeTableItem}
+                  onChange={(e) =>
+                    handleChangeTableItem(e, null, tableItem, true)
+                  }
                   value={
                     tableItem.discount_1_percentage == "" ||
                     tableItem.discount_1_percentage
@@ -713,7 +803,9 @@ const PurchaseTable = (props) => {
                 <input
                   onKeyDown={handleKeyDown}
                   name={"discount_1_amount"}
-                  onChange={handleChangeTableItem}
+                  onChange={(e) =>
+                    handleChangeTableItem(e, null, tableItem, true)
+                  }
                   value={
                     tableItem.discount_1_amount == "" ||
                     tableItem.discount_1_amount
@@ -731,7 +823,9 @@ const PurchaseTable = (props) => {
                   disabled
                   onKeyDown={handleKeyDown}
                   name={"value"}
-                  onChange={handleChangeTableItem}
+                  onChange={(e) =>
+                    handleChangeTableItem(e, null, tableItem, true)
+                  }
                   value={
                     tableItem.value == "" || tableItem.value
                       ? tableItem.value
@@ -747,7 +841,9 @@ const PurchaseTable = (props) => {
                 <input
                   onKeyDown={handleKeyDown}
                   name={"tax_gst"}
-                  onChange={handleChangeTableItem}
+                  onChange={(e) =>
+                    handleChangeTableItem(e, null, tableItem, true)
+                  }
                   value={
                     tableItem.tax_gst == "" || tableItem.tax_gst
                       ? tableItem.tax_gst
@@ -764,7 +860,9 @@ const PurchaseTable = (props) => {
                   disabled
                   onKeyDown={handleKeyDown}
                   name={"cgst_or_igst"}
-                  onChange={handleChangeTableItem}
+                  onChange={(e) =>
+                    handleChangeTableItem(e, null, tableItem, true)
+                  }
                   value={
                     tableItem.cgst_or_igst == "" || tableItem.cgst_or_igst
                       ? tableItem.cgst_or_igst
@@ -781,7 +879,9 @@ const PurchaseTable = (props) => {
                   disabled
                   onKeyDown={handleKeyDown}
                   name={"sgst"}
-                  onChange={handleChangeTableItem}
+                  onChange={(e) =>
+                    handleChangeTableItem(e, null, tableItem, true)
+                  }
                   value={
                     tableItem.sgst == "" || tableItem.sgst ? tableItem.sgst : ""
                   }
@@ -796,7 +896,9 @@ const PurchaseTable = (props) => {
                   disabled
                   onKeyDown={handleKeyDown}
                   name={"total"}
-                  onChange={handleChangeTableItem}
+                  onChange={(e) =>
+                    handleChangeTableItem(e, null, tableItem, true)
+                  }
                   value={
                     tableItem.total == "" || tableItem.total
                       ? tableItem.total
@@ -813,7 +915,9 @@ const PurchaseTable = (props) => {
                   disabled
                   onKeyDown={handleKeyDown}
                   name={"cost"}
-                  onChange={handleChangeTableItem}
+                  onChange={(e) =>
+                    handleChangeTableItem(e, null, tableItem, true)
+                  }
                   value={
                     tableItem.cost == "" || tableItem.cost ? tableItem.cost : ""
                   }
@@ -827,7 +931,9 @@ const PurchaseTable = (props) => {
                 <input
                   onKeyDown={handleKeyDown}
                   name={"margin"}
-                  onChange={handleChangeTableItem}
+                  onChange={(e) =>
+                    handleChangeTableItem(e, null, tableItem, true)
+                  }
                   value={
                     tableItem.margin == "" || tableItem.margin
                       ? tableItem.margin
@@ -843,7 +949,9 @@ const PurchaseTable = (props) => {
                 <input
                   onKeyDown={handleKeyDown}
                   name={"sales_rate"}
-                  onChange={handleChangeTableItem}
+                  onChange={(e) =>
+                    handleChangeTableItem(e, null, tableItem, true)
+                  }
                   value={
                     tableItem.sales_rate == "" || tableItem.sales_rate
                       ? tableItem.sales_rate
@@ -859,7 +967,7 @@ const PurchaseTable = (props) => {
                 {tableEdit ? (
                   <div
                     onClick={handleAddBatchOpen}
-                    onKeyDown={handleAddBatchOpen}
+                    // onKeyDown={handleAddBatchOpen}
                     className="text-center"
                   >
                     <FiEdit className="mb-1 btn p-0" size={"16px"} />
@@ -891,7 +999,7 @@ const PurchaseTable = (props) => {
               </td>
             </tr>
 
-            {<AdjustHeightOfTable />}  
+            {<AdjustHeightOfTable />}
           </tbody>
           <tfoot>
             <tr className="purchase-table-green">
@@ -951,7 +1059,7 @@ const PurchaseTable = (props) => {
               <td></td>
               <td></td>
             </tr>
-            </tfoot>
+          </tfoot>
         </table>
       </div>
       <div className="purchase-detail-container px-3 py-0 mx-2 mt-1">

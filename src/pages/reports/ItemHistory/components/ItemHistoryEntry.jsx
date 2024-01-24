@@ -66,7 +66,7 @@ export const ItemHistoryEntry = (props) => {
           <Form.Control
             name="from_date"
             onChange={handleChange}
-            value={params.from_date || ""}
+            value={params?.from_date || ""}
             className="purchase-input-text me-2 text-start"
             type="date"
           />
@@ -78,7 +78,7 @@ export const ItemHistoryEntry = (props) => {
           </Form.Label>
           <Form.Control
             name="to_date"
-            value={params.to_date || new Date()?.toISOString()?.slice(0, 10)}
+            value={params?.to_date || new Date()?.toISOString()?.slice(0, 10)}
             onChange={handleChange}
             className="purchase-input-text me-2 text-start"
             type="date"

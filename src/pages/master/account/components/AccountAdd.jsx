@@ -40,7 +40,7 @@ const AccountAdd = ({ edit, refresh, setEdit }) => {
     reserve: "YES",
   });
 
-  const { formRef, handleKeyDown } = useOnKey(ref, setRef);
+  const [ handleKeyDown , formRef ] = useOnKey(ref, setRef);
 
   const {
     postAccountGroup,

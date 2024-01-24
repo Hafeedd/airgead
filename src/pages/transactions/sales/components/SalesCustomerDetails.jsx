@@ -111,31 +111,30 @@ const SalesCustomerDetails = (props) => {
   };
 
   return (
-    <div ref={formRef} className="col-9 mx-0 ps-0 pe-0 row ">
+    <div ref={formRef} className="col-12 mx-0 ps-0 pe-0 row ">
       <div className="col-7 mx-0 pe-0 row">
         <Form.Group className="col-5 mx-0 d-flex align-items-center ps-0">
           <Form.Label className="col-3 purchase-input-label">Code</Form.Label>
           <Dropdown
             clearable
             selection
-            required
             search={search}
             onKeyDown={handleKeyDown}
             onChange={handleChange}
             className="pruchase-select d-flex align-items-center sales_customer py-0 form-control"
             name="fk_customer"
-            placeholder="select"
+            placeholder="select"          
             value={salesAdd?.fk_customer || ""}
             options={customerList}
-          />
+            />
         </Form.Group>
         <Form.Group className="col-7 mx-0 d-flex align-items-center pe-0">
           <Form.Label className="col-3 purchase-input-label">
             Customer
           </Form.Label>
           <Form.Control
-            onKeyDown={handleKeyDown}
-            onChange={handleChange}
+            onKeyDown={handleKeyDown}           
+            // onChange={handleChange}
             className="purchase-input-text"
             placeholder="Agencies"
             type="text"
@@ -225,7 +224,6 @@ const SalesCustomerDetails = (props) => {
             clearable
             selection
             // scrolling
-            required
             search={search}
             options={careOfList}
             onKeyDown={handleKeyDown}

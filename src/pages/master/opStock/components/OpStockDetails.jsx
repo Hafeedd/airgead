@@ -14,7 +14,7 @@ export const OpStockDetails = (props) => {
 
   const { getProperty } = useItemServices();
 
-  const { formRef, handleKeyDown } = useOnKey(ref, setRef);
+  const [ handleKeyDown , formRef ] = useOnKey(ref, setRef);
 
   const handleOpStockBulkDataChange =() =>{
     let newList, tempList = [...itemList]

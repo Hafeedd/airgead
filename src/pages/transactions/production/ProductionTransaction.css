@@ -1,0 +1,53 @@
+
+
+.ProdTable thead th {
+    padding: .4rem .4rem;
+}
+.ProdTable tbody td {
+    padding: .3rem .3rem;
+}
+
+
+
+.ProdTable thead th:last-child{
+    background-color: #4a00a8;
+}
+
+.ProdTable thead tr{
+    border-left: 1px solid black ;
+    border-right: 1px solid black ;
+}
+.ProdTable tbody tr{
+    border-bottom: 1px solid gray;
+    border-left: 1px solid gray ;
+    border-right: 1px solid gray ;
+}
+
+
+.ProdTable1 thead th {
+    padding: .4rem .4rem;
+}
+.ProdTable1 tbody td {
+    padding: .3rem .3rem;
+}
+.div-head{
+    background-color: #51385D;
+    color: white;
+}
+.ProdTable1 thead th{
+    background-color: #51385D;
+}
+
+.ProdTable1 thead th:last-child{
+    background-color: #51385D;
+}
+
+.ProdTable1 thead tr{
+    border-left: 1px solid black ;
+    border-right: 1px solid black ;
+}
+.ProdTable1 tbody{
+    border-bottom: 1px solid gray;
+    border-left: 1px solid gray ;
+    border-right: 1px solid gray ;
+}

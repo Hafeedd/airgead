@@ -91,7 +91,6 @@ const MaterialComposition = () => {
 		const response = await getAccountList()
 		let tempList = []
 		if (response?.success) {
-      console.log(response.data)
 			response.data.map(item => {
 				let a
 				if (item.name && item.code) {

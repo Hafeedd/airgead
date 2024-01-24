@@ -4,6 +4,7 @@ import editBtn from "../../../../assets/icons/edit-black.svg";
 import deleteBtn from "../../../../assets/icons/delete.svg";
 import Swal from "sweetalert2";
 import useSalesServices from "../../../../services/transactions/salesServices";
+import usePurchaseServices from "../../../../services/transactions/purchcaseServices";
 
 const PurchaseEditList = (props) => {
   const {
@@ -17,6 +18,7 @@ const PurchaseEditList = (props) => {
   } = props;
 
   const {deleteSales} = useSalesServices()
+  const {deletePurchase} = usePurchaseServices()
   // const {deleteSales} = use()
 
   const handleDeleteData = async (id) => {
@@ -24,6 +26,8 @@ const PurchaseEditList = (props) => {
       let response;
       if (from == "sales") 
         response = await deleteSales(id);
+      else
+        response = await deletePurchase(id)
       if (response?.success) {
         Swal.fire({
           title: "Success",
@@ -45,6 +49,7 @@ const PurchaseEditList = (props) => {
         });
       }
     } catch (err) {
+      console.log(err)
       Swal.fire({
         title: "Warning",
         text:

@@ -9,7 +9,7 @@ const SalesPrintingDetails = () => {
         setPrintStyles(e.target.value)
     }
     return (
-        < div className="col-8 col-9 mx-0 ps-5 pe-0 row" >
+        < div className="col-12 mx-0 ps-5 pe-0 row" >
             <Form.Group className='col-5 mx-0 d-flex align-items-center my-1'>
                 <Form.Label className='col-3 purchase-input-label'>Style</Form.Label>
                 <Form.Select

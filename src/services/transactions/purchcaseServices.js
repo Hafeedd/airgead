@@ -60,7 +60,7 @@ const usePurchaseServices = () => {
 
     // get all purchase data
     const deletePurchase = async (id) =>{
-        const response = await axiosPrivate.delete('purchase/purchase/updated/')
+        const response = await axiosPrivate.delete('purchase/purchase/updated/'+id+"/")
         return response.data
     }
     // delete purchase item 

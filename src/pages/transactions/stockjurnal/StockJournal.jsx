@@ -168,18 +168,18 @@ export const StockJournal = () => {
     try {
       let response2 = await getItemNameList();
       let response3 = await getProperty();
-      let response4 = await getStockJ();    
+      let response4 = await getStockJ();
 
       if (response2.success) {
         let tempList = [];
         response2.data.map((item) => {
           let a = {
             ...item,
-            value: item.code,
-            text: item.name,
-            name: item.name,
-            description: item.code,
-            unit: item.fk_unit,
+            value: item?.code,
+            text: item?.name,
+            name: item?.name,
+            description: item?.code,
+            unit: item?.fk_unit,
           };
           tempList.push(a);
         });
@@ -191,52 +191,53 @@ export const StockJournal = () => {
       if (response4.success) {
         let tempList = [];
         // filtering stock according to document no
-        response4.data.map((item) => {
+        response4?.data?.map((item) => {
+          // if(!item) return 0
           let tempData = {};
           if (tempList?.length < 1) {
             tempData = {
-              id: item.journal_master.id,
+              id: item?.journal_master?.id,
               code: item?.journal_master?.document_number,
-              narration: item.journal_master.narration,
-              salesman: item.journal_master.salesman,
-              date: item.journal_master.date,
-              total_items: parseInt(item.count),
+              narration: item?.journal_master?.narration,
+              salesman: item?.journal_master?.salesman,
+              date: item?.journal_master?.date,
+              total_items: parseInt(item?.count),
               items: [
                 {
-                  name: item.item_add.name,
-                  code: item.item_add.code,
-                  qty: item.count,
-                  qty_type: item.add_qty ? "add" : "less",
-                  cost: item.cost,
-                  unit: item.unit,
-                  value: item.value,
-                  godown: item.godown,
+                  name: item?.item_add?.name,
+                  code: item?.item_add?.code,
+                  qty: item?.count,
+                  qty_type: item?.add_qty ? "add" : "less",
+                  cost: item?.cost,
+                  unit: item?.unit,
+                  value: item?.value,
+                  godown: item?.godown,
                 },
               ],
             };
             tempList.push(tempData);
           } else if (
             tempList.findIndex((x) => {
-              return x.code == item.journal_master.document_number;
+              return x.code == item?.journal_master?.document_number;
             }) == -1
           ) {
             tempList.push({
-              id: item.journal_master.id,
+              id: item?.journal_master?.id,
               code: item?.journal_master?.document_number,
-              narration: item.journal_master.narration,
-              salesman: item.journal_master.salesman,
-              date: item.journal_master.date,
-              total_items: parseInt(item.count),
+              narration: item?.journal_master?.narration,
+              salesman: item?.journal_master?.salesman,
+              date: item?.journal_master?.date,
+              total_items: parseInt(item?.count),
               items: [
                 {
-                  name: item.item_add.name,
-                  code: item.item_add.code,
-                  qty: item.count,
-                  qty_type: item.add_qty ? "add" : "less",
-                  cost: item.cost,
-                  unit: item.unit,
-                  value: item.value,
-                  godown: item.godown,
+                  name: item?.item_add?.name,
+                  code: item?.item_add?.code,
+                  qty: item?.count,
+                  qty_type: item?.add_qty ? "add" : "less",
+                  cost: item?.cost,
+                  unit: item?.unit,
+                  value: item?.value,
+                  godown: item?.godown,
                 },
               ],
             });
@@ -244,26 +245,26 @@ export const StockJournal = () => {
             tempList.map((data) => {
               if (data.code == item?.journal_master?.document_number) {
                 data.total_items =
-                  parseInt(data.total_items) + parseInt(item.count);
+                  parseInt(data.total_items) + parseInt(item?.count);
                 data?.items.push({
-                  name: item.item_add.name,
-                  code: item.item_add.code,
-                  qty: item.count,
-                  qty_type: item.add_qty ? "add" : "less",
-                  cost: item.cost,
-                  unit: item.unit,
-                  value: item.value,
-                  godown: item.godown,
+                  name: item?.item_add?.name,
+                  code: item?.item_add?.code,
+                  qty: item?.count,
+                  qty_type: item?.add_qty ? "add" : "less",
+                  cost: item?.cost,
+                  unit: item?.unit,
+                  value: item?.value,
+                  godown: item?.godown,
                 });
               }
             });
           }
         });
         const tempListData = calcTotalVal(tempList);
-        setstockJList(tempListData);
+        setstockJList(tempListData?.reverse());
       }
     } catch (err) {
-      console.log(err);
+      // console.log(err);
     }
   };
 
@@ -316,6 +317,7 @@ export const StockJournal = () => {
               setShowJournalFilter,
               stockJAdd,
               setStockJAdd,
+              setStockTableItemList,
               edit,
               stockTableItem,
               setStockTableItem,

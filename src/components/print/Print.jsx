@@ -51,7 +51,7 @@ export const GenerateDynamicHtml = (props) => {
     let targetTr = [];
     for (const tr of tbodytr) {
       if (tr.getAttribute("id")) {
-        targetTr.push([...tr.querySelectorAll("td:not(:empty)")]);
+        targetTr.push([...tr.querySelectorAll("input:not(:empty) select:not(:empty)")]);
       }
     }
     let trData = [];

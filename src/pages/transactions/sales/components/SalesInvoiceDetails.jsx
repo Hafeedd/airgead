@@ -25,11 +25,11 @@ const SalesInvoiceDetails = (props) => {
 
   const [ref, setRef] = useState(null);
 
-  const { formRef, handleKeyDown } = useOnKey(ref, setRef);
+  const [ handleKeyDown , formRef ] = useOnKey(ref, setRef);
 
   useEffect(() => {
     if (codeWithBillTypeList?.length > 0) handleBillTypeSelection();
-  }, [salesAdd.fk_bill_type, codeWithBillTypeList]);
+  }, [salesAdd?.fk_bill_type, codeWithBillTypeList]);
 
   const handleBillTypeSelection = () => {
     let tempCode;
@@ -39,9 +39,9 @@ const SalesInvoiceDetails = (props) => {
         (edit?.fk_bill_type && !salesAdd?.fk_bill_type))
     ) {
       setSalesAdd((data) => ({ ...data, documents_no: edit?.documents_no }));
-    } else if (salesAdd.fk_bill_type && codeWithBillTypeList?.length > 0) {
+    } else if (salesAdd?.fk_bill_type && codeWithBillTypeList?.length > 0) {
       tempCode = codeWithBillTypeList?.filter(
-        (x) => x.fk_bill_type == salesAdd.fk_bill_type
+        (x) => x.fk_bill_type == salesAdd?.fk_bill_type
       )[0];
       setSalesAdd((data) => ({
         ...data,
@@ -58,7 +58,7 @@ const SalesInvoiceDetails = (props) => {
   };
 
   return (
-    <div ref={formRef} className="col-8 col-9 mx-0 ps-4 pe-0 row pt-2">
+    <div ref={formRef} className="12 mx-0 ps-4 pe-0 row pt-2">
       <Form.Group className="col-5 mx-0 d-flex align-items-center">
         <Form.Label className="col-3 purchase-input-label">
           Invoice No
@@ -83,7 +83,7 @@ const SalesInvoiceDetails = (props) => {
           <select
             className="customer-select w-100"
             onKeyDown={handleKeyDown}
-            value={salesAdd.fk_bill_type || ""}
+            value={salesAdd?.fk_bill_type || ""}
             onChange={handleChange}
             name="fk_bill_type"
           >
@@ -150,7 +150,7 @@ const SalesInvoiceDetails = (props) => {
           className="purchase-input-text"
           value={
             edit
-              ? salesAdd.created_at?.slice(0, 10)
+              ? salesAdd?.created_at?.slice(0, 10)
               : new Date().toISOString().slice(0, 10)
           }
         />
@@ -159,7 +159,7 @@ const SalesInvoiceDetails = (props) => {
         <Form.Label className="col-3 purchase-input-label">Salesman</Form.Label>
         <div className="mx-0 col-9 px-0">
           <select
-            value={salesAdd.salesman || ""}
+            value={salesAdd?.salesman || ""}
             name="payment_type"
             className="customer-select w-100"
           >

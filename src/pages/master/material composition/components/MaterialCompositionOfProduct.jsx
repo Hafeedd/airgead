@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { Form, Modal } from "react-bootstrap";
 import { Dropdown } from "semantic-ui-react";
-import { MdDelete } from "react-icons/md";
+import { MdBorderColor, MdDelete } from "react-icons/md";
 import { RiAddBoxFill } from "react-icons/ri";
 import Swal from "sweetalert2";
 import useItemServices from "../../../../services/master/itemServices";
 import editBtn from "../../../../assets/icons/edit-black.svg";
 import useProductionServices from "../../../../services/master/productionSerivices";
+import useOnKey from "../../../../hooks/onKeyFunct/onKeyFunct";
 const MaterialCompositionOfProduct = (props) => {
   const {
     typeList,
@@ -39,6 +40,17 @@ const MaterialCompositionOfProduct = (props) => {
   const [selectCreditAccount, setSelectedCreditAccount] = useState("");
   const [expenseAmount, setExpenseAmount] = useState("");
 
+  const [ref1, setRef1] = useState();
+  const [ref2, setRef2] = useState();
+  const [ref3, setRef3] = useState();
+  const [ref4, setRef4] = useState();
+
+  const [handleKeyDown1 , formRef1] = useOnKey(ref1, setRef1)
+  const [handleKeyDown2 , formRef2] = useOnKey(ref2, setRef2)
+  const [handleKeyDown3 , formRef3] = useOnKey(ref3, setRef3)
+  const [handleKeyDown4 , formRef4] = useOnKey(ref4, setRef4)
+
+
   const handleByProductAdd = () => {
     let tempList = [...byProductList];
     let tempData = {
@@ -54,10 +66,9 @@ const MaterialCompositionOfProduct = (props) => {
   };
 
   const handleRawAdd = () => {
-
-      let tempList = [...rawList];
-      let tempData = {
-        fk_item: selectedRaw,
+    let tempList = [...rawList];
+    let tempData = {
+      fk_item: selectedRaw,
       qty: rawQuantity,
       fk_unit: selectedUnit,
     };
@@ -113,7 +124,7 @@ const MaterialCompositionOfProduct = (props) => {
     setItemQuantityUnit(data.value);
   };
 
-  const handleTypeAdd = async (e) => {
+  const handleTypeAdd = async () => {
     try {
       if (edit) {
         let submitData = {
@@ -159,21 +170,22 @@ const MaterialCompositionOfProduct = (props) => {
     setShow(false);
     setEdit(false);
   };
-  const { postMaterialComposition,putMaterialComposition } = useProductionServices();
-  
-  useEffect(()=>{
+  const { postMaterialComposition, putMaterialComposition } =
+    useProductionServices();
+
+  useEffect(() => {
     setSelectedItem(editComposition?.fk_item);
     setSelectedType(editComposition?.fk_type);
     setItemQuantity(editComposition?.qty);
     setItemQuantityUnit(editComposition?.fk_unit);
-    setRawList(editComposition?.raw_materials||[])
-    setByproductList(editComposition?.by_products||[])
-    setExpenseList(editComposition?.expense_accounts||[])
-  },[editComposition])
+    setRawList(editComposition?.raw_materials || []);
+    setByproductList(editComposition?.by_products || []);
+    setExpenseList(editComposition?.expense_accounts || []);
+  }, [editComposition]);
 
   const handleMaterialSave = async () => {
     if (editComposition) {
-      let id=editComposition.id;
+      let id = editComposition.id;
       let submitData = {
         fk_item: selectedItem,
         fk_type: selectedType,
@@ -183,7 +195,7 @@ const MaterialCompositionOfProduct = (props) => {
         by_products: byProductList,
         expense_accounts: expenseList,
       };
-      let response = await putMaterialComposition(id,submitData);
+      let response = await putMaterialComposition(id, submitData);
       if (response.success) {
         Swal.fire("Material Composition Updated Successfully", "", "success");
         setSelectedItem("");
@@ -222,7 +234,7 @@ const MaterialCompositionOfProduct = (props) => {
       }
     }
   };
-  const handleMaterialClear = ()=>{
+  const handleMaterialClear = () => {
     Swal.fire("Material Composition Cleared", "", "info");
     setSelectedItem("");
     setSelectedType("");
@@ -231,12 +243,43 @@ const MaterialCompositionOfProduct = (props) => {
     setRawList([]);
     setByproductList([]);
     setExpenseList([]);
+  };
+
+  const search = (options, searchValue) => {
+    searchValue = searchValue.toUpperCase();
+    return options.filter((option) => {
+      return (
+        option?.value?.toString()?.includes(searchValue) ||
+        option?.text?.toString()?.includes(searchValue)
+      );
+    });
+  };
+
+  const handleKeyDownRawadd =(e)=>{
+    if(e?.keyCode === 13){
+      handleKeyDown2(e)
+      handleRawAdd()
+    }
+  }
+
+  const handleKeyDownByproductAdd =(e)=>{
+    if(e?.keyCode === 13){
+      handleByProductAdd()
+      handleKeyDown3(e)
+    }
+  }
+
+  const handleKeyDownExpenseAdd =(e)=>{
+    if(e?.keyCode === 13){
+      handleExpenseAdd()
+      handleKeyDown4(e)
+    }
   }
   return (
-    <div className="px-0">
+    <div className="px-0" >
       <div className="col-12">
-        <div className="col-12 d-flex">
-          <div className="col-3 border-2 pe-5 mt-2">
+        <div className="col-12 d-flex justify-content-between border border-2 rounded border-secondary px-1 py-1 " ref={formRef1} >
+          <div className="col-3 border-2 pe-5 ms-4 my-2">
             <Form.Group className="col-11  ps-0 mx-0 d-flex align-items-start mt-1">
               <Form.Label className=" col-2 purchase-input-label pb-1 ps-1">
                 Type
@@ -246,8 +289,8 @@ const MaterialCompositionOfProduct = (props) => {
                   clearable
                   selection
                   required
-                  // search={search}
-                  // onKeyDown={handleKeyDown}
+                  search={search}
+                  onKeyDown={handleKeyDown1}
                   onChange={handleDropdownChangeType}
                   className="purchase-input-text table-drop d-flex align-items-center py-0 form-control "
                   name="type"
@@ -265,7 +308,7 @@ const MaterialCompositionOfProduct = (props) => {
               </div>
             </Form.Group>
           </div>
-          <div className="col-3 border-2 mx-0 mt-2">
+          <div className="col-3 border-2 mx-0 my-2">
             <Form.Group className="col-11 ps-0 mx-0 d-flex align-items-start mt-2">
               <Form.Label className=" col-2  purchase-input-label pb-1 ps-1">
                 Item
@@ -275,8 +318,8 @@ const MaterialCompositionOfProduct = (props) => {
                   clearable
                   selection
                   required
-                  // search={search}
-                  // onKeyDown={handleKeyDown}
+                  search={search}
+                  onKeyDown={handleKeyDown1}
                   onChange={handleDropdownChangeItem}
                   className="purchase-input-text table-drop d-flex align-items-center py-0 form-control"
                   name="item"
@@ -287,7 +330,7 @@ const MaterialCompositionOfProduct = (props) => {
               </div>
             </Form.Group>
           </div>
-          <div className="col-3 border-2 mx-0 mt-2">
+          <div className="col-3 border-2 mx-0 my-2 ps-4">
             <Form.Group className="col-5  ps-0 mx-0 d-flex align-items-center mt-2">
               <Form.Label className="col-2 me-2 ms-1 purchase-input-label pb-1">
                 Qty
@@ -297,16 +340,16 @@ const MaterialCompositionOfProduct = (props) => {
                   type="text"
                   className="rounded border border-dark w-100 h-125"
                   value={itemQuantity}
+                  onKeyDown={handleKeyDown1}
                   onChange={(e) => setItemQuantity(e.target.value)}
                 />
               </div>
-
               <Dropdown
                 clearable
                 selection
                 required
-                // search={search}
-                // onKeyDown={handleKeyDown}
+                search={search}
+                onKeyDown={handleKeyDown1}
                 onChange={handleDropdownItemQuantityUnit}
                 className="purchase-input-text table-drop d-flex align-items-center py-0 form-control"
                 name="code"
@@ -320,8 +363,9 @@ const MaterialCompositionOfProduct = (props) => {
 
         <div className="col-12 d-flex mt-2">
           <div
-            className="col-6 pe-1 ms-1 "
+            className="col-6 pe-1 ms-0 "
             style={{ height: "250px", overflowY: "scroll" }}
+            
           >
             <div
               className="mx-0 TabHead  border-bottom border-light border-2 py-3  text-center rounded-top"
@@ -338,7 +382,7 @@ const MaterialCompositionOfProduct = (props) => {
                   <th></th>
                 </tr>
               </thead>
-              <tbody>
+              <tbody ref={formRef2}>
                 {rawList?.length > 0 &&
                   rawList.map((data, key) => {
                     const handleRawDelete = () => {
@@ -361,8 +405,8 @@ const MaterialCompositionOfProduct = (props) => {
                             clearable
                             selection
                             required
-                            // search={search}
-                            // onKeyDown={handleKeyDown}
+                            search={search}
+                            onKeyDown={handleKeyDown2}
                             onChange={handleRawEdit}
                             className="purchase-input-text table-drop d-flex align-items-center py-0 form-control"
                             name="fk_item"
@@ -377,6 +421,7 @@ const MaterialCompositionOfProduct = (props) => {
                             type="text"
                             value={data.qty}
                             onChange={handleRawEdit}
+                            onKeyDown={handleKeyDown2}
                             className="rounded-1 border border-dark"
                           />
                         </td>
@@ -385,8 +430,8 @@ const MaterialCompositionOfProduct = (props) => {
                             clearable
                             selection
                             required
-                            // search={search}
-                            // onKeyDown={handleKeyDown}
+                            search={search}
+                            onKeyDown={handleKeyDown2}
                             onChange={handleRawEdit}
                             className="purchase-input-text table-drop d-flex align-items-center py-0 form-control"
                             name="fk_unit"
@@ -407,8 +452,8 @@ const MaterialCompositionOfProduct = (props) => {
                       clearable
                       selection
                       required
-                      // search={search}
-                      // onKeyDown={handleKeyDown}
+                      search={search}
+                      onKeyDown={handleKeyDown2}
                       onChange={handleDropdownChangeRaw}
                       className="purchase-input-text table-drop d-flex align-items-center py-0 form-control"
                       name="code"
@@ -421,6 +466,7 @@ const MaterialCompositionOfProduct = (props) => {
                     <input
                       type="text"
                       value={rawQuantity}
+                      onKeyDown={handleKeyDown2}
                       onChange={(e) => setRawQuantity(e.target.value)}
                       className="rounded-1 border border-dark"
                     />
@@ -430,8 +476,8 @@ const MaterialCompositionOfProduct = (props) => {
                       clearable
                       selection
                       required
-                      // search={search}
-                      // onKeyDown={handleKeyDown}
+                      search={search}
+                      onKeyDown={handleKeyDownRawadd}
                       onChange={handleDropdownChangeUnit}
                       className="purchase-input-text table-drop d-flex align-items-center py-0 form-control"
                       name="code"
@@ -448,8 +494,8 @@ const MaterialCompositionOfProduct = (props) => {
             </table>
           </div>
           <div
-            className="col-6 pe-1"
-            style={{ height: "250px", overflowY: "scroll" }}
+            className="col-6 pe-0"
+            style={{ height: "250px", overflowY: "scroll" }}            
           >
             <div
               className="mx-0 TabHead text-center border-bottom border-light border-2 py-3 w-100 rounded-top"
@@ -467,7 +513,7 @@ const MaterialCompositionOfProduct = (props) => {
                   <th></th>
                 </tr>
               </thead>
-              <tbody>
+              <tbody ref={formRef3}>
                 {byProductList?.length > 0 &&
                   byProductList.map((data, key) => {
                     const handleByProductDelete = () => {
@@ -491,8 +537,8 @@ const MaterialCompositionOfProduct = (props) => {
                             clearable
                             selection
                             required
-                            // search={saerch}
-                            // onKeyDown={handleKeyDown}
+                            search={search}
+                            onKeyDown={handleKeyDown3}
                             onChange={handleByProductEdit}
                             className="purchase-input-text table-drop d-flex align-items-center py-0 form-control"
                             name="fk_item"
@@ -506,6 +552,7 @@ const MaterialCompositionOfProduct = (props) => {
                             name="qty"
                             type="text"
                             value={data.qty}
+                            onKeyDown={handleKeyDown3}
                             onChange={handleByProductEdit}
                             className="rounded-1 border border-dark"
                           />
@@ -515,8 +562,8 @@ const MaterialCompositionOfProduct = (props) => {
                             clearable
                             selection
                             required
-                            // search={search}
-                            // onKeyDown={handleKeyDown}
+                            search={search}
+                            onKeyDown={handleKeyDown3}
                             onChange={handleByProductEdit}
                             className="purchase-input-text table-drop d-flex align-items-center py-0 form-control"
                             name="fk_unit"
@@ -537,8 +584,8 @@ const MaterialCompositionOfProduct = (props) => {
                       clearable
                       selection
                       required
-                      // search={saerch}
-                      // onKeyDown={handleKeyDown}
+                      search={search}
+                      onKeyDown={handleKeyDown3}
                       onChange={handleDropdownChangeByProduct}
                       className="purchase-input-text table-drop d-flex align-items-center py-0 form-control"
                       name="code"
@@ -551,6 +598,7 @@ const MaterialCompositionOfProduct = (props) => {
                     <input
                       type="text"
                       value={byproductQuantity}
+                      onKeyDown={handleKeyDown3}
                       onChange={(e) => setByProductQuantity(e.target.value)}
                       className="rounded-1 border border-dark"
                     />
@@ -560,8 +608,8 @@ const MaterialCompositionOfProduct = (props) => {
                       clearable
                       selection
                       required
-                      // search={search}
-                      // onKeyDown={handleKeyDown}
+                      search={search}
+                      onKeyDown={handleKeyDownByproductAdd}
                       onChange={handleDropdownChangeByProductUnit}
                       className="purchase-input-text table-drop d-flex align-items-center py-0 form-control"
                       name="code"
@@ -579,8 +627,9 @@ const MaterialCompositionOfProduct = (props) => {
           </div>
         </div>
         <div
-          className="col-12 px-1 mt-2"
+          className="col-12 px-0 mt-2"
           style={{ height: "120px", overflowY: "scroll" }}
+          
         >
           <div
             className="mx-0 text-light ps-4 py-2 w-100 rounded-top"
@@ -593,7 +642,7 @@ const MaterialCompositionOfProduct = (props) => {
           >
             Labour and Expenses
           </div>
-          <table className="materialsub w-100 border border-bottom border-2">
+          <table className="materialsub w-100 border border-bottom " >
             <thead className="text-light">
               <tr>
                 <th>Debit Account</th>
@@ -602,10 +651,9 @@ const MaterialCompositionOfProduct = (props) => {
                 <th></th>
               </tr>
             </thead>
-            <tbody>
+            <tbody ref={formRef4}>
               {expenseList?.length > 0 &&
                 expenseList.map((data, key) => {
-                  console.log("Hooi", data);
 
                   const handleExpenseDelete = () => {
                     let tempList = [...expenseList];
@@ -628,8 +676,8 @@ const MaterialCompositionOfProduct = (props) => {
                           clearable
                           selection
                           required
-                          //search={search}
-                          // onKeyDown={handleKeyDown}
+                          search={search}
+                          onKeyDown={handleKeyDown4}
                           onChange={handleExpenseEdit}
                           className="purchase-input-text table-drop d-flex align-items-center py-0 form-control"
                           name="fk_debit_account"
@@ -643,6 +691,7 @@ const MaterialCompositionOfProduct = (props) => {
                           type="text"
                           className="rounded-1 border border-dark w-75 ps-4"
                           onChange={handleExpenseEdit}
+                          onKeyDown={handleKeyDown4}
                           value={data.amount}
                           name="amount"
                         />
@@ -652,8 +701,8 @@ const MaterialCompositionOfProduct = (props) => {
                           clearable
                           selection
                           required
-                          //search={search}
-                          // onKeyDown={handleKeyDown}
+                          search={search}
+                          onKeyDown={handleKeyDown4}
                           onChange={handleExpenseEdit}
                           className="purchase-input-text table-drop d-flex align-items-center py-0 form-control"
                           name="fk_credit_account"
@@ -674,8 +723,8 @@ const MaterialCompositionOfProduct = (props) => {
                     clearable
                     selection
                     required
-                    //search={search}
-                    // onKeyDown={handleKeyDown}
+                    search={search}
+                    onKeyDown={handleKeyDown4}
                     onChange={handleDropdownChangeDebitAccount}
                     className="purchase-input-text table-drop d-flex align-items-center py-0 form-control"
                     name="fk_debit_account"
@@ -690,6 +739,7 @@ const MaterialCompositionOfProduct = (props) => {
                     className="rounded-1 border border-dark w-75 ps-4"
                     onChange={(e) => setExpenseAmount(e.target.value)}
                     value={expenseAmount}
+                    onKeyDown={handleKeyDown4}
                     name="amount"
                   />
                 </td>
@@ -698,8 +748,8 @@ const MaterialCompositionOfProduct = (props) => {
                     clearable
                     selection
                     required
-                    //search={search}
-                    // onKeyDown={handleKeyDown}
+                    search={search}
+                    onKeyDown={handleKeyDownExpenseAdd}
                     onChange={handleDropdownChangeCreditAccount}
                     className="purchase-input-text table-drop d-flex align-items-center py-0 form-control"
                     name="fk_credit_account"
@@ -716,7 +766,7 @@ const MaterialCompositionOfProduct = (props) => {
           </table>
         </div>
         <div className="col-12 d-flex justify-content-end mt-3">
-          <div 
+          <div
             className="btn btn-md mx-1 bg-secondary text-light col-1 col-2 py-1"
             onClick={handleMaterialClear}
           >
