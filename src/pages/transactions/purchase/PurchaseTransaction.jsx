@@ -736,6 +736,7 @@ const PurchaseTransaction = () => {
         {pageHeadItem == 1 ? (
           <PurchaseInvoiceDetails
             {...{
+              setPurchaseAdd,
               handleEdit,
               purchaseAdd,
               handleChange,

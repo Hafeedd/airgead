@@ -1,20 +1,32 @@
 import React, { useEffect, useState } from 'react'
-import { Form } from 'react-bootstrap'
+import { Form, NavItem } from 'react-bootstrap'
 import { FiEdit } from 'react-icons/fi'
 import { Dropdown } from 'semantic-ui-react'
-import { useNavigate } from 'react-router'
+import { useLocation, useNavigate } from 'react-router'
 import useOnKey from '../../../../hooks/onKeyFunct/onKeyFunct'
 
 const PurchaseInvoiceDetails = (props) => {
     const {handleEdit,purchaseAdd,handleChange,
-        supplierList, setSupplierList} = props
+        supplierList, setPurchaseAdd} = props
 
     const [ref, setRef] = useState(null)
 
-    
+    const location = useLocation()
     const navigate = useNavigate()
     
     const {handleKeyDown,  formRef } = useOnKey(ref, setRef);
+
+    useEffect(()=>{
+        if(location?.state?.id && supplierList?.length>0){
+        let supplier_data = supplierList?.filter((x) => x.value === location?.state?.id)[0];
+        setPurchaseAdd((data) => ({
+          ...data,
+          ["supplier_name"]: supplier_data?.name,
+          ["fk_supplier"]: supplier_data?.value,
+        }));
+        navigate(null,{replace:true,state:{id:null}})
+    }
+    },[location.pathname,supplierList])
     
     const search = (options, searchValue) => {
         searchValue = searchValue.toUpperCase()
@@ -39,8 +51,7 @@ const PurchaseInvoiceDetails = (props) => {
     //   // Handle the case where the new window couldn't be opened
     //   console.error('Unable to open a new browser window');
     // }
-    //   };
-    
+    //   };    
       
     return (
         <div ref={formRef} className='row mx-0 mb-0'>
@@ -106,7 +117,7 @@ const PurchaseInvoiceDetails = (props) => {
                     </select>
                 </div>
             </Form.Group> */}
-            <div className='col-3 col-2' onClick={()=>navigate("/supplier-add")/* openNewWindow() */}>
+            <div className='col-3 col-2' onClick={()=>navigate("/supplier-add",{state:{fromPurchase:true}})/* openNewWindow() */}>
             <div className='btn btn-sm btn-dark rounded-2 w-100 p-0 mt-2'>Add Supplier</div>
             </div>
             <span className='col-3'/>

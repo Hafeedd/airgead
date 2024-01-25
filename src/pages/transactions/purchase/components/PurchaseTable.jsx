@@ -137,8 +137,15 @@ const PurchaseTable = (props) => {
     let tempItem = { ...state };
     if (data) {
       let Item_data = data.options.filter((x) => x?.value === data?.value)[0];
+      // console.log(Item_data)
+      const {purchase_rate,discount_1_percentage,tax_gst,fk_unit} = Item_data
       tempItem = {
         ...tempItem,
+        rate:purchase_rate||0,
+        discount_1_percentage:discount_1_percentage||0,
+        tax_gst:tax_gst||0,
+        fk_unit:fk_unit,
+        quantity:1,
         item_name: Item_data?.text,
         code: Item_data?.description,
         fk_items: Item_data?.value,

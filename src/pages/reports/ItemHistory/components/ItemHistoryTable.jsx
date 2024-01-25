@@ -16,16 +16,45 @@ export const ItemHistoryTable = (props) => {
   const { getProperty } = useItemServices();
 
   useEffect(() => {
-
-    let tempList = {...list}
+    let tempList = { ...list };
+    // let closing_stock = 0;
     let closing_stock = tempList?.opening_balance||0
-    if(Object.values(tempList).filter(x=>{if(x)return x?.length>0})?.length>0){
-     closing_stock = tempList?.purchase_items?.reduce((a,b)=>b.quantity?b.quantity+a:a,closing_stock)
-     closing_stock = tempList?.sales_items?.reduce((a,b)=>b.quantity?a-b.quantity:a,closing_stock)
-     closing_stock = tempList?.stockjournal_daybook_item?.reduce((a,b)=>(b.add_qty || b.less_qty)?a-Math.abs(b.less_qty)+Math.abs(b.add_qty):a,closing_stock)
+    let totalSales = 0;
+    let totalPurchase = 0;
+
+    if (
+      Object.values(tempList).filter((x) => {
+        if (x) return x?.length > 0;
+      })?.length > 0
+    ) {
+      totalPurchase = tempList?.purchase_items?.reduce(
+        (a, b) => b.quantity +a,
+        0
+      );
+      closing_stock = closing_stock + +totalPurchase
+
+      totalSales = tempList?.sales_items?.reduce(
+        (a, b) => b.quantity+a,
+        0
+      );
+
+      closing_stock = closing_stock - +totalSales
+
+      closing_stock = tempList?.stockjournal_daybook_item?.reduce(
+        (a, b) =>
+          b.add_qty || b.less_qty
+            ? a - Math.abs(b.less_qty) + Math.abs(b.add_qty)
+            : a,
+        closing_stock
+      );
     }
-    console.log(closing_stock)
-    tempList.closing_stock = closing_stock
+
+    tempList.closing_stock = closing_stock;
+    if( tempList?.purchase_items && tempList?.sales_items){
+    tempList.purchase_items.totalQty = totalPurchase;
+    tempList.sales_items.totalQty = totalSales;
+  }
+    
     setSearchedList(tempList);
 
   }, [list]);
@@ -131,9 +160,14 @@ export const ItemHistoryTable = (props) => {
             </tr>
           </thead>
           <tbody>
-            {Object.values(searchedList).filter((x) => x?.length > 0).length>0&&<tr>
-              <td className="fs-5 py-2 " colSpan={7}>Opening Stock&emsp;{searchedList?.opening_balance}</td>
-            </tr>}
+            {Object.values(searchedList).filter((x) => x?.length > 0).length >
+              0 && (
+              <tr>
+                <td className="fs-5 py-2 " colSpan={7}>
+                  Opening Stock&emsp;{searchedList?.opening_balance}
+                </td>
+              </tr>
+            )}
             {Object.values(searchedList).filter((x) => x?.length > 0).length >
             0 ? (
               Object.keys(searchedList).map((data, i) => {
@@ -186,17 +220,24 @@ export const ItemHistoryTable = (props) => {
                               <td>{item.supplier}</td>
                               <td>
                                 {data.match(/^st/)
-                                  ? item?.add_qty > ''
+                                  ? item?.add_qty > ""
                                     ? item?.add_qty + " +"
                                     : Math.abs(item?.less_qty) + " -"
-                                  : item?.quantity || ''}
+                                  : item?.quantity || ""}
                               </td>
                               <td>{<SelectUnit utId={item.unit} />}</td>
-                              <td>{item?.cost || ''}</td>
-                              <td>{item?.free || ''}</td>
+                              <td>{item?.cost || ""}</td>
+                              <td>{item?.free || ""}</td>
                             </tr>
                           );
                         })}
+                      <tr>
+                        <td className="fs-6 text-center" colSpan={7}>
+                          Total {data == "purchase_items" ? searchedList.purchase_items?.totalQty:
+                          data == "sales_items" &&
+                          searchedList.sales_items?.totalQty}
+                        </td>
+                      </tr>
                       {/* <tr>
                         <td colSpan={2}></td>
                         <td className="text-danger">CLOSING STOCK :</td>
@@ -214,9 +255,14 @@ export const ItemHistoryTable = (props) => {
                 </td>
               </tr>
             )}
-            {Object.values(searchedList).filter((x) => x?.length > 0).length>0&&<tr>              
-            <td className="fs-5 py-2 " colSpan={7}>Closing Stock&emsp; {searchedList.closing_stock}</td>
-            </tr>}
+            {Object.values(searchedList).filter((x) => x?.length > 0).length >
+              0 && (
+              <tr>
+                <td className="fs-5 py-2 " colSpan={7}>
+                  Closing Stock&emsp; {searchedList.closing_stock}
+                </td>
+              </tr>
+            )}
           </tbody>
         </table>
       </div>

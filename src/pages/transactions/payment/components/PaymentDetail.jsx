@@ -48,8 +48,6 @@ const PaymentDetail = ({
     });
   };
 
-  console.log(paymentAdd.cash_bank_account)
-
   return (
     <form
       ref={formRef}

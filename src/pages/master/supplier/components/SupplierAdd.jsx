@@ -3,6 +3,7 @@ import useCustomerServices from '../../../../services/master/customerServices'
 import useItemServices from '../../../../services/master/itemServices'
 import SearchDropDown from '../../../../components/searchDropDown/SearchDropDown'
 import Swal from 'sweetalert2'
+import { useLocation, useNavigate } from 'react-router-dom'
 
 const SupplierAdd = ({edit,refresh,setToEdit}) => {
     const [showDropdown, setShowDropdown] = useState(false)
@@ -12,6 +13,10 @@ const SupplierAdd = ({edit,refresh,setToEdit}) => {
         company:[],
         district:[]
     })
+
+    const location = useLocation()
+
+    const navigate = useNavigate()
     
     const [supplierAdd, setSupplierAdd] = useState({
         district:null,
@@ -179,10 +184,14 @@ const SupplierAdd = ({edit,refresh,setToEdit}) => {
                 Swal.fire('Supplier Added Successfully','','success')
                 handleReset()
                 refresh()
+                if(location?.state?.fromPurchase){
+                    navigate('/purchase-transaction',{state:{id:res.data.data_supplier.id}})
+                }
             }else{
                 Swal.fire(res?.message,'','error')
             }
         }catch(err){
+            console.log(err)
             Swal.fire('Something went wrong Pls try again','','error')
             handleReset()
         }
