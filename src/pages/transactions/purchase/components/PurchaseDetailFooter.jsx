@@ -108,7 +108,7 @@ const PurchaseDetailFooter = (props) => {
             disabled
             placeholder="Enter"
             name="discount"
-            value={purchaseAdd.total_value || ""}
+            value={purchaseAdd.total_total || ""}
             onKeyDown={handleKeyDown}
             onChange={handleChange}
             className="purchase-input-text"

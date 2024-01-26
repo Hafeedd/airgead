@@ -19,6 +19,101 @@ import { StockPop } from "./components/StockPop";
 import useCustomerServices from "../../../services/master/customerServices";
 import useAccountServices from "../../../services/master/accountServices";
 
+const initialPurchaseAdd = {
+  cstm_id: null,
+  fk_supplier: null,
+  supplier_name: null,
+  documents_no: null,
+  payment_type: "CASH",
+  order_no: null,
+  bank_amount: null,
+  fk_bank: null,
+  bill_no: null,
+  created_at: null,
+  bill_date: null,
+  interstate: false,
+  reverse_charge: false,
+  tax_bill: false,
+  total_item: null,
+  total_amount: null,
+  total_amount2: null,
+  item: null,
+  discount: null,
+  roundoff: null,
+  paid_cash: null,
+  change_due: null,
+  fk_supplier: null,
+  vehicle_no: null,
+  isBatch: false,
+  total_margin: null,
+  total_items: null,
+  total_disc: null,
+  total_value: null,
+  total_qty: null,
+  driver: null,
+  poject: null,
+  address: null,
+  bank: null,
+  transfer_account: null,
+  cstm_id: null,
+  fk_supplier: null,
+  supplier_name: null,
+  documents_no: null,
+  payment_type: "CASH",
+  order_no: null,
+  bank_amount: null,
+  fk_bank: null,
+  bill_no: null,
+  created_at: null,
+  bill_date: null,
+  interstate: false,
+  reverse_charge: false,
+  tax_bill: false,
+  total_item: null,
+  total_amount: null,
+  total_amount2: null,
+  item: null,
+  discount: null,
+  roundoff: null,
+  paid_cash: null,
+  change_due: null,
+  fk_supplier: null,
+  vehicle_no: null,
+  isBatch: false,
+  total_margin: null,
+  total_items: null,
+  total_disc: null,
+  total_value: null,
+  total_qty: null,
+  driver: null,
+  poject: null,
+  address: null,
+  bank: null,
+  transfer_account: null,
+};
+
+const initalTableItem = {
+  cstm_id: null,
+    item_name: null,
+    fk_items: null,
+    code: null,
+    quantity: 0.0,
+    unit: null,
+    transaction_unit: null,
+    rate: 0.0,
+    sales_rate: 0.0,
+    margin: 0.0,
+    cost: 0.0,
+    total: 0.0,
+    sgst: 0.0,
+    cgst_or_igst: 0.0,
+    tax_gst: 0.0,
+    value: 0.0,
+    sale_discount: 0.0,
+    discount_1_percentage: 0.0,
+    discount_1_amount: 0.0,
+}
+
 const PurchaseTransaction = () => {
   const [purchaseItemModal, setPurchaseItemModal] = useState(false);
   const [cstm_id, setCstm_id] = useState(1);
@@ -45,65 +140,9 @@ const PurchaseTransaction = () => {
   // console.log()
   const { handleKeyDown, formRef } = useOnKey(ref, setRef);
 
-  const [purchaseAdd, setPurchaseAdd] = useState({
-    cstm_id: null,
-    fk_supplier: null,
-    supplier_name: null,
-    documents_no: null,
-    payment_type: "CASH",
-    order_no: null,
-    bank_amount: null,
-    fk_bank: null,
-    bill_no: null,
-    created_at: null,
-    bill_date: null,
-    interstate: false,
-    reverse_charge: false,
-    tax_bill: false,
-    total_item: null,
-    total_amount: null,
-    total_amount2: null,
-    item: null,
-    discount: null,
-    roundoff: null,
-    paid_cash: null,
-    change_due: null,
-    fk_supplier: null,
-    vehicle_no: null,
-    isBatch: false,
-    total_margin: null,
-    total_items: null,
-    total_disc: null,
-    total_value: null,
-    total_qty: null,
-    driver: null,
-    poject: null,
-    address: null,
-    bank: null,
-    transfer_account: null,
-  });
+  const [purchaseAdd, setPurchaseAdd] = useState(initialPurchaseAdd);
 
-  const [tableItem, setTableItem] = useState({
-    cstm_id: null,
-    item_name: null,
-    fk_items: null,
-    code: null,
-    quantity: 0.0,
-    unit: null,
-    transaction_unit: null,
-    rate: 0.0,
-    sales_rate: 0.0,
-    margin: 0.0,
-    cost: 0.0,
-    total: 0.0,
-    sgst: 0.0,
-    cgst_or_igst: 0.0,
-    tax_gst: 0.0,
-    value: 0.0,
-    sale_discount: 0.0,
-    discount_1_percentage: 0.0,
-    discount_1_amount: 0.0,
-  });
+  const [tableItem, setTableItem] = useState(initalTableItem);
 
   const [tableItemBatch, setTableItemBatch] = useState({
     id: null,
@@ -191,7 +230,7 @@ const PurchaseTransaction = () => {
 
       let roundOff = (
         Math.round(parseFloat(netAmount)).toFixed(2) - parseFloat(netAmount)
-      ).toFixed(2)
+      ).toFixed(2);
       if (roundOff == 0 || !roundOff) roundOff = null;
       else if (roundOff < 0) roundOff = Math.abs(roundOff);
 
@@ -201,7 +240,7 @@ const PurchaseTransaction = () => {
 
       let paidCash = +netAmount?.toFixed(0) || 0;
       if (status == "edit") {
-      paidCash = edit.paid_cash || netAmount?.toFixed(0) || 0;
+        paidCash = edit.paid_cash || netAmount?.toFixed(0) || 0;
       }
 
       // if (status == "edit" && purchaseAdd.discount>0) {
@@ -209,7 +248,7 @@ const PurchaseTransaction = () => {
       // }
 
       let changeDue = edit?.changeDue || 0;
-      
+
       if (paidCash) {
         changeDue =
           (netAmount?.toFixed(0) - purchaseAdd.discount || 0) -
@@ -222,7 +261,7 @@ const PurchaseTransaction = () => {
         total_margin: netMargin?.toFixed(0),
         total_amount: Number(netAmount?.toFixed(0) - purchaseAdd.discount),
         total_amount2: Number(netAmount?.toFixed(2) - purchaseAdd.discount),
-        paid_cash: Number(paidCash||0)?.toFixed(0),
+        paid_cash: Number(paidCash || 0)?.toFixed(0),
         total_CTC: totalCTC?.toFixed(2),
         total_qty: totalQty?.toFixed(0),
         total_value: total_value?.toFixed(2),
@@ -230,7 +269,7 @@ const PurchaseTransaction = () => {
         total_scGst: total_scGst?.toFixed(2),
         total_items: totalItem,
         roundoff: roundOff,
-        change_due: changeDue>0?changeDue?.toFixed(2):null,
+        change_due: changeDue > 0 ? changeDue?.toFixed(2) : null,
       };
       setPurchaseAdd((data) => ({ ...data, ...tempPurchaseAdd }));
     } else {
@@ -256,11 +295,7 @@ const PurchaseTransaction = () => {
   // console.log(purchaseAdd)
 
   const { getAccountList } = useAccountServices();
-  const {
-    postPurchase,
-    putPurchase,
-    getPurchase,
-  } = usePurchaseServices();
+  const { postPurchase, putPurchase, getPurchase } = usePurchaseServices();
   const { getSupplier } = useCustomerServices();
 
   const handleGetCode = async () => {
@@ -349,39 +384,10 @@ const PurchaseTransaction = () => {
   };
 
   const handlePurchaseAllReset = () => {
-    setPurchaseAdd({
-      cstm_id: null,
-      fk_supplier: null,
-      supplier_name: null,
-      documents_no: null,
-      patyment_type: "CASH",
-      order_no: null,
-      bill_no: null,
-      created_at: null,
-      bill_date: null,
-      interstate: false,
-      reverse_charge: false,
-      tax_bill: false,
-      total_item: null,
-      total_amount: null,
-      item: null,
-      discount: null,
-      roundoff: null,
-      paid_cash: null,
-      change_due: null,
-      fk_supplier: null,
-      vehicle_no: null,
-      total_margin: null,
-      total_items: null,
-      total_qty: null,
-      driver: null,
-      poject: null,
-      address: null,
-      bank: null,
-      transfer_account: null,
-    });
+    setPurchaseAdd(initialPurchaseAdd);
     setTableItemList([]);
     setTableItemBatchList([]);
+    setTableItem(initalTableItem)
     setEdit(false);
     handleGetCode();
   };
@@ -450,9 +456,9 @@ const PurchaseTransaction = () => {
         setPurchaseAdd((data) => ({
           ...data,
           change_due:
-            (+purchaseAdd.change_due) +
-            (+purchaseAdd.total_amount) +
-            (+purchaseAdd.paid_cash) -
+            +purchaseAdd.change_due +
+            +purchaseAdd.total_amount +
+            +purchaseAdd.paid_cash -
             value -
             +purchaseAdd.total_amount,
           paid_cash: value,
@@ -526,7 +532,7 @@ const PurchaseTransaction = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      if (purchaseAdd.change_due>0 && !purchaseAdd.fk_supplier ){
+      if (purchaseAdd.change_due > 0 && !purchaseAdd.fk_supplier) {
         Swal.fire({
           title: "Supplier not selected",
           icon: "warning",
@@ -534,7 +540,7 @@ const PurchaseTransaction = () => {
           showConfirmButton: false,
           timer: 1500,
         });
-        return 0;        
+        return 0;
       }
       if (tableItemList.length <= 0) {
         Swal.fire({
@@ -559,7 +565,7 @@ const PurchaseTransaction = () => {
       }
       if (response?.success) {
         handlePurchaseAllReset();
-        getData()
+        getData();
         Swal.fire("Purchase added successfully", "", "success");
       } else {
         if (response?.data?.length > 0) {
@@ -567,7 +573,8 @@ const PurchaseTransaction = () => {
             Swal.fire({
               title: "Error",
               text:
-                response?.data[0] || "Something went wrong. Pls try again later",
+                response?.data[0] ||
+                "Something went wrong. Pls try again later",
               icon: "error",
               timer: 1000,
               showConfirmButton: false,
@@ -623,7 +630,7 @@ const PurchaseTransaction = () => {
               setTableItemList(tempItems);
             }
           });
-        } 
+        }
         // else if ((edit || tableEdit) && response.success) {
         //   const data = await getData();
         //   // setEdit(data);
@@ -638,7 +645,7 @@ const PurchaseTransaction = () => {
         //   setTableEdit(false);
         //   // }else if(edit){
         //   //   setEdit(false)
-        // } 
+        // }
         else {
           Swal.fire(
             "Error",

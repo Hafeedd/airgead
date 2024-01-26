@@ -222,7 +222,7 @@ export const StaffProfEducTable = (props) => {
 
   return (
     <div>
-      <div className="staff-table-cont d-flex justify-content-between rounded-top-3 px-3 pt-1 pb-0">
+      <div className="staff-table-cont2 d-flex justify-content-between rounded-top-3 px-3 pt-1 pb-0">
         <div className="d-flex">
           <div
             onClick={() => setStaffTableTab(1)}

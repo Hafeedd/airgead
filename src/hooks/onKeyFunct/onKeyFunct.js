@@ -4,14 +4,14 @@ const useOnKey = (ref, setRef,...otherChangableState) => {
   let formRef = useRef([]);
 
   useEffect(() => {
+    // console.log(formRef.current)
     if (formRef?.current) getRefValue(formRef, setRef);
   }, [formRef, ...otherChangableState]);
 
   const getRefValue = (fRef, set) => {
     let newList = []
-    // const data = [...fRef?.current?.children];
-    if(formRef.current?.length >= 0){  
-      formRef?.current?.map(data=>{if(data)newList.push(...data?.querySelectorAll(
+    if(Array.isArray(fRef?.current)){
+      fRef?.current.map(data=>{if(data)newList.push(...data?.querySelectorAll(
         "input:not([disabled]), select:not([disabled]), textarea, button"
         ))})
     }else{

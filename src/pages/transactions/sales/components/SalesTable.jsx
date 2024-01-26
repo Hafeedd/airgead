@@ -31,6 +31,7 @@ const SalesTable = (props) => {
   } = props;
 
   const [ref, setRef] = useState(null);
+  const [ref2, setRef2] = useState(null);
   const [unitList, setUnitList] = useState(null);
   // const [calcChange, setCalcChange] = useState();
   const [itemNameList, setItemNameList] = useState([]);
@@ -40,7 +41,7 @@ const SalesTable = (props) => {
   const { postSalesItem, putSalesItem } = useSalesServices();
 
   const [handleKeyDown, formRef] = useOnKey(ref, setRef);
-  const [handleKeyDown2, formRef2] = useOnKey(ref, setRef, tableItemList);
+  const [handleKeyDown2, formRef2] = useOnKey(ref2, setRef2, tableItemList);
 
   useEffect(() => {
     getTableData();
@@ -121,14 +122,12 @@ const SalesTable = (props) => {
     return a;
   };
 
-  const handleKeyTableItemEdit = async (e,data,i) =>{
-    if(e.key == "Enter" && !e.ctrlKey){
-      e.preventDefault()
-      handleTableItemEdit(e,data,i)
-    }
-    else
-    handleKeyDown2(e)
-  }
+  const handleKeyTableItemEdit = async (e, data, i) => {
+    if (e.key == "Enter" && !e.ctrlKey) {
+      e.preventDefault();
+      handleTableItemEdit(e, data, i);
+    } else handleKeyDown2(e);
+  };
 
   const handleTableItemEdit = async (e, data, i) => {
     e.preventDefault();
@@ -141,7 +140,7 @@ const SalesTable = (props) => {
           // showConfirmButton: false,
           timer: 1500,
         });
-        handleKeyDown(e);
+        handleKeyDown2(e);
         return 0;
       }
       let response = await putSalesItem(data.id, data);
@@ -184,47 +183,52 @@ const SalesTable = (props) => {
     });
   };
 
-  const handleTableItemDelete = async (data) => {
+  const handleTableItemDelete = async (data, i) => {
+    if (tableItemList?.length < 2 && edit) {
+      Swal.fire({
+        title: "There is only one item exist.",
+        text: "You cant delete.",
+        icon: "warning",
+        timer: 1500,
+      });
+      return 0;
+    }
     if (!data.created_at) {
       let tempList = [...tableItemList];
-      let listAfterItemRem = [];
-
-      let index = tempList.findIndex((x) => {
-        return x.id == data.id;
-      });
-      if (index > -1) {
-        tempList.splice(index, 1);
-        listAfterItemRem = [...tempList];
-      }
-      setTableItemList([...listAfterItemRem]);
+      tempList.splice(i, 1);
+      setTableItemList([...tempList]);
     }
     try {
       let response;
       response = await deleteSalesItem(data.id);
-      if (response.success && data.created_at) {
+      if (response.success) {
         Swal.fire({
-          title: "Item deleted successfully",
           icon: "success",
           showConfirmButton: false,
           timer: 1500,
         });
-        const data = await getData();
-        if (data?.length > 0)
-          data?.map((purchData) => {
-            if (purchData?.id === edit?.id) {
-              console.log(purchData);
-              setEdit(purchData);
-            }
-          });
+        // const data = await getData();
+        // if (data?.length > 0)
+        //   data?.map((purchData) => {
+        //     if (purchData?.id === edit?.id) {
+        //       console.log(purchData);
+        //       setEdit(purchData);
+        //     }
+        //   });
+        let tempList = [...tableItemList];
+        tempList.splice(i, 1);
+        setTableItemList([...tempList]);
+        getData()
       }
-      if (response.success && !data.created_at) {
-        Swal.fire({
-          title: "Item deleted successfully",
-          icon: "success",
-          showConfirmButton: false,
-          timer: 1500,
-        });
-      } else {
+      // if (response.success && !data.created_at) {
+      //   Swal.fire({
+      //     title: "Item deleted successfully",
+      //     icon: "success",
+      //     showConfirmButton: false,
+      //     timer: 1500,
+      //   });
+      // }
+      else {
         Swal.fire(response.message, "", "error");
       }
     } catch (err) {
@@ -494,6 +498,7 @@ const SalesTable = (props) => {
   const handlePrev = () => {
     if (salesList?.length > 0) {
       if (!edit) {
+        handleSalesAllReset();
         setEdit(salesList[0]);
       } else {
         let ind = salesList?.findIndex((x) => edit.id == x.id);
@@ -529,10 +534,7 @@ const SalesTable = (props) => {
   return (
     <>
       <div className="px-2 " id="TableToPrint">
-        <table
-          ref={formRef}
-          className="table table-secondary purchase-table mb-0"
-        >
+        <table className="table table-secondary purchase-table mb-0">
           <thead className="purchase-table-header">
             <tr>
               <th className="text-start" colSpan={3}>
@@ -566,182 +568,228 @@ const SalesTable = (props) => {
           <tbody className="purchase-table-body">
             {/* table Item List-----------------------------------------start */}
             {tableItemList?.length > 0 &&
-              tableItemList?.map((data, i) => (
-                <tr
-                  id={"tableBodyTr"}
-                  key={i}
-                  ref={(el) => (formRef2.current[i] = el)}
-                >
-                  <td className="text-start ps-3" colSpan={3}>
-                    <Dropdown
-                      // clearable
-                      options={itemNameList}
-                      selection
-                      scrolling
-                      search={search}
-                      placeholder="SELECT"
-                      className="purchase_search_drop border-0 w-100 ps-2"
-                      onKeyDown={handleKeyDown2}
-                      name={"fk_items"}
-                      onChange={(e, a) => handleChangeTableItem(e, a, data, i)}
-                      value={
-                        data?.fk_items == "" || data?.fk_items
-                          ? data?.fk_items
-                          : ""
-                      }
-                    />
-                  </td>
-                  <td>
-                    <input
-                      onKeyDown={handleKeyDown2}
-                      onChange={(e) => handleChangeTableItem(e, null, data, i)}
-                      name="quantity"
-                      className="purchase_input border-0 w-100 text-center"
-                      value={data.quantity || ""}
-                    />
-                  </td>
-                  <td>
-                    <select
-                      onKeyDown={handleKeyDown2}
-                      onChange={(e) => handleChangeTableItem(e, null, data, i)}
-                      value={data.unit || ""}
-                      name="unit"
-                      style={{
-                        WebkitAppearance: "none",
-                        fontSize: "10px",
-                        padding: "3.5px 1px",
-                      }}
-                      className="purchase_input border-0 w-100 text-center"
-                    >
-                      {unitList &&
-                        unitList.map((x, i) => (
-                          <option key={i} value={x.value}>
-                            {x.text}
-                          </option>
-                        ))}
-                    </select>
-                  </td>
-                  <td>
-                    <input
-                      onKeyDown={handleKeyDown2}
-                      onChange={(e) => handleChangeTableItem(e, null, data, i)}
-                      className="purchase_input border-0 w-100 text-center"
-                      value={data.rate || ""}
-                      name="rate"
-                    />
-                  </td>
-                  <td>
-                    <input
-                      onKeyDown={handleKeyDown2}
-                      disabled
-                      onChange={(e) => handleChangeTableItem(e, null, data, i)}
-                      className="purchase_input border-0 w-100 text-center"
-                      value={data.total || ""}
-                      name="total"
-                    />
-                  </td>
-                  <td>
-                    <input
-                      onKeyDown={handleKeyDown2}
-                      onChange={(e) => handleChangeTableItem(e, null, data, i)}
-                      className="purchase_input border-0 w-100 text-center"
-                      value={data.discount_1_percentage || ""}
-                      name="discount_1_percentage"
-                    />
-                  </td>
-                  <td>
-                    <input
-                      onKeyDown={handleKeyDown2}
-                      onChange={(e) => handleChangeTableItem(e, null, data, i)}
-                      className="purchase_input border-0 w-100 text-center"
-                      value={data.discount_1_amount || ""}
-                      name="discount_1_amount"
-                    />
-                  </td>
-                  <td>
-                    <input
-                    disabled
-                      onKeyDown={handleKeyDown2}
-                      onChange={(e) => handleChangeTableItem(e, null, data, i)}
-                      className="purchase_input border-0 w-100 text-center"
-                      value={data.value || ""}
-                      name="value"
-                    />
-                  </td>
-                  <td>
-                    <input
-                      onKeyDown={handleKeyDown2}
-                      onChange={(e) => handleChangeTableItem(e, null, data, i)}
-                      className="purchase_input border-0 w-100 text-center"
-                      value={data.tax_gst || ""}
-                      name="tax_gst"
-                    />
-                  </td>
-                  <td>
-                    <input
-                    disabled
-                      onKeyDown={handleKeyDown2}
-                      onChange={(e) => handleChangeTableItem(e, null, data, i)}
-                      className="purchase_input border-0 w-100 text-center"
-                      value={data.cgst_or_igst || ""}
-                      name="cgst_or_igst"
-                    />
-                  </td>
-                  <td>
-                    <input
-                    disabled
-                      onKeyDown={handleKeyDown2}
-                      onChange={(e) => handleChangeTableItem(e, null, data, i)}
-                      className="purchase_input border-0 w-100 text-center"
-                      value={data.sgst || ""}
-                      name="sgst"
-                    />
-                  </td>
-                  <td>
-                    <input
-                    disabled
-                      onKeyDown={handleKeyDown2}
-                      onChange={(e) => handleChangeTableItem(e, null, data, i)}
-                      className="purchase_input border-0 w-100 text-center"
-                      value={data.total || ""}
-                      name="total"
-                    />
-                  </td>
-                  {data?.edited ? (
+              tableItemList?.map((data, i) => {
+                const confirmDelete = async () => {
+                  Swal.fire({
+                    title: "Delete Item",
+                    text: "Do you want to delete Item ?",
+                    showDenyButton: true,
+                    showCancelButton: false,
+                    denyButtonText: "Cancel",
+                    showLoaderOnConfirm: true,
+                    preConfirm: async () => {
+                      await handleTableItemDelete(data, i);
+                    },
+                    preDeny: () =>
+                      Swal.fire({
+                        title: "Canceled",
+                        showConfirmButton: false,
+                        timer: 1500,
+                      }),
+                  });
+                };
+
+                return (
+                  <tr
+                    id={"tableBodyTr"}
+                    key={i}
+                    ref={(el) => (formRef2.current[i] = el)}
+                  >
+                    <td className="text-start ps-3" colSpan={3}>
+                      <Dropdown
+                        // clearable
+                        options={itemNameList}
+                        selection
+                        search={search}
+                        placeholder="SELECT"
+                        className="purchase_search_drop border-0 w-100 ps-2"
+                        onKeyDown={handleKeyDown2}
+                        name={"fk_items"}
+                        onChange={(e, a) =>
+                          handleChangeTableItem(e, a, data, i)
+                        }
+                        value={
+                          data?.fk_items == "" || data?.fk_items
+                            ? data?.fk_items
+                            : ""
+                        }
+                      />
+                    </td>
                     <td>
-                      <button
-                        onKeyDown={(e) => handleKeyTableItemEdit(e, data, i)}
-                        onClick={(e) => handleTableItemEdit(e, data, i)}
-                        className="text-center border-0 bg-transparent"
-                      >
-                        <FiEdit className="mb-1 btn p-0" size={"16px"} />
-                      </button>
+                      <input
+                        onKeyDown={handleKeyDown2}
+                        onChange={(e) =>
+                          handleChangeTableItem(e, null, data, i)
+                        }
+                        name="quantity"
+                        className="purchase_input border-0 w-100 text-center"
+                        value={data.quantity || ""}
+                      />
                     </td>
-                  ) : (
-                    <td className="p-0">
-                      <div
-                        onClick={() => confirmDelete(data)}
-                        className="text-center w-100"
+                    <td>
+                      <select
+                        onKeyDown={handleKeyDown2}
+                        onChange={(e) =>
+                          handleChangeTableItem(e, null, data, i)
+                        }
+                        value={data.unit || ""}
+                        name="unit"
+                        style={{
+                          WebkitAppearance: "none",
+                          fontSize: "10px",
+                          padding: "3.5px 1px",
+                        }}
+                        className="purchase_input border-0 w-100 text-center"
                       >
-                        <BsTrashFill className="mb-1 btn p-0" size={"16px"} />
-                      </div>
+                        {unitList &&
+                          unitList.map((x, i) => (
+                            <option key={i} value={x.value}>
+                              {x.text}
+                            </option>
+                          ))}
+                      </select>
                     </td>
-                  )}
-                </tr>
-              ))}
+                    <td>
+                      <input
+                        onKeyDown={handleKeyDown2}
+                        onChange={(e) =>
+                          handleChangeTableItem(e, null, data, i)
+                        }
+                        className="purchase_input border-0 w-100 text-center"
+                        value={data.rate || ""}
+                        name="rate"
+                      />
+                    </td>
+                    <td>
+                      <input
+                        onKeyDown={handleKeyDown2}
+                        disabled
+                        onChange={(e) =>
+                          handleChangeTableItem(e, null, data, i)
+                        }
+                        className="purchase_input border-0 w-100 text-center"
+                        value={data.total || ""}
+                        name="total"
+                      />
+                    </td>
+                    <td>
+                      <input
+                        onKeyDown={handleKeyDown2}
+                        onChange={(e) =>
+                          handleChangeTableItem(e, null, data, i)
+                        }
+                        className="purchase_input border-0 w-100 text-center"
+                        value={data.discount_1_percentage || ""}
+                        name="discount_1_percentage"
+                      />
+                    </td>
+                    <td>
+                      <input
+                        onKeyDown={handleKeyDown2}
+                        onChange={(e) =>
+                          handleChangeTableItem(e, null, data, i)
+                        }
+                        className="purchase_input border-0 w-100 text-center"
+                        value={data.discount_1_amount || ""}
+                        name="discount_1_amount"
+                      />
+                    </td>
+                    <td>
+                      <input
+                        disabled
+                        onKeyDown={handleKeyDown2}
+                        onChange={(e) =>
+                          handleChangeTableItem(e, null, data, i)
+                        }
+                        className="purchase_input border-0 w-100 text-center"
+                        value={data.value || ""}
+                        name="value"
+                      />
+                    </td>
+                    <td>
+                      <input
+                        onKeyDown={handleKeyDown2}
+                        onChange={(e) =>
+                          handleChangeTableItem(e, null, data, i)
+                        }
+                        className="purchase_input border-0 w-100 text-center"
+                        value={data.tax_gst || ""}
+                        name="tax_gst"
+                      />
+                    </td>
+                    <td>
+                      <input
+                        disabled
+                        onKeyDown={handleKeyDown2}
+                        onChange={(e) =>
+                          handleChangeTableItem(e, null, data, i)
+                        }
+                        className="purchase_input border-0 w-100 text-center"
+                        value={data.cgst_or_igst || ""}
+                        name="cgst_or_igst"
+                      />
+                    </td>
+                    <td>
+                      <input
+                        disabled
+                        onKeyDown={handleKeyDown2}
+                        onChange={(e) =>
+                          handleChangeTableItem(e, null, data, i)
+                        }
+                        className="purchase_input border-0 w-100 text-center"
+                        value={data.sgst || ""}
+                        name="sgst"
+                      />
+                    </td>
+                    <td>
+                      <input
+                        disabled
+                        onKeyDown={handleKeyDown2}
+                        onChange={(e) =>
+                          handleChangeTableItem(e, null, data, i)
+                        }
+                        className="purchase_input border-0 w-100 text-center"
+                        value={data.total || ""}
+                        name="total"
+                      />
+                    </td>
+                    {data?.edited ? (
+                      <td>
+                        <button
+                          onKeyDown={(e) => handleKeyTableItemEdit(e, data, i)}
+                          onClick={(e) => handleTableItemEdit(e, data, i)}
+                          className="text-center border-0 bg-transparent"
+                        >
+                          <FiEdit className="mb-1 btn p-0" size={"16px"} />
+                        </button>
+                      </td>
+                    ) : (
+                      <td className="p-0">
+                        <div
+                          onClick={confirmDelete}
+                          className="text-center w-100"
+                        >
+                          <BsTrashFill className="mb-1 btn p-0" size={"16px"} />
+                        </div>
+                      </td>
+                    )}
+                  </tr>
+                );
+              })}
 
             {/* table Item List-----------------------------------------end */}
 
-            <tr className="input-tr">
+            <tr ref={formRef} className="input-tr">
               <td
                 colSpan={3}
                 className="purchase_search_drop_td text-start ps-3"
               >
                 <Dropdown
                   clearable
-                  options={itemNameList}
+                  required
                   selection
-                  scrolling
+                  upward={salesAdd.total_items > 4 ? true : false}
+                  // scrolling
                   search={search}
                   placeholder="SELECT"
                   className="purchase_search_drop border-0 w-100 ps-2"
@@ -755,6 +803,7 @@ const SalesTable = (props) => {
                       ? tableItem?.fk_items
                       : ""
                   }
+                  options={itemNameList}
                 />
               </td>
               <td>

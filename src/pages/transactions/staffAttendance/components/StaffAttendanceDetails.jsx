@@ -384,7 +384,7 @@ const StaffAttendanceDetails = (props) => {
           style={{ tableLayout: "fixed" }}
           ref={tableRef}
         >
-          {/* <thead>
+          <thead>
             <tr>
               <th style={{zIndex:10}}>Name</th>
               {<DateHeading />}
@@ -400,7 +400,7 @@ const StaffAttendanceDetails = (props) => {
                   </tr>
                 );
               })}
-          </tbody> */}
+          </tbody>
         </table>
       </div>
       <Modal
