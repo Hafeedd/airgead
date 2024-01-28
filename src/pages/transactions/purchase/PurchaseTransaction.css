@@ -109,6 +109,10 @@
     padding-top: 0.3rem !important;
 }
 
+.table-select-item{
+    background: #c9c9c9;
+}
+
 .purchase-table-green td.item{
     border-radius: 0.125rem;
     border-bottom: none;
@@ -191,6 +195,13 @@
 
 td.clr{
     color: #FC4040;
+    font-size: 1rem;
+    font-weight: 600;
+    
+}
+
+td.n_clr{
+    color: #46fc40;
     font-size: 1rem;
     font-weight: 600;
     

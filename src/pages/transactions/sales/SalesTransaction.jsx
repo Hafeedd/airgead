@@ -14,11 +14,12 @@ import SalesDetailFooter from "./components/SalesDetailFooter";
 import useCustomerServices from "../../../services/master/customerServices";
 import useSalesServices from "../../../services/transactions/salesServices";
 import useOnKey from "../../../hooks/onKeyFunct/onKeyFunct";
-// import { formValidation } from "../../../hooks/formValidation/formValidation";
 import Swal from "sweetalert2";
-import usePurchaseServices from "../../../services/transactions/purchcaseServices";
 import useItemServices from "../../../services/master/itemServices";
 import { PrintFIle } from "./components/SalesBill";
+import { initialPurchaseSalesTableStatePosition } from "../purchase/PurchaseTransaction";
+// import { initialPurchaseSalesTableStatePositionLocal } from "../purchase/PurchaseTransaction";
+
 
 const initialSalesState = {
   cstm_id: null,
@@ -92,6 +93,10 @@ const initialTableItemState = {
   discount_1_amount: 0.0,
 };
 
+export const initialSalesTableStatePositionLocal = JSON.parse(localStorage.getItem(
+  "initialSalesTableStatePositionLocal"
+))
+
 const SalesTransaction = () => {
   const [salesItemModal, setSalesItemModal] = useState(false);
   const [salesEditModal, setSalesEditModal] = useState(false);
@@ -125,6 +130,9 @@ const SalesTransaction = () => {
   const [salesAdd, setSalesAdd] = useState(initialSalesState);
 
   const [tableItem, setTableItem] = useState(initialTableItemState);
+  const [tableHeadList, setTableHeadList] = useState(
+    initialSalesTableStatePositionLocal || initialPurchaseSalesTableStatePosition
+  );
 
   const { getProperty } = useItemServices();
   const { getCustomer } = useCustomerServices();
@@ -720,6 +728,7 @@ const SalesTransaction = () => {
         </div>
         <SalesTable
           {...{
+            tableHeadList,
             salesBatchShow,
             setSalesBatchShow,
             tableItem,
@@ -763,7 +772,12 @@ const SalesTransaction = () => {
         centered
         onHide={() => setSalesItemModal(false)}
       >
-        <PurchaseTableItemList />
+        <PurchaseTableItemList
+        from="sal"
+        {...{
+          tableHeadList,
+          setTableHeadList
+        }}/>
       </Modal>
       <Modal
         show={salesEditModal}

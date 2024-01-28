@@ -94,25 +94,182 @@ const initialPurchaseAdd = {
 
 const initalTableItem = {
   cstm_id: null,
-    item_name: null,
-    fk_items: null,
-    code: null,
-    quantity: 0.0,
-    unit: null,
-    transaction_unit: null,
-    rate: 0.0,
-    sales_rate: 0.0,
-    margin: 0.0,
-    cost: 0.0,
-    total: 0.0,
-    sgst: 0.0,
-    cgst_or_igst: 0.0,
-    tax_gst: 0.0,
-    value: 0.0,
-    sale_discount: 0.0,
-    discount_1_percentage: 0.0,
-    discount_1_amount: 0.0,
-}
+  item_name: null,
+  fk_items: null,
+  code: null,
+  quantity: 0.0,
+  unit: null,
+  transaction_unit: null,
+  rate: 0.0,
+  sales_rate: 0.0,
+  margin: 0.0,
+  cost: 0.0,
+  total: 0.0,
+  sgst: 0.0,
+  cgst_or_igst: 0.0,
+  tax_gst: 0.0,
+  value: 0.0,
+  sale_discount: 0.0,
+  discount_1_percentage: 0.0,
+  discount_1_amount: 0.0,
+};
+
+export const initialPurchaseTableStatePositionLocal = JSON.parse(localStorage.getItem(
+  "initialPurchaseTableStatePositionLocal"
+))
+
+export const initialPurchaseSalesTableStatePosition = [
+  {
+    title: "Item Name",
+    state: "item_name",
+    position: 1,
+    visible: true,
+    skipping: false,
+    readOnly: false,
+    saleShow:true,
+    purchaseShow:true
+  },
+  {
+    title: "Qty",
+    state: "quantity",
+    position: 2,
+    visible: true,
+    skipping: false,
+    readOnly: false,
+    saleShow:true,
+    purchaseShow:true
+  },
+  {
+    title: "Ut",
+    state: "unit",
+    position: 3,
+    visible: true,
+    skipping: false,
+    readOnly: false,
+    saleShow:true,
+    purchaseShow:true
+  },
+  {
+    title: "P.Rate",
+    state: "rate",
+    position: 4,
+    visible: true,
+    skipping: false,
+    readOnly: false,
+    saleShow:false,
+    purchaseShow:true
+  },
+  {
+    title: "Net Rate",
+    state: "gross",
+    position: 5,
+    visible: true,
+    skipping: false,
+    readOnly: false,
+    saleShow:true,
+    purchaseShow:false
+  },
+  {
+    title: "Disc%",
+    state: "discount_1_percentage",
+    position: 6,
+    visible: true,
+    skipping: false,
+    readOnly: false,
+    saleShow:true,
+    purchaseShow:true
+  },
+  {
+    title: "Disc",
+    state: "discount_1_amount",
+    position: 7,
+    visible: true,
+    skipping: false,
+    readOnly: false,
+    saleShow:true,
+    purchaseShow:true
+  },
+  {
+    title: "Value",
+    state: "value",
+    position: 8,
+    visible: true,
+    skipping: false,
+    readOnly: true,
+    saleShow:true,
+    purchaseShow:true
+  },
+  {
+    title: "Tax",
+    state: "tax_gst",
+    position: 9,
+    visible: true,
+    skipping: false,
+    readOnly: false,
+    saleShow:true,
+    purchaseShow:true
+  },
+  {
+    title: "CGST,IGST",
+    state: "cgst_or_igst",
+    position: 10,
+    visible: true,
+    skipping: false,
+    readOnly: true,
+    saleShow:true,
+    purchaseShow:true
+  },
+  {
+    title: "SGST",
+    state: "sgst",
+    position: 11,
+    visible: true,
+    skipping: false,
+    readOnly: true,
+    saleShow:true,
+    purchaseShow:true
+  },
+  {
+    title: "Total",
+    state: "total",
+    position: 12,
+    visible: true,
+    skipping: false,
+    readOnly: true,
+    saleShow:true,
+    purchaseShow:true
+  },
+  {
+    title: "Cost",
+    state: "cost",
+    position: 13,
+    visible: true,
+    skipping: false,
+    readOnly: true,
+    saleShow:false,
+    purchaseShow:true
+  },
+  {
+    title: "Margin",
+    state: "margin",
+    position: 14,
+    visible: true,
+    skipping: false,
+    readOnly: false,
+    saleShow:false,
+    purchaseShow:true
+  },
+  {
+    title: "S.Rate",
+    state: "sales_rate",
+    position: 15,
+    visible: true,
+    skipping: false,
+    readOnly: false,
+    saleShow:false,
+    purchaseShow:true
+  },
+];
 
 const PurchaseTransaction = () => {
   const [purchaseItemModal, setPurchaseItemModal] = useState(false);
@@ -132,12 +289,14 @@ const PurchaseTransaction = () => {
   const [batchKeys, setBatchKeys] = useState([]);
   const [bankList, setBankList] = useState([]);
   const [bankSelect, setBankSelect] = useState(false);
+  const [tableHeadList, setTableHeadList] = useState(
+    initialPurchaseTableStatePositionLocal || initialPurchaseSalesTableStatePosition
+  );
   const navigate = useNavigate({});
 
   const [purchaseList, setPurchaseList] = useState();
   const [tableItemList, setTableItemList] = useState([]);
   const [tableItemBatchList, setTableItemBatchList] = useState([]);
-  // console.log()
   const { handleKeyDown, formRef } = useOnKey(ref, setRef);
 
   const [purchaseAdd, setPurchaseAdd] = useState(initialPurchaseAdd);
@@ -157,6 +316,11 @@ const PurchaseTransaction = () => {
 
   const { postPurchaseItem } = usePurchaseServices();
   const { getCode } = useItemServices();
+
+  // useEffect(()=>{
+  //   if(tableHeadList.length>0)
+  //   localStorage.setItem("initialPurchaseSalesTableStatePositionLocal",tableHeadList)
+  // },[tableHeadList])
 
   useEffect(() => {
     if (edit) handlePurchAllCalc("edit");
@@ -387,7 +551,7 @@ const PurchaseTransaction = () => {
     setPurchaseAdd(initialPurchaseAdd);
     setTableItemList([]);
     setTableItemBatchList([]);
-    setTableItem(initalTableItem)
+    setTableItem(initalTableItem);
     setEdit(false);
     handleGetCode();
   };
@@ -775,6 +939,7 @@ const PurchaseTransaction = () => {
         {/* {purchaseHeader} ---------------------------------------------------------*/}
         <PurchaseTable
           {...{
+            tableHeadList,
             handleBatchSubmit,
             setPurchaseItemModal,
             tableItem,
@@ -821,7 +986,13 @@ const PurchaseTransaction = () => {
         centered
         onHide={() => setPurchaseItemModal(false)}
       >
-        <PurchaseTableItemList />
+        <PurchaseTableItemList
+        from="pur"
+          {...{
+            tableHeadList,
+            setTableHeadList
+          }}
+        />
       </Modal>
       <Modal
         show={purchaseEditModal}
