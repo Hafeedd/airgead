@@ -272,7 +272,9 @@ export const StockJournal = () => {
     e.preventDefault();
     try {
       let response,
-        submitData = { ...stockJAdd, item: stockTableItemList };
+      submitData = { ...stockJAdd, item: stockTableItemList };
+      console.log(submitData)
+      // return 0
       if (!edit) {
         response = await postStockJ(submitData);
       } else {

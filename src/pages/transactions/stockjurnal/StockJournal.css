@@ -79,7 +79,8 @@
 
 .purchase-input-text.table-drop{
     min-height: fit-content !important;
-    background: #EEE !important;
+    background: transparent !important;
+    border: 1px solid black !important;
 }
 
 .purchase-input-text.table-drop input.search{
@@ -91,13 +92,20 @@
 .purchase-input-text.drop{
     height: 1.8rem;
     width: 100%;
-    background: #EEE !important;
     border-radius: 0.2325rem;
     border: 1px solid #A7A7A7;
 }
 
-purchase-input-text.drop.table{
+/* .purchase-input-text.drop.table{
     height: 1.5rem;
+} */
+
+.stock-journal-entry{
+    background: #a6cdec;
+}
+
+.stock-journal-entry td{
+    background: transparent !important;
 }
 
 .stock-next-prev-btn,.stock-next-prev-btn:hover{
@@ -154,10 +162,16 @@ purchase-input-text.drop.table{
     overflow-y: scroll;
 }
 
+.add-less-btn:focus{
+    outline: 2px solid white !important;
+    box-shadow: none !important;
+    border: none !important;
+}
 .add-less-btn{
     border: 0;
     border-radius: 0.3rem;
-    background: #A4A1A1;
+    background: #000000;
+    color: white;
     padding: 0.3rem 1.6rem !important;
     font-weight: 500;
     font-size: 14px;

@@ -47,7 +47,6 @@ const PaymentTransaction = ({ method }) => {
   };
   const [accountList, setAccountList] = useState([]);
   const [payReciptList, setPayRecieptList] = useState([]);
-  const [pathOfPage, setPathOfPage] = useState();
   const [edit, setEdit] = useState(false);
   const [accountPayList, setAccountPayList] = useState([]); // account chash and bank payment filtered list
   const location = useLocation();
@@ -63,6 +62,10 @@ const PaymentTransaction = ({ method }) => {
     setPaymentAdd((data) => ({ ...data, method: method }));
     getData2();
   }, [method]);
+
+  useEffect(()=>{
+    handleReset()
+  },[location.pathname])
 
   const {
     postPaymentReciept,
@@ -351,10 +354,9 @@ const PaymentTransaction = ({ method }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      // let a;
-      // if (location?.pathname?.match("receipt")) a = "Receipt";
-      // else a = "Payment";
+
       if (!formValidation()) return 0;
+      // if()
       let submitData = handleToUpperCase(paymentAdd);
       let response;
       if (!edit) {
@@ -418,15 +420,15 @@ const PaymentTransaction = ({ method }) => {
         <div className="page_head my-0 ps-4">
           <div>
             <div className="fw-600 fs-5">
-              Transaction{" "}
-              {pathOfPage == "/payment-transaction" ? "payment" : "receipt"}
+              Transaction&nbsp;&nbsp;
+              {location.pathname == "/payment-transaction" ? "Payment" : "Receipt"}
             </div>
             <div className="page_head_items mb-1">
               <div
                 onClick={() => handleReset()}
                 className={`page_head_item active`}
               >
-                {pathOfPage == "/payment-transaction" ? "payment" : "receipt"}{" "}
+                {location.pathname == "/payment-transaction" ? "payment" : "receipt"}{" "}
                 Details
               </div>
             </div>

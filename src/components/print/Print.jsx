@@ -51,7 +51,7 @@ export const GenerateDynamicHtml = (props) => {
     let targetTr = [];
     for (const tr of tbodytr) {
       if (tr.getAttribute("id")) {
-        targetTr.push([...tr.querySelectorAll("input:not(:empty) select:not(:empty)")]);
+        targetTr.push([...tr.querySelectorAll('input:not(empty), select:not(empty)')]);
       }
     }
     let trData = [];
@@ -60,19 +60,21 @@ export const GenerateDynamicHtml = (props) => {
       if (list.length > 0) {
         for (let b of list) {
           let textContent;
-          if (b?.lastElementChild?.tagName.toLowerCase() === "select") {
-            // console.log(b.lastElementChild.options)
+          console.log(b)
+          if (b?.tagName.toLowerCase() === "select") {      
             // If the innermost child is a <select>, get the selected option text
             const selectedOption =
-              b?.lastElementChild?.options[b?.lastElementChild?.selectedIndex];
+              b?.options[b?.selectedIndex];
             textContent = selectedOption
               ? selectedOption.textContent.trim()
               : "";
           } else {
             // For other elements, get the general text content
-            textContent = b.textContent.trim();
+            // console.log(b)
+            textContent = b?.textContent?.trim()|| b.defaultValue.trim();
           }
           if (textContent && textContent != "")
+            console.log(textContent)
             tdData.push(textContent)
         }
       }

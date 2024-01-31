@@ -255,6 +255,7 @@ const PaymentDetail = ({
             <div className="mx-0 px-0 col-7">
               <input
                 onKeyDown={handleNumber}
+                required
                 onChange={(e) => handleChange(e)}
                 name="amount"
                 placeholder="Enter Amount"

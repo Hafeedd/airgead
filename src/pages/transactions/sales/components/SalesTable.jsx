@@ -218,7 +218,7 @@ const SalesTable = (props) => {
         let tempList = [...tableItemList];
         tempList.splice(i, 1);
         setTableItemList([...tempList]);
-        getData()
+        getData();
       }
       // if (response.success && !data.created_at) {
       //   Swal.fire({
@@ -370,29 +370,143 @@ const SalesTable = (props) => {
   };
 
   const handleAmountCalculation = (tempItem, e, state) => {
+    // let name = e.target.name;
+    // let value = {};
+    // if (tempItem.rate && tempItem.quantity) {
+    //   let total = tempItem.total,
+    //     cost = tempItem.cost;
+    //   if (!tempItem.discount_1_amount && !tempItem.tax_gst) {
+    //     total = tempItem.quantity * tempItem.rate;
+    //     cost = tempItem.rate;
+    //   }
+    //   value = {
+    //     ["value"]: tempItem.quantity * tempItem.rate,
+    //     ["total"]: total,
+    //     ["cost"]: cost,
+    //   };
+    //   tempItem = { ...tempItem, ...value };
+    //   if (name != "discount_1_amount" && tempItem.discount_1_percentage) {
+    //     value = {
+    //       ...value,
+    //       ["discount_1_amount"]:
+    //         tempItem.discount_1_percentage * (value.value / 100),
+    //     };
+    //   } else if (name == "discount_1_percentage") {
+    //     value = { ...value, ["discount_1_amount"]: 0 };
+    //   }
+    //   if (name == "discount_1_amount" && tempItem.discount_1_amount) {
+    //     value = {
+    //       ...value,
+    //       ["discount_1_percentage"]:
+    //         (tempItem.discount_1_amount / value.value) * 100,
+    //     };
+    //   } else if (name == "discount_1_amount") {
+    //     value = { ...value, ["discount_1_percentage"]: 0 };
+    //   }
+    //   tempItem = { ...tempItem, ...value };
+
+    //   if (tempItem.discount_1_percentage) {
+    //     value = {
+    //       ["discount_amnt_per_item"]:
+    //         tempItem.discount_1_percentage * (tempItem.rate / 100),
+    //     };
+    //   } else {
+    //     value = {
+    //       ["discount_amnt_per_item"]: 0,
+    //     };
+    //   }
+
+    //   tempItem = { ...tempItem, ...value };
+    //   if (name == "tax_gst") {
+    //     if (tempItem.tax_gst) {
+    //       value = {
+    //         ...value,
+    //         ["total"]:
+    //           value.value -
+    //           value.discount_1_amount +
+    //           tempItem.tax_gst * (value.value / 100),
+    //         ["cost"]:
+    //           parseInt(
+    //             parseFloat(tempItem.rate) -
+    //               parseFloat(tempItem.discount_1_amount)
+    //           ) +
+    //           tempItem.tax_gst * (tempItem.rate / 100),
+    //         ["cgst_or_igst"]: tempItem.tax_gst / 2,
+    //         ["sgst"]: tempItem.tax_gst / 2,
+    //       };
+    //     } else {
+    //       value = { ...value, cgst_or_igst: 0, sgst: 0 };
+    //     }
+    //   }
+    //   tempItem = { ...tempItem, ...value };
+    //   // if (tempItem.tax_gst) {
+    //   //   value = {
+    //   //     ...value,
+    //   //     ["tax_amount"]: tempItem.tax_gst * (tempItem.value / 100),
+    //   //   };
+    //   // }
+    //   tempItem = { ...tempItem, ...value };
+    //   if (tempItem.tax_gst && tempItem.value) {
+    //     // console.log(tempItem.value)
+    //     value = {
+    //       ...value,
+    //       ["gross"]:
+    //         (tempItem.rate - tempItem.discount_amnt_per_item || 0) +
+    //         (tempItem.rate - tempItem.discount_amnt_per_item || 0) *
+    //           (tempItem.tax_gst / 100),
+    //       // ["tax_amount"]: (tempItem.tax_gst) * (tempItem.value / 100),
+    //     };
+    //   } else {
+    //     value = { ...value, ["gross"]: 0 };
+    //   }
+    //   tempItem = { ...tempItem, ...value };
+    //   if (tempItem.gross && tempItem.quantity) {
+    //     let totalValue = tempItem.rate * tempItem.quantity - tempItem.discount_1_amount || 0
+    //     let totalTaxAmnt = +tempItem.tax_gst * (+totalValue / 100);
+    //     let sgst = (totalTaxAmnt / 2)?.toFixed(2);
+    //     value = {
+    //       ...value,
+    //       ["value"]:
+    //         tempItem.rate * tempItem.quantity - tempItem.discount_1_amount || 0,
+    //       ["total"]:
+    //         (tempItem.rate * tempItem.quantity - tempItem.discount_1_amount ||
+    //           0) + (sgst*2),
+    //       ["cgst_or_igst"]: sgst,
+    //       ["sgst"]: sgst,
+    //     };
+    //   }
     let name = e.target.name;
     let value = {};
+    let total, cost;
     if (tempItem.rate && tempItem.quantity) {
-      let total = tempItem.total,
-        cost = tempItem.cost;
-      if (!tempItem.discount_1_amount && !tempItem.tax_gst) {
-        total = tempItem.quantity * tempItem.rate;
-        cost = tempItem.rate;
-      }
+      total = tempItem.total;
+      cost = tempItem.cost;
+      total = tempItem.quantity * tempItem.rate;
+      cost = tempItem.rate;
       value = {
         ["value"]: tempItem.quantity * tempItem.rate,
         ["total"]: total,
         ["cost"]: cost,
       };
       tempItem = { ...tempItem, ...value };
-      if (name != "discount_1_amount" && tempItem.discount_1_percentage) {
+      if (name !== "discount_1_amount" && tempItem.discount_1_percentage) {
         value = {
           ...value,
           ["discount_1_amount"]:
-            tempItem.discount_1_percentage * (value.value / 100),
+            value.value -
+            (value.value -
+              tempItem.discount_1_percentage * (value.value / 100)),
+          ["discount_1_amount_per_item"]:
+            tempItem.rate -
+            (tempItem.rate -
+              tempItem.discount_1_percentage * (tempItem.rate / 100)),
         };
-      } else if (name == "discount_1_percentage") {
-        value = { ...value, ["discount_1_amount"]: 0 };
+      } else if (name !== "discount_1_amount") {
+        value = {
+          ...value,
+          ["discount_1_amount"]: 0,
+          ["discount_1_amount_per_item"]: 0,
+        };
       }
       if (name == "discount_1_amount" && tempItem.discount_1_amount) {
         value = {
@@ -403,75 +517,87 @@ const SalesTable = (props) => {
       } else if (name == "discount_1_amount") {
         value = { ...value, ["discount_1_percentage"]: 0 };
       }
+      
       tempItem = { ...tempItem, ...value };
-
       if (tempItem.discount_1_percentage) {
+            value = {
+              ["discount_amnt_per_item"]:
+                tempItem.discount_1_percentage * (tempItem.rate / 100),
+            };
+          } else {
+            value = {
+              ["discount_amnt_per_item"]: 0,
+            };
+          }
+
+      tempItem = { ...tempItem, ...value };
+      if (tempItem.value && tempItem.discount_1_amount) {
+        tempItem.discount_1_amount = parseFloat(tempItem.discount_1_amount);
         value = {
-          ["discount_amnt_per_item"]:
-            tempItem.discount_1_percentage * (tempItem.rate / 100),
+          ...tempItem,
+          ["value"]:
+            parseFloat(tempItem.quantity * tempItem.rate) -
+            parseFloat(tempItem.discount_1_amount),
+          ["total"]:
+            parseFloat(tempItem.quantity * tempItem.rate) -
+            parseFloat(tempItem.discount_1_amount),
+          ["cost"]:
+            parseFloat(tempItem.rate) - parseFloat(tempItem.discount_1_amount),
+        };
+      } else if (name !== "margin" && name !== "sales_rate") {
+        value = {
+          ...value,
+          ["value"]: tempItem.quantity * tempItem.rate,
+          ["total"]: tempItem.quantity * tempItem.rate,
+          ["cost"]: tempItem.rate,
+        };
+      }
+      tempItem = { ...tempItem, ...value };
+
+      if (tempItem.tax_gst && tempItem.value) {
+            // console.log(tempItem.value)
+            value = {
+              ...value,
+              ["gross"]:
+                (tempItem.rate - tempItem.discount_amnt_per_item || 0) +
+                (tempItem.rate - tempItem.discount_amnt_per_item || 0) *
+                  (tempItem.tax_gst / 100),
+              // ["tax_amount"]: (tempItem.tax_gst) * (tempItem.value / 100),
+            };
+          } else {
+            value = { ...value, ["gross"]: 0 };
+          }
+
+      tempItem = { ...tempItem, ...value };
+
+      if (tempItem.tax_gst) {
+        let totalTaxAmnt = +tempItem.tax_gst * (+tempItem.value / 100);
+        let sgst = (totalTaxAmnt / 2)?.toFixed(2);
+        value = {
+          ...value,
+          ["total"]: +tempItem.value + sgst * 2,
+          ["cost"]:
+            +tempItem.rate -
+            +tempItem.discount_1_amount_per_item +
+            +tempItem.tax_gst *
+              ((+tempItem.rate - +tempItem.discount_1_amount_per_item) / 100),
+          ["cgst_or_igst"]: sgst,
+          ["sgst"]: sgst,
         };
       } else {
-        value = {
-          ["discount_amnt_per_item"]: 0,
-        };
+        value = { ...value, cgst_or_igst: 0, sgst: 0 };
       }
 
       tempItem = { ...tempItem, ...value };
-      if (name == "tax_gst") {
-        if (tempItem.tax_gst) {
-          value = {
-            ...value,
-            ["total"]:
-              value.value -
-              value.discount_1_amount +
-              tempItem.tax_gst * (value.value / 100),
-            ["cost"]:
-              parseInt(
-                parseFloat(tempItem.rate) -
-                  parseFloat(tempItem.discount_1_amount)
-              ) +
-              tempItem.tax_gst * (tempItem.rate / 100),
-            ["cgst_or_igst"]: tempItem.tax_gst / 2,
-            ["sgst"]: tempItem.tax_gst / 2,
-          };
-        } else {
-          value = { ...value, cgst_or_igst: 0, sgst: 0 };
-        }
-      }
-      tempItem = { ...tempItem, ...value };
-      if (tempItem.tax_gst) {
-        value = {
-          ...value,
-          ["tax_amount"]: tempItem.tax_gst * (tempItem.value / 100),
-        };
-      }
-      tempItem = { ...tempItem, ...value };
-      if (tempItem.tax_gst) {
-        value = {
-          ...value,
-          ["gross"]:
-            (tempItem.rate - tempItem.discount_amnt_per_item || 0) +
-            (tempItem.rate - tempItem.discount_amnt_per_item || 0) *
-              (tempItem.tax_gst / 100),
-        };
-      } else {
-        value = { ...value, ["gross"]: 0 };
-      }
-      tempItem = { ...tempItem, ...value };
-      if (tempItem.gross && tempItem.quantity) {
-        value = {
-          ...value,
-          ["value"]:
-            tempItem.rate * tempItem.quantity - tempItem.discount_1_amount || 0,
-          ["total"]:
-            (tempItem.rate * tempItem.quantity - tempItem.discount_1_amount ||
-              0) + tempItem.tax_amount,
-          ["cgst_or_igst"]: tempItem.tax_amount / 2,
-          ["sgst"]: tempItem.tax_amount / 2,
-        };
-      }
     } else {
-      tempItem = { ...tempItem, value: 0, total: 0, gross: 0 };
+      tempItem = {
+        ...tempItem,
+        value: 0,
+        sgst: 0,
+        cgst_or_igst: 0,
+        total: 0,
+        gross: 0,
+      };
     }
     tempItem = { ...tempItem, ...value };
     let tempItemKeys = Object.keys(tempItem);
@@ -873,15 +999,16 @@ const SalesTable = (props) => {
               </td>
               <td>
                 <input
+                  disabled
                   onKeyDown={handleKeyDown}
                   name={"gross"}
-                  onChange={(e) =>
-                    handleChangeTableItem(e, null, tableItem, true)
-                  }
+                  // onChange={(e) =>
+                  //   handleChangeTableItem(e, null, tableItem, true)
+                  // }
                   value={
                     tableItem?.gross == "" || tableItem?.gross
                       ? tableItem?.gross
-                      : ""
+                      : "0"
                   }
                   onFocus={handleFocus}
                   onBlur={handleBlur}
@@ -1206,3 +1333,120 @@ const SalesTable = (props) => {
 };
 
 export default SalesTable;
+
+
+
+
+// --------------------------------------------------------
+
+// let name = e.target.name;
+// let value = {};
+// if (tempItem.rate && tempItem.quantity) {
+//   let total = tempItem.total,
+//     cost = tempItem.cost;
+//   if (!tempItem.discount_1_amount && !tempItem.tax_gst) {
+//     total = tempItem.quantity * tempItem.rate;
+//     cost = tempItem.rate;
+//   }
+//   value = {
+//     ["value"]: tempItem.quantity * tempItem.rate,
+//     ["total"]: total,
+//     ["cost"]: cost,
+//   };
+//   tempItem = { ...tempItem, ...value };
+//   if (name != "discount_1_amount" && tempItem.discount_1_percentage) {
+//     value = {
+//       ...value,
+//       ["discount_1_amount"]:
+//         tempItem.discount_1_percentage * (value.value / 100),
+//     };
+//   } else if (name == "discount_1_percentage") {
+//     value = { ...value, ["discount_1_amount"]: 0 };
+//   }
+//   if (name == "discount_1_amount" && tempItem.discount_1_amount) {
+//     value = {
+//       ...value,
+//       ["discount_1_percentage"]:
+//         (tempItem.discount_1_amount / value.value) * 100,
+//     };
+//   } else if (name == "discount_1_amount") {
+//     value = { ...value, ["discount_1_percentage"]: 0 };
+//   }
+//   tempItem = { ...tempItem, ...value };
+
+//   if (tempItem.discount_1_percentage) {
+//     value = {
+//       ["discount_amnt_per_item"]:
+//         tempItem.discount_1_percentage * (tempItem.rate / 100),
+//     };
+//   } else {
+//     value = {
+//       ["discount_amnt_per_item"]: 0,
+//     };
+//   }
+
+//   tempItem = { ...tempItem, ...value };
+//   if (name == "tax_gst") {
+//     if (tempItem.tax_gst) {
+//       value = {
+//         ...value,
+//         ["total"]:
+//           value.value -
+//           value.discount_1_amount +
+//           tempItem.tax_gst * (value.value / 100),
+//         ["cost"]:
+//           parseInt(
+//             parseFloat(tempItem.rate) -
+//               parseFloat(tempItem.discount_1_amount)
+//           ) +
+//           tempItem.tax_gst * (tempItem.rate / 100),
+//         ["cgst_or_igst"]: tempItem.tax_gst / 2,
+//         ["sgst"]: tempItem.tax_gst / 2,
+//       };
+//     } else {
+//       value = { ...value, cgst_or_igst: 0, sgst: 0 };
+//     }
+//   }
+//   tempItem = { ...tempItem, ...value };
+//   // if (tempItem.tax_gst) {
+//   //   value = {
+//   //     ...value,
+//   //     ["tax_amount"]: tempItem.tax_gst * (tempItem.value / 100),
+//   //   };
+//   // }
+//   tempItem = { ...tempItem, ...value };
+//   if (tempItem.tax_gst && tempItem.value) {
+//     // console.log(tempItem.value)
+//     value = {
+//       ...value,
+//       ["gross"]:
+//         (tempItem.rate - tempItem.discount_amnt_per_item || 0) +
+//         (tempItem.rate - tempItem.discount_amnt_per_item || 0) *
+//           (tempItem.tax_gst / 100),
+//       // ["tax_amount"]: (tempItem.tax_gst) * (tempItem.value / 100),
+//     };
+//   } else {
+//     value = { ...value, ["gross"]: 0 };
+//   }
+//   tempItem = { ...tempItem, ...value };
+//   if (tempItem.gross && tempItem.quantity) {
+//     let totalValue = tempItem.rate * tempItem.quantity - tempItem.discount_1_amount || 0
+//     let totalTaxAmnt = +tempItem.tax_gst * (+totalValue / 100);
+//     let sgst = (totalTaxAmnt / 2)?.toFixed(2);
+//     value = {
+//       ...value,
+//       ["value"]:
+//         tempItem.rate * tempItem.quantity - tempItem.discount_1_amount || 0,
+//       ["total"]:
+//         (tempItem.rate * tempItem.quantity - tempItem.discount_1_amount ||
+//           0) + (sgst*2),
+//       ["cgst_or_igst"]: sgst,
+//       ["sgst"]: sgst,
+//     };
+//   }
+
+
+
+
+
+

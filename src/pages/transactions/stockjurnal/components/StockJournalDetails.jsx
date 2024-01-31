@@ -50,14 +50,16 @@ export const StockJournalDetails = (props) => {
   };
 
   const handleKeyWithSubmit = (e) => {
+    if (e.type == "keydown") if (e.key == "Enter") {
+    handleAddToTableList();
     e.preventDefault();
-    if (e.type == "keydown") if (e.key == "Enter") handleAddToTableList();
     handleKeyDown(e);
+  }
   };
 
-  const handleTrashButton = async () => {
-    handleResetStockTabe();
-  };
+  // const handleTrashButton = async () => {
+  //   handleResetStockTabe();
+  // };
 
   const handleChangeTableItem = (e, data) => {
     if (data && data?.name == "code") {
@@ -269,85 +271,8 @@ export const StockJournalDetails = (props) => {
             <th width={"40"}></th>
           </thead>
           <tbody>
-            <tr ref={formRef}>
-              <td colSpan={2}>
-                <div className="item-search-drop">
-                  <Dropdown
-                    clearable
-                    selection
-                    required
-                    search={search}
-                    onKeyDown={handleKeyDown}
-                    onChange={handleChangeTableItem}
-                    className="purchase-input-text table-drop d-flex align-items-center py-0 form-control"
-                    name="code"
-                    placeholder="select"
-                    value={stockTableItem?.code || ""}
-                    options={itemNameList}
-                  />
-                </div>
-              </td>
-              <td className="align-middle">
-                <input
-                  onChange={handleChangeTableItem}
-                  onKeyDown={handleKeyDown}
-                  required
-                  name="qty"
-                  value={stockTableItem?.qty || ""}
-                  className="col-7 py-2 rounded-2 border-0 text-center "
-                  placeholder="Enter"
-                  type="text"
-                />
-              </td>
-              <td className="align-middle">
-                <select
-                  disabled
-                  style={{
-                    WebkitAppearance: "none",
-                    fontSize: "10px",
-                    padding: "3.5px 1px",
-                  }}
-                  className="purchase_input border-0 w-100 text-center"
-                  value={stockTableItem?.unit || ""}
-                  name="unit"
-                >
-                  {unitList &&
-                    unitList.map((x, i) => (
-                      <option key={i} value={x.value}>
-                        {x.text}
-                      </option>
-                    ))}
-                </select>
-              </td>
-              <td className="align-middle">{stockTableItem?.cost || "0.00"}</td>
-              <td className="align-middle">
-                {stockTableItem?.value || "0.00"}
-              </td>
-              <td className="align-middle">
-                <select
-                  className="add-less-btn"
-                  onChange={handleChangeTableItem}
-                  onKeyDown={handleKeyWithSubmit}
-                  name="qty_type"
-                  value={stockTableItem?.qty_type || "add"}
-                >
-                  <option value="add">Add</option>
-                  <option value="less">Less</option>
-                </select>
-              </td>
-              {/* {tableEdit && !edit ? (
-                <td className="align-middle ps-0 text-start">
-                  <BiSolidTrashAlt
-                    size={20}
-                    onClick={() => handleTrashButton()}
-                  />
-                </td>
-              ) : (
-                tableEdit && <td></td>
-              )}
-              {!tableEdit && <td className="align-middle"></td>} */}
-              <td></td>
-            </tr>
+
+            {/* list part ----------------------------------------------------------start */}
             {stockTableItemList?.length > 0 &&
               stockTableItemList?.map((data, i) => {
 
@@ -399,7 +324,7 @@ export const StockJournalDetails = (props) => {
                     <td className="align-middle">
                       <input
                         onChange={handleEdit}
-                        value={data.qty || ""}
+                        value={Math.abs(data.qty) || ""}
                         className="col-7 py-2 rounded-2 border-0 text-center "
                         name="qty"
                         type="text"
@@ -453,6 +378,92 @@ export const StockJournalDetails = (props) => {
                   </tr>
                 );
               })}
+            {/* list part ----------------------------------------------------------end */}
+
+            {/* entry part ---------------------------------------------------------start */}
+            <tr ref={formRef} className="stock-journal-entry">
+              <td colSpan={2} className="bg-transparent">
+                <div className="item-search-drop ">
+                  <Dropdown
+                    clearable
+                    selection
+                    required
+                    search={search}
+                    onKeyDown={handleKeyDown}
+                    onChange={handleChangeTableItem}
+                    className="purchase-input-text table-drop d-flex align-items-center py-0 form-control"
+                    name="code"
+                    placeholder="select"
+                    value={stockTableItem?.code || ""}
+                    options={itemNameList}
+                  />
+                </div>
+              </td>
+              <td className="align-middle">
+                <input
+                  onChange={handleChangeTableItem}
+                  onKeyDown={handleKeyDown}
+                  required
+                  name="qty"
+                  value={stockTableItem?.qty || ""}
+                  className="col-7 py-2 rounded-2 border-0 text-center bg-transparent"
+                  placeholder="Enter"
+                  type="text"
+                />
+              </td>
+              <td className="align-middle">
+                <select
+                  disabled
+                  style={{
+                    WebkitAppearance: "none",
+                    fontSize: "10px",
+                    padding: "3.5px 1px",
+                  }}
+                  className="purchase_input border-0 w-100 text-center"
+                  value={stockTableItem?.unit || ""}
+                  name="unit"
+                >
+                  {unitList &&
+                    unitList.map((x, i) => (
+                      <option key={i} value={x.value}>
+                        {x.text}
+                      </option>
+                    ))}
+                </select>
+              </td>
+              <td className="align-middle">{stockTableItem?.cost || "0.00"}</td>
+              <td className="align-middle">
+                {stockTableItem?.value || "0.00"}
+              </td>
+              <td className="align-middle">
+                <select
+                  // onFocus={(e)=>console.log(e.target)}
+                  className="add-less-btn"
+                  onChange={handleChangeTableItem}
+                  onKeyDown={handleKeyWithSubmit}
+                  name="qty_type"
+                  value={stockTableItem?.qty_type || "add"}
+                >
+                  <option value="add">Add</option>
+                  <option value="less">Less</option>
+                </select>
+              </td>
+              {/* {tableEdit && !edit ? (
+                <td className="align-middle ps-0 text-start">
+                  <BiSolidTrashAlt
+                    size={20}
+                    onClick={() => handleTrashButton()}
+                  />
+                </td>
+              ) : (
+                tableEdit && <td></td>
+              )}
+              {!tableEdit && <td className="align-middle"></td>} */}
+              <td></td>
+            </tr>
+            {/* entry part ---------------------------------------------------------end */}
+
+           
             <AdjustTableHeight />
             <tr>
               <td className="p-2 text-start">
