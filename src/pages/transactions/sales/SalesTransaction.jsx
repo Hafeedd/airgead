@@ -154,19 +154,15 @@ const SalesTransaction = () => {
   };
 
   useEffect(() => {
-    handleGetCode();
     if (edit) {
       let { sales_item, updated_at, ...others } = edit;
       setSalesAdd((data) => ({ ...data, ...others }));
       if (sales_item) {
-        setTableItemList([...sales_item]);
+        setTableItemList([...sales_item]);    
       }
-      // console.log(edit);
-    }
+    }else handleGetCode();
   }, [edit]);
-
-  // console.log(salesAdd.fk_bill_type)
-
+  
   useEffect(() => {
     getData();
   }, []);
@@ -174,7 +170,7 @@ const SalesTransaction = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (edit) handleSalesAddCalc("edit");
+    if (edit) handleSalesAddCalc("noEdit");
     else handleSalesAddCalc("noEdit");
   }, [tableItemList]);
 
@@ -314,20 +310,20 @@ const SalesTransaction = () => {
       if (roundOff == 0 || !roundOff) roundOff = null;
       else if (roundOff < 0) roundOff = Math.abs(roundOff)?.toFixed(2);
 
-      // console.log(netAmount)
-      let paidCash = +netAmount?.toFixed(0) || 0;
-      if (editStatus == "edit") {
-        paidCash = edit.paid_cash || netAmount?.toFixed(0) || 0;
-      }
+      console.log(salesAdd)
+      let paidCash = (+netAmount?.toFixed(0)- salesAdd.discount) - (+salesAdd.change_due || 0 + +salesAdd.bank_amount ||0)
+      // if (editStatus == "edit") {
+      //   paidCash = edit.paid_cash || netAmount?.toFixed(0) || 0;
+      // }
 
-      let changeDue = edit?.changeDue || 0;
+      // let changeDue = edit?.changeDue || 0;
 
-      if (paidCash) {
-        changeDue =
-          (netAmount?.toFixed(0) - salesAdd.discount || 0) -
-          paidCash -
-          salesAdd.bank_amount;
-      }
+      // if (paidCash) {
+      //   changeDue =
+      //     (netAmount?.toFixed(0) - salesAdd.discount || 0) -
+      //     paidCash -
+      //     salesAdd.bank_amount;
+      // }
 
       let tempSalesAdd = {
         hsnCalc: hsnWiseCalc,
@@ -347,7 +343,7 @@ const SalesTransaction = () => {
         roundoff: roundOff,
         total_discount: total_disc?.toFixed(2),
         paid_cash: paidCash,
-        change_due: changeDue?.toFixed(2),
+        // change_due: changeDue?.toFixed(2),
       };
       setSalesAdd((data) => ({ ...data, ...tempSalesAdd }));
     } else {
@@ -366,7 +362,7 @@ const SalesTransaction = () => {
         total_total: null,
         total_scGst: null,
         total_items: null,
-        change_due: null,
+        // change_due: null,
       }));
     }
   };

@@ -292,17 +292,19 @@ const PurchaseTransaction = () => {
   const [tableHeadList, setTableHeadList] = useState(
     initialPurchaseTableStatePositionLocal || initialPurchaseSalesTableStatePosition
   );
-  const navigate = useNavigate({});
-
+  
+  // this below state is to check if a table item is edited and -
+  // the save button is not checked or not . false if checked
+  const [tableItemEdited, setTableItemEdited] = useState(false) 
   const [purchaseList, setPurchaseList] = useState();
   const [tableItemList, setTableItemList] = useState([]);
   const [tableItemBatchList, setTableItemBatchList] = useState([]);
   const { handleKeyDown, formRef } = useOnKey(ref, setRef);
-
+  
   const [purchaseAdd, setPurchaseAdd] = useState(initialPurchaseAdd);
-
+  
   const [tableItem, setTableItem] = useState(initalTableItem);
-
+  
   const [tableItemBatch, setTableItemBatch] = useState({
     id: null,
     cstm_id: null,
@@ -313,17 +315,13 @@ const PurchaseTransaction = () => {
     size: null,
     color: null,
   });
-
+  
+  const navigate = useNavigate();
   const { postPurchaseItem } = usePurchaseServices();
   const { getCode } = useItemServices();
 
-  // useEffect(()=>{
-  //   if(tableHeadList.length>0)
-  //   localStorage.setItem("initialPurchaseSalesTableStatePositionLocal",tableHeadList)
-  // },[tableHeadList])
-
   useEffect(() => {
-    if (edit) handlePurchAllCalc("edit");
+    if (edit) handlePurchAllCalc("noEdit");
     else handlePurchAllCalc("noEdit");
   }, [tableItemList]);
 
@@ -348,20 +346,17 @@ const PurchaseTransaction = () => {
   }, []);
 
   useEffect(() => {
-    handleGetCode();
     if (edit) {
       let { items, updated_at, ...others } = edit;
-      setPurchaseAdd({ ...purchaseAdd, ...others });
+      setPurchaseAdd(data=>({ ...data, ...others }));
       if (items) {
-        setTimeout(() => {
           setTableItemList([...items]);
-        }, 100);
       }
-    }
+    }else  handleGetCode();
   }, [edit]);
 
   const handlePurchAllCalc = (status) => {
-    if (tableItemList.length > 0) {
+    if (tableItemList?.length > 0) {
       let netAmount = tableItemList?.reduce((a, b) => {
         return b.total ? parseFloat(a) + parseFloat(b.total) : 0;
       }, 0);
@@ -401,24 +396,22 @@ const PurchaseTransaction = () => {
       // if(roundOff){
       //   roundOff = roundOff.toFixed(2)
       // }
-
-      let paidCash = +netAmount?.toFixed(0) || 0;
-      if (status == "edit") {
-        paidCash = edit.paid_cash || netAmount?.toFixed(0) || 0;
-      }
+        // console.log(purchaseAdd.paid_cash)
+      let paidCash =( +netAmount?.toFixed(0) - purchaseAdd.discount) - (purchaseAdd.change_due || 0 + +purchaseAdd.bank_amount||0)
+      // if (status == "edit") {
+      //   paidCash = edit.paid_cash || netAmount?.toFixed(0) || 0;
+      // }
 
       // if (status == "edit" && purchaseAdd.discount>0) {
       //   netAmount = +edit.total_amount - purchaseAdd.discount;
       // }
 
-      let changeDue = edit?.changeDue || 0;
-
-      if (paidCash) {
-        changeDue =
-          (netAmount?.toFixed(0) - purchaseAdd.discount || 0) -
-          paidCash -
-          purchaseAdd.bank_amount;
-      }
+      // if (paidCash) {
+      //   changeDue =
+      //     (netAmount?.toFixed(0) - purchaseAdd.discount || 0) -
+      //     paidCash -
+      //     purchaseAdd.bank_amount;
+      // }
 
       let tempPurchaseAdd = {
         ...purchaseAdd,
@@ -433,7 +426,7 @@ const PurchaseTransaction = () => {
         total_scGst: total_scGst?.toFixed(2),
         total_items: totalItem,
         roundoff: roundOff,
-        change_due: changeDue > 0 ? changeDue?.toFixed(2) : null,
+        // change_due: changeDue > 0 ? changeDue?.toFixed(2) : null,
       };
       setPurchaseAdd((data) => ({ ...data, ...tempPurchaseAdd }));
     } else {
@@ -448,7 +441,7 @@ const PurchaseTransaction = () => {
         total_total: 0,
         total_scGst: 0,
         total_items: 0,
-        change_due: 0,
+        // change_due: 0,
         discount: 0,
         roundoff: 0,
         total_disc: 0,
@@ -466,7 +459,7 @@ const PurchaseTransaction = () => {
     try {
       let code;
       let response = await getCode();
-      if (response.success && !edit) {
+      if (response.success && !edit && !purchaseAdd.documents_no) {
         for (let i of response.data) {
           let type = "PUR";
           if (i.sub_id == type) {
@@ -552,6 +545,7 @@ const PurchaseTransaction = () => {
     setTableItemList([]);
     setTableItemBatchList([]);
     setTableItem(initalTableItem);
+    setTableItemKeys([])
     setEdit(false);
     handleGetCode();
   };
@@ -716,6 +710,16 @@ const PurchaseTransaction = () => {
         });
         return 0;
       }
+      if (tableItemEdited){
+        Swal.fire({
+          title: "Item edited but edit button is not clicked",
+          icon: "warning",
+          text: "",
+          showConfirmButton: true,
+          timer: 1500,
+        });
+        return 0;        
+      }
       // formValidation(formRef.current);
       let submitData = { ...purchaseAdd, items: tebleItemKeys };
       let response;
@@ -819,6 +823,7 @@ const PurchaseTransaction = () => {
           );
         }
       } catch (err) {
+      console.log(err)
         // setTableItemList([...tableItemList])
         const key = Object.keys(err?.response?.data?.data)[0]
           ?.split("_")
@@ -830,9 +835,10 @@ const PurchaseTransaction = () => {
           "error"
         );
       }
-      setPurchaseItemSerielModal(false);
+      // setPurchaseItemSerielModal(false);
       handleTableItemReset();
     } catch (err) {
+    // console.log(err)
       Swal.fire(
         "Error",
         "Failed while adding item to table. Pls try again later",
@@ -939,6 +945,8 @@ const PurchaseTransaction = () => {
         {/* {purchaseHeader} ---------------------------------------------------------*/}
         <PurchaseTable
           {...{
+            tableItemEdited, 
+            setTableItemEdited,
             tableHeadList,
             handleBatchSubmit,
             setPurchaseItemModal,

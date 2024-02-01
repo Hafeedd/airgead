@@ -112,7 +112,7 @@ const SalesCustomerDetails = (props) => {
 
   return (
     <div ref={formRef} className="col-12 mx-0 ps-0 pe-0 row ">
-      <div className="col-7 mx-0 pe-0 row">
+      <div className="col-7 mx-0 pe-0 row pt-2">
         <Form.Group className="col-5 mx-0 d-flex align-items-center ps-0">
           <Form.Label className="col-3 purchase-input-label">Code</Form.Label>
           <Dropdown
@@ -128,6 +128,8 @@ const SalesCustomerDetails = (props) => {
             options={customerList}
             />
         </Form.Group>
+
+        
         <Form.Group className="col-7 mx-0 d-flex align-items-center pe-0">
           <Form.Label className="col-3 purchase-input-label">
             Customer
@@ -141,6 +143,7 @@ const SalesCustomerDetails = (props) => {
             name="customer_name"
             value={salesAdd?.customer_name || ""}
           />
+        {/* <div className="btn btn-sm btn-dark">Add Customer</div> */}
         </Form.Group>
         <div className="col-5 sales-customer-container text-start row mx-0 my-1 p-0">
           <Form.Control
