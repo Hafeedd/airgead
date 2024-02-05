@@ -1,9 +1,204 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useLocation } from "react-router";
 import "./ProductionTransaction.css";
+import ItemProduce from "./components/ItemProduce";
+import ByProductDetails from "./components/ByProductDetails";
+import RawMaterials from "./components/RawMaterials";
+import LabourAndExpense from "./components/LabourAndExpense";
+import useProductionServices from "../../../services/master/productionSerivices";
+import useItemServices from "../../../services/master/itemServices";
+import useAccountServices from "../../../services/master/accountServices";
+import useStaffServices from "../../../services/master/staffServices";
+import { Dropdown } from "semantic-ui-react";
+const Initial_data ={
+  qty: null,
+  fk_item: null,
+  fk_type: null,
+  fk_unit: null,
+  cost: null,
+  value: null,
+  margin: null,
+  mrp_rate: null,
+  retail_rate: null,
+  wholesale_rate: null,
+  super_wholesale_rate: null,
+  quotation_rate: null,
+  godown: null,
+  batch_no: null,
+}
 
+const raw_data ={
+  qty:null,
+  fk_item: null,
+  fk_unit: null,
+  cost: null,
+  value: null,
+  margin: null,
+  mrp_rate: null,
+  item_produced_name: null,
+  item_name: null,
+  godown_rate: null,
+}
+
+const by_prod_data={
+  qty: null,
+  fk_item: null,
+  fk_unit: null,
+  cost: null,
+  value: null,
+  margin:null,
+  mrp_rate:null,
+  p_type:null,
+  s_rate:null,
+  item_name:null,
+  item_produced_name:null,
+}
+
+const labour_data={
+  fk_debit_account: null, // MFEXPNSE ACC
+  fk_credit_account: null, // TRANSPORTATION
+  amount: null,
+  item_produced_name: null,
+}
 const ProductionTransaction = () => {
+
   const location = useLocation();
+
+  const [materialList,setMaterialList] = useState()
+  const [items,setItems] = useState()
+  const [units,setUnits] = useState()
+  const [types,setTypes] = useState()
+  const [accDetails,setAccDetails] = useState()
+
+  const [date,setDate] = useState(new Date().toISOString().slice(0,10))
+  const [narration,setNarration]=useState("Production")
+  const [staffDetails,setStaffDetails]=useState()
+  const [code,setCode] = useState()
+
+  const [fullProdData,setFullProdData]=useState([])
+  const [produceData, setProduceData] = useState(Initial_data);
+
+  const [fullRawData,setFullRawData] = useState([])
+  const [rawItems,setRawItems] = useState(raw_data)
+  
+  const [fullByprodData,setFullByprodData] = useState([])
+  const [byProductItems,setByProductItems] = useState(by_prod_data)
+
+  const [labourDetails,setLabourDetails] = useState(labour_data)
+
+  const {getMaterialComposition} = useProductionServices()
+  const {getStaff}=useStaffServices()
+  const {getItemList,getProperty,getCode} =useItemServices();
+  const { getAccountList } = useAccountServices();
+
+  const getDocNumber = async()=>{
+    const response = await getCode()
+    let data=response.data.filter(code=> code.types === 'PRODUCTION_CODE')
+    setCode(data[0].next_code)
+  }
+  const getAllMaterialCompositions = async()=>{
+    const response= await getMaterialComposition()
+    setMaterialList(response.data)
+  }
+  
+
+  const getAllStaffDetails = async()=>{
+    const response= await getStaff()
+    const data=response.data
+    let tempList = [];
+    data.map((item) => {
+      let a = {
+        key:item.types,
+        text: item.name,
+        value:item.id,
+      };
+      tempList.push(a);
+    });
+    setStaffDetails(tempList)
+  }
+
+  const getItems = async()=>{
+    const response= await getItemList()
+    let data=response.data.filter(property => property.types === 'PRODUCT')
+    let tempList = [];
+    data.map((item) => {
+      let a = {
+        key:item.types,
+        text: item.name,
+        value:item.id,
+      };
+      tempList.push(a);
+    });
+    setItems(tempList)
+  }
+
+  const getTypes = async()=>{
+    const response= await getProperty()
+    let data=response.data.filter(property => property.property_type === 'composition_type')
+    let tempList = [];
+    data.map((item) => {
+      let a = {
+        ...item,
+        key:item.property_type,
+        text: item.property_value,
+        value:item.id,
+      };
+      tempList.push(a);
+    });
+    setTypes(tempList);
+  }
+
+  const getUnits = async()=>{
+    const response= await getProperty()
+    let data=response.data.filter(property => property.property_type === 'unit')
+    let tempList = [];
+    data.map((item) => {
+      let a = {
+        ...item,
+        key:item.property_type,
+        text: item.property_value,
+        value:item.id,
+      };
+      tempList.push(a);
+    });
+    setUnits(tempList);
+  }
+
+  const getAllAccount = async () => {
+		const response = await getAccountList()
+		let tempList = []
+		if (response?.success) {
+			response.data.map(item => {
+				let a
+				if (item.name && item.code) {
+          // && item.bank_account === true
+					a = { key: item.code, value: item.id, text: item.name, description: item.code }
+					tempList.push(a)
+				}
+			})
+			setAccDetails(tempList)
+		}
+		return response.data
+	}
+  console.log('doc',date,narration,staffDetails,code)
+  console.log('1.raw',rawItems)
+  console.log('2.bypro',byProductItems)
+  console.log('3.labour',labourDetails)
+  console.log('4.product',produceData)
+
+  console.log('full',fullProdData)
+  console.log('full_raw',fullRawData)
+  console.log('full_bypro',fullByprodData)
+
+  useEffect(()=>{
+    getDocNumber()
+    getItems()
+    getUnits()
+    getTypes()
+    getAllAccount()
+    getAllMaterialCompositions()
+    getAllStaffDetails()
+  },[])
   return (
     <div className="item_add">
       <div className="itemList_header row mx-0">
@@ -61,248 +256,53 @@ const ProductionTransaction = () => {
               <div className="col-12 d-flex mb-2">
                 <div className="col-6 d-flex mx-0">
                   <div className="col-4 mx-0">Doc.No</div>
-                  <input type="text" className="rounded border col-8 " />
+                  <input type="text" className="rounded border col-8 " value={code} onChange={(e)=>setCode(e.target.value)}/>
                 </div>
                 <div className="col-6 d-flex mx-0">
                   <div className="col-4 mx-0 ps-4">Date</div>
-                  <input type="text" className="rounded border col-8 mx-2 " />
+                  <input type="date" className="rounded border col-8 mx-2 " value={date} onChange={(e)=>setDate(e.target.value)}/>
                 </div>
               </div>
               <div className="col-12 d-flex mb-2">
                 <div className="col-3">Checked by </div>
-                <input type="text" className="col-9 rounded border ms-2" />
+                <Dropdown
+                clearable
+                selection
+                required
+                // search={search}
+                // onKeyDown={handleKeyDown1}
+                // onChange={handleDropdownChangeType}
+                className="purchase-input-text table-drop d-flex align-items-center py-0 form-control w-100"
+                name="fk_type"
+                placeholder="Select"
+                // value={produceData.fk_type || ""}
+                options={staffDetails}
+              />
               </div>
               <div className="col-12 d-flex mb-2">
                 <div className="col-3">Narration</div>
-                <input type="text" className="col-9 rounded border ms-2" />{" "}
+                <input type="text" className="col-9 rounded border ms-2 ps-3" value={narration} onChange={(e)=>setNarration(e.target.value)}/>
               </div>
             </div>
           </div>
-
-          <div className="col-12 mt-1">
-            <table className="w-100 ProdTable">
-              <thead>
-                <tr className="bg-dark text-light">
-                  <th>Item Produced</th>
-                  <th>P.Type</th>
-                  <th>Qty</th>
-                  <th>Unit</th>
-                  <th>Cost</th>
-                  <th>Value</th>
-                  <th>Margin</th>
-                  <th>MRP</th>
-                  <th>S.Rate</th>
-                  <th>Ws.Rate</th>
-                  <th>sws.Rate</th>
-                  <th>Qtn Rate</th>
-                  <th>Godown</th>
-                  <th>Batch No</th>
-                  <th>+</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td>item Number1</td>
-                  <td>01.0 </td>
-                  <td>0.0</td>
-                  <td>102.</td>
-                  <td>10%</td>
-                  <td>10%</td>
-                  <td>00.0 </td>
-                  <td>12.0</td>
-                  <td>5.0</td>
-                  <td>2.0</td>
-                  <td>01.0</td>
-                  <td>545</td>
-                  <td>540</td>
-                  <td>540</td>
-                  <td></td>
-                </tr>
-
-                <tr>
-                  <td>item Number1</td>
-                  <td>01.0 </td>
-                  <td>0.0</td>
-                  <td>102.</td>
-                  <td>10%</td>
-                  <td>10%</td>
-                  <td>00.0 </td>
-                  <td>12.0</td>
-                  <td>5.0</td>
-                  <td>2.0</td>
-                  <td>01.0</td>
-                  <td>545</td>
-                  <td>540</td>
-                  <td>540</td>
-                  <td></td>
-                </tr>
-                <tr>
-                  <td>item Number1</td>
-                  <td>01.0 </td>
-                  <td>0.0</td>
-                  <td>102.</td>
-                  <td>10%</td>
-                  <td>10%</td>
-                  <td>00.0 </td>
-                  <td>12.0</td>
-                  <td>5.0</td>
-                  <td>2.0</td>
-                  <td>01.0</td>
-                  <td>545</td>
-                  <td>540</td>
-                  <td>540</td>
-                  <td></td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-
+          <ItemProduce {...{
+          materialList,
+          items,types,units,
+          produceData, setProduceData,
+          setRawItems,
+          setByProductItems,
+          setLabourDetails,
+          fullProdData,setFullProdData,
+          fullRawData,setFullRawData,
+          fullByprodData,setFullByprodData,
+          rawItems,byProductItems,
+          }}/>
           <div className="col-12 mt-1 d-flex">
-            <div className="col-6">
-              <div className="div-head rounded-top ps-3 pt-1 my-0 py-0">Raw Materials Used</div>
-              <table className="w-100 ProdTable1">
-                <thead>
-                  <tr className="bg-dark text-light">
-                    <th>Item Produced</th>
-                    <th>Item Used</th>
-                    <th>Qty</th>
-                    <th>Unit</th>
-                    <th>Cost</th>
-                    <th>S.Rate</th>
-                    <th>Godown</th>
-                    <th>+</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td>item Number1</td>
-                    <td>01.0 </td>
-                    <td>0.0</td>
-                    <td>102.</td>
-                    <td>10%</td>
-                    <td>10%</td>
-                    <td>00.0 </td>
-                    <td></td>
-                  </tr>
-
-                  <tr>
-                    <td>item Number2</td>
-                    <td>01.0 </td>
-                    <td>0.0</td>
-                    <td>102.</td>
-                    <td>10%</td>
-                    <td>10%</td>
-                    <td>00.0 </td>
-                    <td></td>
-                  </tr>
-                  <tr>
-                    <td>item Number3</td>
-                    <td>01.0 </td>
-                    <td>0.0</td>
-                    <td>102.</td>
-                    <td>10%</td>
-                    <td>10%</td>
-                    <td>00.0 </td>
-                    <td></td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-
-            <div className="col-6 ms-1 pe-1">
-            <div className="div-head rounded-top ps-3 pt-1 my-0 py-0">By Products Details</div>
-              <table className="w-100 ProdTable1">
-                <thead>
-                  <tr className="bg-dark text-light">
-                    <th>Item Produced</th>
-                    <th>P.Type</th>
-                    <th>Qty</th>
-                    <th>Unit</th>
-                    <th>Cost</th>
-                    <th>Value</th>
-                    <th>Margin</th>
-                    <th>MRP</th>
-                    <th>S.Rate</th>
-                    <th>+</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td>item Number1</td>
-                    <td>01.0 </td>
-                    <td>0.0</td>
-                    <td>102.</td>
-                    <td>10%</td>
-                    <td>10%</td>
-                    <td>00.0 </td>
-                    <td>12.0</td>
-                    <td>5.0</td>
-                    <td></td>
-                  </tr>
-
-                  <tr>
-                    <td>item Number2</td>
-                    <td>01.0 </td>
-                    <td>0.0</td>
-                    <td>102.</td>
-                    <td>10%</td>
-                    <td>10%</td>
-                    <td>00.0 </td>
-                    <td>12.0</td>
-                    <td>5.0</td>
-                    <td></td>
-                  </tr>
-                  <tr>
-                    <td>item Number3</td>
-                    <td>01.0 </td>
-                    <td>0.0</td>
-                    <td>102.</td>
-                    <td>10%</td>
-                    <td>10%</td>
-                    <td>00.0 </td>
-                    <td>12.0</td>
-                    <td>5.0</td>
-                    <td></td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
+           <RawMaterials {...{rawItems,setRawItems,units,fullRawData,setFullRawData}}/>
+           <ByProductDetails {...{byProductItems,setByProductItems,units,fullByprodData,setFullByprodData}}/>
           </div>
-
-          <div className="col-12 mt-1">
-          <div className="div-head rounded-top ps-3 pt-1 my-0 py-0">Labour and Expenses</div>
-          <table className="w-100 ProdTable1">
-              <thead>
-                <tr className="bg-dark text-light">
-                  <th>Item Produced</th>
-                  <th>Debit Account</th>
-                  <th>Amount</th>
-                  <th>Credit Account</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td>item Number1</td>
-                  <td>01.0 </td>
-                  <td>0.0</td>
-                  <td>102.</td>
-                </tr>
-
-                <tr>
-                  <td>item Number1</td>
-                  <td>01.0 </td>
-                  <td>0.0</td>
-                  <td>102.</td>
-                </tr>
-                <tr>
-                  <td>item Number1</td>
-                  <td>01.0 </td>
-                  <td>0.0</td>
-                  <td>102.</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
+          <LabourAndExpense {...{labourDetails,setLabourDetails,accDetails}}/>
+         
           <div className="col-12 d-flex justify-content-end mt-1">
                 <button className="col-1 mx-1 rounded border border-dark bg-dark text-light py-1">Clear</button>
                 <button className="col-1 rounded border border-dark bg-dark text-light py-1">Save</button>
