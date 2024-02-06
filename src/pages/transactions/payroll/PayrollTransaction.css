@@ -1,5 +1,5 @@
 .PayrollTable thead tr th{
-    border: 2px solid black;
+    border:0;
     background-color: black;
     color: white;
     position: sticky;
@@ -10,8 +10,12 @@
     border: 2px solid grey;
 }
 
+.PayrollTable tbody tr td {
+  border:  0;
+}
+
 .PayrollTable tfoot tr td{
-    border: 2px solid black;
+    border: 0;
     background-color: black;
     color: white;
     position: sticky;
