@@ -147,6 +147,8 @@ const SalesTransaction = () => {
     setTableItemList([]);
     setEdit(false);
     setShowPrint(false);
+    setTableItemKeys([])
+    handleGetCode()
   };
 
   const handleTableItemReset = () => {
@@ -156,9 +158,12 @@ const SalesTransaction = () => {
   useEffect(() => {
     if (edit) {
       let { sales_item, updated_at, ...others } = edit;
-      setSalesAdd((data) => ({ ...data, ...others }));
+      let tempData = {...others, change_due:others.change_due||"0.00" }
+      // console.log(others)
+      setSalesAdd((data) => ({ ...data, ...tempData}));
       if (sales_item) {
-        setTableItemList([...sales_item]);    
+        setTableItemList([...sales_item]);
+        handleSalesAddCalc(sales_item,true,tempData)   
       }
     }else handleGetCode();
   }, [edit]);
@@ -169,62 +174,62 @@ const SalesTransaction = () => {
 
   const navigate = useNavigate();
 
-  useEffect(() => {
-    if (edit) handleSalesAddCalc("noEdit");
-    else handleSalesAddCalc("noEdit");
-  }, [tableItemList]);
+  // useEffect(() => {
+  //   if(tableItemList?.length>0)
+  //   handleSalesAddCalc(tableItemList,true);
+  // }, [tableItemList]);
 
-  const handleSalesAddCalc = (editStatus) => {
-    // if editStatus == "edit" then this useEffect is loading because of edit state has changed
-    if (tableItemList?.length > 0) {
-      let netAmount = tableItemList?.reduce((a, b) => {
+  const handleSalesAddCalc = (dataList,fromEdit,purchaseData) => {
+    // dataList is the state of tableItemList
+    if (dataList?.length > 0) {
+      let netAmount = dataList?.reduce((a, b) => {
         return b.total || b.total >= 0
           ? parseFloat(a) + parseFloat(b.total)
           : 0;
       }, 0);
-      let netMargin = tableItemList?.reduce((a, b) => {
+      let netMargin = dataList?.reduce((a, b) => {
         return b.margin || b.margin >= 0
           ? parseFloat(a) + parseFloat(b.margin)
           : 0;
       }, 0);
-      let total_cgst_amnt = tableItemList?.reduce((a, b) => {
+      let total_cgst_amnt = dataList?.reduce((a, b) => {
         return (b.total || b.total >= 0) && (b.value || b.total >= 0)
           ? parseFloat(a) + parseFloat((b.total - b.value) / 2)
           : 0;
       }, 0);
-      let total_rate = tableItemList?.reduce((a, b) => {
+      let total_rate = dataList?.reduce((a, b) => {
         return b.rate || b.rate >= 0 ? parseFloat(a) + parseFloat(b.rate) : 0;
       }, 0);
-      let totalItem = tableItemList?.reduce((a, b) => {
+      let totalItem = dataList?.reduce((a, b) => {
         return a + 1;
       }, 0);
-      let totalCTC = tableItemList?.reduce((a, b) => {
+      let totalCTC = dataList?.reduce((a, b) => {
         return b.cost || b.cost >= 0 ? parseFloat(a) + parseFloat(b.cost) : 0;
       }, 0);
-      let totalQty = tableItemList?.reduce((a, b) => {
+      let totalQty = dataList?.reduce((a, b) => {
         return b.quantity || b.quantity >= 0
           ? parseFloat(a) + parseFloat(b.quantity)
           : 0;
       }, 0);
-      let total_disc = tableItemList?.reduce((a, b) => {
+      let total_disc = dataList?.reduce((a, b) => {
         return b.discount_1_amount || b.discount_1_amount >= 0
           ? parseFloat(a) + parseFloat(b?.discount_1_amount || 0)
           : 0;
       }, 0);
-      let total_value = tableItemList?.reduce((a, b) => {
+      let total_value = dataList?.reduce((a, b) => {
         return b.value || b.value >= 0
           ? parseFloat(a) + parseFloat(b.value)
           : 0;
       }, 0);
-      let total_sgst = tableItemList?.reduce((a, b) => {
+      let total_sgst = dataList?.reduce((a, b) => {
         return b.sgst || b.sgst >= 0 ? parseFloat(a) + parseFloat(b.sgst) : 0;
       }, 0);
-      // let total_scGst = tableItemList?.reduce((a, b) => {
+      // let total_scGst = dataList?.reduce((a, b) => {
       //   return b.sgst || b.sgst >= 0
       //     ? parseFloat(a) + (parseFloat(b.sgst) * parseFloat(b.value)) / 100
       //     : 0;
       // }, 0);
-      let total_total = tableItemList?.reduce((a, b) => {
+      let total_total = dataList?.reduce((a, b) => {
         return b.total || b.total >= 0
           ? parseFloat(a) + parseFloat(b.total)
           : 0;
@@ -232,7 +237,7 @@ const SalesTransaction = () => {
 
       let hsnWiseCalc = [];
       let hsnFilter = ["other"];
-      tableItemList.forEach((data) => {
+      dataList.forEach((data) => {
         if (data.hsn && hsnFilter.indexOf(data.hsn) < 0) {
           hsnFilter.push(data.hsn);
         }
@@ -240,17 +245,17 @@ const SalesTransaction = () => {
 
       hsnFilter.map((item) => {
         if (item !== "other") {
-          var totalSgst = tableItemList?.reduce((a, b) => {
+          var totalSgst = dataList?.reduce((a, b) => {
             return b.hsn == item && (b.sgst || b.sgst >= 0)
               ? parseFloat(a) + parseFloat(b.sgst)
               : a;
           }, 0);
-          var value = tableItemList?.reduce((a, b) => {
+          var value = dataList?.reduce((a, b) => {
             return b.hsn == item && (b.value || b.value >= 0)
               ? parseFloat(a) + parseFloat(b.value)
               : a;
           }, 0);
-          var total = tableItemList?.reduce((a, b) => {
+          var total = dataList?.reduce((a, b) => {
             return b.hsn == item && (b.total || b.total >= 0)
               ? parseFloat(a) + parseFloat(b.total)
               : a;
@@ -268,17 +273,17 @@ const SalesTransaction = () => {
             totalSgst: totalSgst?.toFixed(2),
           });
         } else {
-          var totalSgst = tableItemList?.reduce((a, b) => {
+          var totalSgst = dataList?.reduce((a, b) => {
             return !b.hsn && (b.sgst || b.sgst >= 0)
               ? parseFloat(a) + parseFloat(b.sgst)
               : a;
           }, 0);
-          var value = tableItemList?.reduce((a, b) => {
+          var value = dataList?.reduce((a, b) => {
             return !b.hsn && (b.value || b.value >= 0)
               ? parseFloat(a) + parseFloat(b.value)
               : a;
           }, 0);
-          var total = tableItemList?.reduce((a, b) => {
+          var total = dataList?.reduce((a, b) => {
             return !b.hsn && (b.total || b.total >= 0)
               ? parseFloat(a) + parseFloat(b.total)
               : a;
@@ -310,8 +315,12 @@ const SalesTransaction = () => {
       if (roundOff == 0 || !roundOff) roundOff = null;
       else if (roundOff < 0) roundOff = Math.abs(roundOff)?.toFixed(2);
 
-      console.log(salesAdd)
-      let paidCash = (+netAmount?.toFixed(0)- salesAdd.discount) - (+salesAdd.change_due || 0 + +salesAdd.bank_amount ||0)
+      let tempSalesAdd = purchaseData||{...salesAdd}
+      if(!fromEdit){
+        tempSalesAdd = {...tempSalesAdd, paid_cash: +netAmount?.toFixed(0), change_due:0, bank_amount:0}
+    }
+      // let paidCash = (+netAmount?.toFixed(0)- salesAdd.discount) - (+salesAdd.change_due || 0 + +salesAdd.bank_amount ||0)
+
       // if (editStatus == "edit") {
       //   paidCash = edit.paid_cash || netAmount?.toFixed(0) || 0;
       // }
@@ -325,7 +334,8 @@ const SalesTransaction = () => {
       //     salesAdd.bank_amount;
       // }
 
-      let tempSalesAdd = {
+      tempSalesAdd = {
+        ...tempSalesAdd,
         hsnCalc: hsnWiseCalc,
         total_cgst: total_cgst_amnt?.toFixed(2),
         total_value: total_value?.toFixed(2),
@@ -342,26 +352,25 @@ const SalesTransaction = () => {
         total_items: totalItem,
         roundoff: roundOff,
         total_discount: total_disc?.toFixed(2),
-        paid_cash: paidCash,
-        // change_due: changeDue?.toFixed(2),
       };
-      setSalesAdd((data) => ({ ...data, ...tempSalesAdd }));
+      setSalesAdd({...tempSalesAdd });
     } else {
       setSalesAdd((data) => ({
         ...data,
-        total_amount: null,
-        total_cgst: null,
-        total_value: null,
-        total_margin: null,
-        total_amount: null,
-        paid_cash: null,
-        total_CTC: null,
-        total_qty: null,
-        total_disc: null,
-        total_value: null,
-        total_total: null,
-        total_scGst: null,
-        total_items: null,
+        total_amount: 0,
+        total_cgst: 0,
+        total_value: 0,
+        total_margin: 0,
+        total_amount: 0,
+        paid_cash: 0,
+        total_CTC: 0,
+        total_qty: 0,
+        total_disc: 0,
+        total_value: 0,
+        total_total: 0,
+        total_scGst: 0,
+        total_items: 0,
+        hsnCalc:[]
         // change_due: null,
       }));
     }
@@ -373,8 +382,8 @@ const SalesTransaction = () => {
 
   useEffect(() => {
     if (
-      (salesAdd.bank_amount && salesAdd.fk_bank) ||
-      (!salesAdd.bank_amount && !salesAdd.fk_bank)
+      (!salesAdd.bank_amount && !salesAdd.fk_bank) ||
+      (salesAdd.fk_bank)
     )
       setBankSelect(true);
     else setBankSelect(false);
@@ -434,13 +443,13 @@ const SalesTransaction = () => {
         [e.target.name]: value,
         total_amount: discPrice?.toFixed(0),
         paid_cash: discPrice?.toFixed(0),
-        change_due: 0,
+        change_due: '0.00',
         bank_amount: 0,
       }));
     } else if (e.target.name == "paid_cash") {
       if (
-        e.target.value >
-        e.target.value + salesAdd.bank_amount + salesAdd.change_due
+        +e.target.value >
+        +salesAdd.paid_cash + +salesAdd.bank_amount + +salesAdd.change_due
       ) {
         Swal.fire({
           title: "Warning",
@@ -453,24 +462,24 @@ const SalesTransaction = () => {
         setSalesAdd((data) => ({
           ...data,
           change_due:
-            Number(salesAdd.change_due) +
+            (Number(salesAdd.change_due) +
             Number(salesAdd.total_amount) +
             Number(salesAdd.paid_cash) -
             value -
-            salesAdd.total_amount,
+            salesAdd.total_amount)||"0.00",
           paid_cash: value,
         }));
       }
     } else if (e.target.name == "bank_amount") {
       let value = e.target.value == "" ? null : +e.target.value;
-      let totalAmount =
-        (+salesAdd.change_due || 0) +
-        (+salesAdd.paid_cash || 0) +
-        (+salesAdd.bank_amount || 0);
+      let totalAmount = salesAdd.total_amount
+        // (+salesAdd.change_due || 0) +
+        // (+salesAdd.paid_cash || 0) +
+        // (+salesAdd.bank_amount || 0);
       setSalesAdd((data) => ({
         ...data,
         paid_cash: +totalAmount - value,
-        change_due: salesAdd.total_amount - (value + +totalAmount - value),
+        change_due: /* (salesAdd.total_amount - (value + +totalAmount - value)) || */ '0.00',
         bank_amount: value,
       }));
     } else if (e.target.value === "")
@@ -524,7 +533,8 @@ const SalesTransaction = () => {
       // if (!isValidForm) return false;
       let submitData = { ...salesAdd, items: tableItemKeys };
       let response;
-
+      // console.log(submitData.change_due)
+      // return 0
       if (!edit) {
         response = await postSales(submitData);
       } else {
@@ -724,6 +734,7 @@ const SalesTransaction = () => {
         </div>
         <SalesTable
           {...{
+            handleSalesAddCalc,
             tableHeadList,
             salesBatchShow,
             setSalesBatchShow,

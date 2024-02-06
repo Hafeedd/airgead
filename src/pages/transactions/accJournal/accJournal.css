@@ -57,9 +57,20 @@
     background: #DEDEDE;
 }
 
+.acc-jnl-input-tr.entry-part td{
+    vertical-align: middle !important;
+    background: #a6cdec;
+}
+
+.acc-jnl-input-tr td .item-search-drop .search{
+    border: 1px solid black;
+    background: transparent !important;
+}
+
 .acc-journal.table tbody .acc-jnl-input-tr td input{
     text-transform: uppercase;
     text-align: center;
+    background: transparent !important;
     border-radius: 0.4rem;
     width: 100%;
     padding: 0.2rem;
@@ -67,7 +78,6 @@
 }
 .acc-journal.table tbody td input:focus{
     outline:  1px solid black !important;
-    /* border-right:  1px solid black !important; */
     border: 0;
     box-shadow: 0;
 }
@@ -78,6 +88,8 @@
     background: #EEE;
     padding: 0.5rem 0;
 }
+
+.acc-jnl-input-tr td 
 
 .acc-journal-search input{
     width: 100%;

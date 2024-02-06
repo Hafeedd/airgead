@@ -10,6 +10,7 @@ import useSalesServices from "../../../../services/transactions/salesServices";
 const SalesTable = (props) => {
   const {
     tableItem,
+    handleSalesAddCalc,
     setSalesItemModal,
     setSalesBatchShow,
     setTableEdit,
@@ -123,7 +124,8 @@ const SalesTable = (props) => {
   };
 
   const handleKeyTableItemEdit = async (e, data, i) => {
-    if (e.key == "Enter" && !e.ctrlKey) {
+    if (e.key == "Enter") {
+      if (e.key == "Enter" && e.ctrlKey) return 0;
       e.preventDefault();
       handleTableItemEdit(e, data, i);
     } else handleKeyDown2(e);
@@ -159,29 +161,30 @@ const SalesTable = (props) => {
       let { edited, ...others } = data;
       tempList.splice(i, 1, others);
       setTableItemList([...tempList]);
+      handleSalesAddCalc(tempList, false);
       // handleKeyDown2(e)
     } catch (err) {}
   };
 
-  const confirmDelete = async (data) => {
-    Swal.fire({
-      title: "Delete Item",
-      text: "Do you want to delete Item ?",
-      showDenyButton: true,
-      showCancelButton: false,
-      denyButtonText: "Cancel",
-      showLoaderOnConfirm: true,
-      preConfirm: async () => {
-        await handleTableItemDelete(data);
-      },
-      preDeny: () =>
-        Swal.fire({
-          title: "Canceled",
-          showConfirmButton: false,
-          timer: 1500,
-        }),
-    });
-  };
+  // const confirmDelete = async (data) => {
+  //   Swal.fire({
+  //     title: "Delete Item",
+  //     text: "Do you want to delete Item ?",
+  //     showDenyButton: true,
+  //     showCancelButton: false,
+  //     denyButtonText: "Cancel",
+  //     showLoaderOnConfirm: true,
+  //     preConfirm: async () => {
+  //       await handleTableItemDelete(data);
+  //     },
+  //     preDeny: () =>
+  //       Swal.fire({
+  //         title: "Canceled",
+  //         showConfirmButton: false,
+  //         timer: 1500,
+  //       }),
+  //   });
+  // };
 
   const handleTableItemDelete = async (data, i) => {
     if (tableItemList?.length < 2 && edit) {
@@ -239,7 +242,10 @@ const SalesTable = (props) => {
   const handleAddSalesItem = async (e) => {
     e.preventDefault();
     if (e.type === "keydown") {
-      if (e.key !== "Enter") {
+      if (e.key == "Enter" && e.ctrlKey) {
+        handleKeyDown(e);
+        return 0;
+      } else if (e.key !== "Enter") {
         return 0;
       }
     }
@@ -265,31 +271,30 @@ const SalesTable = (props) => {
           ...tableItem,
           fk_units: tableItem.unit,
         });
-
+      let itemTempList = [...tableItemList];
       if (response?.success && !tableEdit) {
         let tempItemKeys = [...tableItemKeys];
         tempItemKeys.push({ id: response?.data?.id });
         setTableItemKeys(tempItemKeys);
         let itemTemp = { ...tableItem };
-        let itemTempList = [...tableItemList];
         itemTemp = { ...itemTemp, ["cstm_id"]: cstm_id, id: response.data.id };
-        itemTempList.unshift(itemTemp);
+        itemTempList.push(itemTemp);
         setTableItemList([...itemTempList]);
         setCstm_id(cstm_id + 1);
         handleTableItemReset();
       } else if (response?.success && tableEdit) {
-        let itemTempList = tableItemList;
         let ind;
         if (itemTempList?.length > 0)
           ind = itemTempList.findIndex((item) => item.id == tableEdit);
         itemTempList.splice(ind, 1);
-        itemTempList.unshift(tableItem);
+        itemTempList.push(tableItem);
         setTableItemList([...itemTempList]);
         setTableEdit(false);
         handleTableItemReset();
       } else {
         Swal.fire(response.message, "", "error");
       }
+      handleSalesAddCalc(itemTempList);
     } catch (err) {
       console.log(err);
       Swal.fire("Fialed to Add Item, pls try again", "", "error");
@@ -352,15 +357,14 @@ const SalesTable = (props) => {
     } else if (data?.value == "") {
       handleTableItemReset();
       return 0;
-    }
-    if (e.target.value === "") {
+    } else if (e.target.value === "") {
       tempItem = { ...tempItem, [e.target.name]: "" };
     } else if (e.target.type === "number") {
       tempItem = { ...tempItem, [e.target.name]: parseFloat(e.target.value) };
     } else {
       tempItem = { ...tempItem, [e.target.name]: e.target.value };
     }
-    const calculatedData = handleAmountCalculation(tempItem, e, state);
+    const calculatedData = handleAmountCalculation(tempItem, e, data);
     if (totableItem === true) setTableItem(calculatedData);
     else {
       let tempList = [...tableItemList];
@@ -369,126 +373,67 @@ const SalesTable = (props) => {
     }
   };
 
-  const handleAmountCalculation = (tempItem, e, state) => {
-    // let name = e.target.name;
-    // let value = {};
-    // if (tempItem.rate && tempItem.quantity) {
-    //   let total = tempItem.total,
-    //     cost = tempItem.cost;
-    //   if (!tempItem.discount_1_amount && !tempItem.tax_gst) {
-    //     total = tempItem.quantity * tempItem.rate;
-    //     cost = tempItem.rate;
-    //   }
-    //   value = {
-    //     ["value"]: tempItem.quantity * tempItem.rate,
-    //     ["total"]: total,
-    //     ["cost"]: cost,
-    //   };
-    //   tempItem = { ...tempItem, ...value };
-    //   if (name != "discount_1_amount" && tempItem.discount_1_percentage) {
-    //     value = {
-    //       ...value,
-    //       ["discount_1_amount"]:
-    //         tempItem.discount_1_percentage * (value.value / 100),
-    //     };
-    //   } else if (name == "discount_1_percentage") {
-    //     value = { ...value, ["discount_1_amount"]: 0 };
-    //   }
-    //   if (name == "discount_1_amount" && tempItem.discount_1_amount) {
-    //     value = {
-    //       ...value,
-    //       ["discount_1_percentage"]:
-    //         (tempItem.discount_1_amount / value.value) * 100,
-    //     };
-    //   } else if (name == "discount_1_amount") {
-    //     value = { ...value, ["discount_1_percentage"]: 0 };
-    //   }
-    //   tempItem = { ...tempItem, ...value };
-
-    //   if (tempItem.discount_1_percentage) {
-    //     value = {
-    //       ["discount_amnt_per_item"]:
-    //         tempItem.discount_1_percentage * (tempItem.rate / 100),
-    //     };
-    //   } else {
-    //     value = {
-    //       ["discount_amnt_per_item"]: 0,
-    //     };
-    //   }
-
-    //   tempItem = { ...tempItem, ...value };
-    //   if (name == "tax_gst") {
-    //     if (tempItem.tax_gst) {
-    //       value = {
-    //         ...value,
-    //         ["total"]:
-    //           value.value -
-    //           value.discount_1_amount +
-    //           tempItem.tax_gst * (value.value / 100),
-    //         ["cost"]:
-    //           parseInt(
-    //             parseFloat(tempItem.rate) -
-    //               parseFloat(tempItem.discount_1_amount)
-    //           ) +
-    //           tempItem.tax_gst * (tempItem.rate / 100),
-    //         ["cgst_or_igst"]: tempItem.tax_gst / 2,
-    //         ["sgst"]: tempItem.tax_gst / 2,
-    //       };
-    //     } else {
-    //       value = { ...value, cgst_or_igst: 0, sgst: 0 };
-    //     }
-    //   }
-    //   tempItem = { ...tempItem, ...value };
-    //   // if (tempItem.tax_gst) {
-    //   //   value = {
-    //   //     ...value,
-    //   //     ["tax_amount"]: tempItem.tax_gst * (tempItem.value / 100),
-    //   //   };
-    //   // }
-    //   tempItem = { ...tempItem, ...value };
-    //   if (tempItem.tax_gst && tempItem.value) {
-    //     // console.log(tempItem.value)
-    //     value = {
-    //       ...value,
-    //       ["gross"]:
-    //         (tempItem.rate - tempItem.discount_amnt_per_item || 0) +
-    //         (tempItem.rate - tempItem.discount_amnt_per_item || 0) *
-    //           (tempItem.tax_gst / 100),
-    //       // ["tax_amount"]: (tempItem.tax_gst) * (tempItem.value / 100),
-    //     };
-    //   } else {
-    //     value = { ...value, ["gross"]: 0 };
-    //   }
-    //   tempItem = { ...tempItem, ...value };
-    //   if (tempItem.gross && tempItem.quantity) {
-    //     let totalValue = tempItem.rate * tempItem.quantity - tempItem.discount_1_amount || 0
-    //     let totalTaxAmnt = +tempItem.tax_gst * (+totalValue / 100);
-    //     let sgst = (totalTaxAmnt / 2)?.toFixed(2);
-    //     value = {
-    //       ...value,
-    //       ["value"]:
-    //         tempItem.rate * tempItem.quantity - tempItem.discount_1_amount || 0,
-    //       ["total"]:
-    //         (tempItem.rate * tempItem.quantity - tempItem.discount_1_amount ||
-    //           0) + (sgst*2),
-    //       ["cgst_or_igst"]: sgst,
-    //       ["sgst"]: sgst,
-    //     };
-    //   }
+  const handleAmountCalculation = (tempItem, e, data) => {
     let name = e.target.name;
     let value = {};
     let total, cost;
+
+    // ---------------------------
+    if (
+      e.target.name !== "tax_gst" &&
+      e.target.name !== "rate" &&
+      e.target.name !== "discount_1_percentage" &&
+      data?.name !== "name"
+    ) {
+      if (tempItem.gross && tempItem.tax_gst) {
+        // console.log(
+        //   (tempItem.gross-
+        //   (tempItem.gross -
+        //     (tempItem.gross -
+        //       tempItem?.discount_1_percentage * (tempItem.gross / 100))))
+        // );
+        console.log(
+          
+            tempItem.gross
+            -
+            (tempItem.gross -
+              (tempItem.gross -
+                tempItem?.discount_1_percentage * (tempItem.gross / 100)))
+                 
+                /
+              (1 + tempItem.tax_gst / 100)
+        );
+        value = {
+          ...value,
+          rate:
+            (tempItem.gross -
+              (tempItem.gross -
+                (tempItem.gross -
+                  tempItem?.discount_1_percentage * (tempItem.gross / 100)))) /
+            (1 + tempItem.tax_gst / 100), //  gross / (1 + tax / 100)
+        };
+      } else if (!tempItem.gross) {
+        value = { ...value, rate: 0 };
+      }
+    }
+
+    tempItem = { ...tempItem, ...value };
+
+    // ---------------------------
+
     if (tempItem.rate && tempItem.quantity) {
       total = tempItem.total;
       cost = tempItem.cost;
       total = tempItem.quantity * tempItem.rate;
       cost = tempItem.rate;
       value = {
+        ...value,
         ["value"]: tempItem.quantity * tempItem.rate,
         ["total"]: total,
         ["cost"]: cost,
       };
       tempItem = { ...tempItem, ...value };
+
       if (name !== "discount_1_amount" && tempItem.discount_1_percentage) {
         value = {
           ...value,
@@ -517,18 +462,18 @@ const SalesTable = (props) => {
       } else if (name == "discount_1_amount") {
         value = { ...value, ["discount_1_percentage"]: 0 };
       }
-      
+
       tempItem = { ...tempItem, ...value };
       if (tempItem.discount_1_percentage) {
-            value = {
-              ["discount_amnt_per_item"]:
-                tempItem.discount_1_percentage * (tempItem.rate / 100),
-            };
-          } else {
-            value = {
-              ["discount_amnt_per_item"]: 0,
-            };
-          }
+        value = {
+          ["discount_amnt_per_item"]:
+            tempItem.discount_1_percentage * (tempItem.rate / 100),
+        };
+      } else {
+        value = {
+          ["discount_amnt_per_item"]: 0,
+        };
+      }
 
       tempItem = { ...tempItem, ...value };
       if (tempItem.value && tempItem.discount_1_amount) {
@@ -552,21 +497,25 @@ const SalesTable = (props) => {
           ["cost"]: tempItem.rate,
         };
       }
-      tempItem = { ...tempItem, ...value };
 
-      if (tempItem.tax_gst && tempItem.value) {
-            // console.log(tempItem.value)
-            value = {
-              ...value,
-              ["gross"]:
-                (tempItem.rate - tempItem.discount_amnt_per_item || 0) +
-                (tempItem.rate - tempItem.discount_amnt_per_item || 0) *
-                  (tempItem.tax_gst / 100),
-              // ["tax_amount"]: (tempItem.tax_gst) * (tempItem.value / 100),
-            };
-          } else {
-            value = { ...value, ["gross"]: 0 };
-          }
+      if (e.target.name !== "gross") {
+        if (tempItem.tax_gst && tempItem.rate) {
+          console.log(
+            (tempItem.rate - tempItem.discount_1_amount_per_item) *
+              (tempItem.tax_gst / 100)
+          );
+          value = {
+            ...value,
+            ["gross"]:
+              (tempItem.rate - tempItem.discount_1_amount_per_item || 0) +
+              ((tempItem.rate - tempItem.discount_1_amount_per_item || 0) *
+                (tempItem.tax_gst / 100)),
+          };
+        } else {
+          value = { ...value, ["gross"]: 0 };
+        }
+      }
+      tempItem = { ...tempItem, ...value };
 
       tempItem = { ...tempItem, ...value };
 
@@ -596,10 +545,48 @@ const SalesTable = (props) => {
         sgst: 0,
         cgst_or_igst: 0,
         total: 0,
-        gross: 0,
+        discount_1_amount: 0,
+        // gross: 0,
       };
     }
+
     tempItem = { ...tempItem, ...value };
+
+    // if(e.target.name?.match(/tax_gst|rate/)){
+    // if (e.target.name !== "gross") {
+    //   if (tempItem.tax_gst && tempItem.rate) {
+    //     console.log(
+    //       (tempItem.rate - tempItem.discount_1_amount_per_item) *
+    //         (tempItem.tax_gst / 100)
+    //     );
+    //     value = {
+    //       ...value,
+    //       ["gross"]:
+    //         (tempItem.rate - tempItem.discount_1_amount_per_item || 0) +
+    //         (tempItem.rate - tempItem.discount_1_amount_per_item || 0) *
+    //           (tempItem.tax_gst / 100),
+    //     };
+    //   } else {
+    //     value = { ...value, ["gross"]: 0 };
+    //   }
+    // }
+    // tempItem = { ...tempItem, ...value };
+
+    // if (e.target.name !== "tax_gst" && e.target.name !== "rate" && e.target.name !== "discount_1_percentage") {
+    // // if (e.target.name === "gross" ) {
+    //   // console.log(tempItem.discount_1_amount_per_item)
+    //   if (tempItem.gross && tempItem.tax_gst) {
+    //     value = {
+    //       ...value,
+    //       rate: ((tempItem.gross) * 100)/ (tempItem.tax_gst+100) // (a * 100) / (c + 100)
+    //     }
+    //   }else if(!tempItem.gross){
+    //     value={...value, rate:0}
+    //   }
+    // }
+
+    // tempItem = { ...tempItem, ...value };
+
     let tempItemKeys = Object.keys(tempItem);
     tempItemKeys?.map((key) => {
       let number = parseFloat(tempItem[key]);
@@ -789,13 +776,13 @@ const SalesTable = (props) => {
                     <td>
                       <input
                         onKeyDown={handleKeyDown2}
-                        disabled
+                        // disabled
                         onChange={(e) =>
                           handleChangeTableItem(e, null, data, i)
                         }
                         className="purchase_input border-0 w-100 text-center"
-                        value={data.total || ""}
-                        name="total"
+                        value={data.gross || ""}
+                        name="gross"
                       />
                     </td>
                     <td>
@@ -999,8 +986,11 @@ const SalesTable = (props) => {
               </td>
               <td>
                 <input
-                  disabled
+                  // disabled
                   onKeyDown={handleKeyDown}
+                  onChange={(e) =>
+                    handleChangeTableItem(e, null, tableItem, true)
+                  }
                   name={"gross"}
                   // onChange={(e) =>
                   //   handleChangeTableItem(e, null, tableItem, true)
@@ -1008,7 +998,7 @@ const SalesTable = (props) => {
                   value={
                     tableItem?.gross == "" || tableItem?.gross
                       ? tableItem?.gross
-                      : "0"
+                      : ""
                   }
                   onFocus={handleFocus}
                   onBlur={handleBlur}
@@ -1207,7 +1197,7 @@ const SalesTable = (props) => {
                   type="button"
                   onKeyDown={handleAddSalesItem}
                   onClick={handleAddSalesItem}
-                  className="table-item-add-btn"
+                  className="table-item-add-btn rounded-1 btn-sm"
                   value={"+"}
                 />
                 {/* )} */}
@@ -1334,9 +1324,6 @@ const SalesTable = (props) => {
 
 export default SalesTable;
 
-
-
-
 // --------------------------------------------------------
 
 // let name = e.target.name;
@@ -1444,9 +1431,3 @@ export default SalesTable;
 //       ["sgst"]: sgst,
 //     };
 //   }
-
-
-
-
-
-

@@ -15,6 +15,7 @@ const PurchaseTable = (props) => {
     tableItem,
     setTableItem,
     edit,
+    handlePurchAllCalc,
     setPurchaseItemSerielModal,
     cstm_id,
     purchaseAdd,
@@ -96,7 +97,8 @@ const PurchaseTable = (props) => {
       let tempList = [...tableItemList];
       let { edited, ...others } = data;
       tempList.splice(i, 1, others);
-      setTableItemList([...tempList]);      
+      setTableItemList([...tempList]); 
+      handlePurchAllCalc(tempList,false)     
     } catch (err) {}
   };
 
@@ -360,7 +362,7 @@ const PurchaseTable = (props) => {
       setPurchaseItemSerielModal(tableEdit || true);
     }
     if (purchaseAdd.isBatch) setShowBatch(true);
-    else handleBatchSubmit(itemTempList);
+    else handleBatchSubmit(itemTempList,false);
     handleKeyDown(e);
   };
 
@@ -1037,7 +1039,7 @@ const PurchaseTable = (props) => {
                   className="purchase_input border-0 w-100 text-center"
                 />
               </td> */}
-              <td>
+              <td className="align-top">
                 {tableEdit ? (
                   <div
                     onClick={handleAddBatchOpen}
@@ -1047,15 +1049,13 @@ const PurchaseTable = (props) => {
                     <FiEdit className="mb-1 btn p-0" size={"16px"} />
                   </div>
                 ) : (
-                  <button
+                  <input
                     onKeyDown={handleAddBatchOpen}
                     onClick={handleAddBatchOpen}
                     type="button"
-                    className="table-item-add-btn"
+                    className="table-item-add-btn rounded-1 btn-sm align-middle"
                     value={"+"}
-                  >
-                    +
-                  </button>
+                  />
                 )}
               </td>
               <td className="p-0 text-start">

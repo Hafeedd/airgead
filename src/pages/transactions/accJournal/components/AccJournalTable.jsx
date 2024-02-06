@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import useOnKey from "../../../../hooks/onKeyFunct/onKeyFunct";
-import { MdDeleteForever } from "react-icons/md";
-import { BiEdit } from "react-icons/bi";
+import { BsTrashFill } from "react-icons/bs";
+import { FiEdit } from "react-icons/fi";
 import { Dropdown } from "semantic-ui-react";
 import Swal from "sweetalert2";
 
@@ -17,20 +17,24 @@ export const AccJournalTable = (props) => {
     tableList,
     setTableList,
     handleResetAccTable,
-    tableEdit,
     accJnlAdd,
+    tableEdit,
     setTableEdit,
   } = props;
   const [ref, setRef] = useState(null);
 
-  const { handleKeyDown, formRef } = useOnKey(ref, setRef);
+  const [handleKeyDown, formRef] = useOnKey(ref, setRef);
 
   const AdjustTableHeight = () => {
     let a = [];
     for (let i = 0; i < 8 - tableList?.length || 0; i++)
       a.push(
         <tr>
-          <td colSpan={5} className="ps-4 border-0 text-start" style={{height:'2.3rem',borderBottom:"0px"}}></td>
+          <td
+            colSpan={5}
+            className="ps-4 border-0 text-start"
+            style={{ height: "2.3rem", borderBottom: "0px" }}
+          ></td>
         </tr>
       );
     return a;
@@ -71,7 +75,9 @@ export const AccJournalTable = (props) => {
   };
 
   const handleAddToTableList = async () => {
-    if (!accJnlTable.name || !accJnlTable.code) {
+    const values = Object.values(accJnlTable).filter((x) => x !== null);
+
+    if (values.length < 3) {
       Swal.fire({
         title: "Warning !",
         text: "Please select an Account",
@@ -80,10 +86,10 @@ export const AccJournalTable = (props) => {
       });
       return 0;
     }
-    const values = Object.values(accJnlTable).filter((x) => x !== null);
+
     if (values?.length > 1) {
       const tempList = [...tableList];
-      tempList.unshift(accJnlTable);
+      tempList.push(accJnlTable);
       setTableList([...tempList]);
       handleResetAccTable();
     }
@@ -94,14 +100,6 @@ export const AccJournalTable = (props) => {
       handleAddToTableList();
       handleKeyDown(e);
     }
-  };
-
-  const handleEditTableItem = (data, i) => {
-    setTableEdit(data);
-    let tempTable = tableList;
-    tempTable.splice(i, 1);
-    setTableList([...tempTable])
-    setAccJnlTable(data);
   };
 
   const handlePrev = () => {
@@ -143,10 +141,7 @@ export const AccJournalTable = (props) => {
   };
 
   return (
-    <div
-      className="acc-journal-table-cont"
-      style={{ paddingRight: "2.4rem" }}
-    >
+    <div className="acc-journal-table-cont" style={{ paddingRight: "2.4rem" }}>
       <table className="table acc-journal mb-0">
         <thead>
           <tr>
@@ -157,12 +152,115 @@ export const AccJournalTable = (props) => {
             <th width="180">Debit</th>
             <th width="180">Credit</th>
             <th width="90">
-              <div onClick={handleAddToTableList} className="btn btn-sm py-1 px-4 text-dark bg-light">Add</div>
+              <div
+                onClick={handleAddToTableList}
+                className="btn btn-sm py-1 px-4 text-dark bg-light"
+              >
+                Add
+              </div>
             </th>
           </tr>
         </thead>
         <tbody>
-          <tr ref={formRef} className="acc-jnl-input-tr">
+          {/* table item list --------------------------------------------------start */}
+          {tableList.length > 0 &&
+            tableList.map((data, i) => {
+              const handleEdit = (e, dropDownData) => {
+                let tempList = [...tableList];
+                let tempData = { ...data };
+                if (dropDownData) {
+                  let item_data = dropDownData.options.filter(
+                    (x) => x.value === dropDownData.value
+                  )[0];
+                  console.log(item_data);
+                  tempData = {
+                    ...tempData,
+                    edited: true,
+                    name: item_data?.text || null,
+                    code: item_data?.value || null,
+                  };
+                } else if (e.target.value == "")
+                  tempData = { ...tempData, [e.target.name]: null };
+                else
+                  tempData = {
+                    ...tempData,
+                    edited: true,
+                    [e.target.name]: e.target.value,
+                  };
+
+                tempList.splice(i, 1, tempData);
+                setTableList([...tempList]);
+              };
+
+              const handleRemove = () => {
+                let tempList = tableList || [];
+                tempList.splice(i, 1);
+                setTableList([...tempList]);
+              };
+
+              return (
+                <tr key={i} className="acc-jnl-input-tr">
+                  <td className="ps-3">
+                    {/* <input onKeyDown={handleKeyDown} className="text-start ps-2" /> */}
+                    <div className="item-search-drop">
+                      <Dropdown
+                        clearable
+                        selection
+                        required
+                        search={search}
+                        onKeyDown={handleKeyDown}
+                        onChange={handleEdit}
+                        className="acc-journal-search table-drop d-flex align-items-center py-0 form-control"
+                        name="code"
+                        placeholder="SELECT"
+                        value={data.code || ""}
+                        options={accNameList.length > 0 ? accNameList : []}
+                      />
+                    </div>
+                  </td>
+                  <td>
+                    <input
+                      name="desc"
+                      value={data?.desc?.toUpperCase() || ""}
+                      placeholder="..."
+                      onChange={handleEdit}
+                      onKeyDown={handleKeyDown}
+                    />
+                  </td>
+                  <td>
+                    <input
+                      name="debit"
+                      value={data?.debit || ""}
+                      placeholder="0"
+                      onChange={handleEdit}
+                      onKeyDown={handleKeyDown}
+                    />
+                  </td>
+                  <td>
+                    <input
+                      name="credit"
+                      value={data?.credit || ""}
+                      placeholder="0"
+                      onChange={handleEdit}
+                      onKeyDown={handleKeyDown}
+                    />
+                  </td>
+                  <td>
+                    <BsTrashFill
+                      onClick={handleRemove}
+                      size={21}
+                      className="p-0 m-0 text-danger cursor"
+                    />
+                  </td>
+                </tr>
+              );
+            })}
+
+          {/* table item list --------------------------------------------------end */}
+
+          {/* table item add ---------------------------------------------------start */}
+
+          <tr ref={formRef} className="acc-jnl-input-tr entry-part">
             <td className="ps-3">
               {/* <input onKeyDown={handleKeyDown} className="text-start ps-2" /> */}
               <div className="item-search-drop">
@@ -177,7 +275,7 @@ export const AccJournalTable = (props) => {
                   name="code"
                   placeholder="SELECT"
                   value={accJnlTable?.code || ""}
-                  options={accNameList.length>0?accNameList:[]}
+                  options={accNameList.length > 0 ? accNameList : []}
                 />
               </div>
             </td>
@@ -205,33 +303,21 @@ export const AccJournalTable = (props) => {
                 value={accJnlTable?.credit || ""}
                 placeholder="type here"
                 onChange={handleChangeTableItem}
-                onKeyDown={handleLastKeyDown}
+                onKeyDown={handleKeyDown}
               />
             </td>
             <td>
-              <MdDeleteForever
-                onClick={handleResetAccTable}
-                size={21}
-                className="p-0 m-0 text-danger cursor"
-              />
+              <button
+                className="btn-focus border-0 btn-sm rounded-1 bg-dark text-light fs-5"
+                onClick={handleAddToTableList}
+                onKeyDown={handleLastKeyDown}
+              >
+                +
+              </button>
             </td>
           </tr>
-          {tableList.length > 0 &&
-            tableList.map((data, i) => (
-              <tr key={i}>
-                <td className="ps-4 text-start">{data.name || "..."}</td>
-                <td>{data?.desc?.toUpperCase() || "..."}</td>
-                <td>{data.debit || "..."}</td>
-                <td>{data.credit || "..."}</td>
-                <td>
-                  <BiEdit
-                    size={19}
-                    className="cursor"
-                    onClick={() => handleEditTableItem(data, i)}
-                  />
-                </td>
-              </tr>
-            ))}
+
+          {/* table item add ---------------------------------------------------end */}
           <AdjustTableHeight />
           <tr>
             <td className="text-start p-1 ps-4 align-middle">
@@ -245,10 +331,18 @@ export const AccJournalTable = (props) => {
             </td>
             <td className="text-end align-middle">Total</td>
             <td className="py-1 align-middle">
-              <input value={accJnlAdd?.total_debit||0} disabled className="acc-journal-input text-center m-0" />
+              <input
+                value={accJnlAdd?.total_debit || 0}
+                disabled
+                className="acc-journal-input text-center m-0"
+              />
             </td>
             <td className="py-1 align-middle">
-              <input value={accJnlAdd?.total_credit||0} disabled className="acc-journal-input text-center m-0" />
+              <input
+                value={accJnlAdd?.total_credit || 0}
+                disabled
+                className="acc-journal-input text-center m-0"
+              />
             </td>
             <td className="py-1 align-middle">
               <div

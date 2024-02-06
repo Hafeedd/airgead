@@ -145,6 +145,7 @@ const StaffMaster = () => {
               staffList,
               setStaffList,
               handleEdit,
+              getData,
               // handleDelete,
               searchList,
               setSearchList,

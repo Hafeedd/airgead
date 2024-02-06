@@ -82,6 +82,7 @@ export const StaffTable = (props) => {
         });
       }
     } catch (err) {
+      console.log(err)
       Swal.fire({
         title: "Warning",
         text:

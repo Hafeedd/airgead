@@ -352,6 +352,14 @@ td.n_clr{
     border:none !important
 }
 
+.table-item-add-btn:focus{
+    /* border: 1px solid black; */
+    background: #000 !important;
+    color: white !important;
+    border:none !important;
+    outline: none !important;
+
+}
 .table-item-add-btn{
     border: none;
     font-size: 14px;

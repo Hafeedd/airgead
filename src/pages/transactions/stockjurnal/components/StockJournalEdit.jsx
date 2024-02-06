@@ -29,23 +29,26 @@ export const StockJournalEdit = (props) => {
   useEffect(() => {
     let tempList;
     let filterList;
-    filterList = list;
+    filterList = [...list];
     if (date.start && date.end) {
       let startDate = new Date(date.start.slice(0, 10));
       let endDate = new Date(date.end.slice(0, 10));
       tempList = filterList?.filter((x) => {
-        let dateOfItem = new Date(x.date);
+        console.log(x)
+        let dateOfItem = new Date(x.created_at||x.date);
         if (dateOfItem >= startDate && dateOfItem <= endDate) {
           return true;
         }
         return false;
       });
-      setTempStockJList(tempList);
+      if(from=="acc")
+        setTempStockJList(tempList.reverse());
+      else
+        setTempStockJList(tempList)
     }
   }, [date, list]);
 
   useEffect(() => {
-    // setDate({ start: "", end: "" });
     let tempList;
     let filterList;
     filterList = list;
@@ -68,9 +71,6 @@ export const StockJournalEdit = (props) => {
       });
       setTempStockJList(tempList);
     }
-    // else{
-    //     setSearch('')
-    // }
   }, [search, from, list]);
 
   const handleDeleteData = async (id) => {
@@ -115,7 +115,7 @@ export const StockJournalEdit = (props) => {
       <div className="row mx-0 p-2 px-3">
         <Form.Group className="col-4 col-3 pe-4 ps-0 mx-0 d-flex align-items-start mt-1">
           <Form.Label className="col-2 purchase-input-label align-middle">
-            To
+            From
           </Form.Label>
           <Form.Control
             required
@@ -129,7 +129,7 @@ export const StockJournalEdit = (props) => {
         </Form.Group>
         <Form.Group className="col-4 col-3 pe-4 ps-0 mx-0 d-flex align-items-start mt-1">
           <Form.Label className="col-2 purchase-input-label align-middle">
-            From
+            To
           </Form.Label>
           <Form.Control
             required

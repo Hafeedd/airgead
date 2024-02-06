@@ -114,9 +114,9 @@ const initalTableItem = {
   discount_1_amount: 0.0,
 };
 
-export const initialPurchaseTableStatePositionLocal = JSON.parse(localStorage.getItem(
-  "initialPurchaseTableStatePositionLocal"
-))
+export const initialPurchaseTableStatePositionLocal = JSON.parse(
+  localStorage.getItem("initialPurchaseTableStatePositionLocal")
+);
 
 export const initialPurchaseSalesTableStatePosition = [
   {
@@ -126,8 +126,8 @@ export const initialPurchaseSalesTableStatePosition = [
     visible: true,
     skipping: false,
     readOnly: false,
-    saleShow:true,
-    purchaseShow:true
+    saleShow: true,
+    purchaseShow: true,
   },
   {
     title: "Qty",
@@ -136,8 +136,8 @@ export const initialPurchaseSalesTableStatePosition = [
     visible: true,
     skipping: false,
     readOnly: false,
-    saleShow:true,
-    purchaseShow:true
+    saleShow: true,
+    purchaseShow: true,
   },
   {
     title: "Ut",
@@ -146,8 +146,8 @@ export const initialPurchaseSalesTableStatePosition = [
     visible: true,
     skipping: false,
     readOnly: false,
-    saleShow:true,
-    purchaseShow:true
+    saleShow: true,
+    purchaseShow: true,
   },
   {
     title: "P.Rate",
@@ -156,8 +156,8 @@ export const initialPurchaseSalesTableStatePosition = [
     visible: true,
     skipping: false,
     readOnly: false,
-    saleShow:false,
-    purchaseShow:true
+    saleShow: false,
+    purchaseShow: true,
   },
   {
     title: "Net Rate",
@@ -166,8 +166,8 @@ export const initialPurchaseSalesTableStatePosition = [
     visible: true,
     skipping: false,
     readOnly: false,
-    saleShow:true,
-    purchaseShow:false
+    saleShow: true,
+    purchaseShow: false,
   },
   {
     title: "Disc%",
@@ -176,8 +176,8 @@ export const initialPurchaseSalesTableStatePosition = [
     visible: true,
     skipping: false,
     readOnly: false,
-    saleShow:true,
-    purchaseShow:true
+    saleShow: true,
+    purchaseShow: true,
   },
   {
     title: "Disc",
@@ -186,8 +186,8 @@ export const initialPurchaseSalesTableStatePosition = [
     visible: true,
     skipping: false,
     readOnly: false,
-    saleShow:true,
-    purchaseShow:true
+    saleShow: true,
+    purchaseShow: true,
   },
   {
     title: "Value",
@@ -196,8 +196,8 @@ export const initialPurchaseSalesTableStatePosition = [
     visible: true,
     skipping: false,
     readOnly: true,
-    saleShow:true,
-    purchaseShow:true
+    saleShow: true,
+    purchaseShow: true,
   },
   {
     title: "Tax",
@@ -206,8 +206,8 @@ export const initialPurchaseSalesTableStatePosition = [
     visible: true,
     skipping: false,
     readOnly: false,
-    saleShow:true,
-    purchaseShow:true
+    saleShow: true,
+    purchaseShow: true,
   },
   {
     title: "CGST,IGST",
@@ -216,8 +216,8 @@ export const initialPurchaseSalesTableStatePosition = [
     visible: true,
     skipping: false,
     readOnly: true,
-    saleShow:true,
-    purchaseShow:true
+    saleShow: true,
+    purchaseShow: true,
   },
   {
     title: "SGST",
@@ -226,8 +226,8 @@ export const initialPurchaseSalesTableStatePosition = [
     visible: true,
     skipping: false,
     readOnly: true,
-    saleShow:true,
-    purchaseShow:true
+    saleShow: true,
+    purchaseShow: true,
   },
   {
     title: "Total",
@@ -236,8 +236,8 @@ export const initialPurchaseSalesTableStatePosition = [
     visible: true,
     skipping: false,
     readOnly: true,
-    saleShow:true,
-    purchaseShow:true
+    saleShow: true,
+    purchaseShow: true,
   },
   {
     title: "Cost",
@@ -246,8 +246,8 @@ export const initialPurchaseSalesTableStatePosition = [
     visible: true,
     skipping: false,
     readOnly: true,
-    saleShow:false,
-    purchaseShow:true
+    saleShow: false,
+    purchaseShow: true,
   },
   {
     title: "Margin",
@@ -256,8 +256,8 @@ export const initialPurchaseSalesTableStatePosition = [
     visible: true,
     skipping: false,
     readOnly: false,
-    saleShow:false,
-    purchaseShow:true
+    saleShow: false,
+    purchaseShow: true,
   },
   {
     title: "S.Rate",
@@ -266,8 +266,8 @@ export const initialPurchaseSalesTableStatePosition = [
     visible: true,
     skipping: false,
     readOnly: false,
-    saleShow:false,
-    purchaseShow:true
+    saleShow: false,
+    purchaseShow: true,
   },
 ];
 
@@ -290,21 +290,22 @@ const PurchaseTransaction = () => {
   const [bankList, setBankList] = useState([]);
   const [bankSelect, setBankSelect] = useState(false);
   const [tableHeadList, setTableHeadList] = useState(
-    initialPurchaseTableStatePositionLocal || initialPurchaseSalesTableStatePosition
+    initialPurchaseTableStatePositionLocal ||
+      initialPurchaseSalesTableStatePosition
   );
-  
+
   // this below state is to check if a table item is edited and -
   // the save button is not checked or not . false if checked
-  const [tableItemEdited, setTableItemEdited] = useState(false) 
+  const [tableItemEdited, setTableItemEdited] = useState(false);
   const [purchaseList, setPurchaseList] = useState();
   const [tableItemList, setTableItemList] = useState([]);
   const [tableItemBatchList, setTableItemBatchList] = useState([]);
   const { handleKeyDown, formRef } = useOnKey(ref, setRef);
-  
+
   const [purchaseAdd, setPurchaseAdd] = useState(initialPurchaseAdd);
-  
+
   const [tableItem, setTableItem] = useState(initalTableItem);
-  
+
   const [tableItemBatch, setTableItemBatch] = useState({
     id: null,
     cstm_id: null,
@@ -315,20 +316,19 @@ const PurchaseTransaction = () => {
     size: null,
     color: null,
   });
-  
+
   const navigate = useNavigate();
   const { postPurchaseItem } = usePurchaseServices();
   const { getCode } = useItemServices();
 
-  useEffect(() => {
-    if (edit) handlePurchAllCalc("noEdit");
-    else handlePurchAllCalc("noEdit");
-  }, [tableItemList]);
+  // useEffect(() => {
+  //   handlePurchAllCalc(tableItemList, true);
+  // }, [tableItemList]);
 
   useEffect(() => {
     if (
-      (purchaseAdd.bank_amount && purchaseAdd.fk_bank) ||
-      (!purchaseAdd.bank_amount && !purchaseAdd.fk_bank)
+      (!purchaseAdd.bank_amount && !purchaseAdd.fk_bank) ||
+      purchaseAdd.fk_bank
     )
       setBankSelect(true);
     else setBankSelect(false);
@@ -346,46 +346,59 @@ const PurchaseTransaction = () => {
   }, []);
 
   useEffect(() => {
-    if (edit) {
-      let { items, updated_at, ...others } = edit;
-      setPurchaseAdd(data=>({ ...data, ...others }));
-      if (items) {
-          setTableItemList([...items]);
-      }
-    }else  handleGetCode();
+    handleSetEdit();
   }, [edit]);
 
-  const handlePurchAllCalc = (status) => {
-    if (tableItemList?.length > 0) {
-      let netAmount = tableItemList?.reduce((a, b) => {
+  const handleSetEdit = () => {
+    if (edit) {
+      let { items, updated_at, ...others } = edit;
+      let tempData = {
+        ...others,
+        change_due: others.change_due || "0.00",
+      };
+      setPurchaseAdd((data) => ({...data,tempData}));
+      if (items) {
+        setTableItemList([...items]);
+        handlePurchAllCalc(items, true,tempData);
+      }
+    } else handleGetCode();
+  };
+
+  const handlePurchAllCalc = (dataList, fromEdit,purchaseData) => {
+    console.log("first")
+    // dataList is the list of tableItemList
+    if (dataList?.length > 0) {
+      let tempPurchaseAdd = purchaseData||{ ...purchaseAdd };
+      console.log(tempPurchaseAdd);
+      let netAmount = dataList?.reduce((a, b) => {
         return b.total ? parseFloat(a) + parseFloat(b.total) : 0;
       }, 0);
-      let netMargin = tableItemList?.reduce((a, b) => {
+      let netMargin = dataList?.reduce((a, b) => {
         return b.margin ? parseFloat(a) + parseFloat(b.margin) : 0;
       }, 0);
-      let totalItem = tableItemList?.reduce((a, b) => {
+      let totalItem = dataList?.reduce((a, b) => {
         return a + 1;
       }, 0);
-      let totalCTC = tableItemList?.reduce((a, b) => {
+      let totalCTC = dataList?.reduce((a, b) => {
         return b.cost ? parseFloat(a) + parseFloat(b.cost) : 0;
       }, 0);
-      let totalQty = tableItemList?.reduce((a, b) => {
+      let totalQty = dataList?.reduce((a, b) => {
         return b.quantity ? parseFloat(a) + parseFloat(b.quantity) : 0;
       }, 0);
-      let total_value = tableItemList?.reduce((a, b) => {
+      let total_value = dataList?.reduce((a, b) => {
         return b.value ? parseFloat(a) + parseFloat(b.value) : 0;
       }, 0);
-      let total_scGst = tableItemList?.reduce((a, b) => {
+      let total_scGst = dataList?.reduce((a, b) => {
         return b.value ? parseFloat(a) + parseFloat(b.cgst_or_igst) : 0;
       }, 0);
-      let total_total = tableItemList?.reduce((a, b) => {
+      let total_total = dataList?.reduce((a, b) => {
         return b.value ? parseFloat(a) + parseFloat(b.total) : 0;
       }, 0);
-      // let total_disc = tableItemList?.reduce((a, b) => {
-      //   return b.discount_1_amount
-      //     ? parseFloat(a) + parseFloat(b.discount_1_amount)
-      //     : 0;
-      // }, 0);
+      let total_disc = dataList?.reduce((a, b) => {
+        return b.discount_1_amount
+          ? parseFloat(a) + parseFloat(b.discount_1_amount)
+          : 0;
+      }, 0);
 
       let roundOff = (
         Math.round(parseFloat(netAmount)).toFixed(2) - parseFloat(netAmount)
@@ -396,8 +409,16 @@ const PurchaseTransaction = () => {
       // if(roundOff){
       //   roundOff = roundOff.toFixed(2)
       // }
-        // console.log(purchaseAdd.paid_cash)
-      let paidCash =( +netAmount?.toFixed(0) - purchaseAdd.discount) - (purchaseAdd.change_due || 0 + +purchaseAdd.bank_amount||0)
+      // console.log(purchaseAdd.paid_cash)
+      // console.log(fromUseEffect, netAmount)
+      if (!fromEdit)
+        tempPurchaseAdd = {
+          ...tempPurchaseAdd,
+          paid_cash: netAmount?.toFixed(0),
+          change_due: 0,
+          bank_amount: 0,
+        };
+      // let paidCash =( +netAmount?.toFixed(0) - purchaseAdd.discount) - (purchaseAdd.change_due || 0 + +purchaseAdd.bank_amount||0)
       // if (status == "edit") {
       //   paidCash = edit.paid_cash || netAmount?.toFixed(0) || 0;
       // }
@@ -413,22 +434,26 @@ const PurchaseTransaction = () => {
       //     purchaseAdd.bank_amount;
       // }
 
-      let tempPurchaseAdd = {
-        ...purchaseAdd,
+      tempPurchaseAdd = {
+        ...tempPurchaseAdd,
         total_margin: netMargin?.toFixed(0),
         total_amount: Number(netAmount?.toFixed(0) - purchaseAdd.discount),
         total_amount2: Number(netAmount?.toFixed(2) - purchaseAdd.discount),
-        paid_cash: Number(paidCash || 0)?.toFixed(0),
         total_CTC: totalCTC?.toFixed(2),
         total_qty: totalQty?.toFixed(0),
         total_value: total_value?.toFixed(2),
         total_total: total_total?.toFixed(2),
         total_scGst: total_scGst?.toFixed(2),
         total_items: totalItem,
+        total_disc: total_disc,
         roundoff: roundOff,
         // change_due: changeDue > 0 ? changeDue?.toFixed(2) : null,
       };
-      setPurchaseAdd((data) => ({ ...data, ...tempPurchaseAdd }));
+
+      setPurchaseAdd((data) => {
+        console.log(data.documents_no);
+        return { ...data, ...tempPurchaseAdd };
+      });
     } else {
       setPurchaseAdd((data) => ({
         ...data,
@@ -545,7 +570,7 @@ const PurchaseTransaction = () => {
     setTableItemList([]);
     setTableItemBatchList([]);
     setTableItem(initalTableItem);
-    setTableItemKeys([])
+    setTableItemKeys([]);
     setEdit(false);
     handleGetCode();
   };
@@ -583,25 +608,31 @@ const PurchaseTransaction = () => {
         [e.target.name]: value,
         total_amount: discPrice?.toFixed(0),
         paid_cash: discPrice?.toFixed(0),
-        change_due: 0,
+        change_due: "0.00",
         bank_amount: 0,
       }));
     } else if (e.target.name == "bank_amount") {
       let value = e.target.value == "" ? null : +e.target.value;
-      let totalAmount =
-        (+purchaseAdd.change_due || 0) +
-        (+purchaseAdd.paid_cash || 0) +
-        (+purchaseAdd.bank_amount || 0);
+      let totalAmount = purchaseAdd.total_amount;
+      // (+purchaseAdd.change_due || 0) +
+      // (+purchaseAdd.paid_cash || 0) +
+      // (/* +purchaseAdd.bank_amount */+value || 0);
+      // console.log("paid cash :",+totalAmount - value)
       setPurchaseAdd((data) => ({
         ...data,
         paid_cash: +totalAmount - value,
-        change_due: +purchaseAdd.total_amount - (value + +totalAmount - value),
+        change_due:
+          /* +purchaseAdd.total_amount - (value + +totalAmount - value)|| */ "0.00",
         bank_amount: value,
       }));
     } else if (e.target.name == "paid_cash") {
       if (
-        e.target.value >
-        e.target.value + purchaseAdd.bank_amount + purchaseAdd.change_due
+        +e.target.value >
+        +(
+          +purchaseAdd.paid_cash +
+          +purchaseAdd.bank_amount +
+          +purchaseAdd.change_due
+        )
       ) {
         Swal.fire({
           title: "Warning",
@@ -615,10 +646,10 @@ const PurchaseTransaction = () => {
           ...data,
           change_due:
             +purchaseAdd.change_due +
-            +purchaseAdd.total_amount +
-            +purchaseAdd.paid_cash -
-            value -
-            +purchaseAdd.total_amount,
+              +purchaseAdd.total_amount +
+              +purchaseAdd.paid_cash -
+              value -
+              +purchaseAdd.total_amount || "0.00",
           paid_cash: value,
         }));
       }
@@ -710,7 +741,7 @@ const PurchaseTransaction = () => {
         });
         return 0;
       }
-      if (tableItemEdited){
+      if (tableItemEdited) {
         Swal.fire({
           title: "Item edited but edit button is not clicked",
           icon: "warning",
@@ -718,7 +749,7 @@ const PurchaseTransaction = () => {
           showConfirmButton: true,
           timer: 1500,
         });
-        return 0;        
+        return 0;
       }
       // formValidation(formRef.current);
       let submitData = { ...purchaseAdd, items: tebleItemKeys };
@@ -765,8 +796,9 @@ const PurchaseTransaction = () => {
       }
     }
   };
-
+  
   const handleBatchSubmit = async (tempItems) => {
+    console.log("aaaaa")
     try {
       let ItemTempList = [...tableItemBatchList],
         itemTemp = {};
@@ -823,7 +855,6 @@ const PurchaseTransaction = () => {
           );
         }
       } catch (err) {
-      console.log(err)
         // setTableItemList([...tableItemList])
         const key = Object.keys(err?.response?.data?.data)[0]
           ?.split("_")
@@ -837,8 +868,9 @@ const PurchaseTransaction = () => {
       }
       // setPurchaseItemSerielModal(false);
       handleTableItemReset();
+      handlePurchAllCalc(tempItems, false);
     } catch (err) {
-    // console.log(err)
+      console.log(err)
       Swal.fire(
         "Error",
         "Failed while adding item to table. Pls try again later",
@@ -945,7 +977,8 @@ const PurchaseTransaction = () => {
         {/* {purchaseHeader} ---------------------------------------------------------*/}
         <PurchaseTable
           {...{
-            tableItemEdited, 
+            handlePurchAllCalc,
+            tableItemEdited,
             setTableItemEdited,
             tableHeadList,
             handleBatchSubmit,
@@ -995,10 +1028,10 @@ const PurchaseTransaction = () => {
         onHide={() => setPurchaseItemModal(false)}
       >
         <PurchaseTableItemList
-        from="pur"
+          from="pur"
           {...{
             tableHeadList,
-            setTableHeadList
+            setTableHeadList,
           }}
         />
       </Modal>

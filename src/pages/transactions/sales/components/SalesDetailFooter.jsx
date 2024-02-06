@@ -85,6 +85,7 @@ const SalesDetailFooter = (props) => {
               <Form.Control
                 placeholder="Enter"
                 name="bank_amount"
+                required={salesAdd.fk_bank}
                 value={salesAdd.bank_amount || ""}
                 onKeyDown={handleKeyDown}
                 onChange={handleChange}

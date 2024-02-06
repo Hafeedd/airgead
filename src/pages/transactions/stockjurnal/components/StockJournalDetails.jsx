@@ -236,13 +236,13 @@ export const StockJournalDetails = (props) => {
           Print
         </div>
         <div className="col-3 mx-0 col-4 text-small text-end mt-3 px-0">
-          <div
+          {/* <div
             onClick={handleAddToTableList}
             style={{ background: "#4A00A8" }}
             className="btn text-small text-light py-1 me-3"
           >
             + Add Stock
-          </div>
+          </div> */}
         </div>
       </div>
       <div className="pe-4 stock-journal-table-cont mt-2">
@@ -267,8 +267,8 @@ export const StockJournalDetails = (props) => {
             {/* <th width={"180"} className="">
               Stock in/ Stock Less
             </th> */}
-            <th width={"170"}></th>
-            <th width={"40"}></th>
+            <th width={"130"}></th>
+            <th width={"80"}></th>
           </thead>
           <tbody>
 
@@ -276,12 +276,11 @@ export const StockJournalDetails = (props) => {
             {stockTableItemList?.length > 0 &&
               stockTableItemList?.map((data, i) => {
 
-                const handleEdit = (e, a) => {
+                const handleEdit = (e, dropDownData) => {
                   let tempData = { ...data };
-                  if (a) {
-                    console.log(a.options)
-                    let item_data = a.options.filter(
-                      (x) => x.value === a.value
+                  if (dropDownData) {
+                    let item_data = dropDownData.options.filter(
+                      (x) => x.value === dropDownData.value
                     )[0];
                     tempData = {
                       ...tempData,
@@ -289,7 +288,7 @@ export const StockJournalDetails = (props) => {
                       unit: item_data?.unit,
                     };
                   } else if (e.target.value == "")
-                    tempData = { ...data, [e.target.name]: null };
+                    tempData = { ...tempData, [e.target.name]: null };
                     else tempData = { ...data, [e.target.name]: e.target.value };                  
                   let tempTable = stockTableItemList || [];
                   tempTable.splice(i, 1, tempData);
@@ -440,7 +439,7 @@ export const StockJournalDetails = (props) => {
                   // onFocus={(e)=>console.log(e.target)}
                   className="add-less-btn"
                   onChange={handleChangeTableItem}
-                  onKeyDown={handleKeyWithSubmit}
+                  onKeyDown={handleKeyDown}
                   name="qty_type"
                   value={stockTableItem?.qty_type || "add"}
                 >
@@ -459,7 +458,15 @@ export const StockJournalDetails = (props) => {
                 tableEdit && <td></td>
               )}
               {!tableEdit && <td className="align-middle"></td>} */}
-              <td></td>
+              <td className="text-center">
+              <button
+                className="btn-focus border-0 btn-sm rounded-1 bg-dark text-light fs-5"
+                onClick={handleAddToTableList}
+                onKeyDown={handleKeyWithSubmit}
+              >
+                +
+              </button>
+              </td>
             </tr>
             {/* entry part ---------------------------------------------------------end */}
 

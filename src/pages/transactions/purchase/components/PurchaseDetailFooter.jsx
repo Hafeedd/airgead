@@ -55,6 +55,7 @@ const PurchaseDetailFooter = (props) => {
             <Form.Control
               placeholder="Enter"
               name="bank_amount"
+              required={purchaseAdd.fk_bank}
               disabled={tableItemList?.length < 1}
               value={purchaseAdd.bank_amount || ""}
               onKeyDown={handleKeyDown}
