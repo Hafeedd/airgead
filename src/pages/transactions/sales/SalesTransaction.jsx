@@ -157,6 +157,7 @@ const SalesTransaction = () => {
 
   useEffect(() => {
     if (edit) {
+      console.log(edit)
       let { sales_item, updated_at, ...others } = edit;
       let tempData = {...others, change_due:others.change_due||"0.00" }
       // console.log(others)
