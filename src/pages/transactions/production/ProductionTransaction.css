@@ -51,3 +51,29 @@
     border-left: 1px solid gray ;
     border-right: 1px solid gray ;
 }
+
+
+.purchase-input-text.table-drop.custom-dropdown-width{
+    min-width: 6rem !important; 
+    max-width: 6rem !important; 
+  }
+
+.ProdTable input{
+    padding-left: .5rem;
+}
+
+.ProdTable1 input{
+    width: '10px';
+    height: '10px'
+}
+
+.purchase-input-text.table-drop.custom-dropdown-width1{
+    min-width: 25rem !important; 
+    /* max-width: 25rem !important; */
+  }
+
+.ProdTable1 thead tr th{
+    position: sticky;
+    top: 23.5px;
+    z-index: 2;
+}

@@ -1,9 +1,10 @@
 .staff-table-cont{
     width: 85.4rem;
-    height: 29rem;
+    height: 24.8rem;
     /* overflow: hidden !important; */
     overflow-y: scroll;
     overflow-x: scroll;
+    padding: 0;
 }
 
 @media screen and (width > 800px){

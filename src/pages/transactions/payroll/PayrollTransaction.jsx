@@ -8,20 +8,30 @@ const PayrollTransaction = () => {
   const location = useLocation().pathname;
   const year = new Date().getFullYear();
   const month = new Date().getMonth(); // 0,1,2,3,4,5,6,7,8,9,10,11
-  const startDate = new Date(year, month - 1, 1).toDateString().slice(8, 10);
-  const endDate = new Date(year, month, 0).toDateString().slice(8, 10);
+  // const startDate = new Date(year, month - 1, 1).toDateString().slice(8, 10);
+  // const endDate = new Date(year, month, 0).toDateString().slice(8, 10);
   const previousMonth = month === 0 ? 11 : month - 1;
+  const month_based_year = month === 0 ? year - 1 : year;
   const [date, setDate] = useState(new Date().toISOString().slice(0, 10));
-  const [fromDate, setFromDate] = useState(
-    month === 0
-      ? `${year - 1}-${12}-${startDate}`
-      : `${year}-${previousMonth + 1}-${startDate}`
-  );
-  const [toDate, setToDate] = useState(
-    month === 0
-      ? `${year - 1}-${12}-${endDate}`
-      : `${year}-${previousMonth + 1}-${endDate}`
-  );
+  
+  // const [fromDate, setFromDate] = useState()
+  //   month === 0
+  //     ? `${year - 1}-${12}-${startDate}`
+  //     : `${year}-${previousMonth<10?previousMonth+'0'+1:previousMonth+1}-${startDate}`
+  // );
+  // const [toDate, setToDate] = useState()
+  //   month === 0
+  //     ? `${year - 1}-${12}-${endDate}`
+  //     : `${year}-${previousMonth<10?previousMonth+'0'+1:previousMonth+1}-${endDate}`
+  // );
+
+
+  const pad = (value) => value < 10 ? `0${value}` : value;
+  const firstDate = `${month_based_year}-${pad(previousMonth + 1)}-01`;
+  const lastDay = new Date(month_based_year, previousMonth + 1, 0).getDate();
+  const lastDate = `${month_based_year}-${pad(previousMonth + 1)}-${pad(lastDay)}`;
+  const [fromDate, setFromDate] = useState(firstDate)
+  const [toDate, setToDate] = useState(lastDate)
   const [paramsToReport, setParamsToReport] = useState({
     from_date: fromDate,
     end_date: toDate,
