@@ -65,8 +65,8 @@ const ProfitWiseTable = (props) => {
                                             <td>{data?.name}</td>
                                             <td>{data?.quantity}</td>
                                             {/* <td>{data?.sales}</td> */}
-                                            <td>{data?.total_sales}</td>
-                                            <td>{data?.sales_return}</td>
+                                            <td>{data?.total_sales.toFixed(2)}</td>
+                                            <td>{data?.sales_return.toFixed(2)}</td>
                                             <td>{data?.total_cost.toFixed(2)}</td>
                                             <td>{data?.profit.toFixed(2)}</td>
                                             <td>{proPerc.toFixed(2) || 0 } %</td>
@@ -86,10 +86,10 @@ const ProfitWiseTable = (props) => {
                         
                                 <td colSpan={2} className='py-4'></td>
                                 <td style={{textAlign:"start"}} className='' >{totalQty}</td>
-                                <td style={{textAlign:"start"}} className='' >{totalSales}</td>
-                                <td style={{textAlign:"start"}} className='' >{totalSalesR}</td>
-                                <td style={{textAlign:"start"}} className='' >{totalCost}</td>
-                                <td style={{textAlign:"start"}} className='' >{totalProfit}</td>
+                                <td style={{textAlign:"start"}} className='' >{totalSales.toFixed(2)}</td>
+                                <td style={{textAlign:"start"}} className='' >{totalSalesR.toFixed(2)}</td>
+                                <td style={{textAlign:"start"}} className='' >{totalCost.toFixed(2)}</td>
+                                <td style={{textAlign:"start"}} className='' >{totalProfit.toFixed(2)}</td>
                                 <td style={{textAlign:"start"}} className='' ></td>
                             
                             
