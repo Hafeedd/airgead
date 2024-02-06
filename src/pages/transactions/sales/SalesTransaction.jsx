@@ -156,6 +156,7 @@ const SalesTransaction = () => {
   useEffect(() => {
     handleGetCode();
     if (edit) {
+      console.log(edit)
       let { sales_item, updated_at, ...others } = edit;
       setSalesAdd((data) => ({ ...data, ...others }));
       if (sales_item) {

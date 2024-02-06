@@ -49,9 +49,10 @@ const ProfitWiseTable = (props) => {
                             
                             itemWiseProfit[0]?.items?.length > 0 ?
                                 itemWiseProfit[0].items.map((data, i) =>
-                                {
+                                {   
+                                    console.log(data?.profit)
                                     let proPerc = 0
-                                    proPerc = (((data?.profit)/(data?.total_cost))*100)||0.00
+                                    proPerc = (((data?.profit)/(data?.total_sales))*100)||0.00
                                     
                                     totalQty = totalQty+(data?.quantity)
                                     totalSales = totalSales+(data?.total_sales)
