@@ -78,6 +78,7 @@ const PayrollTransaction = () => {
   useEffect(() => {
     setParamsToReport({ from_date: fromDate, end_date: toDate });
   }, [fromDate, toDate]);
+  
   return (
     <div className="item_add">
       <div className="itemList_header row mx-0">

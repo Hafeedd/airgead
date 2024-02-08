@@ -1,9 +1,9 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import { Dropdown } from "semantic-ui-react";
 import useOnKey from '../../../../hooks/onKeyFunct/onKeyFunct';
 const RawMaterials = (props) => {
   const{
-    rawItems,setRawItems,units,fullRawData,setFullRawData
+    rawItems,setRawItems,units,fullRawData,setFullRawData,setProduceData,
   }=props  
 
   const [ref1, setRef1] = useState();
@@ -22,6 +22,7 @@ const RawMaterials = (props) => {
   const handleDropdownChangeUnit = (event, data) => {
     setRawItems((obj) => ({ ...obj, fk_unit: data.value }));
   };
+
   return (
     <div className="col-6"  style={{ height: "140px", overflowY: "scroll" }}>
     <div className="div-head rounded-top ps-3 pt-1 my-0 py-0" style={{ top: "0", position: "sticky", zIndex: 1 }}>Raw Materials Used</div>
@@ -41,12 +42,31 @@ const RawMaterials = (props) => {
       <tbody ref={formRef1}>
         {rawItems?.length>0&&rawItems?.map((data,key)=>{
            const handleChange = (e, drop_data) => {
+            let updatedData;
             if (drop_data)
-              data = { ...data, [drop_data.name]: drop_data.value };
-            else data = { ...data, [e.target.name]: e.target.value };
+              updatedData = { ...data, [drop_data.name]: drop_data.value };
+            else
+              updatedData = { ...data, [e.target.name]: e.target.value };
+          
+            // Update the rawItems array
             let tempList = [...rawItems];
-            tempList.splice(key, 1, data);
+            tempList.splice(key, 1, updatedData);
             setRawItems([...tempList]);
+          
+            // Calculate and update the value field based on cost and qty
+            const updatedCost = parseFloat(updatedData.cost || 0);
+            const updatedQty = parseFloat(updatedData.qty || 0);
+            const updatedValue = updatedCost * updatedQty;
+            
+            // Update the value field in the current data object
+            updatedData = { ...updatedData, value: updatedValue };
+            
+            // Update the rawItems array again with the modified data
+            tempList.splice(key, 1, updatedData);
+            setRawItems([...tempList]);
+            
+            // setProduceData((data)=>({...data,cost:total_cost,value:total_value,mrp_rate:change[0]?.item_details.mrp_rate,wholesale_rate:change[0]?.item_details.wholesale_rate,}))
+      
           };
           return(
             <tr key={key}>

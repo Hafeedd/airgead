@@ -20,7 +20,11 @@ const ItemProduce = (props) => {
     rawItems,
     fullByprodData,
     setFullByprodData,
-    byProductItems
+    byProductItems,
+    fullLabourData,
+    setFullLabourData,
+    labourDetails
+    
   } = props;
 
   const [ref1, setRef1] = useState();
@@ -88,7 +92,7 @@ const ItemProduce = (props) => {
         item_produced_name: change[0]?.item_details.name,
         ratio:e.target.value/change[0]?.qty,
         qty:(e.target.value/change[0]?.qty)*item.initial_qty,
-        value:((e.target.value/change[0]?.qty)*item.initial_qty)*item.cost
+        value:Number(((e.target.value/change[0]?.qty)*item.initial_qty)*item.cost).toFixed(2)
       }));
 
       let r_sum=mappedRaw.reduce((a,b)=>a+ +b.value||0,0);
@@ -138,8 +142,8 @@ const ItemProduce = (props) => {
       let l_sum=mappedLabour.reduce((a,b)=>a+ +b.amount||0,0);
       setLabourDetails(mappedLabour);
       
-      let total_cost=(r_sum+l_sum)/e.target.value
-      let total_value=r_sum+l_sum
+      let total_cost=Number((r_sum+l_sum)/e.target.value).toFixed(2)
+      let total_value=Number(r_sum+l_sum).toFixed(2)
       setProduceData((data)=>({...data,cost:total_cost,value:total_value,mrp_rate:change[0]?.item_details.mrp_rate,wholesale_rate:change[0]?.item_details.wholesale_rate,}))
       let m=change[0]?.item_details.margin
       let sr=change[0]?.item_details.retail_rate
@@ -156,7 +160,7 @@ const ItemProduce = (props) => {
     if (e.target.value == "") {
       setProduceData((data) => ({ ...data, [e.target.name]: null,retail_rate:null }));
     } else {
-      setProduceData((data) => ({ ...data, [e.target.name]: e.target.value,retail_rate:data.cost+(data.cost*(e.target.value/100))  }));
+      setProduceData((data) => ({ ...data, [e.target.name]: e.target.value,retail_rate:+data.cost+ +(data.cost*(e.target.value/100))  }));
     }
   };
 
@@ -164,7 +168,7 @@ const ItemProduce = (props) => {
     if (e.target.value == "") {
       setProduceData((data) => ({ ...data, [e.target.name]: null,margin:null}));
     } else {
-      setProduceData((data) => ({ ...data, [e.target.name]: e.target.value,margin:((e.target.value-data.cost)/data.cost)*100  }));
+      setProduceData((data) => ({ ...data, [e.target.name]: e.target.value,margin:Number(((e.target.value-data.cost)/data.cost)*100).toFixed(2)  }));
     }
   };
 
@@ -175,16 +179,21 @@ const ItemProduce = (props) => {
     setFullRawData(tempRaw)
     let tempByProd = []
     tempByProd=[...fullByprodData,...byProductItems]
-    setFullByprodData(tempRaw)
+    setFullByprodData(tempByProd)
+
+    let tempLabour =[]
+    tempLabour=[...fullLabourData,...labourDetails]
+    setFullLabourData(tempLabour)
     setProduceData('')
     setRawItems('')
     setByProductItems('')
+    setLabourDetails('')
   }
   // const handleKeySubmit =() =>{
 
   // }
   return (
-    <div className="col-12 mt-1">
+    <div className="col-12 mt-1"  style={{ height: "140px", overflowY: "scroll" }}>
       <table className="w-100 ProdTable">
         <thead> 
           <tr className="bg-dark text-light">
@@ -526,7 +535,7 @@ const ItemProduce = (props) => {
                 name="batch_no"
               />
             </td>
-            <td><BsPlusSquareFill style={{color:'#4caf50'}} onClick={handleSubmit}/></td>
+            <td><BsPlusSquareFill style={{color:'#4caf50'}} onClick={handleSubmit} onKeyDown={handleSubmit}/></td>
           </tr>
         </tbody>
       </table>

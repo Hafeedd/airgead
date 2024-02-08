@@ -8,10 +8,12 @@
 
 .PayrollTable tbody tr{
     border: 2px solid grey;
+    
 }
 
 .PayrollTable tbody tr td {
   border:  0;
+  padding: .7rem .7rem;
 }
 
 .PayrollTable tfoot tr td{
@@ -30,4 +32,12 @@
 
 .rotate-in{
     transform: rotate(90deg);
+}
+
+.PayrollTable tr{
+    height: .5rem;
+} 
+
+.PayrollTable thead tr th:first-child {
+    width: 10rem;
 }
