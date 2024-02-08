@@ -17,9 +17,8 @@ import useOnKey from "../../../hooks/onKeyFunct/onKeyFunct";
 import Swal from "sweetalert2";
 import useItemServices from "../../../services/master/itemServices";
 import { PrintFIle } from "./components/SalesBill";
-import { initialPurchaseSalesTableStatePosition } from "../purchase/PurchaseTransaction";
+import { initialPurchaseSalesTableStatePosition } from "../purchase/InitialData/data";
 // import { initialPurchaseSalesTableStatePositionLocal } from "../purchase/PurchaseTransaction";
-
 
 const initialSalesState = {
   cstm_id: null,
@@ -93,9 +92,9 @@ const initialTableItemState = {
   discount_1_amount: 0.0,
 };
 
-export const initialSalesTableStatePositionLocal = JSON.parse(localStorage.getItem(
-  "initialSalesTableStatePositionLocal"
-))
+export const initialSalesTableStatePositionLocal = JSON.parse(
+  localStorage.getItem("initialSalesTableStatePositionLocal")
+);
 
 const SalesTransaction = () => {
   const [salesItemModal, setSalesItemModal] = useState(false);
@@ -131,7 +130,8 @@ const SalesTransaction = () => {
 
   const [tableItem, setTableItem] = useState(initialTableItemState);
   const [tableHeadList, setTableHeadList] = useState(
-    initialSalesTableStatePositionLocal || initialPurchaseSalesTableStatePosition
+    initialSalesTableStatePositionLocal ||
+      initialPurchaseSalesTableStatePosition
   );
 
   const { getProperty } = useItemServices();
@@ -147,8 +147,8 @@ const SalesTransaction = () => {
     setTableItemList([]);
     setEdit(false);
     setShowPrint(false);
-    setTableItemKeys([])
-    handleGetCode()
+    setTableItemKeys([]);
+    handleGetCode();
   };
 
   const handleTableItemReset = () => {
@@ -157,18 +157,17 @@ const SalesTransaction = () => {
 
   useEffect(() => {
     if (edit) {
-      console.log(edit)
       let { sales_item, updated_at, ...others } = edit;
-      let tempData = {...others, change_due:others.change_due||"0.00" }
+      let tempData = { ...others, change_due: others.change_due || "0.00" };
       // console.log(others)
-      setSalesAdd((data) => ({ ...data, ...tempData}));
+      setSalesAdd((data) => ({ ...data, ...tempData }));
       if (sales_item) {
         setTableItemList([...sales_item]);
-        handleSalesAddCalc(sales_item,true,tempData)   
+        handleSalesAddCalc(sales_item, true, tempData);
       }
-    }else handleGetCode();
+    } else handleGetCode();
   }, [edit]);
-  
+
   useEffect(() => {
     getData();
   }, []);
@@ -180,7 +179,7 @@ const SalesTransaction = () => {
   //   handleSalesAddCalc(tableItemList,true);
   // }, [tableItemList]);
 
-  const handleSalesAddCalc = (dataList,fromEdit,purchaseData) => {
+  const handleSalesAddCalc = (dataList, fromEdit, purchaseData) => {
     // dataList is the state of tableItemList
     if (dataList?.length > 0) {
       let netAmount = dataList?.reduce((a, b) => {
@@ -316,10 +315,15 @@ const SalesTransaction = () => {
       if (roundOff == 0 || !roundOff) roundOff = null;
       else if (roundOff < 0) roundOff = Math.abs(roundOff)?.toFixed(2);
 
-      let tempSalesAdd = purchaseData||{...salesAdd}
-      if(!fromEdit){
-        tempSalesAdd = {...tempSalesAdd, paid_cash: +netAmount?.toFixed(0), change_due:0, bank_amount:0}
-    }
+      let tempSalesAdd = purchaseData || { ...salesAdd };
+      if (!fromEdit) {
+        tempSalesAdd = {
+          ...tempSalesAdd,
+          paid_cash: +netAmount?.toFixed(0),
+          change_due: 0,
+          bank_amount: 0,
+        };
+      }
       // let paidCash = (+netAmount?.toFixed(0)- salesAdd.discount) - (+salesAdd.change_due || 0 + +salesAdd.bank_amount ||0)
 
       // if (editStatus == "edit") {
@@ -354,7 +358,7 @@ const SalesTransaction = () => {
         roundoff: roundOff,
         total_discount: total_disc?.toFixed(2),
       };
-      setSalesAdd({...tempSalesAdd });
+      setSalesAdd({ ...tempSalesAdd });
     } else {
       setSalesAdd((data) => ({
         ...data,
@@ -371,7 +375,7 @@ const SalesTransaction = () => {
         total_total: 0,
         total_scGst: 0,
         total_items: 0,
-        hsnCalc:[]
+        hsnCalc: [],
         // change_due: null,
       }));
     }
@@ -382,10 +386,7 @@ const SalesTransaction = () => {
   }, []);
 
   useEffect(() => {
-    if (
-      (!salesAdd.bank_amount && !salesAdd.fk_bank) ||
-      (salesAdd.fk_bank)
-    )
+    if ((!salesAdd.bank_amount && !salesAdd.fk_bank) || salesAdd.fk_bank)
       setBankSelect(true);
     else setBankSelect(false);
   }, [salesAdd.bank_amount, salesAdd.fk_bank]);
@@ -444,7 +445,7 @@ const SalesTransaction = () => {
         [e.target.name]: value,
         total_amount: discPrice?.toFixed(0),
         paid_cash: discPrice?.toFixed(0),
-        change_due: '0.00',
+        change_due: "0.00",
         bank_amount: 0,
       }));
     } else if (e.target.name == "paid_cash") {
@@ -463,24 +464,25 @@ const SalesTransaction = () => {
         setSalesAdd((data) => ({
           ...data,
           change_due:
-            (Number(salesAdd.change_due) +
-            Number(salesAdd.total_amount) +
-            Number(salesAdd.paid_cash) -
-            value -
-            salesAdd.total_amount)||"0.00",
+            Number(salesAdd.change_due) +
+              Number(salesAdd.total_amount) +
+              Number(salesAdd.paid_cash) -
+              value -
+              salesAdd.total_amount || "0.00",
           paid_cash: value,
         }));
       }
     } else if (e.target.name == "bank_amount") {
       let value = e.target.value == "" ? null : +e.target.value;
-      let totalAmount = salesAdd.total_amount
-        // (+salesAdd.change_due || 0) +
-        // (+salesAdd.paid_cash || 0) +
-        // (+salesAdd.bank_amount || 0);
+      let totalAmount = salesAdd.total_amount;
+      // (+salesAdd.change_due || 0) +
+      // (+salesAdd.paid_cash || 0) +
+      // (+salesAdd.bank_amount || 0);
       setSalesAdd((data) => ({
         ...data,
         paid_cash: +totalAmount - value,
-        change_due: /* (salesAdd.total_amount - (value + +totalAmount - value)) || */ '0.00',
+        change_due:
+          /* (salesAdd.total_amount - (value + +totalAmount - value)) || */ "0.00",
         bank_amount: value,
       }));
     } else if (e.target.value === "")
@@ -510,7 +512,7 @@ const SalesTransaction = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      if(salesAdd.change_due>0 && !salesAdd.fk_customer ){
+      if (salesAdd.change_due > 0 && !salesAdd.fk_customer) {
         Swal.fire({
           title: "Customer not selected",
           icon: "warning",
@@ -518,7 +520,7 @@ const SalesTransaction = () => {
           showConfirmButton: false,
           timer: 1500,
         });
-        return 0 
+        return 0;
       }
       if (tableItemKeys?.length < 1 && !edit) {
         Swal.fire({
@@ -647,7 +649,7 @@ const SalesTransaction = () => {
       >
         <div className="row mx-0 mb-0 justify-content-between">
           <div className="col-3 mx-0 px-0 ps-2 row">
-            <div className="col-12 sales-supplier-container px-0 py-4 row mx-0 mt-1">
+            <div className="col-12 sales-supplier-container px-0 py-3 row mx-0 mt-1">
               <div className="col-11 row mx-0 mb-1 align-items-center">
                 <div className="col-5">Op Balance</div>
                 <div className="col-1">:</div>
@@ -661,27 +663,37 @@ const SalesTransaction = () => {
             </div>
             <div className="col-9 d-flex align-items-end justify-content-start px-0 mx-0 mt-1">
               <div className="pe-1">
-                <div className="btn btn-sm btn-secondary px-3">Sales</div>
+                <div className="btn btn-sm btn-secondary rounded-bottom-0 px-3">Sales</div>
               </div>
               <div className="">
-                <div className="btn btn-sm btn-secondary px-3">S.Return</div>
+                <div className="btn btn-sm btn-secondary rounded-bottom-0 px-3">S.Return</div>
               </div>
               <div className="ps-1">
-                <div className="btn btn-sm btn-secondary px-3">Other</div>
+                <div className="btn btn-sm btn-secondary rounded-bottom-0 px-3">Other</div>
+              </div>
+              <div className="ps-1 col-3"
+              >
+                <div
+                  onClick={handleEdit}
+                  className="btn btn-sm btn-dark px-1 rounded-bottom-0 justify-content-center d-flex align-items-center gap-1"
+                >
+                  <FiEdit size={"1rem"} />
+                  Edit
+                </div>
               </div>
             </div>
-            <div className="col-3 pe-0 d-flex justify-content-end align-items-end mt-1">
-              <div
+            {/* <div className="col-3"> */}
+              {/* <div
                 className="btn btn-dark btn-sm purchase-edit-btn"
                 onClick={handleEdit}
               >
                 <FiEdit size={"1rem"} />
                 Edit
-              </div>
-            </div>
+              </div> */}
+            {/* </div> */}
           </div>
           {/* --------------------- */}
-          <div className={`col-9 ${pageHeadItem !==1 && 'd-none'}`}>
+          <div className={`col-9 ${pageHeadItem !== 1 && "d-none"}`}>
             <SalesInvoiceDetails
               {...{
                 billType,
@@ -703,12 +715,12 @@ const SalesTransaction = () => {
               }}
             />{" "}
           </div>
-          <div className={`col-9 ${pageHeadItem !==3 && 'd-none'}`}>
+          <div className={`col-9 ${pageHeadItem !== 3 && "d-none"}`}>
             <SalesDeliveryDetails
               {...{ salesAdd, setSalesAdd, handleChange }}
             />
           </div>
-          <div className={`col-9 ${pageHeadItem !==2 && 'd-none'}`}>
+          <div className={`col-9 ${pageHeadItem !== 2 && "d-none"}`}>
             {" "}
             <SalesCustomerDetails
               {...{
@@ -725,10 +737,10 @@ const SalesTransaction = () => {
               }}
             />
           </div>
-          <div className={`col-9 ${pageHeadItem !==4 && 'd-none'}`}>
+          <div className={`col-9 ${pageHeadItem !== 4 && "d-none"}`}>
             <SalesInvoiceDetails />
           </div>
-          <div className={`col-9 ${pageHeadItem !==5 && 'd-none'}`}>
+          <div className={`col-9 ${pageHeadItem !== 5 && "d-none"}`}>
             <SalesPrintingDetails />
           </div>
           {/* ------------------------- */}
@@ -781,11 +793,12 @@ const SalesTransaction = () => {
         onHide={() => setSalesItemModal(false)}
       >
         <PurchaseTableItemList
-        from="sal"
-        {...{
-          tableHeadList,
-          setTableHeadList
-        }}/>
+          from="sal"
+          {...{
+            tableHeadList,
+            setTableHeadList,
+          }}
+        />
       </Modal>
       <Modal
         show={salesEditModal}

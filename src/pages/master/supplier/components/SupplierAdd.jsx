@@ -4,11 +4,11 @@ import useItemServices from '../../../../services/master/itemServices'
 import SearchDropDown from '../../../../components/searchDropDown/SearchDropDown'
 import Swal from 'sweetalert2'
 import { useLocation, useNavigate } from 'react-router-dom'
+import useOnKey from '../../../../hooks/onKeyFunct/onKeyFunct'
 
 const SupplierAdd = ({edit,refresh,setToEdit}) => {
     const [showDropdown, setShowDropdown] = useState(false)
     const [ref, setRef] = useState()
-    const formRef = useRef(null)
     const [listItem, setListItem] = useState({
         company:[],
         district:[]
@@ -17,6 +17,8 @@ const SupplierAdd = ({edit,refresh,setToEdit}) => {
     const location = useLocation()
 
     const navigate = useNavigate()
+
+    const [ handleKeyDown, formRef ] = useOnKey(ref,setRef)
     
     const [supplierAdd, setSupplierAdd] = useState({
         district:null,
@@ -76,32 +78,32 @@ const SupplierAdd = ({edit,refresh,setToEdit}) => {
         setSupplierAdd(tempSupplierAdd)
     },[edit])
 
-    useEffect(()=>{
-        if(formRef.current) getRefValue(formRef,setRef)
-        }
-    ,[formRef])
+    // useEffect(()=>{
+    //     if(formRef.current) getRefValue(formRef,setRef)
+    //     }
+    // ,[formRef])
 
-    const getRefValue = (ref,set) =>{
-        const data = [...ref.current.children]
-        const newList = [...data[0].querySelectorAll('input, select, textarea')]
-        newList[0].focus()
-            set(newList)
-    }
+    // const getRefValue = (ref,set) =>{
+    //     const data = [...ref.current.children]
+    //     const newList = [...data[0].querySelectorAll('input, select, textarea')]
+    //     newList[0].focus()
+    //         set(newList)
+    // }
 
-    const handleKeyDown = (e) => {
-        if (e.key === "Enter") {
-            e.preventDefault();
-            if (e.target && ref.length>0) {
-                let a = ref.indexOf(e.target)
-                if(a===ref.length-1){
-                    ref[0].focus()
-                }else{
-                ref[a].blur()
-                ref[a+1].focus();
-            }
-            }
-        }
-    };
+    // const handleKeyDown = (e) => {
+    //     if (e.key === "Enter") {
+    //         e.preventDefault();
+    //         if (e.target && ref.length>0) {
+    //             let a = ref.indexOf(e.target)
+    //             if(a===ref.length-1){
+    //                 ref[0].focus()
+    //             }else{
+    //             ref[a].blur()
+    //             ref[a+1].focus();
+    //         }
+    //         }
+    //     }
+    // };
 
     const getData = async () =>{
         let list = {}

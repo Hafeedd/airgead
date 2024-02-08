@@ -80,7 +80,6 @@ const AccountAdd = ({ edit, refresh, setEdit }) => {
 
   useEffect(() => {
     if (edit) {
-      console.log(edit);
       setAccountAdd((data) => ({
         ...data,
         code: edit?.code,
@@ -143,7 +142,7 @@ const AccountAdd = ({ edit, refresh, setEdit }) => {
 
     if (e.target.type === "checkbox")
       setAccountAdd((data) => ({ ...data, [e.target.name]: e.target.checked }));
-    else if (e.target.type === "select-one")
+    else if (e.target.type === "select-one" && e.target.name === "cash_bank"){
       if (e.target.value == "BANK")
         setAccountAdd((data) => ({
           ...data,
@@ -155,14 +154,16 @@ const AccountAdd = ({ edit, refresh, setEdit }) => {
           ...data,
           bank_account: false,
           cash_bank: "CASH",
-        }));
+        }));}
     else if (e.target.value === "")
       setAccountAdd((data) => ({ ...data, [e.target.name]: null }));
-    else if (!data)
-      setAccountAdd((data) => ({ ...data, [e.target.name]: e.target.value }));
+    else if (!data){
+      setAccountAdd((data) => ({ ...data, [e.target.name]: e.target.value }));}
     if (e.target.name === "transaction" && e.target.checked === false) {
       setAccountAdd((data) => ({ ...data, ["hsn"]: null, ["tax"]: null }));
     }
+
+    // console.log(e.target.value, e.target.name)
   };
 
   const handleChangeGroup = (e) => {
@@ -314,7 +315,6 @@ const AccountAdd = ({ edit, refresh, setEdit }) => {
   const search = (options, searchValue) => {
     searchValue = searchValue.toUpperCase();
     return options.filter((option) => {
-      console.log(option);
       return (
         option?.description?.includes(searchValue) ||
         option?.text?.includes(searchValue)

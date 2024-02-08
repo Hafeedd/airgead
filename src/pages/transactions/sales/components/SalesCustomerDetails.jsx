@@ -145,7 +145,7 @@ const SalesCustomerDetails = (props) => {
           />
         {/* <div className="btn btn-sm btn-dark">Add Customer</div> */}
         </Form.Group>
-        <div className="col-5 sales-customer-container text-start row mx-0 my-1 p-0">
+        <div className="col-5 sales-customer-container text-start row mx-0 p-0 mt-2">
           <Form.Control
             className="sales-customer-container text-start text-uppercase align-items-start p-0 px-3 h-100"
             placeholder="Address"
@@ -191,7 +191,7 @@ const SalesCustomerDetails = (props) => {
               value={salesAdd?.due_date || ""}
             />
           </Form.Group>
-          <span className="col-12 mt-3" />
+          {/* <span className="col-12 mt-3" /> */}
         </div>
       </div>
 
@@ -237,7 +237,7 @@ const SalesCustomerDetails = (props) => {
             value={salesAdd?.careof_user || ""}
           />
         </Form.Group>
-        <div style={{ height: "1rem" }} />
+        {/* <div style={{ height: "0.7rem" }} /> */}
         {/* <Form.Group className='col-5 mx-0 d-flex align-items-center px-0 mt-1'>
                     <Form.Label className='col-5 purchase-input-label'>Cash/ Credit</Form.Label>
                     <div className='mx-0 col px-0'>

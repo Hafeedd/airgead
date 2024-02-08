@@ -4,7 +4,7 @@ import { FiEdit } from "react-icons/fi";
 import useOnKey from "../../../../hooks/onKeyFunct/onKeyFunct";
 
 const PurchaseDeliveryDetails = (props) => {
-  const { handleEdit, purchaseAdd, handleChange } = props;
+  const { handleEdit, purchaseAdd , handleChange} = props;
   const [ref, setRef] = useState(null);
 
   const { handleKeyDown, formRef } = useOnKey(ref, setRef);
@@ -87,15 +87,24 @@ const PurchaseDeliveryDetails = (props) => {
         <div className="ps-1">
           <div className="btn btn-sm btn-secondary px-3">Other</div>
         </div>
+        <div className="ps-1 col-3">
+        <div
+            onClick={handleEdit}
+            className="btn btn-sm btn-dark px-1 justify-content-center d-flex align-items-center gap-1"
+          >
+            <FiEdit size={"1rem"} />
+            Edit
+          </div>
+        </div>
       </div>
       <div className="col-1 d-flex align-items-end ps-0">
-        <div
+        {/* <div
           className="btn btn-dark btn-sm purchase-edit-btn"
           onClick={handleEdit}
         >
           <FiEdit size={"1rem"} />
           Edit
-        </div>
+        </div> */}
       </div>
       <span className="col-5" />
       <Form.Group className="col-3 col-4 mx-0 d-flex align-items-center my-1">

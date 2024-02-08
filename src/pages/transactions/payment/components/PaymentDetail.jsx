@@ -65,7 +65,8 @@ const PaymentDetail = ({
                 onChange={handleChange}
                 value={paymentAdd?.method}
                 name="method"
-                className="account-select-dropdown ms-0 pe-0"
+                disabled
+                className="select-hide-arrow account-select-dropdown ms-0 pe-0"
               >
                 <option value="Payment">Payment</option>
                 <option value="Receipt">Receipt</option>

@@ -221,6 +221,7 @@ const SalesTable = (props) => {
         let tempList = [...tableItemList];
         tempList.splice(i, 1);
         setTableItemList([...tempList]);
+        handleSalesAddCalc(tempList,false)
         getData();
       }
       // if (response.success && !data.created_at) {
@@ -294,6 +295,7 @@ const SalesTable = (props) => {
       } else {
         Swal.fire(response.message, "", "error");
       }
+      handleKeyDown(e)
       handleSalesAddCalc(itemTempList);
     } catch (err) {
       console.log(err);
@@ -360,7 +362,7 @@ const SalesTable = (props) => {
     } else if (e.target.value === "") {
       tempItem = { ...tempItem, [e.target.name]: "" };
     } else if (e.target.type === "number") {
-      tempItem = { ...tempItem, [e.target.name]: parseFloat(e.target.value) };
+      tempItem = { ...tempItem, [e.target.name]: parseFloat(+e.target.value+0) };
     } else {
       tempItem = { ...tempItem, [e.target.name]: e.target.value };
     }
@@ -392,17 +394,16 @@ const SalesTable = (props) => {
         //     (tempItem.gross -
         //       tempItem?.discount_1_percentage * (tempItem.gross / 100))))
         // );
-        console.log(
+        // console.log(
           
-            tempItem.gross
-            -
-            (tempItem.gross -
-              (tempItem.gross -
-                tempItem?.discount_1_percentage * (tempItem.gross / 100)))
-                 
-                /
-              (1 + tempItem.tax_gst / 100)
-        );
+        //     tempItem.gross
+        //     -
+        //     (tempItem.gross -
+        //       (tempItem.gross -
+        //         tempItem?.discount_1_percentage * (tempItem.gross / 100)))       
+        //         /
+        //       (1 + tempItem.tax_gst / 100)
+        // );
         value = {
           ...value,
           rate:
@@ -545,47 +546,11 @@ const SalesTable = (props) => {
         sgst: 0,
         cgst_or_igst: 0,
         total: 0,
+        rate: 0,
         discount_1_amount: 0,
-        // gross: 0,
+        gross:0,
       };
     }
-
-    tempItem = { ...tempItem, ...value };
-
-    // if(e.target.name?.match(/tax_gst|rate/)){
-    // if (e.target.name !== "gross") {
-    //   if (tempItem.tax_gst && tempItem.rate) {
-    //     console.log(
-    //       (tempItem.rate - tempItem.discount_1_amount_per_item) *
-    //         (tempItem.tax_gst / 100)
-    //     );
-    //     value = {
-    //       ...value,
-    //       ["gross"]:
-    //         (tempItem.rate - tempItem.discount_1_amount_per_item || 0) +
-    //         (tempItem.rate - tempItem.discount_1_amount_per_item || 0) *
-    //           (tempItem.tax_gst / 100),
-    //     };
-    //   } else {
-    //     value = { ...value, ["gross"]: 0 };
-    //   }
-    // }
-    // tempItem = { ...tempItem, ...value };
-
-    // if (e.target.name !== "tax_gst" && e.target.name !== "rate" && e.target.name !== "discount_1_percentage") {
-    // // if (e.target.name === "gross" ) {
-    //   // console.log(tempItem.discount_1_amount_per_item)
-    //   if (tempItem.gross && tempItem.tax_gst) {
-    //     value = {
-    //       ...value,
-    //       rate: ((tempItem.gross) * 100)/ (tempItem.tax_gst+100) // (a * 100) / (c + 100)
-    //     }
-    //   }else if(!tempItem.gross){
-    //     value={...value, rate:0}
-    //   }
-    // }
-
-    // tempItem = { ...tempItem, ...value };
 
     let tempItemKeys = Object.keys(tempItem);
     tempItemKeys?.map((key) => {

@@ -4,6 +4,7 @@ import { Dropdown } from "semantic-ui-react";
 
 const PurchaseDetailFooter = (props) => {
   const {
+    handleGetCode,
     bankSelect,
     tableItemList,
     purchaseAdd,
@@ -13,6 +14,11 @@ const PurchaseDetailFooter = (props) => {
     handlePurchaseAllReset,
     edit,
   } = props;
+
+  const handleReset =() =>{
+    handlePurchaseAllReset()
+    handleGetCode()
+  }
 
   return (
     <div className="row mx-2 my-1 me-0">
@@ -194,7 +200,7 @@ const PurchaseDetailFooter = (props) => {
             <div className="mx-0 px-1 col-6">
               <button
                 type="reset"
-                onClick={handlePurchaseAllReset}
+                onClick={handleReset}
                 className="btn btn-sm btn-outline-dark w-100"
               >
                 Clear

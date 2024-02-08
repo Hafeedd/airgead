@@ -31,13 +31,8 @@ const PurchaseTable = (props) => {
     purchaseList,
     getData,
     handlePurchaseAllReset,
-    handleResetTable,
-    setShowBatch,
-    setShowStock,
-    setPurchaseList,
-    showBatch,
-    tableItemBatchList,
-    setTableItemBatchList,
+    handleTableItemReset,
+    setShowBatch
   } = props;
 
   const [ref, setRef] = useState();
@@ -63,13 +58,14 @@ const PurchaseTable = (props) => {
   const { deletePurchaseItem, putPurchaseItem } = usePurchaseServices();
 
   const handleKeyTableItemEdit = async (e, data, i) => {
-    e.preventDefault();
     if (e.key == "Enter" && !e.ctrlKey) {
+      e.preventDefault();
       handleTableItemEdit(e, data, i);
     } else handleKeyDown2(e);
   };
 
   const handleTableItemEdit = async (e, data, i) => {
+    e.preventDefault()
     try {
       if (!data.item_name || !data.quantity || !data.rate) {
         Swal.fire({
@@ -143,31 +139,35 @@ const PurchaseTable = (props) => {
     // if toTableItem is not true then it contains the index of tableItemList
     let tempItem = { ...state };
     if (data) {
-      let Item_data = data.options.filter((x) => x?.value === data?.value)[0];
-      // console.log(Item_data)
+      let itemData = data.options.filter((x) => x?.value === data?.value)[0];
+      
       const { purchase_rate, discount_1_percentage, tax_gst, fk_unit } =
-        Item_data || {};
+        itemData || {};
       tempItem = {
         ...tempItem,
         rate: purchase_rate || 0,
         discount_1_percentage: discount_1_percentage || 0,
         tax_gst: tax_gst || 0,
         fk_unit: fk_unit,
-        quantity: Item_data ? 1 : 0,
-        item_name: Item_data?.text,
-        code: Item_data?.description,
-        fk_items: Item_data?.value,
-        unit: Item_data?.unit,
+        quantity: itemData ? 1 : 0,
+        item_name: itemData?.text,
+        code: itemData?.description,
+        fk_items: itemData?.value,
+        unit: itemData?.unit,
+        margin:itemData?.margin,
+        sales_rate:itemData?.retail_rate
       };
     }
     if (e.target.value === "") {
       tempItem = { ...tempItem, [e.target.name]: "" };
     } else if (e.target.type === "number") {
-      tempItem = { ...tempItem, [e.target.name]: parseFloat(e.target.value) };
+      tempItem = { ...tempItem, [e.target.name]: parseFloat(+e.target.value) };
     } else {
       tempItem = { ...tempItem, [e.target.name]: e.target.value };
     }
-    const calculatedData = handleAmountCalculation(tempItem, e, state);
+    // let calculatedData = tempItem
+    // if(!data)
+    let calculatedData = handleAmountCalculation(tempItem, e, state);
     if (toTableItem === true) setTableItem(calculatedData);
     else {
       let tempList = [...tableItemList];
@@ -370,12 +370,12 @@ const PurchaseTable = (props) => {
     if (purchaseList?.length > 0) {
       if (!edit) {
         handlePurchaseAllReset();
-        setEdit(purchaseList[0]);
+        setEdit({...purchaseList[0]});
       } else {
         let ind = purchaseList?.findIndex((x) => edit.id == x.id);
         if (ind !== purchaseList?.length - 1) {
           handlePurchaseAllReset();
-          setEdit(purchaseList[ind + 1]);
+          setEdit({...purchaseList[ind + 1]});
         } else {
           Swal.fire("No more purchase to edit", "go for next", "warning");
         }
@@ -386,9 +386,10 @@ const PurchaseTable = (props) => {
   };
 
   const handleNext = () => {
+    if(purchaseList?.length>0)
     if (!edit) {
       Swal.fire("No more purchase to edit", "go for prev", "warning");
-    } else if (edit?.id == purchaseList[0].id) {
+    } else if (edit?.id == purchaseList[0]?.id) {
       handlePurchaseAllReset();
     } else {
       handlePurchaseAllReset();
@@ -396,6 +397,7 @@ const PurchaseTable = (props) => {
       if (ind !== purchaseList[0]) {
         setEdit(purchaseList[ind - 1]);
       } else {
+        handlePurchaseAllReset()
         Swal.fire("No more purchase to edit", "go for prev", "warning");
       }
     }
@@ -443,6 +445,7 @@ const PurchaseTable = (props) => {
         let tempList = [...tableItemList];
         tempList.splice(i, 1);
         setTableItemList([...tempList]);
+        handlePurchAllCalc(tempList, true)
         getData();
       }
       // else if (response.success && !data.created_at) {
@@ -736,6 +739,7 @@ const PurchaseTable = (props) => {
                     <td>
                       {data.edited ? (
                         <button
+                          // type="clear"
                           onKeyDown={(e) => handleKeyTableItemEdit(e, data, i)}
                           onClick={(e) => handleTableItemEdit(e, data, i)}
                           className="text-center border-0 bg-transparent"
@@ -1064,7 +1068,7 @@ const PurchaseTable = (props) => {
                     type="button"
                     onClick={() => {
                       setTableEdit(false);
-                      handleResetTable();
+                      handleTableItemReset();
                     }}
                     className="table-item-add-btn2 text-start"
                     value={"+"}
