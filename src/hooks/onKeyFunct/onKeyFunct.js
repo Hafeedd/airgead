@@ -1,5 +1,15 @@
 import { useEffect, useRef } from "react";
+import { useEffect, useRef } from "react";
 
+const useOnKey = (ref, setRef,...otherChangableState) => {
+  let formRef = useRef([]);
+
+  useEffect(() => {
+    // console.log(formRef.current)
+    if (formRef?.current) getRefValue(formRef, setRef);
+  }, [formRef, ...otherChangableState]);
+
+  const getRefValue = (fRef, set) => {
 const useOnKey = (ref, setRef,...otherChangableState) => {
   let formRef = useRef([]);
 

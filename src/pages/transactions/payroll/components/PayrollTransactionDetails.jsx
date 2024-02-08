@@ -5,6 +5,7 @@ import { useNavigate } from "react-router";
 import "sweetalert2";
 import { usePayrollTransactionServices } from "../../../../services/transactions/payrollTransactionServices";
 import Swal from "sweetalert2";
+import useOnKey from "../../../../hooks/onKeyFunct/onKeyFunct";
 const PayrollTransactionDetails = (props) => {
   const {
     date,
@@ -27,6 +28,9 @@ const PayrollTransactionDetails = (props) => {
 
   const [totalSalary, setTotalSalary] = useState(0);
   const [narration, setNarration] = useState("Salary");
+
+  const [ref1, setRef1] = useState(null);
+  const [handleKeyDown1, formRef1] = useOnKey(ref1, setRef1,payrollData);
 
   useEffect(()=>{
     let totalS = 0
@@ -84,11 +88,12 @@ const PayrollTransactionDetails = (props) => {
 
     let netSalary;
     if (e.target.name !== "net_salary") {
+      let a_leave=parseFloat(changedData.payscale?.allowed_leave)
+      let l_count=parseFloat(changedData.leave_count) 
+
       netSalary =
         (parseFloat(changedData.payscale?.salary) || 0) -
-          ((parseFloat(changedData.leave_count || 0) -
-            parseFloat(changedData.payscale?.allowed_leave || 0)) *
-            parseFloat(changedData.payscale?.leave_cut || 0) +
+          ((a_leave>=(l_count||""||null)?0:(parseFloat(changedData.leave_count || 0) - parseFloat(changedData.payscale?.allowed_leave || 0)) * parseFloat(changedData.payscale?.leave_cut || 0) )+
             parseFloat(changedData.payscale?.pf || 0) +
             parseFloat(changedData.payscale?.esi || 0) +
             parseFloat(changedData.payscale?.insurance || 0) +
@@ -267,7 +272,7 @@ const PayrollTransactionDetails = (props) => {
         }}
         className="mt-3"
       >
-        <table className="PayrollTable w-100">
+        <table className="PayrollTable w-100" style={{tableLayout:'fixed'}}>
           <thead>
             <tr>
               <th>Staff Name</th>
@@ -304,14 +309,18 @@ const PayrollTransactionDetails = (props) => {
               payrollData.map((data, i) => {
                 // {console.log(data)}
                 return (
-                  <tr key={i}>
+                  <tr key={i}  ref={(e)=>(formRef1.current[i] = e)}>
                     <td>
-                      <input
+                      {/* <input
                         onChange={(e) => handleChange(e, i)}
                         type="text"
                         name="name"
                         value={data.name}
-                      />
+                        disabled
+                      /> */}
+                      <div>
+                        {data.name}
+                      </div>
                     </td>
                     <td>
                       <input
@@ -322,6 +331,7 @@ const PayrollTransactionDetails = (props) => {
                         placeholder={
                           data.payscale?.salary ? data.payscale?.salary : "--"
                         }
+                        onKeyDown={handleKeyDown1}
                       />
                     </td>
                     <td>
@@ -335,6 +345,7 @@ const PayrollTransactionDetails = (props) => {
                             ? data.payscale?.allowed_leave
                             : "--"
                         }
+                        onKeyDown={handleKeyDown1}
                       />
                     </td>
                     <td>
@@ -344,6 +355,7 @@ const PayrollTransactionDetails = (props) => {
                         name="leave_count"
                         value={data.leave_count}
                         placeholder={data.leave_count ? data.leave_count : "--"}
+                        onKeyDown={handleKeyDown1}
                       />
                     </td>
                     <td>
@@ -357,6 +369,7 @@ const PayrollTransactionDetails = (props) => {
                             ? data.payscale?.leave_cut
                             : "--"
                         }
+                        onKeyDown={handleKeyDown1}
                       />
                     </td>
                     <td>
@@ -366,6 +379,7 @@ const PayrollTransactionDetails = (props) => {
                         name="pf"
                         value={data.payscale?.pf}
                         placeholder={data.payscale?.pf ? data.payscale?.pf : "--"}
+                        onKeyDown={handleKeyDown1}
                       />
                     </td>
                     <td>
@@ -377,6 +391,7 @@ const PayrollTransactionDetails = (props) => {
                         placeholder={
                           data.payscale?.esi ? data.payscale?.esi : "--"
                         }
+                        onKeyDown={handleKeyDown1}
                       />
                     </td>
                     <td>
@@ -390,6 +405,7 @@ const PayrollTransactionDetails = (props) => {
                             ? data.payscale?.insurance
                             : "--"
                         }
+                        onKeyDown={handleKeyDown1}
                       />
                     </td>
                     <td>
@@ -401,6 +417,7 @@ const PayrollTransactionDetails = (props) => {
                         placeholder={
                           data.payscale?.other ? data.payscale?.other : "--"
                         }
+                        onKeyDown={handleKeyDown1}
                       />
                     </td>
                     <td>
@@ -410,6 +427,7 @@ const PayrollTransactionDetails = (props) => {
                         name="net_salary"
                         value={data.net_salary}
                         placeholder={data.net_salary ? data.net_salary : "--"}
+                        onKeyDown={handleKeyDown1}
                       />
                     </td>
                   </tr>
