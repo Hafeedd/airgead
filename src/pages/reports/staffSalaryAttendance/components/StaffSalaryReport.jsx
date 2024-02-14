@@ -9,7 +9,7 @@ const StaffSalaryReport = (params) => {
                   width: "85rem",
                   overflowX: "hidden",
                   overflowY: "scroll",
-                  }}>
+                  }}  className='w-100'>
                   <table className="StaffTables w-100">
                       <thead>
                       <tr>

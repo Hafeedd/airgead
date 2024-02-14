@@ -23,7 +23,8 @@ const ItemProduce = (props) => {
     byProductItems,
     fullLabourData,
     setFullLabourData,
-    labourDetails
+    labourDetails,
+    listProduction,setListProduction
     
   } = props;
 
@@ -144,7 +145,8 @@ const ItemProduce = (props) => {
       
       let total_cost=Number((r_sum+l_sum)/e.target.value).toFixed(2)
       let total_value=Number(r_sum+l_sum).toFixed(2)
-      setProduceData((data)=>({...data,cost:total_cost,value:total_value,mrp_rate:change[0]?.item_details.mrp_rate,wholesale_rate:change[0]?.item_details.wholesale_rate,}))
+      setProduceData((data)=>({...data,cost:total_cost,value:total_value,mrp_rate:change[0]?.item_details.mrp_rate,wholesale_rate:change[0]?.item_details.wholesale_rate,r_sum:r_sum,
+      l_sum:l_sum}))
       let m=change[0]?.item_details.margin
       let sr=change[0]?.item_details.retail_rate
       if (sr!=''||null){
@@ -184,6 +186,10 @@ const ItemProduce = (props) => {
     let tempLabour =[]
     tempLabour=[...fullLabourData,...labourDetails]
     setFullLabourData(tempLabour)
+
+    let tempList ={...produceData,"raw_materials":[...rawItems],'by_products':[...byProductItems],'expense_accounts':[...labourDetails]}
+    setListProduction(data=>([...data,tempList]))
+    
     setProduceData('')
     setRawItems('')
     setByProductItems('')

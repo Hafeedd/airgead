@@ -24,7 +24,7 @@ const PayrollTransaction = () => {
   //     ? `${year - 1}-${12}-${endDate}`
   //     : `${year}-${previousMonth<10?previousMonth+'0'+1:previousMonth+1}-${endDate}`
   // );
-
+  
 
   const pad = (value) => value < 10 ? `0${value}` : value;
   const firstDate = `${month_based_year}-${pad(previousMonth + 1)}-01`;

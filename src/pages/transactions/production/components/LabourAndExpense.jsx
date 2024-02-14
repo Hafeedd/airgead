@@ -4,7 +4,7 @@ import useOnKey from '../../../../hooks/onKeyFunct/onKeyFunct';
 const LabourAndExpense = (props) => {
   
   const{
-    labourDetails,setLabourDetails,accDetails,fullLabourData,setFullLabourData
+    labourDetails,setLabourDetails,accDetails,fullLabourData,setFullLabourData,setProduceData
   }=props
 
   const [ref1, setRef1] = useState();
@@ -49,7 +49,10 @@ const LabourAndExpense = (props) => {
             let tempList = [...labourDetails];
             tempList.splice(i, 1, data);
             setLabourDetails([...tempList]);
+            let l_sum=tempList.reduce((a,b)=>a+ +b.amount||a,0);
+            setProduceData((data)=>({...data,value:(data.r_sum||0)+l_sum,l_sum:l_sum,cost:((data.r_sum||0)+l_sum)/data.qty}))
           };
+
           return(
             <tr key={i}>
             <td>
@@ -103,14 +106,14 @@ const LabourAndExpense = (props) => {
         })}
 
        {fullLabourData?.length>0?fullLabourData?.map((data,i)=>{
-          const handleChange = (e, drop_data) => {
-            if (drop_data)
-              data = { ...data, [drop_data.name]: drop_data.value };
-            else data = { ...data, [e.target.name]: e.target.value };
-            let tempList = [...fullLabourData];
-            tempList.splice(i, 1, data);
-            setFullLabourData([...tempList]);
-          };
+          // const handleChange = (e, drop_data) => {
+          //   if (drop_data)
+          //     data = { ...data, [drop_data.name]: drop_data.value };
+          //   else data = { ...data, [e.target.name]: e.target.value };
+          //   let tempList = [...fullLabourData];
+          //   tempList.splice(i, 1, data);
+          //   setFullLabourData([...tempList]);
+          // };
           return(
             <tr key={i}>
             <td>
@@ -118,7 +121,7 @@ const LabourAndExpense = (props) => {
               type='text'
               className='border border-secondary rounded-1 w-75' 
               value={data.item_produced_name}
-              onChange={handleChange}
+              // onChange={handleChange}
               onKeyDown={handleKeyDown1}
               name='item_produced_name'
               />
@@ -129,7 +132,7 @@ const LabourAndExpense = (props) => {
                   required
                   search={search}
                   onKeyDown={handleKeyDown1}
-                  onChange={handleDropdownChangeDebit}
+                  // onChange={handleDropdownChangeDebit}
                   className="purchase-input-text table-drop d-flex align-items-center py-0 form-control custom-dropdown-width1"
                   name="fk_debit_account"
                   placeholder="Select"
@@ -141,7 +144,7 @@ const LabourAndExpense = (props) => {
               type='text'
               className='border border-secondary rounded-1 w-25' 
               value={data.amount}
-              onChange={handleChange}
+              // onChange={handleChange}
               onKeyDown={handleKeyDown1}
               name='amount'
               /></td>
@@ -151,7 +154,7 @@ const LabourAndExpense = (props) => {
                   required
                   search={search}
                   onKeyDown={handleKeyDown1}
-                  onChange={handleDropdownChangeCredit}
+                  // onChange={handleDropdownChangeCredit}
                   className="purchase-input-text table-drop d-flex align-items-center py-0 form-control custom-dropdown-width1 "
                   name="fk_credit_account"
                   placeholder="Select"

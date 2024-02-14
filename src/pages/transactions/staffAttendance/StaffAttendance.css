@@ -1,8 +1,8 @@
 .staff-table-cont{
-    width: 8vw;
+    width: 85px;
     min-width: 100%;
+    /* max-width: 100%; */
     height: 24.8rem;
-    /* overflow: hidden !important; */
     overflow-y: scroll;
     overflow-x: scroll;
     padding: 0;
@@ -10,33 +10,37 @@
 
 .StaffTable thead th:first-child{
     color: black;
-    width:21rem;
+    width:25rem !important;
+    height: 2rem !important;
     position: sticky;
     left:0;
     z-index: 2;
 }
 
 .StaffTable tbody td:first-child{
-    color: black;
-    width:21rem;
     position: sticky;
     left:0;
     z-index: 1;
-    background-color: rgb(253, 180, 180);
+    background-color: #83aef9  ;
+    color:rgb(0, 0, 0) !important;
 }
 
 .StaffTable thead tr th {
-    background-color: rgb(253, 115, 115);
-    width: 3.75rem;
-    height: 3.75rem;
-    border: 2px solid black;
+    background-color: #023c96   ;
+    width: 3.5rem;
+    height: 2rem;
+    border: 1px solid rgb(0, 0, 0);
+    color:white !important;
 }
 
 .StaffTable tbody tr td {
-    width: 3.75rem;
-    height: 3.75rem;
-    border: 2px solid black;
+    width: 3.5rem;
+    height: 3.5rem;
+    border: 1px solid black;
     padding-left: .5rem;
+    padding-top: .5rem;
+    padding-bottom: .5rem;
+    text-align: center;
 }
 
 .StaffTable {

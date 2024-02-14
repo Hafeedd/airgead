@@ -52,20 +52,31 @@ const RawMaterials = (props) => {
             let tempList = [...rawItems];
             tempList.splice(key, 1, updatedData);
             setRawItems([...tempList]);
-          
-            // Calculate and update the value field based on cost and qty
-            const updatedCost = parseFloat(updatedData.cost || 0);
-            const updatedQty = parseFloat(updatedData.qty || 0);
-            const updatedValue = updatedCost * updatedQty;
             
-            // Update the value field in the current data object
-            updatedData = { ...updatedData, value: updatedValue };
-            
+            if (e.target.name != "value"){
+                // Calculate and update the value field based on cost and qty
+                const updatedCost = parseFloat(updatedData.cost || 0);
+                const updatedQty = parseFloat(updatedData.qty || 0);
+                const updatedValue = updatedCost * updatedQty;
+                // const updated_value= parseFloat(updatedData.value||0)
+                // updated_value?updated_cost=updated_value/updatedQty:updated_cost=updatedCost;
+              
+                // Update the value field in the current data object
+                updatedData = { ...updatedData, value: updatedValue};
+            }else{
+                const updatedValue =parseFloat(updatedData.value || 0)
+                const updatedQty = parseFloat(updatedData.qty || 0);
+                const updatedCost = updatedValue/updatedQty
+                updatedData = { ...updatedData, cost: updatedCost};
+            }
+
+                
             // Update the rawItems array again with the modified data
             tempList.splice(key, 1, updatedData);
             setRawItems([...tempList]);
-            
-            // setProduceData((data)=>({...data,cost:total_cost,value:total_value,mrp_rate:change[0]?.item_details.mrp_rate,wholesale_rate:change[0]?.item_details.wholesale_rate,}))
+            let r_sum=tempList.reduce((a,b)=>a+ +b.value||a,0);
+            console.log(r_sum)
+            setProduceData((data)=>({...data,value:(data.l_sum||0)+r_sum,r_sum:r_sum,cost:((data.l_sum||0)+r_sum)/data.qty}))
       
           };
           return(
@@ -75,7 +86,7 @@ const RawMaterials = (props) => {
               type='text'
               className='border border-secondary rounded-1 w-100' 
               value={data.item_produced_name}
-              onChange={handleChange}
+              // onChange={handleChange}
               onKeyDown={handleKeyDown1}
               name='item_produced_name'
               />
@@ -85,7 +96,7 @@ const RawMaterials = (props) => {
               type='text'
               className='border border-secondary rounded-1 w-100' 
               value={data.item_name}
-              onChange={handleChange}
+              // onChange={handleChange}
               onKeyDown={handleKeyDown1}
               name='item_name'
               />
@@ -134,7 +145,7 @@ const RawMaterials = (props) => {
               type='text'
               className='border border-secondary rounded-1 w-75' 
               value={data.godown}
-              onChange={handleChange}
+              // onChange={handleChange}
               onKeyDown={handleKeyDown1}
               name='godown_rate'
               disabled
@@ -146,14 +157,14 @@ const RawMaterials = (props) => {
         })}
 
        {fullRawData?.length>0?fullRawData?.map((data,key)=>{
-           const handleChange = (e, drop_data) => {
-            if (drop_data)
-              data = { ...data, [drop_data.name]: drop_data.value };
-            else data = { ...data, [e.target.name]: e.target.value };
-            let tempList = [...fullRawData];
-            tempList.splice(key, 1, data);
-            setFullRawData([...tempList]);
-          };
+          //  const handleChange = (e, drop_data) => {
+          //   if (drop_data)
+          //     data = { ...data, [drop_data.name]: drop_data.value };
+          //   else data = { ...data, [e.target.name]: e.target.value };
+          //   let tempList = [...fullRawData];
+          //   tempList.splice(key, 1, data);
+          //   setFullRawData([...tempList]);
+          // };
           return(
             <tr key={key}>
             <td>
@@ -161,7 +172,7 @@ const RawMaterials = (props) => {
               type='text'
               className='border border-secondary rounded-1 w-100' 
               value={data.item_produced_name}
-              onChange={handleChange}
+              // onChange={handleChange}
               onKeyDown={handleKeyDown1}
               name='item_produced_name'
               />
@@ -171,7 +182,7 @@ const RawMaterials = (props) => {
               type='text'
               className='border border-secondary rounded-1 w-100' 
               value={data.item_name}
-              onChange={handleChange}
+              // onChange={handleChange}
               onKeyDown={handleKeyDown1}
               name='item_name'
               />
@@ -181,7 +192,7 @@ const RawMaterials = (props) => {
               type='text'
               className='border border-secondary rounded-1 w-75' 
               value={data.qty}
-              onChange={handleChange}
+              // onChange={handleChange}
               onKeyDown={handleKeyDown1}
               name='qty'
               />
@@ -192,7 +203,7 @@ const RawMaterials = (props) => {
                   required
                   search={search}
                   onKeyDown={handleKeyDown1}
-                  onChange={handleDropdownChangeUnit}
+                  // onChange={handleDropdownChangeUnit}
                   className="purchase-input-text table-drop d-flex align-items-center py-0 form-control custom-dropdown-width "
                   name="fk_unit"
                   placeholder="Select"
@@ -204,7 +215,7 @@ const RawMaterials = (props) => {
               type='text'
               className='border border-secondary rounded-1 w-75' 
               value={data.cost}
-              onChange={handleChange}
+              // onChange={handleChange}
               onKeyDown={handleKeyDown1}
               name='cost'
               /></td>
@@ -212,7 +223,7 @@ const RawMaterials = (props) => {
               type='text'
               className='border border-secondary rounded-1 w-75' 
               value={data.value}
-              onChange={handleChange}
+              // onChange={handleChange}
               onKeyDown={handleKeyDown1}
               name='value'
               /></td>
@@ -220,7 +231,7 @@ const RawMaterials = (props) => {
               type='text'
               className='border border-secondary rounded-1 w-75' 
               value={data.godown}
-              onChange={handleChange}
+              // onChange={handleChange}
               onKeyDown={handleKeyDown1}
               name='godown_rate'
               disabled

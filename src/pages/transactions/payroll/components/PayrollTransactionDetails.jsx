@@ -6,6 +6,7 @@ import "sweetalert2";
 import { usePayrollTransactionServices } from "../../../../services/transactions/payrollTransactionServices";
 import Swal from "sweetalert2";
 import useOnKey from "../../../../hooks/onKeyFunct/onKeyFunct";
+import { all } from "axios";
 const PayrollTransactionDetails = (props) => {
   const {
     date,
@@ -34,11 +35,9 @@ const PayrollTransactionDetails = (props) => {
 
   useEffect(()=>{
     let totalS = 0
-    console.log(payrollData)
     if(payrollData.length>0){
       totalS = payrollData.reduce((a,b)=>parseFloat(a)+parseFloat(b.net_salary||0),0)
     }
-    console.log(totalS)
     setTotalSalary(totalS)
   },[payrollData])
 
@@ -55,13 +54,14 @@ const PayrollTransactionDetails = (props) => {
           name:payData.staff_name,
           net_salary: payData.net_salary,
           leave_count: payData.leave_taken,
+          leave_cut_amount:payData.leave_cut_amount,
           payscale:{
             pf:payData.pf,
             salary:payData.salary,
             esi:payData.esi,
             other:payData.other,
             allowed_leave:payData.allowed_leave,
-            leave_cut:payData.leave_cut,
+            // leave_cut:payData.leave_cut,
             insurance:payData.insurance,
           },
         }
@@ -73,35 +73,87 @@ const PayrollTransactionDetails = (props) => {
       }
     },[edit]);
 
-  const handleChange = (e, i) => {
-    let tempPayData = [...payrollData];
-    let changedData = tempPayData[i];
-    if (e.target.name.match(/name|net_salary|leave_count/))
-      changedData = { ...changedData, [e.target.name]: e.target.value };
-    else {
-      let payScaleChange = {
-        ...changedData.payscale,
-        [e.target.name]: e.target.value,
-      };
-      changedData = { ...changedData, payscale: payScaleChange };
-    }
+    // const handleChange = (e, i) => {
+    //   const tempPayData = [...payrollData];
+    //   let changedData = tempPayData[i];
+    
+    //   if (e.target.name === 'leave_cut_amount') {
+    //     const leaveCutAmount = Number(e.target.value);
+    //     const netSalary = changedData.payscale.salary - leaveCutAmount;
+    //     changedData = { ...changedData, [e.target.name]: leaveCutAmount, net_salary: netSalary };
+    //   }
+      
+    //   else if (e.target.name.match(/net_salary|leave_count/)) {
+    //     changedData = { ...changedData, [e.target.name]: e.target.value };
+    //   } 
+      
+    //   else{
+    //     const payScaleChange = { ...changedData.payscale, [e.target.name]: e.target.value };
+    //     changedData = { ...changedData, payscale: payScaleChange };
+    //   }
+    
+    //   let leaveCutAmount;
+    //   if (e.target.name !== 'leave_cut_amount') {
+    //     const allowedLeave = parseFloat(changedData.payscale?.allowed_leave) || 0;
+    //     const leaveCount = parseFloat(changedData.leave_count) || 0;
+    //     leaveCutAmount = allowedLeave >= leaveCount ? 0 : (leaveCount - allowedLeave) * parseFloat(changedData.payscale?.leave_cut || 0);
+    //   }
+    
+    //   let netSalary;
+    //   if (e.target.name !== "net_salary") {
+    //     const allowedLeave = parseFloat(changedData.payscale?.allowed_leave) || 0;
+    //     const leaveCount = parseFloat(changedData.leave_count) || 0;
+    //     const leaveCut = allowedLeave >= leaveCount ? 0 : (leaveCount - allowedLeave) * parseFloat(changedData.payscale?.leave_cut || 0);
+    //     netSalary = (parseFloat(changedData.payscale?.salary) || 0) - (leaveCut + parseFloat(changedData.leave_cut_amount || 0) + parseFloat(changedData.payscale?.pf || 0) + parseFloat(changedData.payscale?.esi || 0) + parseFloat(changedData.payscale?.insurance || 0) + parseFloat(changedData.payscale?.other || 0)) || 0;
+    //   }
+    //   console.log(changedData)
+    //   tempPayData.splice(i, 1, { ...changedData, leave_cut_amount: leaveCutAmount, net_salary: netSalary });
+    //   setPayrollData(tempPayData);
+    // };
 
-    let netSalary;
-    if (e.target.name !== "net_salary") {
-      let a_leave=parseFloat(changedData.payscale?.allowed_leave)
-      let l_count=parseFloat(changedData.leave_count) 
+    const handleChange = (e, i) => {
+      const tempPayData = [...payrollData];
+      let changedData = tempPayData[i];
+    
+      if (e.target.name === 'leave_cut_amount') {
+        const leaveCutAmount = Number(e.target.value);
+        const payScaleChange =changedData.payscale
+        const pf=parseFloat(payScaleChange.pf)||0
+        const esi=parseFloat(payScaleChange.esi)||0
+        const other=parseFloat(payScaleChange.other)||0
+        const insurance =parseFloat(payScaleChange.insurance)||0
+        const salary  = parseFloat(payScaleChange.salary)||0
+        const netSalary = salary - (leaveCutAmount+pf+esi+other+insurance);
+        changedData = { ...changedData, [e.target.name]: leaveCutAmount, net_salary: netSalary };
+      } else if (e.target.name === 'net_salary') {
+        const netSalary = Number(e.target.value)
+        changedData = { ...changedData, [e.target.name]: netSalary};
+      }else if (e.target.name === 'leave_count') {
+        const leaveCount = Number(e.target.value);
+        const salary=parseFloat(changedData.payscale.salary)||0
+        const allowedLeave=parseFloat(changedData.payscale.allowed_leave)||0
+        const leaveCutAmount= allowedLeave >= leaveCount ? 0 : (leaveCount - allowedLeave) * parseFloat(changedData.payscale.leave_cut || 0)
+        const netSalary = salary - leaveCutAmount;
+        changedData = { ...changedData, [e.target.name]: leaveCount,leave_cut_amount:leaveCutAmount, net_salary: netSalary };
+      }else {
+        const payScaleChange = { ...changedData.payscale, [e.target.name]: e.target.value };
+        const allowedLeave=parseFloat(payScaleChange.allowed_leave)||0
+        const leaveCount=parseFloat(changedData.leave_count)||0
+        const leaveCutAmount= allowedLeave >= leaveCount ? 0 : (leaveCount - allowedLeave) * parseFloat(changedData.payscale.leave_cut || 0)
+        const salary = parseFloat(payScaleChange.salary)||0
+        const pf=parseFloat(payScaleChange.pf)||0
+        const esi=parseFloat(payScaleChange.esi)||0
+        const other=parseFloat(payScaleChange.other)||0
+        const insurance =parseFloat(payScaleChange.insurance)||0
+        const netSalary =  salary - (leaveCutAmount+pf+esi+other+insurance)
+        changedData = { ...changedData, payscale: payScaleChange, net_salary: netSalary,leave_cut_amount: leaveCutAmount};
+      }
+    
+      tempPayData.splice(i, 1, changedData);
+      setPayrollData(tempPayData);
+    };
 
-      netSalary =
-        (parseFloat(changedData.payscale?.salary) || 0) -
-          ((a_leave>=(l_count||""||null)?0:(parseFloat(changedData.leave_count || 0) - parseFloat(changedData.payscale?.allowed_leave || 0)) * parseFloat(changedData.payscale?.leave_cut || 0) )+
-            parseFloat(changedData.payscale?.pf || 0) +
-            parseFloat(changedData.payscale?.esi || 0) +
-            parseFloat(changedData.payscale?.insurance || 0) +
-            parseFloat(changedData.payscale?.other || 0)) || 0;
-    }
-    tempPayData.splice(i, 1, { ...changedData, net_salary: netSalary });
-    setPayrollData(tempPayData);
-  };
+    
   const { postPayRollBulk,putPayRollBulk } = usePayrollTransactionServices();
 
   const handleSave = async () => {
@@ -116,7 +168,8 @@ const PayrollTransactionDetails = (props) => {
         salary: data.payscale?.salary,
         allowed_leave: data.payscale?.allowed_leave,
         leave_taken: data.leave_count,
-        leave_cut: data.payscale?.leave_cut,
+        leave_cut_amount:data.leave_cut_amount,
+        // leave_cut: data.payscale?.leave_cut,
         pf: data.payscale?.pf,
         esi: data.payscale?.esi,
         insurance: data.payscale?.insurance,
@@ -157,6 +210,17 @@ const PayrollTransactionDetails = (props) => {
       }
     }
   };
+
+  // const formatDate = (date) => {
+  //   let splitDate = date.split("-");
+  //   let changedDate = []
+  //   for( let i=2;i>=0;i--) {
+  //     changedDate.push(splitDate[i])
+  //   }
+  //   let changedDateFormat = changedDate.join("/")
+  //   console.log(changedDateFormat)
+  //   return changedDateFormat;
+  // };
 
   return (
     <div>
@@ -227,6 +291,7 @@ const PayrollTransactionDetails = (props) => {
             className="purchase-input-text me-2"
             placeholder="Document number"
             type="date"
+            format="dd/mm/yyyy"
           />
         </Form.Group>
         <Form.Group className="col-4 pe-4 ps-0 mx-0 d-flex align-items-start mt-1">
@@ -241,6 +306,7 @@ const PayrollTransactionDetails = (props) => {
             className="purchase-input-text me-2"
             placeholder="Document number"
             type="date"
+            format="dd/mm/yyyy"
           />
         </Form.Group>
         <div className="col-4 mx-0 px-0 px-2 mt-1">
@@ -308,8 +374,10 @@ const PayrollTransactionDetails = (props) => {
             {payrollData?.length > 0 &&
               payrollData.map((data, i) => {
                 // {console.log(data)}
+                // let x=data.payscale?.leave_cut*(data.payscale?.allowed_leave-)
                 return (
                   <tr key={i}  ref={(e)=>(formRef1.current[i] = e)}>
+                    
                     <td>
                       {/* <input
                         onChange={(e) => handleChange(e, i)}
@@ -362,11 +430,11 @@ const PayrollTransactionDetails = (props) => {
                       <input
                         onChange={(e) => handleChange(e, i)}
                         type="text"
-                        name="leave_cut"
-                        value={data.payscale?.leave_cut}
+                        name="leave_cut_amount"
+                        value={data.leave_cut_amount}
                         placeholder={
-                          data.payscale?.leave_cut
-                            ? data.payscale?.leave_cut
+                          data.leave_cut_amount
+                            ? data.leave_cut_amount
                             : "--"
                         }
                         onKeyDown={handleKeyDown1}

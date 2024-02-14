@@ -6,7 +6,7 @@ import { RiAddBoxFill } from "react-icons/ri";
 import Swal from "sweetalert2";
 import useItemServices from "../../../../services/master/itemServices";
 import editBtn from "../../../../assets/icons/edit-black.svg";
-import useProductionServices from "../../../../services/master/productionSerivices";
+import useProductionServices from "../../../../services/master/productionServices";
 import useOnKey from "../../../../hooks/onKeyFunct/onKeyFunct";
 const MaterialCompositionOfProduct = (props) => {
   const {

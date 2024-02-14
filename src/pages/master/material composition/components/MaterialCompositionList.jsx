@@ -3,7 +3,7 @@ import searchIcon from "../../../../assets/icons/search.png";
 import { GrRefresh } from "react-icons/gr";
 import { MdDelete } from "react-icons/md";
 import { FiEdit } from "react-icons/fi";
-import useProductionServices from "../../../../services/master/productionSerivices";
+import useProductionServices from "../../../../services/master/productionServices";
 import Swal from "sweetalert2";
 import { useNavigate } from "react-router";
 const MaterialCompositionList = (props) => {

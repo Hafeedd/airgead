@@ -147,8 +147,8 @@ const StaffAttendanceDetails = (props) => {
           month === new Date().getMonth() &&
           year === new Date().getFullYear() ? (
           <th
-            className="border border-dark border-2"
-            style={{ backgroundColor: "springgreen" }}
+            className="border border-secondary border-1"
+            style={{ backgroundColor: "#15ac9a "}}
             onClick={() => setDateShow(i)}
           >
             {i}
@@ -179,7 +179,7 @@ const StaffAttendanceDetails = (props) => {
             <FiCheckSquare
               size={20}
               className="me-2 mb-1"
-              style={{ color: "#2ec213" }}
+              style={{ color: "#15bd02" }}
             />
           </td>
         );
@@ -213,7 +213,7 @@ const StaffAttendanceDetails = (props) => {
         } else {
           b = (
             <td onClick={() => setShow({ ...data.data, day: i })}>
-              <FiMinusCircle size={20} className="me-2 mb-1" />
+              <FiMinusCircle size={20} className="me-2 mb-1 text-secondary" />
             </td>
           );
         }
@@ -295,6 +295,9 @@ const StaffAttendanceDetails = (props) => {
     );
   };
   
+
+  console.log(`${document.getElementById("staff-table-cont")?.offsetWidth}px`)
+
   return (
     <div className="mx-0 stock-jdetails-cont p-3">
       <b className="fs-5">Staff Attendance Details</b>
@@ -346,11 +349,11 @@ const StaffAttendanceDetails = (props) => {
             <FiXCircle size={20} className="me-2 mb-1 text-danger" /> Absent
           </span>
           <span>
-            <FiMinusCircle size={20} className="me-2 mb-1" /> Not Updated
+            <FiMinusCircle size={20} className="me-2 mb-1 text-secondary" /> Not Updated
           </span>
-          <span>
+          {/* <span>
             {month}-{year}-{startDate}-{endDate}
-          </span>
+          </span> */}
         </div>
         <div className="col-6 d-flex align-items-center ">
           <span className="col-5"></span>
@@ -377,11 +380,10 @@ const StaffAttendanceDetails = (props) => {
         </div>
       </div>
       <div      
-        className="staff-table-cont"
+        className="staff-table-cont px-0"
       >
         <table
-          className="StaffTable w-100 p-0 m-0 px-0"
-          style={{ tableLayout: "fixed" }}
+          className="StaffTable p-0 m-0 px-0"
           ref={tableRef}
         >
           <thead>
@@ -403,6 +405,7 @@ const StaffAttendanceDetails = (props) => {
           </tbody>
         </table>
       </div>
+      {/* </div> */}
       <Modal
         show={show}
         onHide={() => setShow(false)}
