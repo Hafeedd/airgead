@@ -126,7 +126,8 @@ const PayrollTransactionDetails = (props) => {
         const netSalary = salary - (leaveCutAmount+pf+esi+other+insurance);
         changedData = { ...changedData, [e.target.name]: leaveCutAmount, net_salary: netSalary };
       } else if (e.target.name === 'net_salary') {
-        changedData = { ...changedData, [e.target.name]: e.target.value};
+        const netSalary = Number(e.target.value)
+        changedData = { ...changedData, [e.target.name]: netSalary};
       }else if (e.target.name === 'leave_count') {
         const leaveCount = Number(e.target.value);
         const salary=parseFloat(changedData.payscale.salary)||0

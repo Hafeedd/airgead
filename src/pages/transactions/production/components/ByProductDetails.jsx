@@ -147,14 +147,14 @@ const ByProductDetails = (props) => {
         })}
        
        {fullByprodData?.length>0?fullByprodData?.map((data,i)=>{
-            const handleChange = (e, drop_data) => {
-              if (drop_data)
-                data = { ...data, [drop_data.name]: drop_data.value };
-              else data = { ...data, [e.target.name]: e.target.value };
-              let tempList = [...fullByprodData];
-              tempList.splice(i, 1, data);
-              setFullByprodData([...tempList]);
-            };
+            // const handleChange = (e, drop_data) => {
+            //   if (drop_data)
+            //     data = { ...data, [drop_data.name]: drop_data.value };
+            //   else data = { ...data, [e.target.name]: e.target.value };
+            //   let tempList = [...fullByprodData];
+            //   tempList.splice(i, 1, data);
+            //   setFullByprodData([...tempList]);
+            // };
           return(
             <tr key={i}>
             <td>
@@ -162,7 +162,7 @@ const ByProductDetails = (props) => {
               type='text'
               className='border border-secondary rounded-1 w-100' 
               value={data.item_produced_name}
-              onChange={handleChange}
+              // onChange={handleChange}
               onKeyDown={handleKeyDown1}
               name='item_produced_name'
               />
@@ -172,7 +172,7 @@ const ByProductDetails = (props) => {
               type='text'
               className='border border-secondary rounded-1 w-100' 
               value={data.item_name}
-              onChange={handleChange}
+              // onChange={handleChange}
               onKeyDown={handleKeyDown1}
               name='item_name'
               />
@@ -182,7 +182,7 @@ const ByProductDetails = (props) => {
               type='text'
               className='border border-secondary rounded-1 w-75' 
               value={data.qty}
-              onChange={handleChange}
+              // onChange={handleChange}
               onKeyDown={handleKeyDown1}
               name='qty'
               />
@@ -193,7 +193,7 @@ const ByProductDetails = (props) => {
                   required
                   search={search}
                   onKeyDown={handleKeyDown1}
-                  onChange={handleDropdownChangeUnit}
+                  // onChange={handleDropdownChangeUnit}
                   className="purchase-input-text table-drop d-flex align-items-center py-0 form-control custom-dropdown-width "
                   name="fk_unit"
                   placeholder="Select"
@@ -205,7 +205,7 @@ const ByProductDetails = (props) => {
               type='text'
               className='border border-secondary rounded-1 w-75' 
               value={data.cost}
-              onChange={handleChange}
+              // onChange={handleChange}
               onKeyDown={handleKeyDown1}
               name='cost'
               /></td>
@@ -213,7 +213,7 @@ const ByProductDetails = (props) => {
               type='text'
               className='border border-secondary rounded-1 w-75' 
               value={data.value}
-              onChange={handleChange}
+              // onChange={handleChange}
               onKeyDown={handleKeyDown1}
               name='value'
               /></td>
@@ -221,7 +221,7 @@ const ByProductDetails = (props) => {
               type='text'
               className='border border-secondary rounded-1 w-75' 
               value={data.margin}
-              onChange={handleChange}
+              // onChange={handleChange}
               onKeyDown={handleKeyDown1}
               name='margin'
               /></td>
@@ -229,7 +229,7 @@ const ByProductDetails = (props) => {
               type='text'
               className='border border-secondary rounded-1 w-75' 
               value={data.mrp_rate}
-              onChange={handleChange}
+              // onChange={handleChange}
               onKeyDown={handleKeyDown1}
               name='mrp_rate'
               /></td>
@@ -237,7 +237,7 @@ const ByProductDetails = (props) => {
               type='text'
               className='border border-secondary rounded-1 w-75' 
               value={data.s_rate}
-              onChange={handleChange}
+              // onChange={handleChange}
               onKeyDown={handleKeyDown1}
               name='s_rate'
               /></td>
