@@ -7,6 +7,9 @@ import useOnKey from "../../../../hooks/onKeyFunct/onKeyFunct";
 
 const PurchaseInvoiceDetails = (props) => {
   const {
+    returnPage,
+    purchaseInvoiceRef,
+    setPurchaseInvoiceRef,
     tableItemRef,
     handleEdit,
     purchaseAdd,
@@ -18,7 +21,11 @@ const PurchaseInvoiceDetails = (props) => {
 
   const navigate = useNavigate();
 
-  const [ handleKeyDown, formRef ] = useOnKey(ref, setRef, tableItemRef);
+  const [handleKeyDown, formRef] = useOnKey(
+    purchaseInvoiceRef,
+    setPurchaseInvoiceRef,
+    tableItemRef
+  );
 
   const search = (options, searchValue) => {
     searchValue = searchValue.toUpperCase();
@@ -107,7 +114,7 @@ const PurchaseInvoiceDetails = (props) => {
           type="text"
         />
       </Form.Group>
-      {/* Row 2 -------------------------------------------------------------------------------------------------------- */}    
+      {/* Row 2 -------------------------------------------------------------------------------------------------------- */}
       <div
         className="col-3 col-2"
         onClick={
@@ -154,10 +161,10 @@ const PurchaseInvoiceDetails = (props) => {
       {/* Row 3 -------------------------------------------------------------------------------------------------------- */}
       <div className="col-4 col-3 pe-0 d-flex align-items-end justify-content-start ps-1">
         <div className="px-1">
-          <div className="btn btn-sm btn-secondary px-3">Purchase</div>
+          <div className="btn btn-sm btn-secondary px-3">Purchase{returnPage&& " Return"}</div>
         </div>
         <div className="">
-          <div className="btn btn-sm btn-secondary px-3">P.Return</div>
+          {/* <div className="btn btn-sm btn-secondary px-3">P.Return</div> */}
         </div>
         <div className="ps-1">
           <div className="btn btn-sm btn-secondary px-3">Other</div>
@@ -172,7 +179,7 @@ const PurchaseInvoiceDetails = (props) => {
           </div>
         </div>
       </div>
-      
+
       <div className="mx-0 px-0 col-1 d-flex align-items-center justify-content-start">
         <input
           type="checkbox"

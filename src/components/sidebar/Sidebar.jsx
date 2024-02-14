@@ -111,6 +111,22 @@ const Sidebar = () => {
             <span className="SidebarSpan d-flex ms-5 ps-3">
               <div
                 className="SidebarItemText"
+                onClick={() => navigate("/purchase-return")}
+              >
+                Purchase Return
+              </div>
+            </span>
+            {/* <span className="SidebarSpan d-flex ms-5 ps-3">
+              <div
+                className="SidebarItemText"
+                onClick={() => navigate("/sales-return")}
+              >
+                Sales Return
+              </div>
+            </span> */}
+            <span className="SidebarSpan d-flex ms-5 ps-3">
+              <div
+                className="SidebarItemText"
                 onClick={() => navigate("/payment-transaction")}
               >
                 Payment

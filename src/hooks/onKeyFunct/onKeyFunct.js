@@ -39,6 +39,10 @@ const useOnKey = (ref, setRef, nextState, ...otherChangableState) => {
         if (e.target && ref?.length > 0) {
           let a = ref?.indexOf(e.target);
           if (a === 0) {
+            if (nextState?.length > 0) {
+              ref[a]?.blur();
+              nextState[nextState?.length-1]?.focus();
+            } else
             ref[ref.length - 1]?.focus();
           } else {
             ref[a]?.blur();

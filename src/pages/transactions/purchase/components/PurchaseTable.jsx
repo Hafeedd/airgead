@@ -7,9 +7,12 @@ import Swal from "sweetalert2";
 import usePurchaseServices from "../../../../services/transactions/purchcaseServices";
 import useOnKey from "../../../../hooks/onKeyFunct/onKeyFunct";
 import { useLocation, useNavigate } from "react-router";
+import usePurchaseReturnServices from "../../../../services/transactions/purchaseTransaction";
 
 const PurchaseTable = (props) => {
   const {
+    returnPage,
+    purchaseInvoiceRef,
     tableItemRef, 
     setTableItemRef,
     setTableItemKeys,
@@ -37,15 +40,13 @@ const PurchaseTable = (props) => {
     purchaseList,
     getData,
     handlePurchaseAllReset,
-    setTableEdit,
-    handleTableItemReset,
     setShowBatch,
   } = props;
   const [unitList, setUnitList] = useState();
 
   const [tableItemListRef, setTableItemListRef] = useState(null); 
   
-  const [handleKeyDown, formRef] = useOnKey(tableItemRef, setTableItemRef, []);
+  const [handleKeyDown, formRef] = useOnKey(tableItemRef, setTableItemRef, purchaseInvoiceRef);
 
   const [handleKeyDown2, formRef2] = useOnKey(
     tableItemListRef, setTableItemListRef,
@@ -99,6 +100,7 @@ const PurchaseTable = (props) => {
   const { getItemNameList, getProperty } = useItemServices();
 
   const { deletePurchaseItem, putPurchaseItem } = usePurchaseServices();
+  const { deletePurchaseReturnItem, putPurchaseReturnItem } = usePurchaseReturnServices();
 
   const navigate = useNavigate();
 
@@ -123,7 +125,11 @@ const PurchaseTable = (props) => {
         handleKeyDown2(e);
         return 0;
       }
-      let response = await putPurchaseItem(data.id, data);
+      let response
+      if(returnPage)
+      response = await putPurchaseReturnItem(data.id, data);
+      else
+      response = await putPurchaseItem(data.id, data);
       if (response.success) {
         handleKeyDown2(e);
         getData();
@@ -493,7 +499,11 @@ const PurchaseTable = (props) => {
       setTableItemList([...tempList]);
     }
     try {
-      let response = await deletePurchaseItem(data.id);
+      let response
+      if(returnPage)
+      response = await deletePurchaseReturnItem(data.id);
+      else
+      response = await deletePurchaseItem(data.id);
       if (response.success) {
         Swal.fire({
           icon: "success",

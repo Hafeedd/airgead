@@ -633,3 +633,7 @@ td.n_clr{
     padding: 1px ;
     font-size: 13px;
 }
+
+.page_head.purchase-return{
+    background: #7B66FF !important;
+}

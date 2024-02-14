@@ -56,7 +56,9 @@ function App() {
             <Route path="/staff-pay-scale" element={<StaffMaster />} />
             <Route path="/staff-master" element={<StaffMaster />} />
             <Route path="/purchase-transaction" element={<PurchaseTransaction />}/>
+            <Route path="/purchase-return" element={<PurchaseTransaction returnPage={true}/>}/>
             <Route path="/sales-transaction" element={<SalesTransaction />} />
+            <Route path="/sales-return" element={<SalesTransaction returnPage={true}/>} />
             <Route path="/payment-transaction" element={<PaymentTransaction method={"Payment"} />}/>
             <Route path="/receipt-transaction" element={<PaymentTransaction method={"Receipt"} />}/>
             <Route path="/staff-attendance" element={<StaffAttendance />}  />

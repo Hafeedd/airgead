@@ -13,9 +13,6 @@
     border-radius: 0.3125rem 0.3125rem 0rem 0rem;
 }
 
-.itemList_header{
-    z-index: 100 !important;
-}
 
 .custom-table th{
     text-align: center;
