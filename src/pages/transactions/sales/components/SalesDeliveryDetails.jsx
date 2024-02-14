@@ -40,7 +40,7 @@ const SalesDeliveryDetails = (props) => {
         
 {/* Row 2 -------------------------------------------------------------------------------------------------------- */}
 
-        <div className="col-7 mx-0 pe-2 ps-5 row mb-2">
+        <div className="col-7 mx-0 pe-2 ps-5 row">
             <div className="col-12 sales-delivery-container row mx-0 my-1 py-3">
                 <div className="col-12 title">Address</div>
                 <div className="col-12 py-0 px-1"><hr className='m-0'/></div>

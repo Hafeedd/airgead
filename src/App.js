@@ -86,8 +86,7 @@ function App() {
             <Route path="/bill-wise-profit" element={<BillWiseProfit/>}/>
             <Route path="/cheque-register" element={<ChequeRegister/>}/>
             <Route path="/cheque-register-report" element={<ChequeRegisterReport/>}/>
-            <Route path="/stock-value-report" element={<StockValueReport/>}/>
-            
+            <Route path="/stock-value-report" element={<StockValueReport/>}/>         
             <Route path="/StaffAttendance" element={<StaffSalaryAttendance/>}/>
             <Route path="/StaffSalary" element={<StaffSalaryAttendance/>}/>
             <Route path="/material-composition-product" element={<MaterialComposition/>}/>

@@ -5,6 +5,7 @@ import PaymentDiscountDetails from "./PaymentDiscountDetails";
 import PaymentTaxDetails from "./PaymentTaxDetails";
 import PaymentPrintDetails from "./PaymentPrintDetails";
 import { Dropdown } from "semantic-ui-react";
+import useBaseServices from "../../../../services/master/baseServices";
 
 const PaymentDetail = ({
   edit,
@@ -25,6 +26,8 @@ const PaymentDetail = ({
   // const [paymentContent, setPaymentContent] = useState("");
   const formRef = useRef(null);
 
+  const { getAccOpClBalance } = useBaseServices();
+
   // const cash_type_list = [
   //     {text:"Cash Inhand",value:"INHAND"},
   //     {text:"UPI",value:"UPI"},
@@ -37,6 +40,31 @@ const PaymentDetail = ({
       setPaymentNav(2);
     }
   }, [paymentAdd.cash_bank_account_name]);
+
+  useEffect(() => {
+    if (paymentAdd.account_id) getBalance();
+    else {
+      setPaymentAdd((data) => ({ ...data, opeing_bal: 0, closing_bal: 0 }));
+    }
+  }, [paymentAdd.account_id]);
+
+  const getBalance = async () => {
+    try{
+      let id = accountList.filter(x=>x.code == paymentAdd.account_code)[0].id
+      const res = await getAccOpClBalance(paymentAdd.accuont_code);
+      console.log(res);
+      if (res.success) {
+        let bal = res?.data[0];
+        setPaymentAdd((data) => ({
+          ...data,
+          op_balance: bal?.opening_balance?.toFixed(2),
+          cl_balance: bal?.closing_balance?.toFixed(2),
+        }));
+      }
+    }catch(err){
+      console.log(err)
+    }
+    };
 
   const search = (options, searchValue) => {
     searchValue = searchValue.toUpperCase();

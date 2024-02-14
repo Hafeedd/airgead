@@ -9,6 +9,7 @@ import { ItemAddForm } from "./components/AddForm";
 
 const ItemMaster = () => {
   const [pageHeadItem, setPageHeadItem] = useState(1);  
+  const [loading, setLoading] = useState(false)
   const [toEdit, setToEdit] = useState(false);
   const [listItem, setListItem] = useState();
   const [search, setSearch] = useState();
@@ -20,47 +21,8 @@ const ItemMaster = () => {
     getData();
   }, []);
 
-  useEffect(() => {
-    if (toEdit) {
-      listItem.map((x) => {
-        if (x.id === toEdit.id) {
-          setToEdit(x);
-        }
-      });
-    } else {
-      setToEdit(false);
-    }
-  }, [listItem]);
-
   const location = useLocation();
 
-  // const handleDelete = (id, e) => {
-  //   Swal.fire({
-  //     title: "Are you sure?",
-  //     text: "You won't be able to revert this!",
-  //     icon: "warning",
-  //     showCancelButton: true,
-  //     confirmButtonColor: "#3085d6",
-  //     cancelButtonColor: "#d33",
-  //     confirmButtonText: "Yes, delete it!",
-  //   }).then((result) => {
-  //     if (result.isConfirmed) {
-  //       handleDeleteConfirm(id, e);
-  //     }
-  //   });
-  // };
-
-  // const handleDeleteConfirm = async (id, e) => {
-  //   e.preventDefault();
-  //   try {
-  //     let res = await deleteItemList(id);
-  //     if (res.success) Swal.fire("Item deleted Successfully", "", "success");
-  //     else Swal.fire(res.message, "", "error");
-  //     getData();
-  //   } catch (err) {
-  //     Swal.fire("Failed to delete item please try again", "", "error");
-  //   }
-  // };
 
   const getData = async () => {
     try {
@@ -68,11 +30,15 @@ const ItemMaster = () => {
       if (search) {
         params = { code: search, name: search };
       }
+      setLoading(true)
       const res = await getItemList();
       if (res.success) {
         setListItem(res.data);
       }
-    } catch (err) {}
+      setLoading(false)
+    } catch (err) {
+      setLoading(false)      
+    }
   };
 
   const handleEdit = (data) => {
@@ -122,6 +88,7 @@ const ItemMaster = () => {
             {...{
               search,
               setSearch,
+              loading,
               getData,
               handleEdit,
               // handleDelete,

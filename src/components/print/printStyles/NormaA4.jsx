@@ -87,7 +87,7 @@ export const NormaA4 = (props) => {
           <table className="table mb-0">
             <thead>
               <tr>
-                <th className="border-bottom border-secondary">S/L</th>
+                {/* <th className="border-bottom border-secondary">S/L</th> */}
                 {tableHead.length > 0 &&
                   tableHead.map((data) => (
                     <th className="border-start border-bottom border-secondary">{data}</th>
@@ -114,7 +114,7 @@ export const NormaA4 = (props) => {
                 })}
               <TableHeigth />
               <tr>
-                <td></td>
+                {/* <td></td> */}
                 {tableHead.length > 0 &&
                   tableHead.map((data, i) => {
                     // console.log(data)

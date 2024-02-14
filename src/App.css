@@ -73,3 +73,7 @@
 textarea.form-control.resize-none{
   resize: none;
 }
+
+.ui.active.visible.search.selection.dropdown * {
+    text-transform: uppercase !important;
+}

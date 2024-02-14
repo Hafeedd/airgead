@@ -10,6 +10,7 @@ import Swal from "sweetalert2";
 const StaffMaster = () => {
   const [search, setSearch] = useState();
   const [edit, setEdit] = useState();
+  const [loading, setLoading] = useState(false);
   const [staffList, setStaffList] = useState([]);
   const [searchList, setSearchList] = useState([]);
   const { getStaff } = useStaffServices();
@@ -28,47 +29,9 @@ const StaffMaster = () => {
     }
   };
 
-  // const handleDelete = (id, e) => {
-  //   Swal.fire({
-  //     title: "Are you sure?",
-  //     text: "You won't be able to revert this!",
-  //     icon: "warning",
-  //     showCancelButton: true,
-  //     confirmButtonColor: "#3085d6",
-  //     cancelButtonColor: "#d33",
-  //     confirmButtonText: "Yes, delete it!",
-  //   }).then((result) => {
-  //     if (result.isConfirmed) {
-  //       handleDeleteConfirm(id, e);
-  //     }
-  //   });
-  // };
-
-  // const handleDeleteConfirm = async (id, e) => {
-  //   e.preventDefault();
-  //   try {
-  //     let res = await deleteStaff(id);
-  //     if (res.success) Swal.fire("Staff deleted Successfully", "", "success");
-  //     else {
-  //       Swal.fire(
-  //         "Warning",
-  //         res.message ||
-  //           "This account may contain transaction. Therefore it cant be deleted",
-  //         "info"
-  //       );
-  //     }
-  //     getData();
-  //   } catch (err) {
-  //     Swal.fire(
-  //       "Warning",
-  //       "This account may contain transaction. Therefore it cant be deleted",
-  //       "warning"
-  //     );
-  //   }
-  // };
-
   const getData = async () => {
     try {
+      setLoading(true)
       const response = await getStaff();
       if (response.success) {
         let tempList = [];
@@ -79,7 +42,9 @@ const StaffMaster = () => {
         });
         setStaffList(tempList);
       }
+      setLoading(false)
     } catch (err) {
+      setLoading(false)
       console.log(err);
     }
   };
@@ -142,6 +107,7 @@ const StaffMaster = () => {
             {...{
               search,
               setSearch,
+              loading,
               staffList,
               setStaffList,
               handleEdit,

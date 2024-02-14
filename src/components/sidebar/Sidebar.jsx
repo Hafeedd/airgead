@@ -178,7 +178,7 @@ const Sidebar = () => {
             onClick={() => setArrowActive(!ArrowActive)}
             className={`SidebarItem mt-3 mb-1 ${ArrowActive && "active"}`}
           >
-            <img src={Reports} width={"18px"} />
+            <img className='sidebar_icon' src={Reports} width={"18px"} />
             Reports
           </div>
           <div className={`sidebar_span_cont ${!ArrowActive && "d-none"}`}>

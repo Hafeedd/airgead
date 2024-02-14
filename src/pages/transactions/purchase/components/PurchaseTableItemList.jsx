@@ -6,24 +6,24 @@ const PurchaseTableItemList = (props) => {
   const [selectedItem, setSelectedItem] = useState(3);
 
   useEffect(()=>{
-    let tempList = tableHeadList.filter(x=>(from=='sal'&&x.saleShow)||(from=='pur'&&x.purchaseShow))
+    let tempList = tableHeadList.filter(x=>(from==='sal'&&x.saleShow)||(from==='pur'&&x.purchaseShow))
     setTableHeadList(tempList)
-  },[selectedItem,])
+  },[selectedItem,from,tableHeadList,setTableHeadList])
 
   const handleTableHeadChange = (index, state) => {
     let tempList = [...tableHeadList]
     if (tempList?.length > 0) {
-      if (state == "visible") {
+      if (state === "visible") {
         tempList[index].visible = !tempList[index].visible;
       }
-      if (state == "changeUp") {
+      if (state === "changeUp") {
         [tempList[index].position, tempList[index-1].position] = [
           tempList[index-1].position,
           tempList[index].position,
           setSelectedItem(index - 1),
         ]
       }
-      if (state == "changeDown") {
+      if (state === "changeDown") {
         [tempList[index].position, tempList[index + 1].position] = [
           tempList[index + 1].position,
           tempList[index].position,
@@ -32,14 +32,21 @@ const PurchaseTableItemList = (props) => {
       }
     }
     tempList.sort((a, b) => a.position - b.position);
-    // localStorage.setItem(
-    //   "initialPurchaseTableStatePositionLocal",
-    //   JSON.stringify(tempList)
-    // );
+    if(from == 'pur'){
+    localStorage.setItem(
+      "initialPurchaseTableStatePositionLocal",
+      JSON.stringify(tempList)
+    );
+  }
+    else{
+      localStorage.setItem(
+        "initialSalesTableStatePositionLocal",
+        JSON.stringify(tempList)
+      );
+    }
     setTableHeadList([...tempList]);
   };
 
-  console.log(selectedItem)
 
   return (
     <div className="p-0 row mx-0">
@@ -63,11 +70,11 @@ const PurchaseTableItemList = (props) => {
             tableHeadList.map((data, i) => {
               // console.log(i)
               if (
-                (from == "sal" && data.saleShow) ||
-                (from == "pur" && data.purchaseShow)
+                (from === "sal" && data.saleShow) ||
+                (from === "pur" && data.purchaseShow)
               )
                 return (
-                  <tr className={`${selectedItem == i && "table-select-item"}`}>
+                  <tr className={`${selectedItem === i && "table-select-item"}`}>
                     <td
                       onClick={() => {
                         setSelectedItem(i);
@@ -117,6 +124,7 @@ const PurchaseTableItemList = (props) => {
               </div> */}
                   </tr>
                 );
+                else return null
             })}
         </tbody>
       </table>

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Form } from "react-bootstrap";
 import { Dropdown } from "semantic-ui-react";
 import useOnKey from "../../../../hooks/onKeyFunct/onKeyFunct";
+import { useNavigate } from "react-router";
 
 const SalesCustomerDetails = (props) => {
   const {
@@ -18,6 +19,7 @@ const SalesCustomerDetails = (props) => {
 
   const [ref, setRef] = useState();
   const [careOfList, setCareOfList] = useState();
+  const navigate = useNavigate()
 
   useEffect(() => {
     getDataOfCustomer();
@@ -123,19 +125,18 @@ const SalesCustomerDetails = (props) => {
             onChange={handleChange}
             className="pruchase-select d-flex align-items-center sales_customer py-0 form-control"
             name="fk_customer"
-            placeholder="select"          
+            placeholder="select"
             value={salesAdd?.fk_customer || ""}
             options={customerList}
-            />
+          />
         </Form.Group>
 
-        
         <Form.Group className="col-7 mx-0 d-flex align-items-center pe-0">
           <Form.Label className="col-3 purchase-input-label">
             Customer
           </Form.Label>
           <Form.Control
-            onKeyDown={handleKeyDown}           
+            onKeyDown={handleKeyDown}
             // onChange={handleChange}
             className="purchase-input-text"
             placeholder="Agencies"
@@ -143,11 +144,11 @@ const SalesCustomerDetails = (props) => {
             name="customer_name"
             value={salesAdd?.customer_name || ""}
           />
-        {/* <div className="btn btn-sm btn-dark">Add Customer</div> */}
+          {/* <div className="btn btn-sm btn-dark">Add Customer</div> */}
         </Form.Group>
-        <div className="col-5 sales-customer-container text-start row mx-0 p-0 mt-2">
+        <div className="col-5 sales-customer-container text-start row mx-0 p-0 mt-1">
           <Form.Control
-            className="sales-customer-container text-start text-uppercase align-items-start p-0 px-3 h-100"
+            className="sales-customer-container text-start text-uppercase align-items-start p-0 px-3"
             placeholder="Address"
             style={{ resize: "none" }}
             onKeyDown={handleKeyDown}
@@ -159,24 +160,34 @@ const SalesCustomerDetails = (props) => {
         </div>
 
         <div className="row mx-0 col-7 pe-0">
-          <Form.Group className="col-12 mx-0 d-flex align-items-center px-0 mt-1">
-            <Form.Label className="col-3 purchase-input-label">
-              Cash/ <br />
-              Credit
-            </Form.Label>
-            <div className="mx-0 col px-0">
-              <select
-                name="payment_type"
-                className="customer-select w-100"
-                onKeyDown={handleKeyDown}
-                onChange={handleChange}
-                value={salesAdd?.payment_type || ""}
-              >
-                <option value="CASH">CASH</option>
-                <option value="CREDIT">CREDIT</option>
-              </select>
+          <div className="col-12 px-0 row mx-0 ">
+            <Form.Group className="col-6 mx-0 d-flex align-items-center px-0 mt-1">
+              <Form.Label className="col-6 purchase-input-label lh-1">
+                Cash/ <br />
+                Credit
+              </Form.Label>
+              {/* <div className="mx-0 col px-0"> */}
+                <select
+                  name="payment_type"
+                  className="customer-select w-100"
+                  onKeyDown={handleKeyDown}
+                  onChange={handleChange}
+                  value={salesAdd?.payment_type || ""}
+                >
+                  <option value="CASH">CASH</option>
+                  <option value="CREDIT">CREDIT</option>
+                </select>
+              {/* </div> */}
+            </Form.Group>
+            <div className="col-6 align-items-center d-flex mt-1 px-0 ps-3"> 
+            <div onClick={
+          () =>
+            navigate("/customer-add", {
+              state: { fromSales: true },
+            }) /* openNewWindow() */
+        } className="px-0 col-12 mx-0 btn btn-dark btn-sm">Add Customer</div>
             </div>
-          </Form.Group>
+          </div>
 
           <Form.Group className="col-12 mx-0 d-flex align-items-center px-0 mt-1 mb-0">
             <Form.Label className="col-3 purchase-input-label">

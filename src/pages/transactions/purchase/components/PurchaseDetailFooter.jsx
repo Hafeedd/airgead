@@ -1,6 +1,7 @@
 import React, { useEffect, useRef } from "react";
 import { Form, Overlay } from "react-bootstrap";
 import { Dropdown } from "semantic-ui-react";
+import useBaseServices from "../../../../services/master/baseServices";
 
 const PurchaseDetailFooter = (props) => {
   const {
@@ -8,6 +9,7 @@ const PurchaseDetailFooter = (props) => {
     bankSelect,
     tableItemList,
     purchaseAdd,
+    setPurchaseAdd,
     bankList,
     handleChange,
     handleKeyDown,
@@ -15,10 +17,35 @@ const PurchaseDetailFooter = (props) => {
     edit,
   } = props;
 
-  const handleReset =() =>{
-    handlePurchaseAllReset()
-    handleGetCode()
-  }
+  const handleReset = () => {
+    handlePurchaseAllReset();
+    handleGetCode(true);
+  };
+
+  const { getAccOpClBalance } = useBaseServices();
+
+  useEffect(() => {
+    if (purchaseAdd.fk_supplier) {
+      getBalance();
+    }
+  },[purchaseAdd.fk_supplier]);
+
+  const getBalance = async () => {
+    try{
+
+      const res = await getAccOpClBalance(purchaseAdd.fk_supplier);
+      if (res.success) {
+        let bal = res?.data[0];
+        setPurchaseAdd((data) => ({
+          ...data,
+          op_balance: bal?.opening_balance?.toFixed(2),
+          cl_balance: bal?.closing_balance?.toFixed(2),
+        }));
+      }
+    }catch(err){
+      console.log(err)
+    }
+    };
 
   return (
     <div className="row mx-2 my-1 me-0">
@@ -78,12 +105,13 @@ const PurchaseDetailFooter = (props) => {
         <div className="col-12 my-1 container-title">Supplier Details</div>
         <div className="col-12 row mx-0 align-items-center">
           <div className="col-1">OB</div>
-          <div className="col-1">:</div>
-          <div className="col-10"></div>
+          {/* <div className="col-1">:</div> */}
+          <div className="col-10">: &nbsp;&nbsp;&nbsp;{purchaseAdd.op_balance}</div>
         </div>
         <div className="col-12 row mx-0 align-items-center">
           <div className="col-1">CB</div>
-          <div className="col-1">:</div>
+          {/* <div className="col-1">: </div> */}
+          <div className="col-10">: &nbsp;&nbsp;&nbsp;{purchaseAdd.cl_balance}</div>
         </div>
         <span className="col-12 ms-1" style={{ height: "3rem" }}>
           <Form.Group className="col-2 col-10 mx-0 d-flex align-items-center mt-1 ms-2">
@@ -97,7 +125,7 @@ const PurchaseDetailFooter = (props) => {
                 onKeyDown={handleKeyDown}
                 value={purchaseAdd.payment_type || "CASH"}
                 name="payment_type"
-                className="customer-select bg-dark text-light w-100"
+                className="customer-select border border-dark bg-dark text-light w-100"
               >
                 <option value="CASH">CASH</option>
                 <option value="CREDIT">CREDIT</option>
@@ -187,7 +215,10 @@ const PurchaseDetailFooter = (props) => {
           <Form.Control
             disabled={true}
             name="change_due"
-            value={purchaseAdd?.change_due && parseInt(purchaseAdd?.change_due) || ""}
+            value={
+              (purchaseAdd?.change_due && parseInt(purchaseAdd?.change_due)) ||
+              ""
+            }
             onKeyDown={handleKeyDown}
             onChange={handleChange}
             className="purchase-input-text"

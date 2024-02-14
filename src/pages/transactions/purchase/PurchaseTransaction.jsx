@@ -35,7 +35,6 @@ const PurchaseTransaction = () => {
   const [purchaseItemSerielModal, setPurchaseItemSerielModal] = useState(false);
   const [pageHeadItem, setPageHeadItem] = useState(1);
   const [tableItemKeys, setTableItemKeys] = useState([]);
-  const [ref, setRef] = useState(null);
   const [edit, setEdit] = useState(null);
   const [showStock, setShowStock] = useState(false);
   const [showBatch, setShowBatch] = useState(false);
@@ -55,17 +54,19 @@ const PurchaseTransaction = () => {
   const [purchaseList, setPurchaseList] = useState();
   const [tableItemList, setTableItemList] = useState([]);
   const [tableItemBatchList, setTableItemBatchList] = useState([]);
-  const { handleKeyDown, formRef } = useOnKey(ref, setRef);
 
   const [purchaseAdd, setPurchaseAdd] = useState(initialPurchaseAdd);
 
   const [tableItem, setTableItem] = useState(initialTableItem);
 
+  //ref of input / select / button fileds
+  const [tableItemRef, setTableItemRef] = useState(null);
+
+  const location = useLocation();
+
   const navigate = useNavigate();
   const { postPurchaseItem } = usePurchaseServices();
   const { getCode } = useItemServices();
-
-  const location = useLocation();
 
   useEffect(() => {
     window.onmousedown = myBeforeUnloadFunction;
@@ -83,8 +84,19 @@ const PurchaseTransaction = () => {
   };
 
   useEffect(() => {
-    getData();
-    handleGetCode();
+    getData()
+    handleGetCode()
+    handleReloadData();
+  
+    let supplier = location.state
+    if(supplier?.id){
+      setPurchaseAdd((data) => ({
+        ...data,
+        ["fk_supplier"]: supplier.id,
+        ["supplier_name"]: supplier.name,
+      }));
+      navigate(null, { replace: true, state: { id: null , name:null} });
+    }
   }, []);
 
   const handleReloadData = () => {
@@ -92,6 +104,7 @@ const PurchaseTransaction = () => {
     if (data) data = JSON.parse(data);
     if (data?.edit) {
       setEdit({ ...data.edit });
+      handleSetEdit(data?.edit)
     } else if (data) {
       let { items, updated_at, edit, tablekeys, ...others } = data;
       let tempData = {
@@ -124,12 +137,12 @@ const PurchaseTransaction = () => {
     setPurchaseAdd((data) => ({ ...data, payment_type: paymentType }));
   }, [purchaseAdd.change_due]);
 
-  useEffect(() => {
-    handleSetEdit(edit);
-  }, [edit]);
+  // useEffect(() => {
+  //   handleSetEdit(edit);
+  // }, [edit]);
 
   const handleSetEdit = (state) => {
-    if (state) {
+    if(state) {
       let { items, updated_at, ...others } = state;
       let tempData = {
         ...others,
@@ -140,10 +153,12 @@ const PurchaseTransaction = () => {
         setTableItemList([...items]);
         handlePurchAllCalc(items, true, tempData);
       }
-    } else handleGetCode();
+    } 
+    // else handleGetCode();
   };
 
   const handlePurchAllCalc = (dataList, fromEdit, purchaseData) => {
+    console.log(fromEdit)
     // dataList is the list of tableItemList
     if (dataList?.length > 0) {
       let tempPurchaseAdd = purchaseData || { ...purchaseAdd };
@@ -232,18 +247,20 @@ const PurchaseTransaction = () => {
   const { postPurchase, putPurchase, getPurchase } = usePurchaseServices();
   const { getSupplier } = useCustomerServices();
 
-  const handleGetCode = async () => {
+  const handleGetCode = async (nextCode) => {
+    // nextCode arg is sent form handleNext fucnt
+    //  in purchaseTable and handleReset in purchaseDetailFooter
+    //  it is for reseting doc no instead of checking edit
     try {
       let code;
       let response = await getCode();
-      if (response.success && !edit && !purchaseAdd.documents_no) {
+      if (response.success && ((!edit && nextCode )|| nextCode)) {
         for (let i of response.data) {
           let type = "PUR";
           if (i.sub_id == type) {
             code = i.next_code;
           }
           setPurchaseAdd((data) => ({ ...data, documents_no: code }));
-          handleReloadData();
         }
       }
     } catch (err) {}
@@ -251,11 +268,11 @@ const PurchaseTransaction = () => {
 
   const getData = async () => {
     try {
-      let response, response1, response3;
+      let response, response1, response3, suppList, bankList, purchList;
 
       response = await getSupplier();
       if (!response?.success) return 0;
-      let tempSuppList = [];
+      suppList = [];
       response.data.map((item) => {
         let a = {
           value: item.id,
@@ -263,31 +280,31 @@ const PurchaseTransaction = () => {
           name: item.name,
           description: item.name,
         };
-        tempSuppList.push(a);
+        suppList.push(a);
       });
-      setSupplierList(tempSuppList);
+      setSupplierList(suppList);
 
       response1 = await getPurchase();
       if (response1?.success) {
-        let tempPurData = [];
+        purchList = [];
         response1?.data.map((purData) => {
           if (purData.fk_supplier > -1) {
-            let supplierName = tempSuppList.filter(
+            let supplierName = suppList.filter(
               (supData) => supData.value == purData.fk_supplier
             )[0]?.name;
             purData = { ...purData, supplier_name: supplierName };
           }
-          tempPurData.push(purData);
+          purchList.push(purData);
         });
-        setPurchaseList(tempPurData);
+        setPurchaseList(purchList);
       }
 
       response3 = await getAccountList();
       if (response3.success) {
-        let bankAcc = [];
+        bankList = [];
         response3.data.map((item) => {
           if (item.bank_account) {
-            bankAcc.push({
+            bankList.push({
               key: item.code,
               value: item.id,
               text: item.name,
@@ -295,22 +312,16 @@ const PurchaseTransaction = () => {
             });
           }
         });
-        setBankList([...bankAcc]);
+
+        setBankList([...bankList]);
       }
-      return response?.data;
+      return { suppList, purchList, bankList };
     } catch (err) {
       console.log(err);
     }
   };
 
   const handleTableItemReset = () => {
-    // let tempItem = { ...tableItem };
-    // const keys = Object.keys(tableItem);
-    // keys.map((data) => {
-    //   if (data.match(/^item_name|^unit|^transaction_unit|^cstm_id/)) {
-    //     tempItem = { ...tempItem, [data]: null };
-    //   } else tempItem = { ...tempItem, [data]: 0 };
-    // });
     setTableEdit(false);
     setTableItem(initialTableItem);
   };
@@ -327,7 +338,6 @@ const PurchaseTransaction = () => {
     setTableItemKeys([]);
     setEdit(false);
     localStorage.setItem("purchaseData", false);
-    // handleGetCode();
   };
 
   const handleChange = (e, data) => {
@@ -467,7 +477,6 @@ const PurchaseTransaction = () => {
         });
         return 0;
       }
-      // formValidation(formRef.current);
       let submitData = { ...purchaseAdd, items: tableItemKeys };
       let response;
       // console.log(submitData.change_due)
@@ -525,7 +534,7 @@ const PurchaseTransaction = () => {
         });
       }
       try {
-        let submitData = { ...tableItem, fk_units: tableItem?.unit };
+        let submitData = { ...tableItem};
         if (purchaseAdd.isBatch)
           submitData = { ...submitData, batch_items: batchKeys };
         let response;
@@ -643,7 +652,6 @@ const PurchaseTransaction = () => {
         </div>
       </div>
       <form
-        ref={formRef}
         onSubmit={handleSubmit}
         className="item_add_cont px-3 pb-1 pt-0"
       >
@@ -651,6 +659,7 @@ const PurchaseTransaction = () => {
         {pageHeadItem == 1 ? (
           <PurchaseInvoiceDetails
             {...{
+              tableItemRef,
               setPurchaseAdd,
               handleEdit,
               purchaseAdd,
@@ -663,26 +672,34 @@ const PurchaseTransaction = () => {
           <PurchasePrintingDetails
             {...{ handleEdit, purchaseAdd, handleChange }}
           />
-        ) : pageHeadItem == 3 ? (
+        ) : pageHeadItem == 3 && (
           <PurchaseDeliveryDetails
             {...{ handleEdit, purchaseAdd, handleChange }}
           />
-        ) : (
-          pageHeadItem == 4 && (
-            <PurchaseInvoiceDetails
-              {...{
-                handleEdit,
-                purchaseAdd,
-                handleChange,
-                supplierList,
-                setSupplierList,
-              }}
-            />
-          )
-        )}
+        ) 
+        // : (
+        //   pageHeadItem == 4 && (
+        //     <PurchaseInvoiceDetails
+        //       {...{
+        //         handleEdit,
+        //         purchaseAdd,
+        //         handleChange,
+        //         supplierList,
+        //         setSupplierList,
+        //       }}
+        //     />
+        //   )
+        // )
+        }
         {/* {purchaseHeader} ---------------------------------------------------------*/}
         <PurchaseTable
           {...{
+            tableItemRef, 
+            setTableItemRef,
+            tableItemKeys,
+            setTableItemKeys,
+            handleGetCode,
+            handleSetEdit,
             setTableItemEdited,
             tableHeadList,
             setPurchaseItemModal,
@@ -711,13 +728,13 @@ const PurchaseTransaction = () => {
         />
         <PurchaseDetailFooter
           {...{
+            setPurchaseAdd,
             handleGetCode,
             bankSelect,
             bankList,
             tableItemList,
             purchaseAdd,
             handleChange,
-            handleKeyDown,
             handlePurchaseAllReset,
             edit,
           }}
@@ -747,6 +764,7 @@ const PurchaseTransaction = () => {
         <PurchaseEditList
           closeEditModal={setPurchaseEditModal}
           {...{
+            handleSetEdit,
             purchaseList,
             setEdit,
             edit,

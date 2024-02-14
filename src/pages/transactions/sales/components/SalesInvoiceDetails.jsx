@@ -6,26 +6,18 @@ import useOnKey from "../../../../hooks/onKeyFunct/onKeyFunct";
 
 const SalesInvoiceDetails = (props) => {
   const {
+    tableItemRef,
     salesAdd,
     setSalesAdd,
     billType,
     codeWithBillTypeList,
     handleChange,
     edit,
-    getOfInvoiceData,
-    setDocNoRecheck,
-    currentEditBillType,
-    setCurrentEditBillType,
-    setBillType,
-    billTypeDocNo,
-    setBillTypeDocNo,
-    getCodeWithBillType,
-    setCodeWithBillTypeList,
   } = props;
 
   const [ref, setRef] = useState(null);
 
-  const [ handleKeyDown , formRef ] = useOnKey(ref, setRef);
+  const [ handleKeyDown , formRef ] = useOnKey(ref, setRef,tableItemRef);
 
   useEffect(() => {
     if (codeWithBillTypeList?.length > 0) handleBillTypeSelection();
@@ -147,6 +139,7 @@ const SalesInvoiceDetails = (props) => {
         <Form.Label className="col-3 purchase-input-label">Date</Form.Label>
         <Form.Control
           onChange={handleChange}
+          onKeyDown={(e)=>{e.preventDefault();handleKeyDown(e)}}
           className="purchase-input-text"
           value={
             edit
@@ -159,6 +152,7 @@ const SalesInvoiceDetails = (props) => {
         <Form.Label className="col-3 purchase-input-label">Salesman</Form.Label>
         <div className="mx-0 col-9 px-0">
           <select
+            onKeyDown={handleKeyDown}
             value={salesAdd?.salesman || ""}
             name="payment_type"
             className="customer-select w-100"

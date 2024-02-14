@@ -97,7 +97,8 @@ const PurchaseDeliveryDetails = (props) => {
           </div>
         </div>
       </div>
-      <div className="col-1 d-flex align-items-end ps-0">
+      <div className="col-1"></div>
+      {/* <div className="col-1 d-flex align-items-end ps-0"> */}
         {/* <div
           className="btn btn-dark btn-sm purchase-edit-btn"
           onClick={handleEdit}
@@ -105,7 +106,7 @@ const PurchaseDeliveryDetails = (props) => {
           <FiEdit size={"1rem"} />
           Edit
         </div> */}
-      </div>
+      {/* </div> */}
       <span className="col-5" />
       <Form.Group className="col-3 col-4 mx-0 d-flex align-items-center my-1">
         <Form.Label className="col-3 col-4 purchase-input-label">

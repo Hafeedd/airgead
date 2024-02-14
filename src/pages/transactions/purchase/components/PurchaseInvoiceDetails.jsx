@@ -1,39 +1,24 @@
-import React, { useEffect, useState } from "react";
-import { Form, NavItem } from "react-bootstrap";
+import React, { useState } from "react";
+import { Form } from "react-bootstrap";
 import { FiEdit } from "react-icons/fi";
 import { Dropdown } from "semantic-ui-react";
-import { useLocation, useNavigate } from "react-router";
+import { useNavigate } from "react-router";
 import useOnKey from "../../../../hooks/onKeyFunct/onKeyFunct";
 
 const PurchaseInvoiceDetails = (props) => {
   const {
+    tableItemRef,
     handleEdit,
     purchaseAdd,
     handleChange,
     supplierList,
-    setPurchaseAdd,
   } = props;
 
   const [ref, setRef] = useState(null);
 
-  const location = useLocation();
   const navigate = useNavigate();
 
-  const { handleKeyDown, formRef } = useOnKey(ref, setRef);
-
-  useEffect(() => {
-    if (location?.state?.id && supplierList?.length > 0) {
-      let supplier_data = supplierList?.filter(
-        (x) => x.value === location?.state?.id
-      )[0];
-      setPurchaseAdd((data) => ({
-        ...data,
-        ["supplier_name"]: supplier_data?.name,
-        ["fk_supplier"]: supplier_data?.value,
-      }));
-      navigate(null, { replace: true, state: { id: null } });
-    }
-  }, [location.pathname, supplierList]);
+  const [ handleKeyDown, formRef ] = useOnKey(ref, setRef, tableItemRef);
 
   const search = (options, searchValue) => {
     searchValue = searchValue.toUpperCase();
@@ -88,7 +73,7 @@ const PurchaseInvoiceDetails = (props) => {
           required={purchaseAdd?.change_due > 0 ? true : false}
           name="fk_supplier"
           value={
-            supplierList?.filter((x) => x.value == purchaseAdd.fk_supplier)[0]
+            supplierList?.filter((x) => x.value === purchaseAdd.fk_supplier)[0]
               ?.name || ""
           }
           onKeyDown={handleKeyDown}
@@ -122,18 +107,7 @@ const PurchaseInvoiceDetails = (props) => {
           type="text"
         />
       </Form.Group>
-      {/* Row 2 -------------------------------------------------------------------------------------------------------- */}
-      {/* <Form.Group className='col-2 col-3 mx-0 d-flex align-items-center mt-1'>
-                <Form.Label className='col-3 purchase-input-label'>Cash/ Credit</Form.Label>
-                <div className='mx-0 col-9 px-0'>
-                    <select onChange={handleChange} onKeyDown={handleKeyDown}
-                    value={purchaseAdd.payment_type||'CASH'}
-                    name='payment_type' className='customer-select w-100'>
-                        <option value="CASH">CASH</option>
-                        <option value="BANK">BANK</option>
-                    </select>
-                </div>
-            </Form.Group> */}
+      {/* Row 2 -------------------------------------------------------------------------------------------------------- */}    
       <div
         className="col-3 col-2"
         onClick={
@@ -148,16 +122,6 @@ const PurchaseInvoiceDetails = (props) => {
         </div>
       </div>
       <span className="col-3" />
-      {/* <Form.Group className='col-3 ps-4 mx-0 d-flex align-items-center mt-1'>
-                <Form.Label className='col-3 purchase-input-label'>Due Date</Form.Label>
-                <Form.Control
-                    name="change_due" value={purchaseAdd.change_due||''}
-                    onKeyDown={handleKeyDown}
-                    onChange={handleChange}
-                    className='purchase-input-date'
-                    type='date'
-                />
-            </Form.Group> */}
       <Form.Group className="col-3 ps-5 mx-0 d-flex align-items-center mt-2">
         <Form.Label className="col-3 purchase-input-label">
           Bill Date
@@ -188,7 +152,7 @@ const PurchaseInvoiceDetails = (props) => {
         />
       </Form.Group>
       {/* Row 3 -------------------------------------------------------------------------------------------------------- */}
-      <div className="col-3 col-2 pe-0 d-flex align-items-end justify-content-start ps-1">
+      <div className="col-4 col-3 pe-0 d-flex align-items-end justify-content-start ps-1">
         <div className="px-1">
           <div className="btn btn-sm btn-secondary px-3">Purchase</div>
         </div>
@@ -198,7 +162,7 @@ const PurchaseInvoiceDetails = (props) => {
         <div className="ps-1">
           <div className="btn btn-sm btn-secondary px-3">Other</div>
         </div>
-        <div className="ps-1 col-3">
+        <div className="ps-1 col-2">
           <div
             onClick={handleEdit}
             className="btn btn-sm btn-dark px-1 justify-content-center d-flex align-items-center gap-1"
@@ -208,11 +172,7 @@ const PurchaseInvoiceDetails = (props) => {
           </div>
         </div>
       </div>
-      <div className="col-1 d-flex align-items-end ps-0">
-        {/* <div className='btn btn-dark btn-sm purchase-edit-btn' onClick={handleEdit}>
-                    <FiEdit size={'1rem'} />Edit
-                </div> */}
-      </div>
+      
       <div className="mx-0 px-0 col-1 d-flex align-items-center justify-content-start">
         <input
           type="checkbox"

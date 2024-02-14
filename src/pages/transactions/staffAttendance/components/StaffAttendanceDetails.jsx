@@ -377,7 +377,7 @@ const StaffAttendanceDetails = (props) => {
         </div>
       </div>
       <div      
-        className="staff-table-cont px-0"
+        className="staff-table-cont"
       >
         <table
           className="StaffTable w-100 p-0 m-0 px-0"

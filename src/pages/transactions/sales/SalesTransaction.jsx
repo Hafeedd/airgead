@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import "./SalesTransaction.css";
-import { useNavigate } from "react-router";
+import { useLocation, useNavigate } from "react-router";
 import { Modal } from "react-bootstrap";
 import { FiEdit } from "react-icons/fi";
 import PurchaseTableItemList from "../purchase/components/PurchaseTableItemList";
@@ -13,7 +13,6 @@ import SalesTable from "./components/SalesTable";
 import SalesDetailFooter from "./components/SalesDetailFooter";
 import useCustomerServices from "../../../services/master/customerServices";
 import useSalesServices from "../../../services/transactions/salesServices";
-import useOnKey from "../../../hooks/onKeyFunct/onKeyFunct";
 import Swal from "sweetalert2";
 import useItemServices from "../../../services/master/itemServices";
 import { PrintFIle } from "./components/SalesBill";
@@ -111,7 +110,7 @@ const SalesTransaction = () => {
   const [tableItemList, setTableItemList] = useState([]);
   // const [tableItemBatch, setTableItemBatch] = useState(null)
   const [tableItemBatchList, setTableItemBatchList] = useState([]);
-  const [salesList, setSalesList] = useState();
+  const [salesList, setSalesList] = useState([]);
   const [tableItemKeys, setTableItemKeys] = useState([]);
   const [billType, setBillType] = useState([]);
   const [billTypeDocNo, setBillTypeDocNo] = useState(null);
@@ -123,9 +122,9 @@ const SalesTransaction = () => {
     closing: null,
   });
 
-  const [ref, setRef] = useState(null);
+  const [tableItemRef, setTableItemRef] = useState(null);
 
-  const [code, setCode] = useState(null);
+  // const [code, setCode] = useState(null);
   const [salesAdd, setSalesAdd] = useState(initialSalesState);
 
   const [tableItem, setTableItem] = useState(initialTableItemState);
@@ -139,8 +138,6 @@ const SalesTransaction = () => {
   const { getSales, postSales, putSales, getAllUserAc, getCodeWithBillType } =
     useSalesServices();
 
-  const { handleKeyDown, formRef } = useOnKey(ref, setRef);
-
   const handleSalesAllReset = () => {
     setSalesAdd(initialSalesState);
     handleTableItemReset();
@@ -149,15 +146,60 @@ const SalesTransaction = () => {
     setShowPrint(false);
     setTableItemKeys([]);
     handleGetCode();
+    localStorage.setItem("salesData", false);
   };
+
+  const location = useLocation();
 
   const handleTableItemReset = () => {
     setTableItem(initialTableItemState);
   };
 
   useEffect(() => {
-    if (edit) {
-      let { sales_item, updated_at, ...others } = edit;
+    window.onmousedown = myBeforeUnloadFunction;
+    // myBeforeUnloadFunction()
+  }, [salesAdd, tableItemList, edit]);
+
+  const handleReloadData = () => {
+    let data = localStorage.getItem("salesData");
+    if (data) data = JSON.parse(data);
+    if (data?.edit) {
+      setEdit({ ...data.edit });
+      handleSetEdit(data?.edit);
+    } else if (data) {
+      let { items, updated_at, edit, tablekeys, ...others } = data;
+      let tempData = {
+        ...others,
+        change_due: others.change_due || "0.00",
+      };
+      if (tablekeys?.length > 0) {
+        setTableItemKeys([...tablekeys]);
+      }
+      setSalesAdd((data) => ({ ...data, tempData }));
+      if (items) {
+        setTableItemList([...items]);
+        handleSalesAddCalc(items, true, tempData);
+      }
+    }
+  };
+
+  const myBeforeUnloadFunction = () => {
+    const allSaleState = {
+      ...salesAdd,
+      items: [...tableItemList],
+      tablekeys: tableItemKeys,
+      edit: edit,
+    };
+    localStorage.setItem("salesData", JSON.stringify(allSaleState));
+  };
+
+  // useEffect(() => {
+
+  // }, [edit]);
+
+  const handleSetEdit = (data) => {
+    if (data) {
+      let { sales_item, updated_at, ...others } = data;
       let tempData = { ...others, change_due: others.change_due || "0.00" };
       // console.log(others)
       setSalesAdd((data) => ({ ...data, ...tempData }));
@@ -166,18 +208,25 @@ const SalesTransaction = () => {
         handleSalesAddCalc(sales_item, true, tempData);
       }
     } else handleGetCode();
-  }, [edit]);
+  };
 
   useEffect(() => {
     getData();
+    handleGetCode();
+    handleReloadData();
+
+    let customer = location.state;
+    if (customer?.id) {
+      setSalesAdd((data) => ({
+        ...data,
+        ["fk_customer"]: customer.id,
+        ["customer_name"]: customer.name,
+      }));
+      navigate(null, { replace: true, state: { id: null, name: null } });
+    }
   }, []);
 
   const navigate = useNavigate();
-
-  // useEffect(() => {
-  //   if(tableItemList?.length>0)
-  //   handleSalesAddCalc(tableItemList,true);
-  // }, [tableItemList]);
 
   const handleSalesAddCalc = (dataList, fromEdit, purchaseData) => {
     // dataList is the state of tableItemList
@@ -644,7 +693,6 @@ const SalesTransaction = () => {
       </div>
       <form
         onSubmit={handleSubmit}
-        ref={formRef}
         className="item_add_cont px-3 pb-1 pt-0"
       >
         <div className="row mx-0 mb-0 justify-content-between">
@@ -661,18 +709,23 @@ const SalesTransaction = () => {
                 <div className="col-5">{cstClsOpn.closing || 0}</div>
               </div>
             </div>
-            <div className="col-9 d-flex align-items-end justify-content-start px-0 mx-0 mt-1">
-              <div className="pe-1">
-                <div className="btn btn-sm btn-secondary rounded-bottom-0 px-3">Sales</div>
+            <div className="col-12 gap-2 d-flex align-items-end justify-content-start px-0 mx-0 mt-1">
+              <div className="">
+                <div className="btn btn-sm btn-secondary rounded-bottom-0 px-3">
+                  Sales
+                </div>
               </div>
               <div className="">
-                <div className="btn btn-sm btn-secondary rounded-bottom-0 px-3">S.Return</div>
+                <div className="btn btn-sm btn-secondary rounded-bottom-0 px-3">
+                  S.Return
+                </div>
               </div>
-              <div className="ps-1">
-                <div className="btn btn-sm btn-secondary rounded-bottom-0 px-3">Other</div>
+              <div className="">
+                <div className="btn btn-sm btn-secondary rounded-bottom-0 px-3">
+                  Other
+                </div>
               </div>
-              <div className="ps-1 col-3"
-              >
+              <div className=" col-3">
                 <div
                   onClick={handleEdit}
                   className="btn btn-sm btn-dark px-1 rounded-bottom-0 justify-content-center d-flex align-items-center gap-1"
@@ -683,7 +736,7 @@ const SalesTransaction = () => {
               </div>
             </div>
             {/* <div className="col-3"> */}
-              {/* <div
+            {/* <div
                 className="btn btn-dark btn-sm purchase-edit-btn"
                 onClick={handleEdit}
               >
@@ -696,20 +749,11 @@ const SalesTransaction = () => {
           <div className={`col-9 ${pageHeadItem !== 1 && "d-none"}`}>
             <SalesInvoiceDetails
               {...{
-                billType,
-                setBillType,
-                getOfInvoiceData,
-                billTypeDocNo,
-                setBillTypeDocNo,
-                getCodeWithBillType,
-                codeWithBillTypeList,
-                setCodeWithBillTypeList,
-                code,
-                setCode,
+                tableItemRef,
                 salesAdd,
-                docNoRecheck,
-                setDocNoRecheck,
                 setSalesAdd,
+                billType,
+                codeWithBillTypeList,
                 handleChange,
                 edit,
               }}
@@ -747,6 +791,9 @@ const SalesTransaction = () => {
         </div>
         <SalesTable
           {...{
+            tableItemRef,
+            setTableItemRef,
+            handleSetEdit,
             handleSalesAddCalc,
             tableHeadList,
             salesBatchShow,
@@ -776,8 +823,7 @@ const SalesTransaction = () => {
         />
         <SalesDetailFooter
           {...{
-            bankSelect,
-            handleKeyDown,
+            bankSelect,            
             salesAdd,
             handleChange,
             edit,
@@ -812,7 +858,7 @@ const SalesTransaction = () => {
           from="sales"
           setPurchaseList={setSalesList}
           closeEditModal={setSalesEditModal}
-          {...{ setSalesEditModal, getData, setEdit, edit }}
+          {...{ handleSetEdit, setSalesEditModal, getData, setEdit, edit }}
         />
       </Modal>
       <Modal
