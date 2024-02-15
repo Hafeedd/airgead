@@ -7,11 +7,12 @@ import { Form } from "react-bootstrap";
 const BalanceSheetEntry = (props) => {
     const {params, setParams} = props
 
-    // const handleChange = ((e)=>{
-    //     if (e.target.vslue == ""){
-    //         setParams()
-    //     }
-    // })
+    const handleChange = ((e)=>{
+        console.log(e.target.value)
+        if (e.target.vslue == ""){
+            setParams({...params,[e.target.name]:null})
+        }
+    })
     return (
         <div className="row mx-0">
             <div className="col-12 px-0 mt-1 d-flex justify-content-start">
@@ -59,8 +60,8 @@ const BalanceSheetEntry = (props) => {
                     </Form.Label>
                     <Form.Control
                         name="from_date"
-                        // value={params?.to_date || new Date()?.toISOString()?.slice(0, 10)}
-                        // onChange={handleChange}
+                        value={params?.to_date || new Date()?.toISOString()?.slice(0, 10)}
+                        onChange={handleChange}
                         className="purchase-input-text me-2 text-start"
                         type="date"
                     />
@@ -72,8 +73,8 @@ const BalanceSheetEntry = (props) => {
                     </Form.Label>
                     <Form.Control
                         name="to_date"
-                        // value={params?.to_date || new Date()?.toISOString()?.slice(0, 10)}
-                        // onChange={handleChange}
+                        value={params?.to_date || new Date()?.toISOString()?.slice(0, 10)}
+                        onChange={handleChange}
                         className="purchase-input-text me-2 text-start"
                         type="date"
                     />
