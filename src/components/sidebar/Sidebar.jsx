@@ -109,6 +109,22 @@ const Sidebar = () => {
                   </div>
                </span>
                <span className="SidebarSpan d-flex ms-5 ps-3">
+              <div
+                className="SidebarItemText"
+                onClick={() => navigate("/purchase-return")}
+              >
+                Purchase Return
+              </div>
+            </span>
+            {/* <span className="SidebarSpan d-flex ms-5 ps-3">
+              <div
+                className="SidebarItemText"
+                onClick={() => navigate("/sales-return")}
+              >
+                Sales Return
+              </div>
+            </span> */}
+            <span className="SidebarSpan d-flex ms-5 ps-3">
                   <div
                      className="SidebarItemText"
                      onClick={() => navigate("/payment-transaction")}
@@ -178,7 +194,7 @@ const Sidebar = () => {
                onClick={() => setArrowActive(!ArrowActive)}
                className={`SidebarItem mt-3 mb-1 ${ArrowActive && "active"}`}
             >
-               <img src={Reports} width={"18px"} />
+               <img className='sidebar_icon' src={Reports} width={"18px"} />
                Reports
             </div>
             <div className={`sidebar_span_cont ${!ArrowActive && "d-none"}`}>

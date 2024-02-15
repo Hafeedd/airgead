@@ -13,7 +13,7 @@
     border-radius: 0.3125rem;
     font-size: 0.9125rem;
     font-weight: 600;
-    height: 6rem;
+    height: 4.5rem;
 }
 
 .sales-customer-container:focus{
@@ -255,3 +255,8 @@
 .pruchase-select.sales_customer.selection .dropdown.icon{
     top: 0.3rem !important;
 }
+
+/* #tableBodyTr{
+    height: 2vh !important;
+    max-height: 2vh !important;
+} */

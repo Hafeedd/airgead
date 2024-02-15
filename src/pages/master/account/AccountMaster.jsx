@@ -8,6 +8,7 @@ import useAccountServices from "../../../services/master/accountServices";
 const AccountMaster = () => {
   const [toEdit, setToEdit] = useState(false);
   const [listItem, setListItem] = useState([]);
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
   const location = useLocation().pathname;
@@ -15,10 +16,18 @@ const AccountMaster = () => {
   const { getAccountList } = useAccountServices();
 
   const loadAccountList = async () => {
-    const response = await getAccountList();
-    if (response?.success) {
-      setListItem(response?.data);
-      // console.log(response?.data)
+    try{
+
+      setLoading(true)
+      const response = await getAccountList();
+      if (response?.success) {
+        setListItem(response?.data);
+        // console.log(response?.data)
+      }
+      setLoading(false)
+    }catch(err){
+      setLoading(false)
+      console.log(err)
     }
   };
 
@@ -70,7 +79,7 @@ const AccountMaster = () => {
           setEdit={setToEdit}
         />
       ) : (
-        <AccountList {...{loadAccountList, handleEdit, toEdit, listItem }} />
+        <AccountList {...{loadAccountList,loading, handleEdit, toEdit, listItem }} />
       )}
     </div>
   );

@@ -5,7 +5,7 @@ import MaterialCompositionList from "./components/MaterialCompositionList";
 import "./MaterialComposition.css"
 import useItemServices from "../../../services/master/itemServices";
 import useAccountServices from "../../../services/master/accountServices";
-import useProductionServices from "../../../services/master/productionSerivices";
+import useProductionServices from "../../../services/master/productionServices";
 
 const MaterialComposition = () => {
   const navigate = useNavigate();

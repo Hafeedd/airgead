@@ -11,6 +11,7 @@ export const StaffTable = (props) => {
   const {
     handleEdit,
     search,
+    loading,
     getData,
     handleDelete,
     staffList,
@@ -161,14 +162,19 @@ export const StaffTable = (props) => {
         </div>
       </div>
       <div
-        className={`item_add_cont p-0 table-scroller mx-0 ${
+        className={`item_add_cont p-0 table-scroller mx-0 position-relative ${
           location.pathname == "/staff-pay-scale" && "payscale"
         }`}
         style={{
           borderRadius: "0.3125rem 0.3125rem 0rem 0rem",
         }}
       >
-        <table className="table table-light custom-table">
+        {loading && (
+        <div className="loader-container w-100">
+          <div className="loader"></div>
+        </div>
+      )}
+        <table className={`table table-light custom-table  ${loading&& "loading-cont-par-blur"}`}>
           <thead>
             <tr>
               {/* <th style={{borderTopLeftRadius: "0.3125rem"}}>No</th> */}

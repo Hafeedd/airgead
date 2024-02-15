@@ -3,7 +3,7 @@ import searchIcon from "../../../../assets/icons/search.png";
 import { GrRefresh } from "react-icons/gr";
 
 export const DayBookTable = (props) => {
-  const { dayBookList } = props;
+  const { dayBookList, loading } = props;
 
   const [searchedList, setSearchedList] = useState([]);
 
@@ -20,7 +20,7 @@ export const DayBookTable = (props) => {
         if (value != "") {
           if (dayBookList.length > 0) {
             let accDocNoString = " ";
-            
+
             tempData = tempList?.filter((x) => {
               if (x?.account_data?.length < 0) return false;
               accDocNoString = x?.account_data?.reduce(
@@ -44,8 +44,13 @@ export const DayBookTable = (props) => {
   };
 
   return (
-    <div className="row mx-0 mt-3">
-      <div className="daybook-cont px-0">
+    <div className="row mx-0 mt-3 position-relative">
+      {loading && (
+        <div className="loader-container w-100">
+          <div className="loader"></div>
+        </div>
+      )}
+      <div className={`daybook-cont px-0 ${loading&& "loading-cont-par-blur"}`}>
         <div
           style={{ background: "#000" }}
           className="w-100 d-flex justify-content-end rounded-top-1"
@@ -80,73 +85,87 @@ export const DayBookTable = (props) => {
                 <th className="text-center">Credit</th>
               </tr>
             </thead>
-            <tbody>
-              {searchedList?.length > 0 ? (
-                searchedList?.map((data, i) => {
-                  return(
-                    (data.account_data.length>0 && 
-                      (data.account_data.filter(x=>x.debit>0 || x.credit>0).length>0))&&
-                    <>
-                      <tr>
-                        <td
-                          style={{ background: "#BD93F3", color: "white" }}
-                          colSpan={4}
-                        >
-                          <div className="d-flex">
-                            <div
-                              className="me-4 d-flex"
-                              style={{ width: "fit-content" }}
+            <tbody className="w-100">
+              {!loading && searchedList?.length > 0
+                ? searchedList?.map((data, i) => {
+                    return (
+                      data.account_data.length > 0 &&
+                      data.account_data.filter(
+                        (x) => x.debit > 0 || x.credit > 0
+                      ).length > 0 && (
+                        <>
+                          <tr>
+                            <td
+                              style={{ background: "#BD93F3", color: "white" }}
+                              colSpan={4}
                             >
-                              {"Date: " +
-                                new Date(
-                                  data.account_data[0]?.date
-                                ).toLocaleDateString()}
-                            </div>
-                            <div style={{ width: "fit-content" }}>
-                              {"Doc: " + data.account_data[0]?.document_no}
-                            </div>
-                          </div>
-                        </td>
-                      </tr>
-                      {data?.account_data?.length > 0 &&
-                        data?.account_data?.map((daybookData) => {                          
-                          return (daybookData?.debit>0 || daybookData?.credit>0) &&(
-                            <tr className="border border-secondary">
-                              <td>{daybookData?.account_name}</td>
-                              <td>{daybookData?.narrations}</td>
-                              <td className="text-center">
-                                {daybookData?.debit>0?daybookData?.debit?.toFixed(2):''}
-                              </td>
-                              <td className="text-center">
-                                {daybookData?.credit>0?daybookData?.credit?.toFixed(2):''}
-                              </td>
-                            </tr>
-                          );
-                        })}
-                      <tr className="foot">
-                        <td></td>
-                        <td></td>
-                        <td>
-                          <dvi className="daybook-foot-data text-center">
-                            {Math.abs(data?.account_total?.total_credit)?.toFixed(2)}
-                          </dvi>
-                        </td>
-                        <td>
-                          <dvi className="daybook-foot-data text-center">
-                            {Math.abs(data?.account_total?.total_debit)?.toFixed(2)}
-                          </dvi>
-                        </td>
-                      </tr>
-                    </>
-                  )
-                })
-              ) : (
-                <tr>
-                  <td colSpan={4} className="text-center">
-                    No transactions !
-                  </td>
-                </tr>
-              )}
+                              <div className="d-flex">
+                                <div
+                                  className="me-4 d-flex"
+                                  style={{ width: "fit-content" }}
+                                >
+                                  {"Date: " +
+                                    new Date(
+                                      data.account_data[0]?.date
+                                    ).toLocaleDateString()}
+                                </div>
+                                <div style={{ width: "fit-content" }}>
+                                  {"Doc: " + data.account_data[0]?.document_no}
+                                </div>
+                              </div>
+                            </td>
+                          </tr>
+                          {data?.account_data?.length > 0 &&
+                            data?.account_data?.map((daybookData) => {
+                              return (
+                                (daybookData?.debit > 0 ||
+                                  daybookData?.credit > 0) && (
+                                  <tr className="border border-secondary">
+                                    <td>{daybookData?.account_name}</td>
+                                    <td>{daybookData?.narrations}</td>
+                                    <td className="text-center">
+                                      {daybookData?.debit > 0
+                                        ? daybookData?.debit?.toFixed(2)
+                                        : ""}
+                                    </td>
+                                    <td className="text-center">
+                                      {daybookData?.credit > 0
+                                        ? daybookData?.credit?.toFixed(2)
+                                        : ""}
+                                    </td>
+                                  </tr>
+                                )
+                              );
+                            })}
+                          <tr className="foot">
+                            <td></td>
+                            <td></td>
+                            <td>
+                              <dvi className="daybook-foot-data text-center">
+                                {Math.abs(
+                                  data?.account_total?.total_credit
+                                )?.toFixed(2)}
+                              </dvi>
+                            </td>
+                            <td>
+                              <dvi className="daybook-foot-data text-center">
+                                {Math.abs(
+                                  data?.account_total?.total_debit
+                                )?.toFixed(2)}
+                              </dvi>
+                            </td>
+                          </tr>
+                        </>
+                      )
+                    );
+                  })
+                : !loading && (
+                    <tr>
+                      <td colSpan={4} className="text-center">
+                        No transactions !
+                      </td>
+                    </tr>
+                  )}
             </tbody>
           </table>
         </div>

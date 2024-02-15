@@ -5,11 +5,16 @@ import ItemProduce from "./components/ItemProduce";
 import ByProductDetails from "./components/ByProductDetails";
 import RawMaterials from "./components/RawMaterials";
 import LabourAndExpense from "./components/LabourAndExpense";
-import useProductionServices from "../../../services/master/productionSerivices";
+import useProductionServices from "../../../services/master/productionServices";
 import useItemServices from "../../../services/master/itemServices";
 import useAccountServices from "../../../services/master/accountServices";
 import useStaffServices from "../../../services/master/staffServices";
 import { Dropdown } from "semantic-ui-react";
+import { LuClipboardEdit } from "react-icons/lu";
+import Swal from "sweetalert2";
+import { Modal } from "react-bootstrap";
+import useProductionTransactionServices from "../../../services/transactions/productionTransaction";
+// import { StockJournalEdit } from "../stockjurnal/components/StockJournalEdit";
 const Initial_data ={
   qty: null,
   fk_item: null,
@@ -84,13 +89,20 @@ const ProductionTransaction = () => {
   const [fullByprodData,setFullByprodData] = useState([])
   const [byProductItems,setByProductItems] = useState(by_prod_data)
 
+  const [fullLabourData,setFullLabourData] = useState([])
   const [labourDetails,setLabourDetails] = useState(labour_data)
 
+  const [listProduction,setListProduction] = useState([])
+
+  const [selectedStaffAccount, setSelectedStaffAccount] = useState("");
+  const [showProductionEdit, setShowProductionEdit] = useState(false);
   const {getMaterialComposition} = useProductionServices()
   const {getStaff}=useStaffServices()
   const {getItemList,getProperty,getCode} =useItemServices();
   const { getAccountList } = useAccountServices();
+  const {postProductionData}=useProductionTransactionServices()
 
+ 
   const getDocNumber = async()=>{
     const response = await getCode()
     let data=response.data.filter(code=> code.types === 'PRODUCTION_CODE')
@@ -180,7 +192,18 @@ const ProductionTransaction = () => {
 		}
 		return response.data
 	}
-  console.log('doc',date,narration,staffDetails,code)
+
+  const search = (options, searchValue) => {
+    searchValue = searchValue.toUpperCase();
+    return options.filter((option) => {
+      return (
+        option?.value?.toString()?.includes(searchValue) ||
+        option?.text?.toString()?.includes(searchValue)
+      );
+    });
+  };
+
+  console.log('doc',date,narration,selectedStaffAccount,code)
   console.log('1.raw',rawItems)
   console.log('2.bypro',byProductItems)
   console.log('3.labour',labourDetails)
@@ -189,6 +212,48 @@ const ProductionTransaction = () => {
   console.log('full',fullProdData)
   console.log('full_raw',fullRawData)
   console.log('full_bypro',fullByprodData)
+  console.log('full_labourData',fullLabourData)
+  const handleDropdownStaffAccount = (event, data) => {
+    setSelectedStaffAccount(data.value);
+  };
+  const handleResetAll = () =>{
+    // setDate('')
+    // setCode('')
+    // setNarration('')
+    // setSelectedStaffAccount('')
+   
+    // setRawItems('')
+    // setByProductItems('')
+    // setLabourDetails('')
+    // setProduceData('')
+    
+    // setFullRawData([])
+    // setFullByprodData([])
+    // setFullLabourData([])
+    // setFullProdData([])
+  }
+
+  const handleFinalSubmit = async()=>{
+    let submitData ={
+      "voucher_number": code,
+      "date": date,
+      "checked_by": selectedStaffAccount,
+      "narration": narration,
+      "total_sales_value": 0,
+      "total_cost": 0,
+      "total_margin": 0,
+      "produced_items": listProduction,
+    }
+    console.log('submit data............',submitData)
+    let response = await postProductionData(submitData);
+      if (!response?.success) {
+        Swal.fire("Error", "Oops Something went wrong");
+      } else {
+        handleResetAll()
+        Swal.fire("Success", "Successfully submitted");
+      }
+  }
+
 
   useEffect(()=>{
     getDocNumber()
@@ -219,72 +284,25 @@ const ProductionTransaction = () => {
       </div>
       <div className="p-3 mt-3">
         <div className="p-2 bg-light rounded-1">
-          <div className="col-12 d-flex ">
-            <div
-              className="col-3 pt-4 ps-4"
-              style={{ backgroundColor: "#e6e6e6" }}
-            >
-              <div className="col-5">
-                <div className="col-12 d-flex">
-                  <div className="col-7 w-100">
-                    <strong>Sales Value</strong>
-                  </div>
-                  <div className="col-5">:</div>
+        
+            <div className="col-12 pt-2 d-flex mb-2">
+            
+                <div className="col-2 col-3 d-flex mx-0">
+                  <div className="col-3 mx-0">Doc.No :</div>
+                  <input type="text" className="rounded border col-8 ps-3" value={code} onChange={(e)=>setCode(e.target.value)}/>
                 </div>
-                <div className="col-12 d-flex">
-                  <div className="col-7 w-100">
-                    <strong>Cost</strong>
-                  </div>
-                  <div className="col-5">:</div>
+                <div className="col-1 d-flex mx-0">
+                  <button className="bg-dark text-light border border-dark rounded w-25">
+                  <LuClipboardEdit className="my-1" onClick={()=>setShowProductionEdit(true)}/>
+                  </button>
                 </div>
-                <div className="col-12 d-flex">
-                  <div className="col-7 w-100">
-                    <strong>Margin</strong>
-                  </div>
-                  <div className="col-5">:</div>
+                <div className="col-2 col-3 d-flex mx-0">
+                  <div className="col-3 mx-0 ps-4">Date :</div>
+                  <input type="date" className="rounded border col-7 ms-1" value={date} onChange={(e)=>setDate(e.target.value)}/>
                 </div>
-              </div>
+          
+                
             </div>
-            <div className="col-5">
-              <div className="col-12 d-flex justify-content-end pt-4">
-                <button className="col-1 col-2 bg-dark text-light border border-dark mt-5 rounded py-1">
-                  Edit
-                </button>
-              </div>
-            </div>
-            <div className="col-4 px-3 pt-3">
-              <div className="col-12 d-flex mb-2">
-                <div className="col-6 d-flex mx-0">
-                  <div className="col-4 mx-0">Doc.No</div>
-                  <input type="text" className="rounded border col-8 " value={code} onChange={(e)=>setCode(e.target.value)}/>
-                </div>
-                <div className="col-6 d-flex mx-0">
-                  <div className="col-4 mx-0 ps-4">Date</div>
-                  <input type="date" className="rounded border col-8 mx-2 " value={date} onChange={(e)=>setDate(e.target.value)}/>
-                </div>
-              </div>
-              <div className="col-12 d-flex mb-2">
-                <div className="col-3">Checked by </div>
-                <Dropdown
-                clearable
-                selection
-                required
-                // search={search}
-                // onKeyDown={handleKeyDown1}
-                // onChange={handleDropdownChangeType}
-                className="purchase-input-text table-drop d-flex align-items-center py-0 form-control w-100"
-                name="fk_type"
-                placeholder="Select"
-                // value={produceData.fk_type || ""}
-                options={staffDetails}
-              />
-              </div>
-              <div className="col-12 d-flex mb-2">
-                <div className="col-3">Narration</div>
-                <input type="text" className="col-9 rounded border ms-2 ps-3" value={narration} onChange={(e)=>setNarration(e.target.value)}/>
-              </div>
-            </div>
-          </div>
           <ItemProduce {...{
           materialList,
           items,types,units,
@@ -295,20 +313,71 @@ const ProductionTransaction = () => {
           fullProdData,setFullProdData,
           fullRawData,setFullRawData,
           fullByprodData,setFullByprodData,
-          rawItems,byProductItems,
+          fullLabourData,setFullLabourData,
+          rawItems,byProductItems,labourDetails,
+          listProduction,setListProduction,
           }}/>
           <div className="col-12 mt-1 d-flex">
-           <RawMaterials {...{rawItems,setRawItems,units,fullRawData,setFullRawData}}/>
+           <RawMaterials {...{
+            rawItems,
+            setRawItems,
+            units,
+            fullRawData,
+            setFullRawData,
+            setProduceData,
+          }}/>
            <ByProductDetails {...{byProductItems,setByProductItems,units,fullByprodData,setFullByprodData}}/>
           </div>
-          <LabourAndExpense {...{labourDetails,setLabourDetails,accDetails}}/>
+          <LabourAndExpense {...{labourDetails,setLabourDetails,accDetails,fullLabourData,setFullLabourData,setProduceData}}/>
          
-          <div className="col-12 d-flex justify-content-end mt-1">
-                <button className="col-1 mx-1 rounded border border-dark bg-dark text-light py-1">Clear</button>
-                <button className="col-1 rounded border border-dark bg-dark text-light py-1">Save</button>
+          <div className="col-12 d-flex justify-content-end mb-1 mt-2">
+                <div className="col-4 d-flex pe-3">
+                  <div className="col-3">Checked by </div>
+                  <Dropdown
+                    clearable
+                    selection
+                    required
+                    search={search}
+                    // onKeyDown={handleKeyDown1}
+                    onChange={handleDropdownStaffAccount}
+                    className="purchase-input-text table-drop d-flex align-items-center py-0 form-control w-100"
+                    name="fk_type"
+                    placeholder="Select"
+                    value={selectedStaffAccount}
+                    options={staffDetails}
+                  />
+                </div>
+                <div className="col-4 d-flex pe-3">
+                  <div className="col-3">Narration</div>
+                  <input type="text" className="col-9 rounded border ms-2 ps-3" value={narration} onChange={(e)=>setNarration(e.target.value)}/>
+                </div>
+                <div className="col-4 d-flex justify-content-end">
+                <button className="col-4 col-5 mx-1 rounded border border-dark bg-dark text-light py-1">Clear</button>
+                <button className="col-4  col-5 rounded border border-dark bg-dark text-light py-1" onClick={handleFinalSubmit}>Save</button>
+                </div>
+               
           </div>
         </div>
       </div>
+      <Modal
+          show={showProductionEdit}
+          centered
+          size="lg"
+          onHide={() => setShowProductionEdit(false)}
+        >
+          {/* <Modal.Body className="p-0 rounded-3">
+            <StockJournalEdit
+            // list = {stockJList}
+            // setShow = {setShowJournalFilter}
+            //   {...{
+            //     edit,
+            //     getData,
+            //     setEdit,
+            //     handleClearAll,
+            //   }}
+            />
+          </Modal.Body> */}
+        </Modal>
     </div>
   );
 };

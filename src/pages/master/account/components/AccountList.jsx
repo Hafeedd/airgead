@@ -7,7 +7,14 @@ import useAccountServices from "../../../../services/master/accountServices";
 import deleteBtn from "../../../../assets/icons/delete.svg";
 
 const AccountList = (props) => {
-  const { listItem, handleEdit, handleDelete, toEdit, loadAccountList } = props;
+  const {
+    listItem,
+    handleEdit,
+    handleDelete,
+    loading,
+    toEdit,
+    loadAccountList,
+  } = props;
   const [searchedList, setSearchedList] = useState([]);
 
   useEffect(() => {
@@ -69,7 +76,7 @@ const AccountList = (props) => {
       Swal.fire({
         title: "Warning",
         text:
-        err?.response?.data?.message ||
+          err?.response?.data?.message ||
           "Failed to delete account. There may be transaction done with this account.",
         icon: "info",
       });
@@ -100,10 +107,15 @@ const AccountList = (props) => {
         </div>
       </div>
       <div
-        className="item_add_cont p-0 table-scroller"
+        className={`item_add_cont p-0 table-scroller position-relative`}
         style={{ borderRadius: "0.3125rem 0.3125rem 0rem 0rem" }}
       >
-        <table className="table table-light custom-table">
+        {loading && (
+        <div className="loader-container w-100">
+          <div className="loader"></div>
+        </div>
+      )}
+        <table className={`table table-light custom-table ${loading&& "loading-cont-par-blur"}`}>
           <thead>
             <tr>
               <th style={{ borderTopLeftRadius: "0.3125rem", width: "4rem" }}>
@@ -125,7 +137,6 @@ const AccountList = (props) => {
           <tbody>
             {searchedList?.length > 0 ? (
               searchedList?.map((data, i) => {
-                
                 const handleDelete = async (e) => {
                   Swal.fire({
                     title: "Delete",
@@ -161,11 +172,17 @@ const AccountList = (props) => {
                     {/* <td>
                     </td> */}
                     <td>
-                      <div
-                        className="button pe-3 gap-4 d-flex"                        
-                      >
-                        <img src={deleteBtn} alt="delete_btn" onClick={(e)=> handleDelete(e)}/>
-                        <img src={editIcon} alt={"editbtn"} onClick={(e) => handleEdit(data && data)}/>
+                      <div className="button pe-3 gap-4 d-flex">
+                        <img
+                          src={deleteBtn}
+                          alt="delete_btn"
+                          onClick={(e) => handleDelete(e)}
+                        />
+                        <img
+                          src={editIcon}
+                          alt={"editbtn"}
+                          onClick={(e) => handleEdit(data && data)}
+                        />
                       </div>
                     </td>
                   </tr>

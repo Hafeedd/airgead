@@ -6,9 +6,19 @@ import { BsTrashFill } from "react-icons/bs";
 import Swal from "sweetalert2";
 import usePurchaseServices from "../../../../services/transactions/purchcaseServices";
 import useOnKey from "../../../../hooks/onKeyFunct/onKeyFunct";
+import { useLocation, useNavigate } from "react-router";
+import usePurchaseReturnServices from "../../../../services/transactions/purchaseReturn";
 
 const PurchaseTable = (props) => {
   const {
+    returnPage,
+    purchaseInvoiceRef,
+    tableItemRef, 
+    setTableItemRef,
+    setTableItemKeys,
+    tableItemKeys,
+    handleGetCode,
+    handleSetEdit,
     setTableItemEdited,
     tableHeadList,
     setPurchaseItemModal,
@@ -23,7 +33,6 @@ const PurchaseTable = (props) => {
     tableItemList,
     setTableItemList,
     tableEdit,
-    setTableEdit,
     setEdit,
     handleBatchSubmit,
     itemNameList,
@@ -31,45 +40,79 @@ const PurchaseTable = (props) => {
     purchaseList,
     getData,
     handlePurchaseAllReset,
-    handleResetTable,
     setShowBatch,
-    setShowStock,
-    setPurchaseList,
-    showBatch,
-    tableItemBatchList,
-    setTableItemBatchList,
   } = props;
-
-  const [ref, setRef] = useState();
-  const [ref2, setRef2] = useState();
-  // const [itemNameList, setItemNameList] = useState([])
   const [unitList, setUnitList] = useState();
+
+  const [tableItemListRef, setTableItemListRef] = useState(null); 
+  
+  const [handleKeyDown, formRef] = useOnKey(tableItemRef, setTableItemRef, purchaseInvoiceRef,'repeat');
+
+  const [handleKeyDown2, formRef2] = useOnKey(
+    tableItemListRef, setTableItemListRef,
+    tableItemRef,'repeat',
+    tableItemList
+  );
+  
+  const location = useLocation();
 
   useEffect(() => {
     getTableData();
+
+    if (location?.state?.fromItemAdd) {
+      let item = location.state.item;
+      const { purchase_rate, discount_1_percentage, tax_gst, fk_unit } =
+        item || {};
+      console.log(item);
+      let tempItem = { ...tableItem };
+      tempItem = {
+        ...tempItem,
+        fk_items: item?.id,
+        rate: purchase_rate || 0,
+        discount_1_percentage: discount_1_percentage || 0,
+        tax_gst: tax_gst || 0,
+        fk_units: fk_unit,
+        // quantity: itemData ? 1 : 0,
+        item_name: item?.name,
+        cgst_or_igst: item?.tax_gst / 2 || 0,
+        sgst: item?.tax_gst / 2 || 0,
+        code: item?.description,
+        margin: item?.margin,
+        sales_rate: item?.retail_rate,
+      };
+      setTableItem({ ...tempItem });
+      navigate(null, { state: null });
+
+      document
+        .getElementById("tableItemFkItem")
+        ?.querySelector("input")
+        ?.focus();
+    }
   }, []);
 
-  useEffect(()=>{
-    const tempList = [...tableItemList]
+  useEffect(() => {
+    const tempList = [...tableItemList];
     const editedList = tempList.filter((x) => x.edited);
-      if (editedList.length < 1) setTableItemEdited(false);
-  },[tableItemList])
+    if (editedList.length < 1) setTableItemEdited(false);
+  }, [tableItemList, setTableItemEdited]);
 
-  const [handleKeyDown, formRef] = useOnKey(ref, setRef);
-  const [handleKeyDown2, formRef2] = useOnKey(ref2, setRef2, tableItemList);
 
   const { getItemNameList, getProperty } = useItemServices();
 
   const { deletePurchaseItem, putPurchaseItem } = usePurchaseServices();
+  const { deletePurchaseReturnItem, putPurchaseReturnItem } = usePurchaseReturnServices();
+
+  const navigate = useNavigate();
 
   const handleKeyTableItemEdit = async (e, data, i) => {
-    e.preventDefault();
-    if (e.key == "Enter" && !e.ctrlKey) {
+    if (e.key === "Enter" && !e.ctrlKey) {
+      e.preventDefault();
       handleTableItemEdit(e, data, i);
     } else handleKeyDown2(e);
   };
 
   const handleTableItemEdit = async (e, data, i) => {
+    e.preventDefault();
     try {
       if (!data.item_name || !data.quantity || !data.rate) {
         Swal.fire({
@@ -82,7 +125,11 @@ const PurchaseTable = (props) => {
         handleKeyDown2(e);
         return 0;
       }
-      let response = await putPurchaseItem(data.id, data);
+      let response
+      if(returnPage)
+      response = await putPurchaseReturnItem(data.id, data);
+      else
+      response = await putPurchaseItem(data.id, data);
       if (response.success) {
         handleKeyDown2(e);
         getData();
@@ -97,15 +144,15 @@ const PurchaseTable = (props) => {
       let tempList = [...tableItemList];
       let { edited, ...others } = data;
       tempList.splice(i, 1, others);
-      setTableItemList([...tempList]); 
-      handlePurchAllCalc(tempList,false)     
+      setTableItemList([...tempList]);
+      handlePurchAllCalc(tempList, false);
     } catch (err) {}
   };
 
   const getTableData = async () => {
     const minFunct = (data) => {
       let list = [];
-      data.map((x) => {
+      data.forEach((x) => {
         if (x.property_type === "unit") {
           list.push({ value: x["id"], text: x["property_value"] });
         }
@@ -115,7 +162,7 @@ const PurchaseTable = (props) => {
 
     const handleDataNameList = (data) => {
       let tempList = [];
-      data?.map((x) => {
+      data?.forEach((x) => {
         tempList.push({
           ...x,
           text: x.name,
@@ -136,6 +183,15 @@ const PurchaseTable = (props) => {
     }
   };
 
+  const handleItemNameSelection = (e, { value }) => {
+    let data = value?.toUpperCase();
+    if (data) {
+      navigate("/add", {
+        state: { fromPurchase: true, name: data },
+      });
+    }
+  };
+
   // handle table item changing-----------------------------------
 
   const handleChangeTableItem = (e, data, state, toTableItem) => {
@@ -143,31 +199,35 @@ const PurchaseTable = (props) => {
     // if toTableItem is not true then it contains the index of tableItemList
     let tempItem = { ...state };
     if (data) {
-      let Item_data = data.options.filter((x) => x?.value === data?.value)[0];
-      // console.log(Item_data)
+      let itemData = data.options.filter((x) => x?.value === data?.value)[0];
+
       const { purchase_rate, discount_1_percentage, tax_gst, fk_unit } =
-        Item_data || {};
+        itemData || {};
       tempItem = {
         ...tempItem,
         rate: purchase_rate || 0,
         discount_1_percentage: discount_1_percentage || 0,
         tax_gst: tax_gst || 0,
-        fk_unit: fk_unit,
-        quantity: Item_data ? 1 : 0,
-        item_name: Item_data?.text,
-        code: Item_data?.description,
-        fk_items: Item_data?.value,
-        unit: Item_data?.unit,
+        fk_units: fk_unit,
+        // quantity: itemData ? 1 : 0,
+        item_name: itemData?.text,
+        code: itemData?.description,
+        fk_items: itemData?.value,
+        unit: itemData?.unit,
+        margin: itemData?.margin,
+        sales_rate: itemData?.retail_rate,
       };
     }
     if (e.target.value === "") {
       tempItem = { ...tempItem, [e.target.name]: "" };
     } else if (e.target.type === "number") {
-      tempItem = { ...tempItem, [e.target.name]: parseFloat(e.target.value) };
+      tempItem = { ...tempItem, [e.target.name]: parseFloat(+e.target.value) };
     } else {
       tempItem = { ...tempItem, [e.target.name]: e.target.value };
     }
-    const calculatedData = handleAmountCalculation(tempItem, e, state);
+    // let calculatedData = tempItem
+    // if(!data)
+    let calculatedData = handleAmountCalculation(tempItem, e, state);
     if (toTableItem === true) setTableItem(calculatedData);
     else {
       let tempList = [...tableItemList];
@@ -189,19 +249,19 @@ const PurchaseTable = (props) => {
       total = tempItem.quantity * tempItem.rate;
       cost = tempItem.rate;
       value = {
-        ["value"]: tempItem.quantity * tempItem.rate,
-        ["total"]: total,
-        ["cost"]: cost,
+        value: tempItem.quantity * tempItem.rate,
+        total: total,
+        cost: cost,
       };
       tempItem = { ...tempItem, ...value };
       if (name !== "discount_1_amount" && tempItem.discount_1_percentage) {
         value = {
           ...value,
-          ["discount_1_amount"]:
+          discount_1_amount:
             value.value -
             (value.value -
               tempItem.discount_1_percentage * (value.value / 100)),
-          ["discount_1_amount_per_item"]:
+          discount_1_amount_per_item:
             tempItem.rate -
             (tempItem.rate -
               tempItem.discount_1_percentage * (tempItem.rate / 100)),
@@ -209,39 +269,39 @@ const PurchaseTable = (props) => {
       } else if (name !== "discount_1_amount") {
         value = {
           ...value,
-          ["discount_1_amount"]: 0,
-          ["discount_1_amount_per_item"]: 0,
+          discount_1_amount: 0,
+          discount_1_amount_per_item: 0,
         };
       }
-      if (name == "discount_1_amount" && tempItem.discount_1_amount) {
+      if (name === "discount_1_amount" && tempItem.discount_1_amount) {
         value = {
           ...value,
-          ["discount_1_percentage"]:
+          discount_1_percentage:
             (tempItem.discount_1_amount / value.value) * 100,
         };
-      } else if (name == "discount_1_amount") {
-        value = { ...value, ["discount_1_percentage"]: 0 };
+      } else if (name === "discount_1_amount") {
+        value = { ...value, discount_1_percentage: 0 };
       }
       tempItem = { ...tempItem, ...value };
       if (tempItem.value && tempItem.discount_1_amount) {
         tempItem.discount_1_amount = parseFloat(tempItem.discount_1_amount);
         value = {
           ...tempItem,
-          ["value"]:
+          value:
             parseFloat(tempItem.quantity * tempItem.rate) -
             parseFloat(tempItem.discount_1_amount),
-          ["total"]:
+          total:
             parseFloat(tempItem.quantity * tempItem.rate) -
             parseFloat(tempItem.discount_1_amount),
-          ["cost"]:
+          cost:
             parseFloat(tempItem.rate) - parseFloat(tempItem.discount_1_amount),
         };
       } else if (name !== "margin" && name !== "sales_rate") {
         value = {
           ...value,
-          ["value"]: tempItem.quantity * tempItem.rate,
-          ["total"]: tempItem.quantity * tempItem.rate,
-          ["cost"]: tempItem.rate,
+          value: tempItem.quantity * tempItem.rate,
+          total: tempItem.quantity * tempItem.rate,
+          cost: tempItem.rate,
         };
       }
       tempItem = { ...tempItem, ...value };
@@ -251,14 +311,14 @@ const PurchaseTable = (props) => {
         let sgst = (totalTaxAmnt / 2)?.toFixed(2);
         value = {
           ...value,
-          ["total"]: +tempItem.value + sgst * 2,
-          ["cost"]:
+          total: +tempItem.value + sgst * 2,
+          cost:
             +tempItem.rate -
             +tempItem.discount_1_amount_per_item +
             +tempItem.tax_gst *
               ((+tempItem.rate - +tempItem.discount_1_amount_per_item) / 100),
-          ["cgst_or_igst"]: sgst,
-          ["sgst"]: sgst,
+          cgst_or_igst: sgst,
+          sgst: sgst,
         };
       } else {
         value = { ...value, cgst_or_igst: 0, sgst: 0 };
@@ -269,12 +329,12 @@ const PurchaseTable = (props) => {
         if (tempItem.margin) {
           value = {
             ...tempItem,
-            ["sales_rate"]:
+            sales_rate:
               +state.cost?.toFixed(2) +
               +state.cost?.toFixed(2) * (+tempItem.margin / 100),
           };
         } else {
-          value = { ...value, ["sales_rate"]: 0 };
+          value = { ...value, sales_rate: 0 };
         }
       }
       tempItem = { ...tempItem, ...value };
@@ -282,12 +342,12 @@ const PurchaseTable = (props) => {
         if (tempItem.sales_rate) {
           value = {
             ...value,
-            ["margin"]: parseFloat(
+            margin: parseFloat(
               ((tempItem.sales_rate - value.cost) / tempItem.cost) * 100
             ),
           };
         } else {
-          value = { ...value, ["margin"]: 0 };
+          value = { ...value, margin: 0 };
         }
       }
     } else {
@@ -302,7 +362,7 @@ const PurchaseTable = (props) => {
     }
     tempItem = { ...tempItem, ...value };
     let tempItemKeys = Object.keys(tempItem);
-    tempItemKeys?.map((key) => {
+    tempItemKeys?.forEach((key) => {
       let number = parseFloat(tempItem[key]);
       if (number?.toFixed(2) && !Number.isInteger(number) && number) {
         tempItem = { ...tempItem, [key]: parseFloat(number?.toFixed(2)) };
@@ -322,8 +382,8 @@ const PurchaseTable = (props) => {
   const handleBlur = (e) => {
     if (
       !tableItem[e.target.name] ||
-      tableItem[e.target.name] == "" ||
-      tableItem[e.target.name] == "0"
+      tableItem[e.target.name] === "" ||
+      tableItem[e.target.name] === "0"
     ) {
       setTableItem((data) => ({ ...data, [e.target.name]: 0 }));
     }
@@ -352,7 +412,7 @@ const PurchaseTable = (props) => {
     }
     if (!tableEdit) {
       let itemTemp = { ...tableItem };
-      itemTemp = { ...itemTemp, ["cstm_id"]: cstm_id };
+      itemTemp = { ...itemTemp, cstm_id: cstm_id };
       itemTempList.unshift(itemTemp);
       // setTableItemList(itemTempList);
       setCstm_id(cstm_id + 1);
@@ -362,7 +422,7 @@ const PurchaseTable = (props) => {
       setPurchaseItemSerielModal(tableEdit || true);
     }
     if (purchaseAdd.isBatch) setShowBatch(true);
-    else handleBatchSubmit(itemTempList,false);
+    else handleBatchSubmit(itemTempList, false);
     handleKeyDown(e);
   };
 
@@ -370,12 +430,14 @@ const PurchaseTable = (props) => {
     if (purchaseList?.length > 0) {
       if (!edit) {
         handlePurchaseAllReset();
-        setEdit(purchaseList[0]);
+        setEdit({ ...purchaseList[0] });
+        handleSetEdit(purchaseList[0]);
       } else {
-        let ind = purchaseList?.findIndex((x) => edit.id == x.id);
+        let ind = purchaseList?.findIndex((x) => edit.id === x.id);
         if (ind !== purchaseList?.length - 1) {
           handlePurchaseAllReset();
-          setEdit(purchaseList[ind + 1]);
+          setEdit({ ...purchaseList[ind + 1] });
+          handleSetEdit(purchaseList[ind + 1]);
         } else {
           Swal.fire("No more purchase to edit", "go for next", "warning");
         }
@@ -386,29 +448,33 @@ const PurchaseTable = (props) => {
   };
 
   const handleNext = () => {
-    if (!edit) {
-      Swal.fire("No more purchase to edit", "go for prev", "warning");
-    } else if (edit?.id == purchaseList[0].id) {
-      handlePurchaseAllReset();
-    } else {
-      handlePurchaseAllReset();
-      let ind = purchaseList?.findIndex((x) => edit.id == x.id);
-      if (ind !== purchaseList[0]) {
-        setEdit(purchaseList[ind - 1]);
-      } else {
+    if (purchaseList?.length > 0)
+      if (!edit) {
         Swal.fire("No more purchase to edit", "go for prev", "warning");
+      } else if (edit?.id === purchaseList[0]?.id) {
+        handlePurchaseAllReset();
+        handleGetCode(true);
+      } else {
+        handlePurchaseAllReset();
+        let ind = purchaseList?.findIndex((x) => edit.id === x.id);
+        if (ind !== purchaseList[0]) {
+          setEdit(purchaseList[ind - 1]);
+          handleSetEdit(purchaseList[ind - 1]);
+        } else {
+          handlePurchaseAllReset();
+          Swal.fire("No more purchase to edit", "go for prev", "warning");
+        }
       }
-    }
   };
 
   const AdjustHeightOfTable = () => {
     let a = [];
-    for (let i = 0; i < 9 - purchaseAdd.total_items || 0; i++) {
+    for (let i = 0; i < 10 - purchaseAdd.total_items || 0; i++) {
       a.push(
         <tr key={i}>
           <td
             className="border-0"
-            style={{ height: "1.82rem", display: "" }}
+            style={{ height: "1.65rem", display: "" }}
             colSpan={tableHeadList.length + 2}
           ></td>
         </tr>
@@ -433,7 +499,11 @@ const PurchaseTable = (props) => {
       setTableItemList([...tempList]);
     }
     try {
-      let response = await deletePurchaseItem(data.id);
+      let response
+      if(returnPage)
+      response = await deletePurchaseReturnItem(data.id);
+      else
+      response = await deletePurchaseItem(data.id);
       if (response.success) {
         Swal.fire({
           icon: "success",
@@ -442,7 +512,17 @@ const PurchaseTable = (props) => {
         });
         let tempList = [...tableItemList];
         tempList.splice(i, 1);
+
+        let tempTableItemKeys = [...tableItemKeys];
+
+        let ind = tempTableItemKeys.findIndex((x) => x.id == data.id);
+        if (ind > -1) {
+          tempTableItemKeys.splice(ind, 1);
+          setTableItemKeys([...tempTableItemKeys]);
+        }
+
         setTableItemList([...tempList]);
+        handlePurchAllCalc(tempList, false);
         getData();
       }
       // else if (response.success && !data.created_at) {
@@ -474,7 +554,10 @@ const PurchaseTable = (props) => {
   return (
     <>
       <div className="mx-2 mt-1 purchase-table-item-container px-0">
-        <table className="table table-secondary purchase-table mb-0">
+        <table
+          style={{ tableLayout: "fixed" }}
+          className="table table-secondary purchase-table mb-0"
+        >
           <thead className="purchase-table-header">
             <tr>
               {/* <th className="text-start" colSpan={2}>
@@ -493,22 +576,18 @@ const PurchaseTable = (props) => {
               <th>Cost</th>
               <th>Margin%</th>
               <th>S.Rate</th> */}
+              <th width="30">SL</th>
               {tableHeadList?.length > 0 &&
                 tableHeadList.map((item, i) => {
                   if (item.visible && item.purchaseShow)
-                    return (
-                      //   item.state == "item_name"?
-                      //   <th className="text-start" colSpan={2}>
-                      //   Item Name
-                      // </th>:
-                      i == 0 ? (
-                        <th className="text-start" colSpan={2}>
-                          {item.title}
-                        </th>
-                      ) : (
-                        <th>{item.title}</th>
-                      )
+                    return i === 0 ? (
+                      <th width="200" className="text-start" colSpan={1}>
+                        {item.title}
+                      </th>
+                    ) : (
+                      <th>{item.title}</th>
                     );
+                  else return null;
                 })}
               <th className="py-1 text-end">
                 <div
@@ -545,14 +624,18 @@ const PurchaseTable = (props) => {
                 };
 
                 return (
-                  <tr id="editTr" ref={(el) => (formRef2.current[i] = el)}>
+                  <tr
+                    id="purchSaletableBodyTr"
+                    ref={(el) => (formRef2.current[i] = el)}
+                  >
+                    <td>{i + 1}</td>
                     {tableHeadList?.length > 0 &&
                       tableHeadList.map((item, index) => {
                         if (item.visible && item.purchaseShow)
                           return (
                             // item.state === "item_name"?
                             index === 0 ? (
-                              <td className="text-start ps-3" colSpan={2}>
+                              <td className="text-start ps-3 pe-2" colSpan={1}>
                                 <Dropdown
                                   // onClick={()=>setShowStock(data=>!data)}
                                   selection
@@ -564,7 +647,11 @@ const PurchaseTable = (props) => {
                                     purchaseAdd.total_items > 4 ? true : false
                                   }
                                   search={search}
-                                  onKeyDown={handleKeyDown2}
+                                  onKeyDown={(e) => {
+                                    if (data?.edited)
+                                      handleKeyTableItemEdit(e, data, i);
+                                    else handleKeyDown2(e);
+                                  }}
                                   placeholder="SELECT"
                                   className="purchase_search_drop border-0 w-100 ps-2"
                                   name={"name"}
@@ -572,13 +659,17 @@ const PurchaseTable = (props) => {
                                   options={itemNameList}
                                 />
                               </td>
-                            ) : data.state === "unit" ? (
+                            ) : item.state === "unit" ? (
                               <td>
                                 <select
                                   onChange={(e) =>
                                     handleChangeTableItem(e, null, data, i)
                                   }
-                                  onKeyDown={handleKeyDown2}
+                                  onKeyDown={(e) => {
+                                    if (data?.edited)
+                                      handleKeyTableItemEdit(e, data, i);
+                                    else handleKeyDown2(e);
+                                  }}
                                   name="unit"
                                   value={data.unit}
                                   style={{
@@ -602,14 +693,22 @@ const PurchaseTable = (props) => {
                                   onChange={(e) =>
                                     handleChangeTableItem(e, null, data, i)
                                   }
-                                  onKeyDown={handleKeyDown2}
+                                  onKeyDown={(e) => {
+                                    if (data?.edited)
+                                      handleKeyTableItemEdit(e, data, i);
+                                    else handleKeyDown2(e);
+                                  }}
                                   name={item.state}
+                                  type="number"
+                                  disabled={item.readOnly}
+                                  placeholder="0"
                                   className="purchase-table-items-input"
-                                  value={data[item?.state]}
+                                  value={data[item?.state] || ""}
                                 />
                               </td>
                             )
                           );
+                        else return null;
                       })}
                     {/*
                     <td>
@@ -734,22 +833,23 @@ const PurchaseTable = (props) => {
                       />
                     </td> */}
                     <td>
-                      {data.edited ? (
+                      {/* {data.edited ? (
                         <button
+                          // type="clear"
                           onKeyDown={(e) => handleKeyTableItemEdit(e, data, i)}
                           onClick={(e) => handleTableItemEdit(e, data, i)}
                           className="text-center border-0 bg-transparent"
                         >
                           <FiEdit className="mb-1 btn p-0" size={"16px"} />
                         </button>
-                      ) : (
-                        <div
-                          onClick={() => confirmDelete()}
-                          className="text-center w-100"
-                        >
-                          <BsTrashFill className="mb-1 btn p-0" size={"16px"} />
-                        </div>
-                      )}
+                      ) : ( */}
+                      <div
+                        onClick={() => confirmDelete()}
+                        className="text-center w-100"
+                      >
+                        <BsTrashFill className="mb-1 btn p-0" size={"16px"} />
+                      </div>
+                      {/* )} */}
                     </td>
                     {/* <td className="p-0">
                   </td> */}
@@ -757,13 +857,14 @@ const PurchaseTable = (props) => {
                 );
               })}
             <tr className="input-tr" ref={formRef}>
+              <td></td>
               {tableHeadList?.length > 0 &&
                 tableHeadList.map((item, i) => {
                   if (item.visible && item.purchaseShow)
                     return item.state === "item_name" ? (
                       <td
-                        className="purchase_search_drop_td text-start ps-3"
-                        colSpan={i == 0 ? 2 : 1}
+                        className="purchase_search_drop_td text-start ps-3 pe-2"
+                        colSpan={1}
                       >
                         <Dropdown
                           clearable
@@ -776,12 +877,17 @@ const PurchaseTable = (props) => {
                           placeholder="SELECT"
                           className="purchase_search_drop border-0 w-100 ps-2"
                           onKeyDown={handleKeyDown}
+                          allowAdditions
+                          id="tableItemFkItem"
+                          onAddItem={handleItemNameSelection}
                           name={"name"}
-                          onChange={(e, data) =>
-                            handleChangeTableItem(e, data, tableItem, true)
+                          onChange={
+                            (e, data) =>
+                              handleChangeTableItem(e, data, tableItem, true)
+                            // handleItemNameSelection(e,data)
                           }
                           value={
-                            tableItem.fk_items == "" || tableItem.fk_items
+                            tableItem.fk_items === "" || tableItem.fk_items
                               ? tableItem.fk_items
                               : ""
                           }
@@ -789,7 +895,7 @@ const PurchaseTable = (props) => {
                         />
                       </td>
                     ) : item.state === "unit" ? (
-                      <td colSpan={i == 0 ? 2 : 1}>
+                      <td colSpan={1}>
                         <select
                           onKeyDown={handleKeyDown}
                           name={"unit"}
@@ -797,7 +903,7 @@ const PurchaseTable = (props) => {
                             handleChangeTableItem(e, null, tableItem, true)
                           }
                           value={
-                            tableItem.unit == "" || tableItem.unit
+                            tableItem.unit === "" || tableItem.unit
                               ? tableItem.unit
                               : ""
                           }
@@ -818,7 +924,7 @@ const PurchaseTable = (props) => {
                         </select>
                       </td>
                     ) : (
-                      <td colSpan={i == 0 ? 2 : 1}>
+                      <td colSpan={1}>
                         <input
                           onKeyDown={handleKeyDown}
                           name={item.state}
@@ -827,10 +933,11 @@ const PurchaseTable = (props) => {
                           }
                           onFocus={handleFocus}
                           onBlur={handleBlur}
+                          disabled={item.readOnly}
                           value={
-                            tableItem[item.state] == "" ||
+                            tableItem[item.state] === "" ||
                             tableItem[item.state] ||
-                            tableItem[item.state] == "0"
+                            tableItem[item.state] === 0
                               ? tableItem[item.state]
                               : ""
                           }
@@ -839,8 +946,10 @@ const PurchaseTable = (props) => {
                         />
                       </td>
                     );
+                  else return null;
                 })}
-              {/* <td>
+              <>
+                {/* <td>
                 <input
                   onKeyDown={handleKeyDown}
                   name={"rate"}
@@ -848,7 +957,7 @@ const PurchaseTable = (props) => {
                     handleChangeTableItem(e, null, tableItem, true)
                   }
                   value={
-                    tableItem.rate == "" || tableItem.rate ? tableItem.rate : ""
+                    tableItem.rate==="" || tableItem.rate ? tableItem.rate : ""
                   }
                   onFocus={handleFocus}
                   onBlur={handleBlur}
@@ -864,7 +973,7 @@ const PurchaseTable = (props) => {
                     handleChangeTableItem(e, null, tableItem, true)
                   }
                   value={
-                    tableItem.discount_1_percentage == "" ||
+                    tableItem.discount_1_percentage==="" ||
                     tableItem.discount_1_percentage
                       ? tableItem.discount_1_percentage
                       : ""
@@ -883,7 +992,7 @@ const PurchaseTable = (props) => {
                     handleChangeTableItem(e, null, tableItem, true)
                   }
                   value={
-                    tableItem.discount_1_amount == "" ||
+                    tableItem.discount_1_amount==="" ||
                     tableItem.discount_1_amount
                       ? tableItem.discount_1_amount
                       : ""
@@ -903,7 +1012,7 @@ const PurchaseTable = (props) => {
                     handleChangeTableItem(e, null, tableItem, true)
                   }
                   value={
-                    tableItem.value == "" || tableItem.value
+                    tableItem.value==="" || tableItem.value
                       ? tableItem.value
                       : ""
                   }
@@ -921,7 +1030,7 @@ const PurchaseTable = (props) => {
                     handleChangeTableItem(e, null, tableItem, true)
                   }
                   value={
-                    tableItem.tax_gst == "" || tableItem.tax_gst
+                    tableItem.tax_gst==="" || tableItem.tax_gst
                       ? tableItem.tax_gst
                       : ""
                   }
@@ -940,7 +1049,7 @@ const PurchaseTable = (props) => {
                     handleChangeTableItem(e, null, tableItem, true)
                   }
                   value={
-                    tableItem.cgst_or_igst == "" || tableItem.cgst_or_igst
+                    tableItem.cgst_or_igst==="" || tableItem.cgst_or_igst
                       ? tableItem.cgst_or_igst
                       : ""
                   }
@@ -959,7 +1068,7 @@ const PurchaseTable = (props) => {
                     handleChangeTableItem(e, null, tableItem, true)
                   }
                   value={
-                    tableItem.sgst == "" || tableItem.sgst ? tableItem.sgst : ""
+                    tableItem.sgst==="" || tableItem.sgst ? tableItem.sgst : ""
                   }
                   onFocus={handleFocus}
                   onBlur={handleBlur}
@@ -976,7 +1085,7 @@ const PurchaseTable = (props) => {
                     handleChangeTableItem(e, null, tableItem, true)
                   }
                   value={
-                    tableItem.total == "" || tableItem.total
+                    tableItem.total==="" || tableItem.total
                       ? tableItem.total
                       : ""
                   }
@@ -995,7 +1104,7 @@ const PurchaseTable = (props) => {
                     handleChangeTableItem(e, null, tableItem, true)
                   }
                   value={
-                    tableItem.cost == "" || tableItem.cost ? tableItem.cost : ""
+                    tableItem.cost==="" || tableItem.cost ? tableItem.cost : ""
                   }
                   onFocus={handleFocus}
                   onBlur={handleBlur}
@@ -1011,7 +1120,7 @@ const PurchaseTable = (props) => {
                     handleChangeTableItem(e, null, tableItem, true)
                   }
                   value={
-                    tableItem.margin == "" || tableItem.margin
+                    tableItem.margin==="" || tableItem.margin
                       ? tableItem.margin
                       : ""
                   }
@@ -1029,7 +1138,7 @@ const PurchaseTable = (props) => {
                     handleChangeTableItem(e, null, tableItem, true)
                   }
                   value={
-                    tableItem.sales_rate == "" || tableItem.sales_rate
+                    tableItem.sales_rate==="" || tableItem.sales_rate
                       ? tableItem.sales_rate
                       : ""
                   }
@@ -1039,37 +1148,15 @@ const PurchaseTable = (props) => {
                   className="purchase_input border-0 w-100 text-center"
                 />
               </td> */}
+              </>
               <td className="align-top">
-                {tableEdit ? (
-                  <div
-                    onClick={handleAddBatchOpen}
-                    // onKeyDown={handleAddBatchOpen}
-                    className="text-center"
-                  >
-                    <FiEdit className="mb-1 btn p-0" size={"16px"} />
-                  </div>
-                ) : (
-                  <input
-                    onKeyDown={handleAddBatchOpen}
-                    onClick={handleAddBatchOpen}
-                    type="button"
-                    className="table-item-add-btn rounded-1 btn-sm align-middle"
-                    value={"+"}
-                  />
-                )}
-              </td>
-              <td className="p-0 text-start">
-                {tableEdit && (
-                  <input
-                    type="button"
-                    onClick={() => {
-                      setTableEdit(false);
-                      handleResetTable();
-                    }}
-                    className="table-item-add-btn2 text-start"
-                    value={"+"}
-                  />
-                )}
+                <input
+                  onKeyDown={handleAddBatchOpen}
+                  onClick={handleAddBatchOpen}
+                  type="button"
+                  className="table-item-add-btn rounded-1 btn-sm align-middle"
+                  value={"+"}
+                />
               </td>
             </tr>
 
@@ -1077,7 +1164,7 @@ const PurchaseTable = (props) => {
           </tbody>
           <tfoot>
             <tr className="purchase-table-green">
-              <td className="item2 col-1">
+              {/* <td className="item2 col-1">
                 <div
                   className="btn bg-none outline-none text-light border-none"
                   onClick={handlePrev}
@@ -1092,6 +1179,24 @@ const PurchaseTable = (props) => {
                 >
                   Next {">"}
                 </div>
+              </td> */}
+              <td colSpan={2} className="col-2 text-start">
+                <div className="d-flex justify-items-start">
+                  <div
+                    style={{ background: "#4A00A8" }}
+                    className="btn bg-none outline-none text-light border-none"
+                    onClick={handlePrev}
+                  >
+                    {"<"} Previous
+                  </div>
+                  <div
+                    style={{ background: "#707070" }}
+                    className="btn bg-none outline-none text-light border-none"
+                    onClick={handleNext}
+                  >
+                    Next {">"}
+                  </div>
+                </div>
               </td>
               {tableHeadList?.length > 0 &&
                 tableHeadList.map((item, i) => {
@@ -1100,7 +1205,7 @@ const PurchaseTable = (props) => {
                       item.visible ? (
                       <td className="item">
                         <div className="purch-green-table-item">
-                          {purchaseAdd.total_disc || 0}
+                          {purchaseAdd.total_disc?.toFixed(2) || 0}
                         </div>
                       </td>
                     ) : item.state === "value" && item.visible ? (
@@ -1123,42 +1228,45 @@ const PurchaseTable = (props) => {
                         </div>
                       </td>
                     ) : (
-                      item.visible && <td>{/* {item.state} */}</td>
+                      item.visible && <td></td>
                     );
+                  else return null;
                 })}
-              {/* <td></td>
+              <>
+                {/* <td></td>
               <td></td>
               <td className="item">
                 <div className="purch-green-table-item">
-                  {purchaseAdd.total_disc || 0}%
+                {purchaseAdd.total_disc || 0}%
                 </div>
-              </td>
-              <td className="item">
+                </td>
+                <td className="item">
                 <div className="purch-green-table-item">
-                  {purchaseAdd.total_value || 0}
+                {purchaseAdd.total_value || 0}
                 </div>
-              </td>
-              <td></td>
-              <td className="item">
-                <div className="purch-green-table-item">
-                  {purchaseAdd.total_scGst || 0}
-                </div>
-              </td>
-              <td className="item">
+                </td>
+                <td></td>
+                <td className="item">
                 <div className="purch-green-table-item">
                   {purchaseAdd.total_scGst || 0}
                 </div>
-              </td>
+                </td>
               <td className="item">
                 <div className="purch-green-table-item">
-                  {purchaseAdd.total_total || 0}
+                {purchaseAdd.total_scGst || 0}
                 </div>
-              </td>
-              <td></td>
-              <td></td>
-              <td></td>
-              <td></td>
+                </td>
+                <td className="item">
+                <div className="purch-green-table-item">
+                {purchaseAdd.total_total || 0}
+                </div>
+                </td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
               <td></td> */}
+              </>
             </tr>
           </tfoot>
         </table>

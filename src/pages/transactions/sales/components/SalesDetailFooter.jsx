@@ -1,20 +1,22 @@
 import React, { useEffect, useState } from "react";
 import { Form } from "react-bootstrap";
-// import useOnKey from "../../../../hooks/onKeyFunct/onKeyFunct";
 import { Dropdown } from "semantic-ui-react";
 import useAccountServices from "../../../../services/master/accountServices";
+import useOnKey from "../../../../hooks/onKeyFunct/onKeyFunct";
 
 const SalesDetailFooter = (props) => {
   const {
     bankSelect,
     salesAdd,
-    handleKeyDown,
     handleChange,
     edit,
     handleSalesAllReset,
   } = props;
 
   const [bankList, setBankList] = useState([]);
+
+  const [ref, setRef] = useState(null);
+  const [ handleKeyDown, formRef ] = useOnKey(ref, setRef);
 
   useEffect(() => {
     getListOfBank();
@@ -44,8 +46,13 @@ const SalesDetailFooter = (props) => {
     }
   };
 
+  const handleReset = () =>{
+    handleSalesAllReset()
+    
+  }
+
   return (
-    <div className="row mx-0 my-1 me-1 justify-content-between">
+    <div className="row mx-0 my-1 me-1 justify-content-between" ref={formRef}>
       <div className="col-3 ms-2 purchase-supplier-container row mx-0 mt-1 p-2">
         <div className="col-12 sales-value-container px-0 row mx-0 my-0 align-items-center d-flex pb-3">
           <div className="col-12 my-1 container-title">E Paymen</div>
@@ -55,6 +62,7 @@ const SalesDetailFooter = (props) => {
             </Form.Label>
             <div className="mx-0 col-9 px-0">
               <Dropdown
+                onKeyDown={handleKeyDown}
                 id="bank"
                 name="fk_bank"
                 value={salesAdd.fk_bank || ""}
@@ -235,13 +243,13 @@ const SalesDetailFooter = (props) => {
         </div>
         <div className="col-12 row px-0 mx-0 mt-3">
           <div className="mx-0 px-1 col-6">
-            <button
+            <div
               type="reset"
-              onClick={handleSalesAllReset}
+              onClick={handleReset}
               className="btn btn-sm btn-outline-dark w-100"
             >
               Clear
-            </button>
+            </div>
           </div>
           <div className="mx-0 px-1 pe-0 col-6">
             <button

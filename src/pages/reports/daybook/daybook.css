@@ -45,3 +45,72 @@
 .daybook-table tbody tr td {
   padding: 1rem;
 }
+
+.loading-cont-par-blur{
+  filter: blur(2.5px);
+  pointer-events: none;
+}
+.loading-cont-par-blur *{
+  pointer-events: none;
+}
+
+.loader-container{
+  position: absolute;
+  top: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100% !important;
+  width: 100% !important;
+  height: 31rem;
+  max-height: 31rem;
+}
+
+/* HTML: <div class="loader"></div> */
+.loader {
+  width: 105px;
+  aspect-ratio: 1;
+  background: transparent !important;
+  position: relative;
+}
+.loader:before,
+.loader:after {
+  content: "";
+  position: absolute;
+  border-radius: 50px;
+  background: transparent !important;
+  box-shadow: 0 0 0 3px inset pink;
+  animation: l4 2.5s infinite;
+}
+.loader:after {
+  animation-delay: -1.25s;
+}
+@keyframes l4 {
+  0% {
+    inset: 0 60px 60px 0;
+  }
+  12.5% {
+    inset: 0 60px 0 0;
+  }
+  25% {
+    inset: 60px 60px 0 0;
+  }
+  37.5% {
+    inset: 60px 0 0 0;
+  }
+  50% {
+    inset: 60px 0 0 60px;
+  }
+  62.5% {
+    inset: 0 0 0 60px;
+  }
+  75% {
+    inset: 0 0 60px 60px;
+  }
+  87.5% {
+    inset: 0 0 60px 0;
+  }
+  100% {
+    inset: 0 60px 60px 0;
+  }
+}

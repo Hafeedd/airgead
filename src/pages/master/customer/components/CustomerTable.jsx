@@ -7,7 +7,7 @@ import Swal from "sweetalert2";
 import useCustomerServices from "../../../../services/master/customerServices";
 
 const CustomerTable = (props) => {
-  const { list, handleEdit, search, setSearch, getData } = props;
+  const { list, handleEdit, loading, search, setSearch, getData } = props;
 
   const [searchedList, setSearchedList] = useState([]);
 
@@ -101,10 +101,15 @@ const CustomerTable = (props) => {
         </div>
       </div>
       <div
-        className="item_add_cont p-0 table-scroller"
+        className="item_add_cont p-0 table-scroller position-relative"
         style={{ borderRadius: "0.3125rem 0.3125rem 0rem 0rem" }}
       >
-        <table className="table table-light custom-table">
+        {loading && (
+        <div className="loader-container w-100">
+          <div className="loader"></div>
+        </div>
+      )}
+        <table className={`table table-light custom-table  ${loading&& "loading-cont-par-blur"}`}>
           <thead>
             <tr>
               {/* <th style={{borderTopLeftRadius: "0.3125rem"}}>No</th> */}

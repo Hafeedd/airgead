@@ -6,6 +6,7 @@ import useOnKey from "../../../../hooks/onKeyFunct/onKeyFunct";
 import useCustomerServices from "../../../../services/master/customerServices";
 import SearchDropDown from "../../../../components/searchDropDown/SearchDropDown";
 import useItemServices from "../../../../services/master/itemServices";
+import { useLocation, useNavigate } from "react-router";
 
 const initialCustomerState = {
   code: null,
@@ -68,6 +69,9 @@ const CustomerAddForm = (props) => {
   });
 
   const [customerAdd, setCustomerAdd] = useState(initialCustomerState);
+
+  const location = useLocation()
+  const navigate = useNavigate()
 
   const { postCustomer, putCustomer, putSetRate, postSetRate, deleteCustomer } =
     useCustomerServices();
@@ -293,6 +297,14 @@ const CustomerAddForm = (props) => {
           await deleteCustomer(res?.data.data_customer?.id);
         } else {
           Swal.fire("Customer Added successfully", "", "success");
+          if (location?.state?.fromSales) {
+            navigate("/sales-transaction", {
+              state: {
+                id: res.data.data_customer.id,
+                name: res.data.data_customer.name,
+              },
+            });
+          }
           setEdit(false);
         }
       } else if (!res?.success && !edit) {

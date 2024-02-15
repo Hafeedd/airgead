@@ -16,9 +16,10 @@ const StaffSalaryAttendance = () => {
   const [show,setShow]=useState(false)
   const [staffAttendance,setStaffAttendance]=useState()
   const [staffSalary,setStaffSalary]=useState()
+  let today=new Date().toISOString().slice(0,10)
   const [paramsToReport,setParamsToReport] = useState({
-    from_date:(new Date().toISOString().slice(0,10)),
-    to_date:(new Date().toISOString().slice(0,10)),
+    from_date:today,
+    to_date:today,
   })
   const navigate = useNavigate();
   const location = useLocation();
@@ -168,7 +169,7 @@ const StaffSalaryAttendance = () => {
                             required
                             name="from_date"
                             value={
-                            paramsToReport.from_date || new Date().toISOString.slice(0, 10)
+                            paramsToReport.from_date 
                             }
                             className="purchase-input-text me-2"
                             placeholder="Document number"
@@ -184,7 +185,7 @@ const StaffSalaryAttendance = () => {
                             required
                             name="to_date"
                             value={
-                                paramsToReport.to_date || new Date().toISOString.slice(0, 10)
+                                paramsToReport.to_date 
                             }
                             className="purchase-input-text me-2"
                             placeholder="Document number"

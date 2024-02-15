@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import search from "../../../../assets/icons/search.png";
 import editBtn from "../../../../assets/icons/edit-black.svg";
 import deleteBtn from "../../../../assets/icons/delete.svg";
@@ -8,17 +8,19 @@ import usePurchaseServices from "../../../../services/transactions/purchcaseServ
 
 const PurchaseEditList = (props) => {
   const {
+    handleSetEdit,
     purchaseList,
-    setPurchaseList,
+    // setPurchaseList,
+    // edit,
     from,
     closeEditModal,
     setEdit,
-    edit,
     getData,
   } = props;
 
   const {deleteSales} = useSalesServices()
   const {deletePurchase} = usePurchaseServices()
+  const [searchedList, setSearchedList] = useState([])
   // const {deleteSales} = use()
 
   const handleDeleteData = async (id) => {
@@ -60,14 +62,20 @@ const PurchaseEditList = (props) => {
     }
   };
 
+  useEffect(()=>{
+    if(purchaseList?.length>0)
+    setSearchedList([...purchaseList])
+  },[purchaseList])
+
   const handleSearch = async (e) => {
     let tempData;
-    if (purchaseList) {
+    // console.log(searchedList)
+    if (searchedList?.length>0) {
       let value = e.target.value;
-      if (value != "") {
-        const tempList = await getData();
-        if (tempList.length > 0) {
-          tempData = tempList.filter((x) => {
+      if (value !== "") {
+        const tmepList = [...purchaseList]
+        if (tmepList?.length > 0) {
+          tempData = tmepList?.filter((x) => {
             let searchInString = `${
               x.documents_no +
               " " +
@@ -82,16 +90,17 @@ const PurchaseEditList = (props) => {
               return true;
             }
           });
-          setPurchaseList(tempData);
+          setSearchedList([...tempData]);
         }
       } else {
-        getData();
+        setSearchedList([...purchaseList])
       }
     }
   };
 
   const handleEditClick = (data) => {
     setEdit(data);
+    handleSetEdit(data)
     closeEditModal(false);
   };
 
@@ -133,8 +142,8 @@ const PurchaseEditList = (props) => {
           </tr>
         </thead>
         <tbody className="purchase-item-body">
-          {purchaseList?.length > 0 ? (
-            purchaseList?.map((data, i) => {
+          {searchedList?.length > 0 ? (
+            searchedList?.map((data, i) => {
 
               const handleDelete = async (e) => {
                 Swal.fire({

@@ -6,6 +6,7 @@ import { useReportsServices } from "../../../services/reports/reports";
 
 export const Daybook = () => {
   const [dayBookList, setDayBookList] = useState([])
+  const [loading, setLoading] = useState(false)
   const [params, setParams] = useState({
     from_date:null,
     to_date:null,
@@ -19,11 +20,14 @@ export const Daybook = () => {
 
   const getData = async () =>{
     try{
+      setLoading(true)
       const response = await getDayBook(params) 
       if(response.success){
         setDayBookList(response.data)
       }
+      setLoading(false)
     }catch(err){
+      setLoading(false)
       console.log(err)
     }
   }
@@ -50,7 +54,7 @@ export const Daybook = () => {
       <div className="p-3">
         <div className="p-2 bg-light rounded-1 px-3">
             <DaybookEntry {...{params,setParams}}/>
-            <DayBookTable {...{dayBookList}}/>
+            <DayBookTable {...{dayBookList,loading}}/>
         </div>
       </div>
     </div>

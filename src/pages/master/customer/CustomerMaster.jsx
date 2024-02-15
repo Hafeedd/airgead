@@ -9,6 +9,7 @@ import useCustomerServices from "../../../services/master/customerServices";
 const CustomerList = () => {
   const [pageHeadCustomer, setPageHeadCustomer] = useState(1);
   const [edit, setEdit] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [listCustomer, setListCustomer] = useState([]);
   const [search, setSearch] = useState();
   // const [showCustomerAdd,setShowCustomerAdd] = useState(false)
@@ -27,11 +28,16 @@ const CustomerList = () => {
       if (search) {
         params = { code: search, name: search };
       }
+
+      setLoading(true)
       const res = await getCustomer(params);
       if (res?.success) {
         setListCustomer(res?.data);
       }
-    } catch (err) {}
+      setLoading(false)
+    } catch (err) {
+      setLoading(false)
+    }
   };
 
   const handleEdit = (data) => {
@@ -84,6 +90,7 @@ const CustomerList = () => {
             {...{
               getData,
               search,
+              loading,
               setSearch,
               navigate,
               handleEdit,

@@ -58,10 +58,14 @@ export const GenerateDynamicHtml = (props) => {
     targetTr.map((list) => {
       let tdData = [];
       if (list.length > 0) {
+        let i = 0
         for (let b of list) {
           let textContent;
-          console.log(b)
-          if (b?.tagName.toLowerCase() === "select") {      
+          if(i == 0 ){
+            textContent = b?.parentElement?.innerText?.trim()
+            i++
+          }
+          else if (b?.tagName.toLowerCase() === "select") {      
             // If the innermost child is a <select>, get the selected option text
             const selectedOption =
               b?.options[b?.selectedIndex];
@@ -71,10 +75,9 @@ export const GenerateDynamicHtml = (props) => {
           } else {
             // For other elements, get the general text content
             // console.log(b)
-            textContent = b?.textContent?.trim()|| b.defaultValue.trim();
+            textContent = b?.textContent?.trim()|| b.defaultValue.trim() || b.placeholder?.trim();
           }
           if (textContent && textContent != "")
-            console.log(textContent)
             tdData.push(textContent)
         }
       }

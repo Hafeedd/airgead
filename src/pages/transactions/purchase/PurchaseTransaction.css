@@ -88,8 +88,9 @@
     color: #2C2C2C;
     font-weight: 500;
     vertical-align: middle;  
-    padding-top: 0.09rem; 
-    padding-bottom: 0.09rem;
+    /* padding-top: 0.09rem; 
+    padding-bottom: 0.09rem; */
+    padding: 0;
 }
 
 .purchase-table-green{
@@ -122,7 +123,7 @@
     height: 2rem !important;
 }
 
-.purchase-table-green td.item2 .btn{
+/* .purchase-table-green td.item2 .btn{
     font-size: 0.8rem !important;
     background: #4A00A8;
     width: 100%;
@@ -153,6 +154,13 @@
     cursor: pointer;
     font-size: 0.75rem;
     font-weight: 600;
+} */
+
+.purchase-table-green td div .btn{
+    font-size: 0.8rem !important;
+    width: 100%;
+    margin-right: 1px;
+    margin-bottom: 0;
 }
 
 .purchase-detail-container{
@@ -610,4 +618,22 @@ td.n_clr{
     align-items: center !important;
     padding: 0 !important;
     padding-right: 0.5rem !important;
+}
+
+#purchSaletableBodyTr td input::placeholder{
+    color: black;
+    opacity: 1;
+}
+
+#purchSaletableBodyTr td input:focus{
+    border-radius: 0.1rem;
+}
+
+#purchSaletableBodyTr td input{
+    padding: 1px ;
+    font-size: 13px;
+}
+
+.page_head.purchase-return{
+    background: #7B66FF !important;
 }

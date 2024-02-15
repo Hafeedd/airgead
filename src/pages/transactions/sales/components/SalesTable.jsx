@@ -9,10 +9,14 @@ import useSalesServices from "../../../../services/transactions/salesServices";
 
 const SalesTable = (props) => {
   const {
+    tableItemRef, 
+    setTableItemRef,
+    handleSetEdit,
     tableItem,
     handleSalesAddCalc,
     setSalesItemModal,
     setSalesBatchShow,
+    tableHeadList,
     setTableEdit,
     setTableItem,
     tableEdit,
@@ -31,8 +35,7 @@ const SalesTable = (props) => {
     setTableItemKeys,
   } = props;
 
-  const [ref, setRef] = useState(null);
-  const [ref2, setRef2] = useState(null);
+  const [tableItemRefList, setTableItemRefList] = useState(null);
   const [unitList, setUnitList] = useState(null);
   // const [calcChange, setCalcChange] = useState();
   const [itemNameList, setItemNameList] = useState([]);
@@ -41,8 +44,8 @@ const SalesTable = (props) => {
   const { deleteSalesItem } = useSalesServices();
   const { postSalesItem, putSalesItem } = useSalesServices();
 
-  const [handleKeyDown, formRef] = useOnKey(ref, setRef);
-  const [handleKeyDown2, formRef2] = useOnKey(ref2, setRef2, tableItemList);
+  const [handleKeyDown, formRef] = useOnKey(tableItemRef, setTableItemRef);
+  const [handleKeyDown2, formRef2] = useOnKey(tableItemRefList, setTableItemRefList,tableItemRef, tableItemList);
 
   useEffect(() => {
     getTableData();
@@ -109,13 +112,16 @@ const SalesTable = (props) => {
 
   const AdjustHeightOfTable = () => {
     let a = [];
-    for (let i = 0; i < 8 - tableItemList.length || 0; i++) {
+    let lengthOfTh = tableHeadList.filter(
+      (x) => x.saleShow && x.visible
+    ).length;
+    for (let i = 0; i < 9 - tableItemList.length || 0; i++) {
       a.push(
         <tr className="border-0" key={i}>
           <td
             className="border-0"
-            style={{ height: "1.766rem", display: "" }}
-            colSpan={18}
+            style={{ height: "1.7rem", display: "" }}
+            colSpan={lengthOfTh + 2}
           ></td>
         </tr>
       );
@@ -124,8 +130,9 @@ const SalesTable = (props) => {
   };
 
   const handleKeyTableItemEdit = async (e, data, i) => {
-    if (e.key == "Enter") {
-      if (e.key == "Enter" && e.ctrlKey) return 0;
+    console.log(data);
+    if (e.key === "Enter" && data.edited) {
+      if (e.key === "Enter" && e.ctrlKey) return 0;
       e.preventDefault();
       handleTableItemEdit(e, data, i);
     } else handleKeyDown2(e);
@@ -134,10 +141,10 @@ const SalesTable = (props) => {
   const handleTableItemEdit = async (e, data, i) => {
     e.preventDefault();
     try {
-      if (!data.item_name || !data.quantity || !data.rate) {
+      if (!data.item_name || !data.quantity) {
         Swal.fire({
           title: "please enter Essential details firs",
-          text: "Enter Rate , Quantity and Select Item First",
+          text: "Enter Quantity and Select Item First",
           icon: "warning",
           // showConfirmButton: false,
           timer: 1500,
@@ -147,7 +154,7 @@ const SalesTable = (props) => {
       }
       let response = await putSalesItem(data.id, data);
       if (response.success) {
-        handleKeyDown(e);
+        handleKeyDown2(e);
         getData();
       } else {
         Swal.fire({
@@ -220,7 +227,16 @@ const SalesTable = (props) => {
         //   });
         let tempList = [...tableItemList];
         tempList.splice(i, 1);
+
+        let tempTableItemKeys = [...tableItemKeys];
+        let ind = tempTableItemKeys.findIndex((x) => x.id == data.id);
+        if (ind > -1) {
+          tempTableItemKeys.splice(ind, 1);
+          setTableItemKeys([...tempTableItemKeys]);
+        }
+
         setTableItemList([...tempList]);
+        handleSalesAddCalc(tempList, false);
         getData();
       }
       // if (response.success && !data.created_at) {
@@ -294,6 +310,7 @@ const SalesTable = (props) => {
       } else {
         Swal.fire(response.message, "", "error");
       }
+      handleKeyDown(e);
       handleSalesAddCalc(itemTempList);
     } catch (err) {
       console.log(err);
@@ -352,7 +369,7 @@ const SalesTable = (props) => {
         rate: retail_rate || 0,
         gross: gross || 0,
         tax_gst: tax_gst || 0,
-        quantity: 1,
+        quantity: 0,
       };
     } else if (data?.value == "") {
       handleTableItemReset();
@@ -360,7 +377,10 @@ const SalesTable = (props) => {
     } else if (e.target.value === "") {
       tempItem = { ...tempItem, [e.target.name]: "" };
     } else if (e.target.type === "number") {
-      tempItem = { ...tempItem, [e.target.name]: parseFloat(e.target.value) };
+      tempItem = {
+        ...tempItem,
+        [e.target.name]: parseFloat(+e.target.value + 0),
+      };
     } else {
       tempItem = { ...tempItem, [e.target.name]: e.target.value };
     }
@@ -392,17 +412,16 @@ const SalesTable = (props) => {
         //     (tempItem.gross -
         //       tempItem?.discount_1_percentage * (tempItem.gross / 100))))
         // );
-        console.log(
-          
-            tempItem.gross
-            -
-            (tempItem.gross -
-              (tempItem.gross -
-                tempItem?.discount_1_percentage * (tempItem.gross / 100)))
-                 
-                /
-              (1 + tempItem.tax_gst / 100)
-        );
+        // console.log(
+
+        //     tempItem.gross
+        //     -
+        //     (tempItem.gross -
+        //       (tempItem.gross -
+        //         tempItem?.discount_1_percentage * (tempItem.gross / 100)))
+        //         /
+        //       (1 + tempItem.tax_gst / 100)
+        // );
         value = {
           ...value,
           rate:
@@ -500,16 +519,16 @@ const SalesTable = (props) => {
 
       if (e.target.name !== "gross") {
         if (tempItem.tax_gst && tempItem.rate) {
-          console.log(
-            (tempItem.rate - tempItem.discount_1_amount_per_item) *
-              (tempItem.tax_gst / 100)
-          );
+          // console.log(
+          //   (tempItem.rate - tempItem.discount_1_amount_per_item) *
+          //     (tempItem.tax_gst / 100)
+          // );
           value = {
             ...value,
             ["gross"]:
               (tempItem.rate - tempItem.discount_1_amount_per_item || 0) +
-              ((tempItem.rate - tempItem.discount_1_amount_per_item || 0) *
-                (tempItem.tax_gst / 100)),
+              (tempItem.rate - tempItem.discount_1_amount_per_item || 0) *
+                (tempItem.tax_gst / 100),
           };
         } else {
           value = { ...value, ["gross"]: 0 };
@@ -545,47 +564,11 @@ const SalesTable = (props) => {
         sgst: 0,
         cgst_or_igst: 0,
         total: 0,
+        rate: 0,
         discount_1_amount: 0,
-        // gross: 0,
+        gross: 0,
       };
     }
-
-    tempItem = { ...tempItem, ...value };
-
-    // if(e.target.name?.match(/tax_gst|rate/)){
-    // if (e.target.name !== "gross") {
-    //   if (tempItem.tax_gst && tempItem.rate) {
-    //     console.log(
-    //       (tempItem.rate - tempItem.discount_1_amount_per_item) *
-    //         (tempItem.tax_gst / 100)
-    //     );
-    //     value = {
-    //       ...value,
-    //       ["gross"]:
-    //         (tempItem.rate - tempItem.discount_1_amount_per_item || 0) +
-    //         (tempItem.rate - tempItem.discount_1_amount_per_item || 0) *
-    //           (tempItem.tax_gst / 100),
-    //     };
-    //   } else {
-    //     value = { ...value, ["gross"]: 0 };
-    //   }
-    // }
-    // tempItem = { ...tempItem, ...value };
-
-    // if (e.target.name !== "tax_gst" && e.target.name !== "rate" && e.target.name !== "discount_1_percentage") {
-    // // if (e.target.name === "gross" ) {
-    //   // console.log(tempItem.discount_1_amount_per_item)
-    //   if (tempItem.gross && tempItem.tax_gst) {
-    //     value = {
-    //       ...value,
-    //       rate: ((tempItem.gross) * 100)/ (tempItem.tax_gst+100) // (a * 100) / (c + 100)
-    //     }
-    //   }else if(!tempItem.gross){
-    //     value={...value, rate:0}
-    //   }
-    // }
-
-    // tempItem = { ...tempItem, ...value };
 
     let tempItemKeys = Object.keys(tempItem);
     tempItemKeys?.map((key) => {
@@ -613,11 +596,13 @@ const SalesTable = (props) => {
       if (!edit) {
         handleSalesAllReset();
         setEdit(salesList[0]);
+        handleSetEdit(salesList[0]);
       } else {
         let ind = salesList?.findIndex((x) => edit.id == x.id);
         if (ind !== salesList?.length - 1) {
           handleSalesAllReset();
           setEdit(salesList[ind + 1]);
+          handleSetEdit(salesList[ind + 1]);
         } else {
           Swal.fire("No more purchase to edit", "go for next", "warning");
         }
@@ -628,16 +613,17 @@ const SalesTable = (props) => {
   };
 
   const handleNext = () => {
-    let i = salesList?.length - 1;
-    if (!edit) {
+    if (!edit || salesList?.length < 1) {
       Swal.fire("No more purchase to edit", "go for prev", "warning");
     } else if (edit?.id == salesList[0]?.id) {
       handleSalesAllReset();
+      handleSetEdit(true);
     } else {
       handleSalesAllReset();
       let ind = salesList?.findIndex((x) => edit.id == x.id);
       if (ind !== salesList[0]) {
         setEdit(salesList[ind - 1]);
+        handleSetEdit(salesList[ind - 1]);
       } else {
         Swal.fire("No more purchase to edit", "go for prev", "warning");
       }
@@ -647,10 +633,13 @@ const SalesTable = (props) => {
   return (
     <>
       <div className="px-2 " id="TableToPrint">
-        <table className="table table-secondary purchase-table mb-0">
+        <table
+          style={{ tableLayout: "fixed" }}
+          className="table table-secondary purchase-table mb-0"
+        >
           <thead className="purchase-table-header">
             <tr>
-              <th className="text-start" colSpan={3}>
+              {/* <th className="text-start" colSpan={3}>
                 Item Name
               </th>
               <th>Qty</th>
@@ -664,9 +653,21 @@ const SalesTable = (props) => {
               <th>CGST/IGST</th>
               <th>SGST</th>
               <th>Total</th>
-              {/* <th>Cost</th>
-              <th>Margin%</th> */}
-              {/* <th>P.Rate</th> */}
+              <th>Cost</th> */}
+              <th width="30">SL</th>
+              {tableHeadList?.length > 0 &&
+                tableHeadList.map((item, i) => {
+                  if (item.visible && item.saleShow)
+                    return i === 0 ? (
+                      <th width="200" className="text-start" colSpan={1}>
+                        {item.title}
+                      </th>
+                    ) : (
+                      <th>{item.title}</th>
+                    );
+                  else return null;
+                })}
+
               <th className="py-1 text-end">
                 <div
                   className="btn btn-primary purchase-add-btn my-0"
@@ -704,195 +705,395 @@ const SalesTable = (props) => {
 
                 return (
                   <tr
-                    id={"tableBodyTr"}
+                    id="purchSaletableBodyTr"
                     key={i}
                     ref={(el) => (formRef2.current[i] = el)}
                   >
-                    <td className="text-start ps-3" colSpan={3}>
-                      <Dropdown
-                        // clearable
-                        options={itemNameList}
-                        selection
-                        search={search}
-                        placeholder="SELECT"
-                        className="purchase_search_drop border-0 w-100 ps-2"
-                        onKeyDown={handleKeyDown2}
-                        name={"fk_items"}
-                        onChange={(e, a) =>
-                          handleChangeTableItem(e, a, data, i)
-                        }
-                        value={
-                          data?.fk_items == "" || data?.fk_items
-                            ? data?.fk_items
-                            : ""
-                        }
-                      />
-                    </td>
-                    <td>
-                      <input
-                        onKeyDown={handleKeyDown2}
-                        onChange={(e) =>
-                          handleChangeTableItem(e, null, data, i)
-                        }
-                        name="quantity"
-                        className="purchase_input border-0 w-100 text-center"
-                        value={data.quantity || ""}
-                      />
-                    </td>
-                    <td>
-                      <select
-                        onKeyDown={handleKeyDown2}
-                        onChange={(e) =>
-                          handleChangeTableItem(e, null, data, i)
-                        }
-                        value={data.unit || ""}
-                        name="unit"
-                        style={{
-                          WebkitAppearance: "none",
-                          fontSize: "10px",
-                          padding: "3.5px 1px",
-                        }}
-                        className="purchase_input border-0 w-100 text-center"
+                    <td>{i + 1}</td>
+                    {tableHeadList?.length > 0 &&
+                      tableHeadList.map((item, index) => {
+                        if (item.visible && item.saleShow)
+                          return (
+                            // item.state === "item_name"?
+                            index === 0 ? (
+                              <td className="text-start ps-3 pe-3" colSpan={1}>
+                                <Dropdown
+                                  // onClick={()=>setShowStock(data=>!data)}
+                                  selection
+                                  onChange={(e, a) =>
+                                    handleChangeTableItem(e, a, data, i)
+                                  }
+                                  required
+                                  upward={
+                                    salesAdd.total_items > 4 ? true : false
+                                  }
+                                  search={search}
+                                  onKeyDown={(e) => {
+                                    if (data?.edited)
+                                      handleKeyTableItemEdit(e, data, i)
+                                    else handleKeyDown2(e);
+                                  }}
+                                  placeholder="SELECT"
+                                  className="purchase_search_drop border-0 w-100 ps-2"
+                                  name={"name"}
+                                  value={data.fk_items || data.name}
+                                  options={itemNameList}
+                                />
+                              </td>
+                            ) : item.state === "unit" ? (
+                              <td>
+                                <select
+                                  onChange={(e) =>
+                                    handleChangeTableItem(e, null, data, i)
+                                  }
+                                  onKeyDown={(e) => {
+                                    if (data?.edited)
+                                      handleKeyTableItemEdit(e, data, i)
+                                    else handleKeyDown2(e);
+                                  }}
+                                  name="unit"
+                                  value={data.unit}
+                                  style={{
+                                    WebkitAppearance: "none",
+                                    fontSize: "10px",
+                                    padding: "3.5px 1px",
+                                  }}
+                                  className="purchase_input border-0 w-100 text-center"
+                                >
+                                  {unitList &&
+                                    unitList.map((x, i) => (
+                                      <option key={i} value={x.value}>
+                                        {x.text}
+                                      </option>
+                                    ))}
+                                </select>
+                              </td>
+                            ) : (
+                              <td>
+                                <input
+                                  onChange={(e) =>
+                                    handleChangeTableItem(e, null, data, i)
+                                  }
+                                  onKeyDown={(e) => {
+                                    if (data?.edited)
+                                      handleKeyTableItemEdit(e, data, i)
+                                    else handleKeyDown2(e);
+                                  }}
+                                  name={item.state}
+                                  type="number"
+                                  placeholder="0"
+                                  className="purchase-table-items-input"
+                                  value={
+                                    data[item?.state] && data[item?.state] > -1
+                                      ? data[item?.state]
+                                      : ""
+                                  }
+                                />
+                              </td>
+                            )
+                          );
+                        else return null;
+                      })}
+                    <td className="p-0">
+                      <div
+                        onClick={confirmDelete}
+                        className="text-center w-100"
                       >
-                        {unitList &&
-                          unitList.map((x, i) => (
-                            <option key={i} value={x.value}>
-                              {x.text}
-                            </option>
-                          ))}
-                      </select>
+                        <BsTrashFill className="mb-1 btn p-0" size={"16px"} />
+                      </div>
                     </td>
-                    <td>
-                      <input
-                        onKeyDown={handleKeyDown2}
-                        onChange={(e) =>
-                          handleChangeTableItem(e, null, data, i)
-                        }
-                        className="purchase_input border-0 w-100 text-center"
-                        value={data.rate || ""}
-                        name="rate"
-                      />
-                    </td>
-                    <td>
-                      <input
-                        onKeyDown={handleKeyDown2}
-                        // disabled
-                        onChange={(e) =>
-                          handleChangeTableItem(e, null, data, i)
-                        }
-                        className="purchase_input border-0 w-100 text-center"
-                        value={data.gross || ""}
-                        name="gross"
-                      />
-                    </td>
-                    <td>
-                      <input
-                        onKeyDown={handleKeyDown2}
-                        onChange={(e) =>
-                          handleChangeTableItem(e, null, data, i)
-                        }
-                        className="purchase_input border-0 w-100 text-center"
-                        value={data.discount_1_percentage || ""}
-                        name="discount_1_percentage"
-                      />
-                    </td>
-                    <td>
-                      <input
-                        onKeyDown={handleKeyDown2}
-                        onChange={(e) =>
-                          handleChangeTableItem(e, null, data, i)
-                        }
-                        className="purchase_input border-0 w-100 text-center"
-                        value={data.discount_1_amount || ""}
-                        name="discount_1_amount"
-                      />
-                    </td>
-                    <td>
-                      <input
-                        disabled
-                        onKeyDown={handleKeyDown2}
-                        onChange={(e) =>
-                          handleChangeTableItem(e, null, data, i)
-                        }
-                        className="purchase_input border-0 w-100 text-center"
-                        value={data.value || ""}
-                        name="value"
-                      />
-                    </td>
-                    <td>
-                      <input
-                        onKeyDown={handleKeyDown2}
-                        onChange={(e) =>
-                          handleChangeTableItem(e, null, data, i)
-                        }
-                        className="purchase_input border-0 w-100 text-center"
-                        value={data.tax_gst || ""}
-                        name="tax_gst"
-                      />
-                    </td>
-                    <td>
-                      <input
-                        disabled
-                        onKeyDown={handleKeyDown2}
-                        onChange={(e) =>
-                          handleChangeTableItem(e, null, data, i)
-                        }
-                        className="purchase_input border-0 w-100 text-center"
-                        value={data.cgst_or_igst || ""}
-                        name="cgst_or_igst"
-                      />
-                    </td>
-                    <td>
-                      <input
-                        disabled
-                        onKeyDown={handleKeyDown2}
-                        onChange={(e) =>
-                          handleChangeTableItem(e, null, data, i)
-                        }
-                        className="purchase_input border-0 w-100 text-center"
-                        value={data.sgst || ""}
-                        name="sgst"
-                      />
-                    </td>
-                    <td>
-                      <input
-                        disabled
-                        onKeyDown={handleKeyDown2}
-                        onChange={(e) =>
-                          handleChangeTableItem(e, null, data, i)
-                        }
-                        className="purchase_input border-0 w-100 text-center"
-                        value={data.total || ""}
-                        name="total"
-                      />
-                    </td>
-                    {data?.edited ? (
-                      <td>
-                        <button
-                          onKeyDown={(e) => handleKeyTableItemEdit(e, data, i)}
-                          onClick={(e) => handleTableItemEdit(e, data, i)}
-                          className="text-center border-0 bg-transparent"
-                        >
-                          <FiEdit className="mb-1 btn p-0" size={"16px"} />
-                        </button>
-                      </td>
-                    ) : (
-                      <td className="p-0">
-                        <div
-                          onClick={confirmDelete}
-                          className="text-center w-100"
-                        >
-                          <BsTrashFill className="mb-1 btn p-0" size={"16px"} />
-                        </div>
-                      </td>
-                    )}
                   </tr>
                 );
+                // <tr
+                //   id={"tableBodyTr"}
+                //   key={i}
+                //   ref={(el) => (formRef2.current[i] = el)}
+                // >
+                //   <td className="text-start ps-3" colSpan={3}>
+                //     <Dropdown
+                //       // clearable
+                //       options={itemNameList}
+                //       selection
+                //       search={search}
+                //       placeholder="SELECT"
+                //       className="purchase_search_drop border-0 w-100 ps-2"
+                //       onKeyDown={handleKeyDown2}
+                //       name={"fk_items"}
+                //       onChange={(e, a) =>
+                //         handleChangeTableItem(e, a, data, i)
+                //       }
+                //       value={
+                //         data?.fk_items == "" || data?.fk_items
+                //           ? data?.fk_items
+                //           : ""
+                //       }
+                //     />
+                //   </td>
+                //   <td>
+                //     <input
+                //       onKeyDown={handleKeyDown2}
+                //       onChange={(e) =>
+                //         handleChangeTableItem(e, null, data, i)
+                //       }
+                //       name="quantity"
+                //       className="purchase_input border-0 w-100 text-center"
+                //       value={data.quantity || ""}
+                //     />
+                //   </td>
+                //   <td>
+                //     <select
+                //       onKeyDown={handleKeyDown2}
+                //       onChange={(e) =>
+                //         handleChangeTableItem(e, null, data, i)
+                //       }
+                //       value={data.unit || ""}
+                //       name="unit"
+                //       style={{
+                //         WebkitAppearance: "none",
+                //         fontSize: "10px",
+                //         padding: "3.5px 1px",
+                //       }}
+                //       className="purchase_input border-0 w-100 text-center"
+                //     >
+                //       {unitList &&
+                //         unitList.map((x, i) => (
+                //           <option key={i} value={x.value}>
+                //             {x.text}
+                //           </option>
+                //         ))}
+                //     </select>
+                //   </td>
+                //   <td>
+                //     <input
+                //       onKeyDown={handleKeyDown2}
+                //       onChange={(e) =>
+                //         handleChangeTableItem(e, null, data, i)
+                //       }
+                //       className="purchase_input border-0 w-100 text-center"
+                //       value={data.rate || ""}
+                //       name="rate"
+                //     />
+                //   </td>
+                //   <td>
+                //     <input
+                //       onKeyDown={handleKeyDown2}
+                //       // disabled
+                //       onChange={(e) =>
+                //         handleChangeTableItem(e, null, data, i)
+                //       }
+                //       className="purchase_input border-0 w-100 text-center"
+                //       value={data.gross || ""}
+                //       name="gross"
+                //     />
+                //   </td>
+                //   <td>
+                //     <input
+                //       onKeyDown={handleKeyDown2}
+                //       onChange={(e) =>
+                //         handleChangeTableItem(e, null, data, i)
+                //       }
+                //       className="purchase_input border-0 w-100 text-center"
+                //       value={data.discount_1_percentage || ""}
+                //       name="discount_1_percentage"
+                //     />
+                //   </td>
+                //   <td>
+                //     <input
+                //       onKeyDown={handleKeyDown2}
+                //       onChange={(e) =>
+                //         handleChangeTableItem(e, null, data, i)
+                //       }
+                //       className="purchase_input border-0 w-100 text-center"
+                //       value={data.discount_1_amount || ""}
+                //       name="discount_1_amount"
+                //     />
+                //   </td>
+                //   <td>
+                //     <input
+                //       disabled
+                //       onKeyDown={handleKeyDown2}
+                //       onChange={(e) =>
+                //         handleChangeTableItem(e, null, data, i)
+                //       }
+                //       className="purchase_input border-0 w-100 text-center"
+                //       value={data.value || ""}
+                //       name="value"
+                //     />
+                //   </td>
+                //   <td>
+                //     <input
+                //       onKeyDown={handleKeyDown2}
+                //       onChange={(e) =>
+                //         handleChangeTableItem(e, null, data, i)
+                //       }
+                //       className="purchase_input border-0 w-100 text-center"
+                //       value={data.tax_gst || ""}
+                //       name="tax_gst"
+                //     />
+                //   </td>
+                //   <td>
+                //     <input
+                //       disabled
+                //       onKeyDown={handleKeyDown2}
+                //       onChange={(e) =>
+                //         handleChangeTableItem(e, null, data, i)
+                //       }
+                //       className="purchase_input border-0 w-100 text-center"
+                //       value={data.cgst_or_igst || ""}
+                //       name="cgst_or_igst"
+                //     />
+                //   </td>
+                //   <td>
+                //     <input
+                //       disabled
+                //       onKeyDown={handleKeyDown2}
+                //       onChange={(e) =>
+                //         handleChangeTableItem(e, null, data, i)
+                //       }
+                //       className="purchase_input border-0 w-100 text-center"
+                //       value={data.sgst || ""}
+                //       name="sgst"
+                //     />
+                //   </td>
+                //   <td>
+                //     <input
+                //       disabled
+                //       onKeyDown={handleKeyDown2}
+                //       onChange={(e) =>
+                //         handleChangeTableItem(e, null, data, i)
+                //       }
+                //       className="purchase_input border-0 w-100 text-center"
+                //       value={data.total || ""}
+                //       name="total"
+                //     />
+                //   </td>
+                //   {data?.edited ? (
+                //     <td>
+                //       <button
+                //         onKeyDown={(e) => handleKeyTableItemEdit(e, data, i)}
+                //         onClick={(e) => handleTableItemEdit(e, data, i)}
+                //         className="text-center border-0 bg-transparent"
+                //       >
+                //         <FiEdit className="mb-1 btn p-0" size={"16px"} />
+                //       </button>
+                //     </td>
+                //   ) : (
+                //     <td className="p-0">
+                //       <div
+                //         onClick={confirmDelete}
+                //         className="text-center w-100"
+                //       >
+                //         <BsTrashFill className="mb-1 btn p-0" size={"16px"} />
+                //       </div>
+                //     </td>
+                //   )}
+                // </tr>
               })}
 
             {/* table Item List-----------------------------------------end */}
 
             <tr ref={formRef} className="input-tr">
+              <td></td>
+              {tableHeadList?.length > 0 &&
+                tableHeadList.map((item, i) => {
+                  if (item.visible && item.saleShow)
+                    return item.state === "item_name" ? (
+                      <td
+                        className="purchase_search_drop_td text-start ps-3 pe-3"
+                        colSpan={1}
+                      >
+                        <Dropdown
+                          clearable
+                          // onClick={()=>setShowStock(data=>!data)}
+                          selection
+                          required
+                          upward={salesAdd.total_items > 4 ? true : false}
+                          // scrolling
+                          search={search}
+                          placeholder="SELECT"
+                          className="purchase_search_drop border-0 w-100 ps-2"
+                          onKeyDown={handleKeyDown}
+                          allowAdditions
+                          id="tableItemFkItem"
+                          // onAddItem={handleItemNameSelection}
+                          name={"name"}
+                          onChange={
+                            (e, data) =>
+                              handleChangeTableItem(e, data, tableItem, true)
+                            // handleItemNameSelection(e,data)
+                          }
+                          value={
+                            tableItem.fk_items === "" || tableItem.fk_items
+                              ? tableItem.fk_items
+                              : ""
+                          }
+                          options={itemNameList}
+                        />
+                      </td>
+                    ) : item.state === "unit" ? (
+                      <td colSpan={i === 0 ? 2 : 1}>
+                        <select
+                          onKeyDown={handleKeyDown}
+                          name={"unit"}
+                          onChange={(e) =>
+                            handleChangeTableItem(e, null, tableItem, true)
+                          }
+                          value={
+                            tableItem.unit === "" || tableItem.unit
+                              ? tableItem.unit
+                              : ""
+                          }
+                          style={{
+                            WebkitAppearance: "none",
+                            MozAppearance: "none",
+                            fontSize: "10px",
+                            padding: "3.5px 1px",
+                          }}
+                          className="purchase_input border-0 w-100 text-center"
+                        >
+                          {unitList &&
+                            unitList.map((x, i) => (
+                              <option key={i} value={x.value}>
+                                {x.text}
+                              </option>
+                            ))}
+                        </select>
+                      </td>
+                    ) : (
+                      <td colSpan={i === 0 ? 2 : 1}>
+                        <input
+                          onKeyDown={handleKeyDown}
+                          name={item.state}
+                          onChange={(e) =>
+                            handleChangeTableItem(e, null, tableItem, true)
+                          }
+                          onFocus={handleFocus}
+                          onBlur={handleBlur}
+                          value={
+                            tableItem[item.state] === "" ||
+                            tableItem[item.state] ||
+                            tableItem[item.state] === 0
+                              ? tableItem[item.state]
+                              : ""
+                          }
+                          type="number"
+                          className="purchase_input border-0 w-100 text-center"
+                        />
+                      </td>
+                    );
+                  else return null;
+                })}
+              <td>
+                <input
+                  type="button"
+                  onKeyDown={handleAddSalesItem}
+                  onClick={handleAddSalesItem}
+                  className="table-item-add-btn rounded-1 btn-sm"
+                  value={"+"}
+                />
+              </td>
+            </tr>
+            {/* <tr ref={formRef} className="input-tr">
               <td
                 colSpan={3}
                 className="purchase_search_drop_td text-start ps-3"
@@ -902,7 +1103,6 @@ const SalesTable = (props) => {
                   required
                   selection
                   upward={salesAdd.total_items > 4 ? true : false}
-                  // scrolling
                   search={search}
                   placeholder="SELECT"
                   className="purchase_search_drop border-0 w-100 ps-2"
@@ -986,15 +1186,11 @@ const SalesTable = (props) => {
               </td>
               <td>
                 <input
-                  // disabled
                   onKeyDown={handleKeyDown}
                   onChange={(e) =>
                     handleChangeTableItem(e, null, tableItem, true)
                   }
                   name={"gross"}
-                  // onChange={(e) =>
-                  //   handleChangeTableItem(e, null, tableItem, true)
-                  // }
                   value={
                     tableItem?.gross == "" || tableItem?.gross
                       ? tableItem?.gross
@@ -1138,88 +1334,95 @@ const SalesTable = (props) => {
                   className="purchase_input border-0 w-100 text-center"
                 />
               </td>
-              {/* <td>
-                <input
-                  disabled
-                  onKeyDown={handleKeyDown}
-                  name={"cost"}
-                  onChange={handleChangeTableItem}
-                  value={
-                    tableItem?.cost == "" || tableItem?.cost
-                      ? tableItem?.cost
-                      : ""
-                  }
-                  onFocus={handleFocus}
-                  onBlur={handleBlur}
-                  type="number"
-                  className="purchase_input border-0 w-100 text-center"
-                />
-              </td>
               <td>
-                <input
-                  onKeyDown={handleKeyDown}
-                  name={"margin"}
-                  onChange={handleChangeTableItem}
-                  value={
-                    tableItem?.margin == "" || tableItem?.margin
-                      ? tableItem?.margin
-                      : ""
-                  }
-                  onFocus={handleFocus}
-                  onBlur={handleBlur}
-                  type="number"
-                  className="purchase_input border-0 w-100 text-center"
-                />
-              </td> */}
-              {/* <td>
-                <input
-                  onKeyDown={handleKeyDown}
-                  name={"sales_rate"}
-                  onChange={handleChangeTableItem}
-                  value={
-                    tableItem?.sales_rate == "" || tableItem?.sales_rate
-                      ? tableItem?.sales_rate
-                      : ""
-                  }
-                  onFocus={handleFocus}
-                  onBlur={handleBlur}
-                  type="number"
-                  className="purchase_input border-0 w-100 text-center"
-                />
-              </td> */}
-              <td>
-                {/* {tableEdit ? (
-                  <button onClick={handleAddSalesItem} className="text-center border-0 bg-transparent">
-                    <FiEdit className="mb-1 btn p-0" size={"16px"} />
-                  </button>
-                ) : ( */}
                 <input
                   type="button"
                   onKeyDown={handleAddSalesItem}
                   onClick={handleAddSalesItem}
                   className="table-item-add-btn rounded-1 btn-sm"
                   value={"+"}
-                />
-                {/* )} */}
-              </td>
-              {/* <td className="p-0 text-start">
-                {tableEdit && (
-                  <input
-                    type="button"
-                    onClick={() => {
-                      setTableEdit(false);
-                      handleTableItemReset();
-                    }}
-                    className="table-item-add-btn2 text-start"
-                    value={"+"}
-                  />
-                )}
-              </td> */}
-            </tr>
+                />                
+              </td>          
+            </tr> */}
 
             <AdjustHeightOfTable />
           </tbody>
           <tfoot>
+            <tr className="purchase-table-green">
+              {/* <td></td> */}
+              {/* <td className="item2 col-1">
+                <div
+                  className="btn bg-none outline-none text-light border-none"
+                  onClick={handlePrev}
+                >
+                  {"<"} Previous
+                </div>
+              </td>
+              <td className="item3 px-3 col-1">
+                <div
+                  className="btn bg-none outline-none text-light border-none"
+                  onClick={handleNext}
+                >
+                  Next {">"}
+                </div>
+              </td> */}
+              <td colSpan={2} className="col-2 text-start">
+                <div className="d-flex justify-items-start">
+                  <div
+                    style={{ background: "#4A00A8" }}
+                    className="btn bg-none outline-none text-light border-none"
+                    onClick={handlePrev}
+                  >
+                    {"<"} Previous
+                  </div>
+                  <div
+                    style={{ background: "#707070" }}
+                    className="btn bg-none outline-none text-light border-none"
+                    onClick={handleNext}
+                  >
+                    Next {">"}
+                  </div>
+                </div>
+              </td>
+              {tableHeadList?.length > 0 &&
+                tableHeadList.map((item, i) => {
+                  if (i > 0 && item.saleShow)
+                    return item.state === "discount_1_amount" &&
+                      item.visible ? (
+                      <td className="item">
+                        <div className="purch-green-table-item">
+                          {salesAdd.total_disc?.toFixed(2) || 0}
+                        </div>
+                      </td>
+                    ) : item.state === "value" && item.visible ? (
+                      <td className="item">
+                        <div className="purch-green-table-item">
+                          {salesAdd.total_value || 0}
+                        </div>
+                      </td>
+                    ) : (item.state === "cgst_or_igst" ||
+                        item.state === "sgst") &&
+                      item.visible ? (
+                      <td className="item">
+                        <div className="purch-green-table-item">
+                          {salesAdd.total_scGst || 0}
+                        </div>
+                      </td>
+                    ) : item.state === "total" && item.visible ? (
+                      <td className="item">
+                        <div className="purch-green-table-item">
+                          {salesAdd.total_total || 0}
+                        </div>
+                      </td>
+                    ) : (
+                      item.visible && <td>{/* {item.state} */}</td>
+                    );
+                  else return null;
+                })}
+              <td></td>
+            </tr>
+          </tfoot>
+          {/* <tfoot>
             <tr className="purchase-table-green">
               <td className="item2 col-1" colSpan={2}>
                 <div
@@ -1273,12 +1476,12 @@ const SalesTable = (props) => {
                 </div>
               </td>
               <td></td>
+              <td></td>              
               <td></td>
-              {/* <td></td> */}
               <td></td>
-              <td></td>
-            </tr>
+            </tr> 
           </tfoot>
+                */}
         </table>
       </div>
       <div className="sales-detail-container mx-2 mt-1">

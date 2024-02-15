@@ -24,7 +24,7 @@ const PayrollTransaction = () => {
   //     ? `${year - 1}-${12}-${endDate}`
   //     : `${year}-${previousMonth<10?previousMonth+'0'+1:previousMonth+1}-${endDate}`
   // );
-
+  
 
   const pad = (value) => value < 10 ? `0${value}` : value;
   const firstDate = `${month_based_year}-${pad(previousMonth + 1)}-01`;
@@ -78,6 +78,7 @@ const PayrollTransaction = () => {
   useEffect(() => {
     setParamsToReport({ from_date: fromDate, end_date: toDate });
   }, [fromDate, toDate]);
+  
   return (
     <div className="item_add">
       <div className="itemList_header row mx-0">
