@@ -51,17 +51,17 @@ const BillWiseProfitTable = (props) => {
                                     billWiseProfit[0].billwise_data.map((data, i) => {
                                         
                                         let profit_percentage = 0
-                                        profit_percentage = (((data?.profit)/(data?.total_cost))*100)||0.00
+                                        profit_percentage = (((data?.profit)/(data?.total_sales))*100)||0.00
                                         return (
                                             <tr
                                                 className='cashbook-table-row text-black'>
                                                 <td className='ps-3'>{data?.document_no}</td>
                                                 <td>{data?.name}</td>
-                                                <td>{data?.total_sales}</td>
+                                                <td>{data?.total_sales.toFixed(2)}</td>
                                                 {/* <td>{data?.sales}</td> */}
                                                 <td>0</td>
-                                                <td>{data?.total_cost}</td>
-                                                <td>{data?.profit}</td>
+                                                <td>{data?.total_cost.toFixed(2)}</td>
+                                                <td>{data?.profit.toFixed(2)}</td>
                                                 <td>{profit_percentage.toFixed(2)}</td>
 
                                             </tr>
@@ -76,10 +76,10 @@ const BillWiseProfitTable = (props) => {
                                 <tr className='' style={{ backgroundColor: "#CECECE" }}>
                                 <td></td>
                                 <td></td>
-                                <td>{billWiseProfit[0]?.grand_total?.total_sales}</td>
+                                <td>{billWiseProfit[0]?.grand_total?.total_sales.toFixed(2)}</td>
                                 <td>0</td>
-                                <td>{billWiseProfit[0]?.grand_total?.total_cost}</td>
-                                <td>{billWiseProfit[0]?.grand_total?.total_profit}</td>
+                                <td>{billWiseProfit[0]?.grand_total?.total_cost.toFixed(2)}</td>
+                                <td>{billWiseProfit[0]?.grand_total?.total_profit.toFixed(2)}</td>
                                 <td></td>
                                 </tr>
                                 

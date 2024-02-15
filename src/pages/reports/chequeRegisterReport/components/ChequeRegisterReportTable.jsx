@@ -135,6 +135,7 @@ const ChequeRegisterReportTable = (props) => {
 	}
 
 	const handleSearch = async (e) => {
+		console.log(chequeRegisterEdit)
 		try {
 			let tempData,
 				tempList = chequeRegisterList;
