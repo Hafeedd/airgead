@@ -1,4 +1,9 @@
 .staff-table-cont{
+    /* width:85rem !important; */
+    height: 25.8rem;
+    overflow: hidden !important;
+    overflow-y: scroll !important;
+    overflow-x: scroll !important;
     width: 85px;
     min-width: 100%;
     /* max-width: 100%; */
@@ -8,8 +13,16 @@
     padding: 0;
 }
 
+@media screen and (width > 800px){
+    .staff-table-cont{
+        width: 85.4rem;
+    }
+}
+
 .StaffTable thead th:first-child{
     color: black;
+    width:25rem !important;
+    height: 2rem !important;
     width:25rem !important;
     height: 2rem !important;
     position: sticky;
