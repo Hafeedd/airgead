@@ -358,6 +358,22 @@ const Sidebar = () => {
                 Production report
               </div>
             </span>
+            <span className="SidebarSpan d-flex ms-5 ps-3">
+              <div
+                className="SidebarItemText"
+                onClick={() => navigate("/trial-balance")}
+              >
+                Trial balance
+              </div>
+            </span>
+            <span className="SidebarSpan d-flex ms-5 ps-3">
+              <div
+                className="SidebarItemText"
+                onClick={() => navigate("/balance-sheet")}
+              >
+                Balance Sheet
+              </div>
+            </span>
           </div>
         </div>
       </div>
