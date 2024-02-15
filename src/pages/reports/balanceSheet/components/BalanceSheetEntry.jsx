@@ -9,7 +9,7 @@ const BalanceSheetEntry = (props) => {
 
     // const handleChange = ((e)=>{
     //     if (e.target.vslue == ""){
-
+    //         setParams()
     //     }
     // })
     return (
