@@ -555,7 +555,7 @@ const PurchaseTable = (props) => {
     <>
       <div className="mx-2 mt-1 purchase-table-item-container px-0">
         <table
-          style={{ tableLayout: "fixed" }}
+          // style={{ tableLayout: "fixed" }}
           className="table table-secondary purchase-table mb-0"
         >
           <thead className="purchase-table-header">
