@@ -379,8 +379,13 @@ const StaffAttendanceDetails = (props) => {
           </div>
         </div>
       </div>
-      <div      
-        className="staff-table-cont px-0"
+      <div
+      //  style={{width:`${document.getElementById("staff-table-cont")?.offsetWidth}px`}}    
+        className="px-0 w-100 mx-0"  id="staff-table-cont"
+      >
+      <div
+       style={{maxWidth:`${document.getElementById("staff-table-cont")?.offsetWidth}px`}}    
+       className="staff-table-cont px-0 w-100" 
       >
         <table
           className="StaffTable p-0 m-0 px-0"
@@ -405,7 +410,7 @@ const StaffAttendanceDetails = (props) => {
           </tbody>
         </table>
       </div>
-      {/* </div> */}
+      </div>
       <Modal
         show={show}
         onHide={() => setShow(false)}
