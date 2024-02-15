@@ -2,7 +2,10 @@ import React from 'react'
 import { GrRefresh } from "react-icons/gr";
 import searchIcon from "../../../../assets/icons/search.png";
 
-const BalanceSheetTables = () => {
+const BalanceSheetTables = (props) => {
+    const {balanceSheetData} = props
+
+    
     return (
         <>
             <div className='bg-black mt-3 d-flex justify-content-end rounded-top'>

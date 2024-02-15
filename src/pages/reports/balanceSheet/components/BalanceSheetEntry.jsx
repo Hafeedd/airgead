@@ -12,6 +12,9 @@ const BalanceSheetEntry = (props) => {
         if (e.target.vslue == ""){
             setParams({...params,[e.target.name]:null})
         }
+        else{
+            setParams({...params,[e.target.name]:e.target.value})
+        }
     })
     return (
         <div className="row mx-0">
