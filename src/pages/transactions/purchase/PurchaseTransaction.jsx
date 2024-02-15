@@ -21,7 +21,7 @@ import {
   initialPurchaseSalesTableStatePosition,
   initialTableItem,
 } from "./InitialData/data";
-import usePurchaseReturnServices from "../../../services/transactions/purchaseTransaction";
+import usePurchaseReturnServices from "../../../services/transactions/purchaseReturn";
 
 export const initialPurchaseTableStatePositionLocal = JSON.parse(
   localStorage.getItem("initialPurchaseTableStatePositionLocal")
@@ -557,12 +557,12 @@ const PurchaseTransaction = ({ returnPage }) => {
         }
         if (response?.success && !tableEdit) {
           let tempItemKeys = [...tableItemKeys];
-          tempItemKeys.push({ id: response?.data?.purchase?.id });
+          tempItemKeys.push({ id:returnPage?response?.data?.id: response?.data?.purchase?.id });
           ItemTempList.push(itemTemp);
           setTableItemKeys(tempItemKeys);
           tempItems?.map((x, i) => {
             if (x.cstm_id == cstm_id) {
-              x.id = response?.data?.purchase?.id;
+              x.id = returnPage?response?.data?.id:response?.data?.purchase?.id;
               tempItems.splice(i, 1);
               tempItems.push({ ...x });
               setTableItemList(tempItems);

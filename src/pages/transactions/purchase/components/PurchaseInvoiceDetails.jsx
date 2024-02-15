@@ -17,8 +17,6 @@ const PurchaseInvoiceDetails = (props) => {
     supplierList,
   } = props;
 
-  const [ref, setRef] = useState(null);
-
   const navigate = useNavigate();
 
   const [handleKeyDown, formRef] = useOnKey(
@@ -103,11 +101,11 @@ const PurchaseInvoiceDetails = (props) => {
       </Form.Group>
       <Form.Group className="col-3 col-4 mx-0 d-flex align-items-center mt-1">
         <Form.Label className="col-3 col-4 purchase-input-label">
-          Doc No
+          {returnPage?"Bill Date":"Doc No"}
         </Form.Label>
         <Form.Control
-          name="documents_no"
-          value={purchaseAdd.documents_no || ""}
+          name={returnPage?"bill_date":"documents_no"}
+          value={returnPage?purchaseAdd.bill_date||"":purchaseAdd.documents_no || ""}
           onKeyDown={handleKeyDown}
           onChange={handleChange}
           className="purchase-input-text"
@@ -130,17 +128,21 @@ const PurchaseInvoiceDetails = (props) => {
       </div>
       <span className="col-3" />
       <Form.Group className="col-3 ps-5 mx-0 d-flex align-items-center mt-2">
-        <Form.Label className="col-3 purchase-input-label">
-          Bill Date
-        </Form.Label>
-        <Form.Control
-          name="bill_date"
-          value={purchaseAdd.bill_date?.slice(0, 10) || ""}
-          onKeyDown={handleKeyDown}
-          onChange={handleChange}
-          className="purchase-input-text"
-          type="date"
-        />
+        {
+          !returnPage&&<>
+            <Form.Label className="col-3 purchase-input-label">
+              Bill Date
+            </Form.Label>
+            <Form.Control
+              name="bill_date"
+              value={purchaseAdd.bill_date?.slice(0, 10) || ""}
+              onKeyDown={handleKeyDown}
+              onChange={handleChange}
+              className="purchase-input-text"
+              type="date"
+            />
+          </>
+        }
       </Form.Group>
       <Form.Group className="col-3 col-4 mx-0 d-flex align-items-center my-1 mt-2">
         <Form.Label className="col-3 col-4 purchase-input-label">
@@ -161,7 +163,9 @@ const PurchaseInvoiceDetails = (props) => {
       {/* Row 3 -------------------------------------------------------------------------------------------------------- */}
       <div className="col-4 col-3 pe-0 d-flex align-items-end justify-content-start ps-1">
         <div className="px-1">
-          <div className="btn btn-sm btn-secondary px-3">Purchase{returnPage&& " Return"}</div>
+          <div className="btn btn-sm btn-secondary px-3">
+            Purchase{returnPage && " Return"}
+          </div>
         </div>
         <div className="">
           {/* <div className="btn btn-sm btn-secondary px-3">P.Return</div> */}

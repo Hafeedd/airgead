@@ -215,12 +215,12 @@ export const AccountsTable = (props) => {
                     <td
                       style={{ background: "#CECECE" }}
                     >
-                     {Math.abs(totalDebit)+" Dr"}
+                     {Math.abs(totalDebit)?.toFixed(2)+" Dr"}
                     </td>
                     <td
                       style={{ background: "#CECECE" }}
                     >
-                     {Math.abs(totalCredit)+" Cr"}
+                     {Math.abs(totalCredit)?.toFixed(2)+" Cr"}
                     </td>
                     <td
                       style={{ background: "#CECECE" }}

@@ -1,6 +1,6 @@
 import { useEffect, useRef } from "react";
 
-const useOnKey = (ref, setRef, nextState, ...otherChangableState) => {
+const useOnKey = (ref, setRef, nextState,repeat, ...otherChangableState) => {
   let formRef = useRef([]);
 
   useEffect(() => {
@@ -56,7 +56,7 @@ const useOnKey = (ref, setRef, nextState, ...otherChangableState) => {
       if (e.target && ref?.length > 0) {
         let a = ref?.indexOf(e.target);
         if (a === ref.length - 1) {
-          if (nextState?.length > 0) {
+          if (nextState?.length > 0 && repeat !== "repeat") {
             ref[a]?.blur();
             nextState[0]?.focus();
           } else ref[0]?.focus();

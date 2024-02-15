@@ -7,7 +7,7 @@ import Swal from "sweetalert2";
 import usePurchaseServices from "../../../../services/transactions/purchcaseServices";
 import useOnKey from "../../../../hooks/onKeyFunct/onKeyFunct";
 import { useLocation, useNavigate } from "react-router";
-import usePurchaseReturnServices from "../../../../services/transactions/purchaseTransaction";
+import usePurchaseReturnServices from "../../../../services/transactions/purchaseReturn";
 
 const PurchaseTable = (props) => {
   const {
@@ -46,11 +46,11 @@ const PurchaseTable = (props) => {
 
   const [tableItemListRef, setTableItemListRef] = useState(null); 
   
-  const [handleKeyDown, formRef] = useOnKey(tableItemRef, setTableItemRef, purchaseInvoiceRef);
+  const [handleKeyDown, formRef] = useOnKey(tableItemRef, setTableItemRef, purchaseInvoiceRef,'repeat');
 
   const [handleKeyDown2, formRef2] = useOnKey(
     tableItemListRef, setTableItemListRef,
-    tableItemRef,
+    tableItemRef,'repeat',
     tableItemList
   );
   
@@ -537,7 +537,6 @@ const PurchaseTable = (props) => {
         Swal.fire(response.message, "", "error");
       }
     } catch (err) {
-      console.log("first");
       Swal.fire("Fialed to delete item", "please try again", "warning");
     }
   };
@@ -701,6 +700,7 @@ const PurchaseTable = (props) => {
                                   }}
                                   name={item.state}
                                   type="number"
+                                  disabled={item.readOnly}
                                   placeholder="0"
                                   className="purchase-table-items-input"
                                   value={data[item?.state] || ""}
@@ -933,6 +933,7 @@ const PurchaseTable = (props) => {
                           }
                           onFocus={handleFocus}
                           onBlur={handleBlur}
+                          disabled={item.readOnly}
                           value={
                             tableItem[item.state] === "" ||
                             tableItem[item.state] ||
