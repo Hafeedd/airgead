@@ -163,6 +163,22 @@ export const useReportsServices = () => {
     return response?.data;
   };
 
+  const getTrialBalance = async (params) => {
+    const response = await axiosPrivate.get(
+      "/reports/trial_balance/report/",
+      { params: params }
+    );
+    return response?.data;
+  };
+
+  const getBalanceSheet = async (params) => {
+    const response = await axiosPrivate.get(
+      "/reports/balance_sheet/report/",
+      { params: params }
+    );
+    return response?.data;
+  };
+
   return {
     getStockLedger,
     getAccLedger,
@@ -185,5 +201,7 @@ export const useReportsServices = () => {
     getBillWiseLedger,
     getConsolidateCashbook,
     getProductionRegister,
+    getTrialBalance,
+    getBalanceSheet
   };
 };

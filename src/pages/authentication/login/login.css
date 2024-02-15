@@ -1,0 +1,52 @@
+@import url('https://fonts.googleapis.com/css2?family=Raleway:ital,wght@0,100..900;1,100..900&display=swap');
+
+.login-main-page-lh{
+    background-image: linear-gradient(#F9D4FF, #EE7777);
+}
+.main-image-under-text{
+    width: 50%;
+    font-size: 19px;
+    text-align: center;
+}
+.auth-input-filed{
+    width: 100%;
+}
+.btn-login{
+    background-color: #EE7777;
+    color: white;
+    width: 100%;
+}
+.login-btm-border{
+    border: solid #EE7777 3px;
+}
+.otp-container{
+    display: flex;
+    justify-content: space-evenly;
+    background-color: #FFFFFF;
+    border: #757575 solid 2px;
+}
+.otp-field {
+    width: 50px;
+    height: 50px;
+    border-style: none;
+    text-align: center;
+    font-size: 24px;
+}
+.otp-field:focus{
+    outline: none !important;
+}
+.otp-bar{
+    font-size: 40px;
+    padding: 0px;
+    margin-top: 15px;
+    color: #757575;
+    font-weight: 100;
+}
+.span-text-color{
+    color: #EE7777;
+    font-weight: 600;
+}
+
+.railway-font{
+    font-family: "Raleway", sans-serif;
+}

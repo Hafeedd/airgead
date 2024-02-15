@@ -37,11 +37,24 @@ import StaffSalaryAttendance from './pages/reports/staffSalaryAttendance/StaffSa
 import MaterialComposition from './pages/master/material composition/MaterialComposition';
 import ProductionReport from "./pages/reports/productionReport/ProductionReport";
 import ProductionTransaction from "./pages/transactions/production/ProductionTransaction";
+import Login from "./pages/authentication/login/Login";
+import Register from "./pages/authentication/register/Register";
+import Verification from "./pages/authentication/verification/Verification";
+import CompanyList from "./pages/authentication/companyList/CompanyList";
+import CompanyPassword from "./pages/authentication/companyPassword/CompanyPassword";
+import TrialBalance from "./pages/reports/trial_balance/TrialBalance";
+import BalanceSheet from "./pages/reports/balanceSheet/BalanceSheet";
 
 function App() {
   return (
     <BrowserRouter>
       <Routes>
+      <Route path="/login-page" element={<Login/>}/>
+      <Route path="/register-page" element={<Register/>}/>
+      <Route path="/verification-page" element={<Verification/>}/>
+      <Route path="/company-list" element={<CompanyList/>}/>
+      <Route path="/company-password" element={<CompanyPassword/>}/>
+
         <Route path="/" element={<Layout />}>
           <Route element={<Outlet />}>
             <Route index element={<ItemMaster />} />
@@ -94,6 +107,10 @@ function App() {
             <Route path="/material-composition-list" element={<MaterialComposition/>}/>
             <Route path="/production-report" element={<ProductionReport/>}/>
             <Route path="/production-transaction" element={<ProductionTransaction/>}/>
+
+            <Route path="/trial-balance" element={<TrialBalance/>}/>
+            <Route path="/balance-sheet" element={<BalanceSheet/>}/>
+
           </Route>
         </Route>
       </Routes>
