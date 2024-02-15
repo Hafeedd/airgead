@@ -73,6 +73,7 @@ const ItemProduce = (props) => {
       );
       setProduceData((data) => ({ ...data,fk_unit:change[0]?.fk_unit}))
       let mappedRaw = [];
+      console.log(change[0],'Looooooooooooooooooooooooooooooooooooooooooooooooooooooooook')
       change[0]?.raw_materials?.length > 0 &&
         change[0]?.raw_materials?.map((data) => {
           mappedRaw.push({
@@ -147,13 +148,13 @@ const ItemProduce = (props) => {
       let total_value=Number(r_sum+l_sum).toFixed(2)
       setProduceData((data)=>({...data,cost:total_cost,value:total_value,mrp_rate:change[0]?.item_details.mrp_rate,wholesale_rate:change[0]?.item_details.wholesale_rate,r_sum:r_sum,
       l_sum:l_sum}))
-      let m=change[0]?.item_details.margin
-      let sr=change[0]?.item_details.retail_rate
+      let m=Number(change[0]?.item_details.margin)
+      let sr=Number(change[0]?.item_details.retail_rate)
       if (sr!=''||null){
-        setProduceData((data)=>({...data,retail_rate:sr,margin:((sr-data.cost)/data.cost)*100}))
+        setProduceData((data)=>({...data,retail_rate:sr,margin:((sr-Number(data.cost))/Number(data.cost))*100}))
       }
       if (m!=''||null){
-        setProduceData((data)=>({...data,retail_rate:data.cost+(data.cost*(m/100)),margin:m}))
+        setProduceData((data)=>({...data,retail_rate:Number(data.cost)+(Number(data.cost)*(m/100)),margin:m}))
       }
     }
   };

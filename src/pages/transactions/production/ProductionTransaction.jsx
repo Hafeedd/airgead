@@ -14,7 +14,7 @@ import { LuClipboardEdit } from "react-icons/lu";
 import Swal from "sweetalert2";
 import { Modal } from "react-bootstrap";
 import useProductionTransactionServices from "../../../services/transactions/productionTransaction";
-// import { StockJournalEdit } from "../stockjurnal/components/StockJournalEdit";
+import { StockJournalEdit } from "../stockjurnal/components/StockJournalEdit";
 const Initial_data ={
   qty: null,
   fk_item: null,
@@ -95,14 +95,21 @@ const ProductionTransaction = () => {
   const [listProduction,setListProduction] = useState([])
 
   const [selectedStaffAccount, setSelectedStaffAccount] = useState("");
-  const [showProductionEdit, setShowProductionEdit] = useState(false);
+  const [show, setShow] = useState(false);
+
   const {getMaterialComposition} = useProductionServices()
   const {getStaff}=useStaffServices()
   const {getItemList,getProperty,getCode} =useItemServices();
   const { getAccountList } = useAccountServices();
-  const {postProductionData}=useProductionTransactionServices()
+  const {postProductionData,getProductionDaybookPart}=useProductionTransactionServices()
 
- 
+  const[getProductList,setGetProductList] =useState()
+  const getProductData = async()=>{
+    const response= await getProductionDaybookPart()
+    setGetProductList(response.data)
+  }
+
+
   const getDocNumber = async()=>{
     const response = await getCode()
     let data=response.data.filter(code=> code.types === 'PRODUCTION_CODE')
@@ -213,6 +220,7 @@ const ProductionTransaction = () => {
   console.log('full_raw',fullRawData)
   console.log('full_bypro',fullByprodData)
   console.log('full_labourData',fullLabourData)
+  console.log('product_data',getProductList)
   const handleDropdownStaffAccount = (event, data) => {
     setSelectedStaffAccount(data.value);
   };
@@ -244,7 +252,6 @@ const ProductionTransaction = () => {
       "total_margin": 0,
       "produced_items": listProduction,
     }
-    console.log('submit data............',submitData)
     let response = await postProductionData(submitData);
       if (!response?.success) {
         Swal.fire("Error", "Oops Something went wrong");
@@ -263,6 +270,7 @@ const ProductionTransaction = () => {
     getAllAccount()
     getAllMaterialCompositions()
     getAllStaffDetails()
+    getProductData()
   },[])
   return (
     <div className="item_add">
@@ -293,7 +301,7 @@ const ProductionTransaction = () => {
                 </div>
                 <div className="col-1 d-flex mx-0">
                   <button className="bg-dark text-light border border-dark rounded w-25">
-                  <LuClipboardEdit className="my-1" onClick={()=>setShowProductionEdit(true)}/>
+                  <LuClipboardEdit className="my-1" onClick={()=>setShow(true)}/>
                   </button>
                 </div>
                 <div className="col-2 col-3 d-flex mx-0">
@@ -360,23 +368,24 @@ const ProductionTransaction = () => {
         </div>
       </div>
       <Modal
-          show={showProductionEdit}
+          show={show}
           centered
           size="lg"
-          onHide={() => setShowProductionEdit(false)}
+          onHide={() => setShow(false)}
         >
-          {/* <Modal.Body className="p-0 rounded-3">
+          <Modal.Body className="p-0 rounded-3">
             <StockJournalEdit
-            // list = {stockJList}
+            //list = {stockJList}
             // setShow = {setShowJournalFilter}
-            //   {...{
-            //     edit,
-            //     getData,
-            //     setEdit,
-            //     handleClearAll,
-            //   }}
+              {...{
+                // edit,
+                // getData,
+                // setEdit,
+                // handleClearAll,
+              }}
+              productionPage={true}
             />
-          </Modal.Body> */}
+          </Modal.Body>
         </Modal>
     </div>
   );
