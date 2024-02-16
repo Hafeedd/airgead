@@ -260,3 +260,15 @@
     height: 2vh !important;
     max-height: 2vh !important;
 } */
+
+.sales-table-body tr td {
+    height: 1.8rem;
+    text-align: center;
+    font-size: 0.875rem;
+    color: #2c2c2c;
+    font-weight: 500;
+    vertical-align: middle;
+    /* padding-top: 0.09rem; 
+      padding-bottom: 0.09rem; */
+    padding: 0;
+  }

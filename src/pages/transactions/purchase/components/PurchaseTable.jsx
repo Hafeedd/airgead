@@ -13,7 +13,7 @@ const PurchaseTable = (props) => {
   const {
     returnPage,
     purchaseInvoiceRef,
-    tableItemRef, 
+    tableItemRef,
     setTableItemRef,
     setTableItemKeys,
     tableItemKeys,
@@ -42,19 +42,34 @@ const PurchaseTable = (props) => {
     handlePurchaseAllReset,
     setShowBatch,
   } = props;
+  const [tableHeight, setTableHeight] = useState();
   const [unitList, setUnitList] = useState();
+  const [tableItemListRef, setTableItemListRef] = useState(null);
 
-  const [tableItemListRef, setTableItemListRef] = useState(null); 
-  
-  const [handleKeyDown, formRef] = useOnKey(tableItemRef, setTableItemRef, purchaseInvoiceRef,'repeat');
-
+  const { getItemNameList, getProperty } = useItemServices();
+  const { deletePurchaseItem, putPurchaseItem, putPurchase } = usePurchaseServices();
+  const { deletePurchaseReturnItem, putPurchaseReturnItem } =
+    usePurchaseReturnServices();
+  const [handleKeyDown, formRef] = useOnKey(
+    tableItemRef,
+    setTableItemRef,
+    purchaseInvoiceRef,
+    "repeat"
+  );
   const [handleKeyDown2, formRef2] = useOnKey(
-    tableItemListRef, setTableItemListRef,
-    tableItemRef,'repeat',
+    tableItemListRef,
+    setTableItemListRef,
+    tableItemRef,
+    false,
     tableItemList
   );
-  
+
   const location = useLocation();
+  const navigate = useNavigate();
+
+  useEffect(()=>{
+
+  },[purchaseAdd.total])
 
   useEffect(() => {
     getTableData();
@@ -63,7 +78,6 @@ const PurchaseTable = (props) => {
       let item = location.state.item;
       const { purchase_rate, discount_1_percentage, tax_gst, fk_unit } =
         item || {};
-      console.log(item);
       let tempItem = { ...tableItem };
       tempItem = {
         ...tempItem,
@@ -96,14 +110,6 @@ const PurchaseTable = (props) => {
     if (editedList.length < 1) setTableItemEdited(false);
   }, [tableItemList, setTableItemEdited]);
 
-
-  const { getItemNameList, getProperty } = useItemServices();
-
-  const { deletePurchaseItem, putPurchaseItem } = usePurchaseServices();
-  const { deletePurchaseReturnItem, putPurchaseReturnItem } = usePurchaseReturnServices();
-
-  const navigate = useNavigate();
-
   const handleKeyTableItemEdit = async (e, data, i) => {
     if (e.key === "Enter" && !e.ctrlKey) {
       e.preventDefault();
@@ -125,11 +131,10 @@ const PurchaseTable = (props) => {
         handleKeyDown2(e);
         return 0;
       }
-      let response
-      if(returnPage)
-      response = await putPurchaseReturnItem(data.id, data);
-      else
-      response = await putPurchaseItem(data.id, data);
+      let response;
+      if (returnPage) response = await putPurchaseReturnItem(data.id, data);
+      else{ 
+        response = await putPurchaseItem(data.id, data);}
       if (response.success) {
         handleKeyDown2(e);
         getData();
@@ -145,7 +150,7 @@ const PurchaseTable = (props) => {
       let { edited, ...others } = data;
       tempList.splice(i, 1, others);
       setTableItemList([...tempList]);
-      handlePurchAllCalc(tempList, false);
+      handlePurchAllCalc(tempList, false,false,true);
     } catch (err) {}
   };
 
@@ -400,6 +405,7 @@ const PurchaseTable = (props) => {
       !tableEdit &&
       (!tableItem.item_name || !tableItem.quantity || !tableItem.rate)
     ) {
+      handleKeyDown(e);
       Swal.fire({
         title: "please enter Essential details firs",
         text: "Enter Rate , Quantity and Select Item First",
@@ -407,7 +413,6 @@ const PurchaseTable = (props) => {
         showConfirmButton: false,
         timer: 1500,
       });
-      handleKeyDown(e);
       return 0;
     }
     if (!tableEdit) {
@@ -469,12 +474,12 @@ const PurchaseTable = (props) => {
 
   const AdjustHeightOfTable = () => {
     let a = [];
-    for (let i = 0; i < 10 - purchaseAdd.total_items || 0; i++) {
+    for (let i = 0; i < 9 - purchaseAdd.total_items || 0; i++) {
       a.push(
         <tr key={i}>
           <td
             className="border-0"
-            style={{ height: "1.65rem", display: "" }}
+            style={{ /*  height: "1.65rem", */ display: "" }}
             colSpan={tableHeadList.length + 2}
           ></td>
         </tr>
@@ -499,11 +504,9 @@ const PurchaseTable = (props) => {
       setTableItemList([...tempList]);
     }
     try {
-      let response
-      if(returnPage)
-      response = await deletePurchaseReturnItem(data.id);
-      else
-      response = await deletePurchaseItem(data.id);
+      let response;
+      if (returnPage) response = await deletePurchaseReturnItem(data.id);
+      else response = await deletePurchaseItem(data.id);
       if (response.success) {
         Swal.fire({
           icon: "success",

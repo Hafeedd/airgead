@@ -296,8 +296,6 @@ const StaffAttendanceDetails = (props) => {
   };
   
 
-  console.log(`${document.getElementById("staff-table-cont")?.offsetWidth}px`)
-
   return (
     <div className="mx-0 stock-jdetails-cont p-3">
       <b className="fs-5">Staff Attendance Details</b>
@@ -379,13 +377,11 @@ const StaffAttendanceDetails = (props) => {
           </div>
         </div>
       </div>
-      <div
-      //  style={{width:`${document.getElementById("staff-table-cont")?.offsetWidth}px`}}    
+      <div  
         className="px-0 w-100 mx-0"  id="staff-table-cont"
       >
-      <div
-       style={{maxWidth:`${document.getElementById("staff-table-cont")?.offsetWidth}px`}}    
-       className="staff-table-cont px-0 w-100" 
+      <div   
+       className="staff-table-cont px-0" 
       >
         <table
           className="StaffTable p-0 m-0 px-0"

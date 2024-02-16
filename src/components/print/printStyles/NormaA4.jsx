@@ -25,9 +25,9 @@ export const NormaA4 = (props) => {
   } = props;
 
   return (
-    <div className="w-100 p-3" id="new">
-      <div className="border border-secondary">
-        <div className="text-center w-100">
+    <div className="p-3" id="new" style={{width:'fit-content'}}>
+      <div className="border w-auto border-secondary">
+        <div className="text-center w-auto">
           <h4>Demonstration</h4>
           <p>Near New Bus Stand Nilambur</p>
         </div>
@@ -83,8 +83,8 @@ export const NormaA4 = (props) => {
             </div>
           </div>
         </div>
-        <div className="border-top border-bottom mt-3 border-secondary">
-          <table className="table mb-0">
+        <div className="border-top w-auto border-bottom mt-3 border-secondary">
+          <table className="table mb-0 w-100">
             <thead>
               <tr>
                 {/* <th className="border-bottom border-secondary">S/L</th> */}

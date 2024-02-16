@@ -107,8 +107,8 @@ export const PrintFIle = (props) => {
   };
 
   return (
-    <div className="w-100 d-flex justify-content-center flex-column">
-      <div className="w-100 d-flex justify-content-center flex-column p-2">
+    <div className="d-flex justify-content-center flex-column" style={{width:'fit-content'}}>
+      <div className="d-flex justify-content-center flex-column p-2" style={{width:'fit-content'}}>
         <GenerateDynamicHtml
           {...{
             c_address,

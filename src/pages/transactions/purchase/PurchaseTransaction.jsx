@@ -68,7 +68,39 @@ const PurchaseTransaction = ({ returnPage }) => {
   const navigate = useNavigate();
   const { getCode } = useItemServices();
 
+  const { getAccountList } = useAccountServices();
+  const { postPurchase, putPurchase, getPurchase, postPurchaseItem } =
+    usePurchaseServices();
+  const {
+    postPurchaseReturnItem,
+    postPurchaseReturn,
+    getPurchaseReturn,
+    putPurchaseReturn,
+  } = usePurchaseReturnServices();
+
+  const { getSupplier } = useCustomerServices();
+
   useEffect(() => {
+    getData();
+    handleGetCode();
+    if(!returnPage)
+    handleReloadData();
+    else
+    handlePurchaseAllReset()
+
+    let supplier = location.state;
+    if (supplier?.id) {
+      setPurchaseAdd((data) => ({
+        ...data,
+        ["fk_supplier"]: supplier.id,
+        ["supplier_name"]: supplier.name,
+      }));
+      navigate(null, { replace: true, state: { id: null, name: null } });
+    }
+  }, [location.pathname,]);
+
+  useEffect(() => {
+    if(!returnPage)
     window.onmousedown = myBeforeUnloadFunction;
     // myBeforeUnloadFunction()
   }, [purchaseAdd, tableItemList, edit]);
@@ -82,22 +114,6 @@ const PurchaseTransaction = ({ returnPage }) => {
     };
     localStorage.setItem("purchaseData", JSON.stringify(allPurchState));
   };
-
-  useEffect(() => {
-    getData();
-    handleGetCode();
-    handleReloadData();
-
-    let supplier = location.state;
-    if (supplier?.id) {
-      setPurchaseAdd((data) => ({
-        ...data,
-        ["fk_supplier"]: supplier.id,
-        ["supplier_name"]: supplier.name,
-      }));
-      navigate(null, { replace: true, state: { id: null, name: null } });
-    }
-  }, []);
 
   const handleReloadData = () => {
     let data = localStorage.getItem("purchaseData");
@@ -137,10 +153,6 @@ const PurchaseTransaction = ({ returnPage }) => {
     setPurchaseAdd((data) => ({ ...data, payment_type: paymentType }));
   }, [purchaseAdd.change_due]);
 
-  // useEffect(() => {
-  //   handleSetEdit(edit);
-  // }, [edit]);
-
   const handleSetEdit = (state) => {
     if (state) {
       let { items, updated_at, ...others } = state;
@@ -157,7 +169,7 @@ const PurchaseTransaction = ({ returnPage }) => {
     // else handleGetCode();
   };
 
-  const handlePurchAllCalc = (dataList, fromEdit, purchaseData) => {
+  const handlePurchAllCalc = (dataList, fromEdit, purchaseData, itemEdit) => {
     console.log(fromEdit);
     // dataList is the list of tableItemList
     if (dataList?.length > 0) {
@@ -224,6 +236,9 @@ const PurchaseTransaction = ({ returnPage }) => {
       setPurchaseAdd((data) => {
         return { ...data, ...tempPurchaseAdd };
       });
+      if(itemEdit){
+        putPurchase(edit.id,{...tempPurchaseAdd,items:tableItemKeys})
+      }
     } else {
       setPurchaseAdd((data) => ({
         ...data,
@@ -242,18 +257,6 @@ const PurchaseTransaction = ({ returnPage }) => {
       }));
     }
   };
-
-  const { getAccountList } = useAccountServices();
-  const { postPurchase, putPurchase, getPurchase, postPurchaseItem } =
-    usePurchaseServices();
-  const {
-    postPurchaseReturnItem,
-    postPurchaseReturn,
-    getPurchaseReturn,
-    putPurchaseReturn,
-  } = usePurchaseReturnServices();
-
-  const { getSupplier } = useCustomerServices();
 
   const handleGetCode = async (nextCode) => {
     // nextCode arg is sent form handleNext fucnt
@@ -327,7 +330,7 @@ const PurchaseTransaction = ({ returnPage }) => {
       }
       return { suppList, purchList, bankList };
     } catch (err) {
-      console.log(err);
+      // console.log(err);
     }
   };
 
@@ -347,6 +350,7 @@ const PurchaseTransaction = ({ returnPage }) => {
     setTableItem(initialTableItem);
     setTableItemKeys([]);
     setEdit(false);
+    if(!returnPage)
     localStorage.setItem("purchaseData", false);
   };
 
@@ -477,16 +481,16 @@ const PurchaseTransaction = ({ returnPage }) => {
         });
         return 0;
       }
-      if (tableItemEdited) {
-        Swal.fire({
-          title: "Item edited but edit button is not clicked",
-          icon: "warning",
-          text: "",
-          showConfirmButton: true,
-          timer: 1500,
-        });
-        return 0;
-      }
+      // if (tableItemEdited) {
+      //   Swal.fire({
+      //     title: "Item edited but edit button is not clicked",
+      //     icon: "warning",
+      //     text: "",
+      //     showConfirmButton: true,
+      //     timer: 1500,
+      //   });
+      //   return 0;
+      // }
       let submitData = { ...purchaseAdd, items: tableItemKeys };
       let response;
       // console.log(submitData.change_due)
@@ -620,7 +624,7 @@ const PurchaseTransaction = ({ returnPage }) => {
   return (
     <div className="item_add">
       <div className={`itemList_header row mx-0 mb-3`}>
-        <div className={`page_head ps-4 d-flex pe-0 ${returnPage&&" purchase-return"}`}>
+        <div className={`page_head ps-4 d-flex pe-0 ${returnPage&&" purchase-return active-header2"}`}>
           <div className="col-6 col-7">
             <div className="fw-600 fs-5">
               Purchase {returnPage && " Return"}
