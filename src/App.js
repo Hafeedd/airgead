@@ -2,6 +2,7 @@ import "./App.css";
 import "./App.css";
 import { BrowserRouter, Outlet, Route, Routes } from "react-router-dom";
 import { Layout } from "./components/layout/Layout";
+import DashBoard from "./components/dashBoard/DashBoard";
 import ItemMaster from "./pages/master/item/ItemMaster";
 import CustomerMaster from "./pages/master/customer/CustomerMaster";
 import SupplierMaster from "./pages/master/supplier/SupplierMaster";
@@ -29,12 +30,12 @@ import PurchaseBook from "./pages/reports/purchaseBook/PurchaseBook";
 import { BarcodeRegister } from "./pages/reports/barcodeRegister/BarcodeRegister";
 import BillWiseLedger from "./pages/reports/billlwiseLedger/BillWiseLedger";
 import { ItemHistory } from "./pages/reports/ItemHistory/ItemHistory";
-import BillWiseProfit from './pages/reports/billWiseProfitReport/BillWiseProfit';
-import ChequeRegister from './pages/transactions/chequeRegister/ChequeRegister';
-import ChequeRegisterReport from './pages/reports/chequeRegisterReport/ChequeRegisterReport';
+import BillWiseProfit from "./pages/reports/billWiseProfitReport/BillWiseProfit";
+import ChequeRegister from "./pages/transactions/chequeRegister/ChequeRegister";
+import ChequeRegisterReport from "./pages/reports/chequeRegisterReport/ChequeRegisterReport";
 import StockValueReport from "./pages/reports/stockValueReport/StockValueReport";
-import StaffSalaryAttendance from './pages/reports/staffSalaryAttendance/StaffSalaryAttendance';
-import MaterialComposition from './pages/master/material composition/MaterialComposition';
+import StaffSalaryAttendance from "./pages/reports/staffSalaryAttendance/StaffSalaryAttendance";
+import MaterialComposition from "./pages/master/material composition/MaterialComposition";
 import ProductionReport from "./pages/reports/productionReport/ProductionReport";
 import ProductionTransaction from "./pages/transactions/production/ProductionTransaction";
 
@@ -45,6 +46,7 @@ function App() {
         <Route path="/" element={<Layout />}>
           <Route element={<Outlet />}>
             <Route index element={<ItemMaster />} />
+            <Route path="/dashboard" element={<DashBoard />} />
             <Route path="/add" element={<ItemMaster />} />
             <Route path="/customer-master" element={<CustomerMaster />} />
             <Route path="/customer-add" element={<CustomerMaster />} />
@@ -55,19 +57,37 @@ function App() {
             <Route path="/staff-list" element={<StaffMaster />} />
             <Route path="/staff-pay-scale" element={<StaffMaster />} />
             <Route path="/staff-master" element={<StaffMaster />} />
-            <Route path="/purchase-transaction" element={<PurchaseTransaction />}/>
+            <Route
+              path="/purchase-transaction"
+              element={<PurchaseTransaction />}
+            />
             <Route path="/sales-transaction" element={<SalesTransaction />} />
-            <Route path="/payment-transaction" element={<PaymentTransaction method={"Payment"} />}/>
-            <Route path="/receipt-transaction" element={<PaymentTransaction method={"Receipt"} />}/>
-            <Route path="/staff-attendance" element={<StaffAttendance />}  />
+            <Route
+              path="/payment-transaction"
+              element={<PaymentTransaction method={"Payment"} />}
+            />
+            <Route
+              path="/receipt-transaction"
+              element={<PaymentTransaction method={"Receipt"} />}
+            />
+            <Route path="/staff-attendance" element={<StaffAttendance />} />
             <Route path="/pay-roll" element={<PayrollTransaction />} />
-            <Route path='/pay-roll-edit' element={<PayrollTransaction/>}/>
+            <Route path="/pay-roll-edit" element={<PayrollTransaction />} />
             <Route path="/stock-journal" element={<StockJournal />} />
             <Route path="/stock-reports" element={<StockLedger />} />
             <Route path="/account-reports" element={<AccountLedger />} />
-            <Route path="/customer-outstandings" element={<CustomerOutstanding />}/>
-            <Route path="/supplier-outstandings" element={<SupplierOutstanding />}/>
-            <Route path="/staff-outstandings" element={<SupplierOutstanding />}/>
+            <Route
+              path="/customer-outstandings"
+              element={<CustomerOutstanding />}
+            />
+            <Route
+              path="/supplier-outstandings"
+              element={<SupplierOutstanding />}
+            />
+            <Route
+              path="/staff-outstandings"
+              element={<SupplierOutstanding />}
+            />
             <Route path="/opening-stock" element={<OpStock />} />
             <Route path="/account-journal" element={<AccJournal />} />
             <Route path="/day-book" element={<Daybook />} />
@@ -76,30 +96,47 @@ function App() {
             <Route path="/tax-report" element={<TaxReport />} />
             <Route path="/cashbook-report" element={<CashBook />} />
             <Route path="/consolidate-cashbook" element={<CashBook />} />
-            <Route path="/Stock-journal-report" element={<StockJournalReport />} />
+            <Route
+              path="/Stock-journal-report"
+              element={<StockJournalReport />}
+            />
             <Route path="/purchase-book" element={<PurchaseBook />} />
             <Route path="/profit-report" element={<ItemProfitWise />} />
             <Route path="/purchase-register" element={<PurchaseBook />} />
             <Route path="/barcode-register" element={<BarcodeRegister />} />
             <Route path="/item-history" element={<ItemHistory />} />
             <Route path="/bill-wise-ledger" element={<BillWiseLedger />} />
-            <Route path="/bill-wise-profit" element={<BillWiseProfit/>}/>
-            <Route path="/cheque-register" element={<ChequeRegister/>}/>
-            <Route path="/cheque-register-report" element={<ChequeRegisterReport/>}/>
-            <Route path="/stock-value-report" element={<StockValueReport/>}/>
-            
-            <Route path="/StaffAttendance" element={<StaffSalaryAttendance/>}/>
-            <Route path="/StaffSalary" element={<StaffSalaryAttendance/>}/>
-            <Route path="/material-composition-product" element={<MaterialComposition/>}/>
-            <Route path="/material-composition-list" element={<MaterialComposition/>}/>
-            <Route path="/production-report" element={<ProductionReport/>}/>
-            <Route path="/production-transaction" element={<ProductionTransaction/>}/>
+            <Route path="/bill-wise-profit" element={<BillWiseProfit />} />
+            <Route path="/cheque-register" element={<ChequeRegister />} />
+            <Route
+              path="/cheque-register-report"
+              element={<ChequeRegisterReport />}
+            />
+            <Route path="/stock-value-report" element={<StockValueReport />} />
+
+            <Route
+              path="/StaffAttendance"
+              element={<StaffSalaryAttendance />}
+            />
+            <Route path="/StaffSalary" element={<StaffSalaryAttendance />} />
+            <Route
+              path="/material-composition-product"
+              element={<MaterialComposition />}
+            />
+            <Route
+              path="/material-composition-list"
+              element={<MaterialComposition />}
+            />
+            <Route path="/production-report" element={<ProductionReport />} />
+            <Route
+              path="/production-transaction"
+              element={<ProductionTransaction />}
+            />
           </Route>
         </Route>
       </Routes>
     </BrowserRouter>
   );
 }
-
 
 export default App;
