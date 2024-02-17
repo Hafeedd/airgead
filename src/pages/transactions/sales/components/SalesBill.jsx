@@ -3,6 +3,7 @@ import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
 import "jspdf-autotable";
 import { GenerateDynamicHtml } from "../../../../components/print/Print";
+import ReactToPrint from "react-to-print";
 
 export const PrintFIle = (props) => {
   const {
@@ -78,37 +79,42 @@ export const PrintFIle = (props) => {
           297 - 2 * pdfOptions.margin
         );
       }
-      if(status == "print"){
-
+      if (status == "print") {
         // Generate a Blob from the PDF content
         const pdfBlob = pdf.output("blob");
-        
+
         // Create an object URL from the Blob
-      const pdfObjectURL = URL.createObjectURL(pdfBlob);
+        const pdfObjectURL = URL.createObjectURL(pdfBlob);
 
-      // Create an invisible iframe
-      const iframe = document.createElement("iframe");
-      iframe.style.display = "none";
-      document.body.appendChild(iframe);
+        // Create an invisible iframe
+        const iframe = document.createElement("iframe");
+        iframe.style.display = "none";
+        document.body.appendChild(iframe);
 
-      // Set the iframe content to the PDF object URL
-      iframe.src = pdfObjectURL;
+        // Set the iframe content to the PDF object URL
+        iframe.src = pdfObjectURL;
 
-      // Wait for the PDF to load in the iframe, then trigger print
-      iframe.onload = () => {
-        iframe.contentWindow.print();
-        // Release the object URL when done printing
-        URL.revokeObjectURL(pdfObjectURL);
-      };
-    }else if(status == "pdf"){
-      pdf.save(pdfOptions.filename)
-    }
+        // Wait for the PDF to load in the iframe, then trigger print
+        iframe.onload = () => {
+          iframe.contentWindow.print();
+          // Release the object URL when done printing
+          URL.revokeObjectURL(pdfObjectURL);
+        };
+      } else if (status == "pdf") {
+        pdf.save(pdfOptions.filename);
+      }
     });
   };
 
   return (
-    <div className="d-flex justify-content-center flex-column" style={{width:'fit-content'}}>
-      <div className="d-flex justify-content-center flex-column p-2" style={{width:'fit-content'}}>
+    <div
+      className="d-flex justify-content-center flex-column"
+      style={{ width: "fit-content" }}
+    >
+      <div
+        className="d-flex justify-content-center flex-column p-2"
+        style={{ width: "fit-content" }}
+      >
         <GenerateDynamicHtml
           {...{
             c_address,
@@ -132,16 +138,26 @@ export const PrintFIle = (props) => {
         />
       </div>
       <div className="w-100 d-flex justify-content-center gap-4 pb-3">
-        <button
-          onClick={handleSalesAllReset}
-          className="btn btn-sm btn-dark"
-        >
+        <button onClick={handleSalesAllReset} className="btn btn-sm btn-dark">
           Close
         </button>
-        <button className="btn btn-sm btn-dark" onClick={()=>handleConvertToPdf("print")}>
-          Print
-        </button>
-        <button className="btn btn-sm btn-dark" onClick={()=>handleConvertToPdf("pdf")}>
+        <ReactToPrint
+          trigger={() => (
+            <button
+              className="btn btn-sm btn-dark"
+              // onClick={()=>handleConvertToPdf("print")}
+            >
+              Print
+            </button>
+          )}
+          content={()=>document.getElementById('new')}
+          style={{padding:"0px"}}
+        ></ReactToPrint>
+
+        <button
+          className="btn btn-sm btn-dark"
+          onClick={() => handleConvertToPdf("pdf")}
+        >
           Pdf
         </button>
       </div>

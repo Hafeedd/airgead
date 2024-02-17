@@ -82,11 +82,9 @@ const PurchaseTransaction = ({ returnPage }) => {
 
   useEffect(() => {
     getData();
-    handleGetCode();
-    if(!returnPage)
-    handleReloadData();
-    else
-    handlePurchaseAllReset()
+    // handleGetCode();
+    if (!returnPage) handleReloadData();
+    else if(returnPage) handlePurchaseAllReset();
 
     let supplier = location.state;
     if (supplier?.id) {
@@ -97,11 +95,10 @@ const PurchaseTransaction = ({ returnPage }) => {
       }));
       navigate(null, { replace: true, state: { id: null, name: null } });
     }
-  }, [location.pathname,]);
+  }, [location.pathname]);
 
   useEffect(() => {
-    if(!returnPage)
-    window.onmousedown = myBeforeUnloadFunction;
+    if (!returnPage) window.onmousedown = myBeforeUnloadFunction;
     // myBeforeUnloadFunction()
   }, [purchaseAdd, tableItemList, edit]);
 
@@ -121,7 +118,7 @@ const PurchaseTransaction = ({ returnPage }) => {
     if (data?.edit) {
       setEdit({ ...data.edit });
       handleSetEdit(data?.edit);
-    } else if (data) {
+    } else if (data?.documents_no) {
       let { items, updated_at, edit, tablekeys, ...others } = data;
       let tempData = {
         ...others,
@@ -130,12 +127,12 @@ const PurchaseTransaction = ({ returnPage }) => {
       if (tablekeys?.length > 0) {
         setTableItemKeys([...tablekeys]);
       }
-      setPurchaseAdd((data) => ({ ...data, tempData }));
+      setPurchaseAdd((data) => ({ ...data, ...tempData }));
       if (items) {
         setTableItemList([...items]);
         handlePurchAllCalc(items, true, tempData);
       }
-    }
+    }else handleGetCode(false,true)
   };
 
   useEffect(() => {
@@ -170,7 +167,6 @@ const PurchaseTransaction = ({ returnPage }) => {
   };
 
   const handlePurchAllCalc = (dataList, fromEdit, purchaseData, itemEdit) => {
-    console.log(fromEdit);
     // dataList is the list of tableItemList
     if (dataList?.length > 0) {
       let tempPurchaseAdd = purchaseData || { ...purchaseAdd };
@@ -236,8 +232,8 @@ const PurchaseTransaction = ({ returnPage }) => {
       setPurchaseAdd((data) => {
         return { ...data, ...tempPurchaseAdd };
       });
-      if(itemEdit){
-        putPurchase(edit.id,{...tempPurchaseAdd,items:tableItemKeys})
+      if (itemEdit) {
+        putPurchase(edit.id, { ...tempPurchaseAdd, items: tableItemKeys });
       }
     } else {
       setPurchaseAdd((data) => ({
@@ -258,14 +254,16 @@ const PurchaseTransaction = ({ returnPage }) => {
     }
   };
 
-  const handleGetCode = async (nextCode) => {
-    // nextCode arg is sent form handleNext fucnt
+  const handleGetCode = async (nextCode,firstReload) => {
+    console.log(nextCode,firstReload)
+    //  nextCode arg is sent form handleNext fucnt
     //  in purchaseTable and handleReset in purchaseDetailFooter
-    //  it is for reseting doc no instead of checking edit
+    //  it is for reseting doc_no instead of checking edit
     try {
       let code;
       let response = await getCode();
-      if (response.success && ((!edit && nextCode) || nextCode)) {
+      console.log(((!edit && nextCode ) || nextCode || firstReload))
+      if (response.success && ((!edit && nextCode ) || nextCode || (!nextCode&&firstReload))) {
         for (let i of response.data) {
           let type = "PUR";
           if (i.sub_id == type) {
@@ -294,10 +292,8 @@ const PurchaseTransaction = ({ returnPage }) => {
         suppList.push(a);
       });
       setSupplierList(suppList);
-      if(returnPage)
-      response1 = await getPurchaseReturn();
-      else
-      response1 = await getPurchase();
+      if (returnPage) response1 = await getPurchaseReturn();
+      else response1 = await getPurchase();
       if (response1?.success) {
         purchList = [];
         response1?.data.map((purData) => {
@@ -350,8 +346,7 @@ const PurchaseTransaction = ({ returnPage }) => {
     setTableItem(initialTableItem);
     setTableItemKeys([]);
     setEdit(false);
-    if(!returnPage)
-    localStorage.setItem("purchaseData", false);
+    if (!returnPage) localStorage.setItem("purchaseData", false);
   };
 
   const handleChange = (e, data) => {
@@ -499,10 +494,9 @@ const PurchaseTransaction = ({ returnPage }) => {
         if (returnPage) response = await postPurchaseReturn(submitData);
         else response = await postPurchase(submitData);
       } else {
-        if(returnPage)
-        response = await putPurchaseReturn(edit?.id, submitData);
-        else
-        response = await putPurchase(edit?.id, submitData);
+        if (returnPage)
+          response = await putPurchaseReturn(edit?.id, submitData);
+        else response = await putPurchase(edit?.id, submitData);
       }
       if (response?.success) {
         handlePurchaseAllReset();
@@ -561,12 +555,16 @@ const PurchaseTransaction = ({ returnPage }) => {
         }
         if (response?.success && !tableEdit) {
           let tempItemKeys = [...tableItemKeys];
-          tempItemKeys.push({ id:returnPage?response?.data?.id: response?.data?.purchase?.id });
+          tempItemKeys.push({
+            id: returnPage ? response?.data?.id : response?.data?.purchase?.id,
+          });
           ItemTempList.push(itemTemp);
           setTableItemKeys(tempItemKeys);
           tempItems?.map((x, i) => {
             if (x.cstm_id == cstm_id) {
-              x.id = returnPage?response?.data?.id:response?.data?.purchase?.id;
+              x.id = returnPage
+                ? response?.data?.id
+                : response?.data?.purchase?.id;
               tempItems.splice(i, 1);
               tempItems.push({ ...x });
               setTableItemList(tempItems);
@@ -624,7 +622,11 @@ const PurchaseTransaction = ({ returnPage }) => {
   return (
     <div className="item_add">
       <div className={`itemList_header row mx-0 mb-3`}>
-        <div className={`page_head ps-4 d-flex pe-0 ${returnPage&&" purchase-return active-header2"}`}>
+        <div
+          className={`page_head ps-4 d-flex pe-0 ${
+            returnPage && " purchase-return active-header2"
+          }`}
+        >
           <div className="col-6 col-7">
             <div className="fw-600 fs-5">
               Purchase {returnPage && " Return"}

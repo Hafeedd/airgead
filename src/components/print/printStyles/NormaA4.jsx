@@ -1,4 +1,6 @@
+import { height } from "@mui/system";
 import React from "react";
+import { Rnd } from "react-rnd";
 
 export const NormaA4 = (props) => {
   const {
@@ -25,7 +27,7 @@ export const NormaA4 = (props) => {
   } = props;
 
   return (
-    <div className="p-3" id="new" style={{width:'fit-content'}}>
+    <div className="p-3" id="new" style={{ width: "fit-content" }}>
       <div className="border w-auto border-secondary">
         <div className="text-center w-auto">
           <h4>Demonstration</h4>
@@ -37,11 +39,11 @@ export const NormaA4 = (props) => {
           <div className="col-4 row ms-1">
             <div className="row">
               <div className="col-3 text-end">Invoice: </div>
-              <div className="col-3">A/0000006</div>
+              <div className="col-6">A/0000006</div>
             </div>
             <div className="row">
               <div className="col-3 text-end">Invoice: </div>
-              <div className="col-3">A/0000006</div>
+              <div className="col-6">A/0000006</div>
             </div>
             <div className="col-1 row"></div>
           </div>
@@ -51,36 +53,108 @@ export const NormaA4 = (props) => {
           </div>
           <div className="col-4 text-center ps-4"></div>
         </div>
-        <div className="border-top border-bottom border-dark py-1 mt-2 text-center">
+        <div
+         className="border-top border-bottom border-dark py-1 mt-2 text-center">
           <b>Tax invoice</b>
         </div>
-        <div className="row border-bottom mx-0 border-secondary">
-          <div className="col-6 text-start ps-5 py-3 border-end d-flex flex-column border-secondary">
-            <p>
-              Customer Details
-              <br />
-              {c_name?.toUpperCase()}
-              <br />
-              <div className="col-5 d-flex flex-wrap">
-                {c_address?.toUpperCase()}
+        <div
+          className="row border-bottom mx-0 border-secondary"
+          // style={{ }}
+          style={{
+            // border: '2px solid black',
+            height: "120px",
+            // padding: "0",
+            // margin: "0px",
+            // overflow: "none",
+          }}
+        >
+          <div 
+          // style={{
+          //   resize: "horizontal",
+          //   overflow:"auto",
+          //   minWidth: "20%",
+          //   maxWidth:"70%",
+          //   height: "100%",
+          //   margin: "0px",
+          //   padding: "6px",
+          //   display: "flex",
+          // }}
+          className="col-6 text-start position-relative ps-5 py-3 border-end flex-wrap border-secondary d-flex">
+            <Rnd
+              default={{
+                x: 0,
+                y: 0,
+              }}
+              enableResizing="false"
+              bounds="parent"
+            >
+              <p className="h-100 d-flex flex-column w-100 p-3 mb-0">
+                <div style={{ height: "fit-content" }}>Customer Details :</div>
+                <br />{c_name?.toUpperCase()}
+                <br />
+                {c_address && (
+                  <div className="d-flex flex-wrap">
+                    {c_address?.toUpperCase()}
+                  </div>
+                )}
+              </p>
+            </Rnd>
+            <Rnd
+              default={{
+                x: 180,
+                y: 25,
+              }}
+              enableResizing="false"
+              bounds="parent"
+            >
+              <div className="w-100 h-100 p-2">
+                <div className="text-center">MOBILE: {c_number}</div>
+                <div className="text-center">GST Number: {c_gstin}</div>
               </div>
-            </p>
-            <div className="text-center">MOBILE: {c_number}</div>
-            <div className="text-center">GST Number: {c_gstin}</div>
+            </Rnd>
           </div>
-          <div className="col-6 text-start ps-5 pt-4">
-            <div className="col-5 d-flex flex-wrap">
-              Delivery to : <br />
-              {delivery_add?.toUpperCase()}
-            </div>
-            <div className="d-flex flex-column gap-2 text-end p-3">
+          <div 
+          // style={{
+          //   resize: "horizontal",
+          //   overflow:"auto",
+          //   minWidth: "20%",
+          //   height: "100%",
+          //   margin: "0px",
+          //   padding: "6px",
+          //   display: "flex",
+          // }}
+          style={{minWidth:'fit-content'}}
+          className="col-6 position-relative text-start ps-5">
+            <Rnd
+              default={{
+                x: 60,
+                y: 0,
+              }}
+              enableResizing="false"
+              bounds="parent"
+            >
+              <div className="col-5 h-100 w-100 d-flex flex-column p-2">
+                <div style={{ height: "fit-content" }}>Delivery to :</div> <br/>
+                {delivery_add?.toUpperCase()}
+              </div>
+            </Rnd>
+            <Rnd
+              default={{
+                x: 160,
+                y: 20,
+              }}
+              enableResizing="false"
+              bounds="parent"
+            >
+            <div className="d-flex flex-column gap-2 w-100 h-100 text-end p-3">
               <div className="row mx-0">
-                <div className="col-7">Vehicle No :</div> {vehicle_no}
+                <div style={{ height: "fit-content" }}>Vehicle No :</div> {vehicle_no}
               </div>
               <div className="row mx-0">
-                <div className="col-7">Driver :</div> {driver?.toUpperCase()}
+                <div style={{height:"fit-content"}}>Driver :</div> {driver?.toUpperCase()}
               </div>
             </div>
+            </Rnd>
           </div>
         </div>
         <div className="border-top w-auto border-bottom mt-3 border-secondary">
@@ -90,7 +164,31 @@ export const NormaA4 = (props) => {
                 {/* <th className="border-bottom border-secondary">S/L</th> */}
                 {tableHead.length > 0 &&
                   tableHead.map((data) => (
-                    <th className="border-start border-bottom border-secondary">{data}</th>
+                    <th
+                      style={{
+                        // border: '2px solid black',
+                        padding: "0",
+                        margin: "0px",
+                        overflow: "auto",
+                      }}
+                      className="border-start border-bottom border-secondary"
+                    >
+                      <div
+                        style={{
+                          resize: "horizontal",
+                          overflow: "auto",
+                          width: "100%",
+                          minWidth: "100%",
+                          height: "fit-content",
+                          margin: "0px",
+                          padding: "6px",
+                          // border: '1px solid black',
+                          display: "block",
+                        }}
+                      >
+                        {data}
+                      </div>
+                    </th>
                   ))}
               </tr>
             </thead>
@@ -198,7 +296,7 @@ export const NormaA4 = (props) => {
               <div className="col-7">
                 <b>Grand Total:</b>
               </div>
-              {Math.round(total||0)?.toFixed(2)}
+              {Math.round(total || 0)?.toFixed(2)}
             </div>
           </div>
         </div>

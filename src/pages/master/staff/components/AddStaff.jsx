@@ -79,7 +79,7 @@ export const AddStaff = (props) => {
   const { getProperty, postProperty, getCode} = useItemServices();
   const {postStaff, putStaff} = useStaffServices()
 
-  const { handleKeyDown, formRef } = useOnKey(ref, setRef);
+  const [ handleKeyDown, formRef ] = useOnKey(ref, setRef);
 
   useEffect(() => {
     getData();
@@ -187,7 +187,7 @@ function removeNullValues(obj) {
       const keys = Object.keys(listItem);
       data.map((x) => {
         if (keys.indexOf(x.property_type) > -1) {
-          if (!list[x.property_type]?.length > 0) list[x.property_type] = [];
+          if (!list[x.property_type]?.length > 0) list[x.property_type] = [{value:null,text:"SELECT"}];
           list[x?.property_type].push({
             value: x["id"],
             text: x["property_value"],
