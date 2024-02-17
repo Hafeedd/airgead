@@ -8,18 +8,26 @@ import useAccJournalServices from "../../../../services/transactions/accJournalS
 import useStockJournalServices from "../../../../services/transactions/stockJournal";
 
 export const StockJournalEdit = (props) => {
-  const { list, getData, setShow, from, setEdit, handleClearAll,productionPage } = props;
+  const {
+    list,
+    getData,
+    setShow,
+    from,
+    setEdit,
+    handleClearAll,
+    productionPage,
+  } = props;
 
   const [tempStockJList, setTempStockJList] = useState([]);
   const [search, setSearch] = useState("");
   const [date, setDate] = useState({
-    start: new Date().toISOString().slice(0,10),
-    end:  new Date().toISOString().slice(0,10),
+    start: new Date().toISOString().slice(0, 10),
+    end: new Date().toISOString().slice(0, 10),
   });
 
-  const {deleteAccJournal} = useAccJournalServices()
-  const {deleteStockJ} = useStockJournalServices()
- 
+  const { deleteAccJournal } = useAccJournalServices();
+  const { deleteStockJ } = useStockJournalServices();
+
   const handleEditClick = (data) => {
     handleClearAll();
     setEdit(data);
@@ -34,17 +42,15 @@ export const StockJournalEdit = (props) => {
       let startDate = new Date(date.start.slice(0, 10));
       let endDate = new Date(date.end.slice(0, 10));
       tempList = filterList?.filter((x) => {
-        console.log(x)
-        let dateOfItem = new Date(x.created_at||x.date);
+        console.log(x);
+        let dateOfItem = new Date(x.created_at || x.date);
         if (dateOfItem >= startDate && dateOfItem <= endDate) {
           return true;
         }
         return false;
       });
-      if(from=="acc")
-        setTempStockJList(tempList.reverse());
-      else
-        setTempStockJList(tempList)
+      if (from == "acc") setTempStockJList(tempList.reverse());
+      else setTempStockJList(tempList);
     }
   }, [date, list]);
 
@@ -77,7 +83,7 @@ export const StockJournalEdit = (props) => {
     try {
       let response;
       if (from == "acc") response = await deleteAccJournal(id);
-      else response = await deleteStockJ(id)
+      else response = await deleteStockJ(id);
       if (response?.success) {
         Swal.fire({
           title: "Success",
@@ -111,22 +117,16 @@ export const StockJournalEdit = (props) => {
 
   return (
     <div className="p-0">
-      {productionPage!=true?<div className="stockJ-edit rounded-top-2 py-2 ps-3">Journal Details</div>:<div className="stockJ-edit rounded-top-2 py-2 ps-3">Productions List</div>}
+      {productionPage != true ? (
+        <div className="stockJ-edit rounded-top-2 py-2 ps-3">
+          Journal Details
+        </div>
+      ) : (
+        <div className="stockJ-edit rounded-top-2 py-2 ps-3">
+          Productions List
+        </div>
+      )}
       <div className="row mx-0 p-2 px-3">
-      <Form.Group className="col-4 col-3 pe-4 ps-0 mx-0 d-flex align-items-start mt-1">
-          <Form.Label className="col-2 purchase-input-label align-middle">
-            From
-          </Form.Label>
-          <Form.Control
-            required
-            onChange={(e) => setDate({ ...date, end: e.target.value })}
-            name="fk_supplier"
-            className="purchase-input-text me-2"
-            placeholder="Document number"
-            type="date"
-            value={date.end}
-          />
-        </Form.Group>
         <Form.Group className="col-4 col-3 pe-4 ps-0 mx-0 d-flex align-items-start mt-1">
           <Form.Label className="col-2 purchase-input-label align-middle">
             From
@@ -141,7 +141,20 @@ export const StockJournalEdit = (props) => {
             value={date.start}
           />
         </Form.Group>
-        
+        <Form.Group className="col-4 col-3 pe-4 ps-0 mx-0 d-flex align-items-start mt-1">
+          <Form.Label className="col-2 purchase-input-label align-middle">
+            To
+          </Form.Label>
+          <Form.Control
+            required
+            onChange={(e) => setDate({ ...date, end: e.target.value })}
+            name="fk_supplier"
+            className="purchase-input-text me-2"
+            placeholder="Document number"
+            type="date"
+            value={date.end}
+          />
+        </Form.Group>
       </div>
       <div className="p-2 px-3 row mx-0">
         <div className="bg-dark py-2 ps-4 rounded-top-1">
@@ -181,7 +194,7 @@ export const StockJournalEdit = (props) => {
                       title: "Delete",
                       text: `Are you sure, you want to delete ${
                         from == "acc" ? "journal" : "stock"
-                      } ${data.documents_no|| data.voucher_number}?`,
+                      } ${data.documents_no || data.voucher_number}?`,
                       icon: "question",
                       showDenyButton: true,
                       showCancelButton: false,

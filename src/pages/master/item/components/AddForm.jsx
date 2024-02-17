@@ -21,6 +21,7 @@ export const ItemAddForm = ({ edit, refresh, setToEdit }) => {
     { text: "SERVICE", value: "SERVICE" },
   ];
   const rentOptions = [
+    { text: "SELECT", value: null },
     { text: "HOUR", value: "HOUR" },
     { text: "MONTH", value: "MONTH" },
   ];
@@ -147,6 +148,9 @@ export const ItemAddForm = ({ edit, refresh, setToEdit }) => {
       data.map((x) => {
         if (keys.indexOf(x.property_type) > -1) {
           if (!list[x.property_type]?.length > 0) {
+            if(x.property_type !== "unit")
+            list[x.property_type] = [{value:null,text:"SELECT"}];
+            else
             list[x.property_type] = [];
             if (x.property_type === "unit") {
               list["transaction_unit"] = [];
@@ -370,8 +374,8 @@ export const ItemAddForm = ({ edit, refresh, setToEdit }) => {
           });
         }
 
-        if (!res2?.success) Swal.fire(res2?.message, "", "error");
-        if (!res3?.success) Swal.fire(res3?.message, "", "error");
+        // if (!res2?.success) Swal.fire(res2?.message, "", "error");
+        // if (!res3?.success) Swal.fire(res3?.message, "", "error");
         if ((res3 !== 1 && !res3?.success) || (res2 !== 1 && !res2?.success)) {
           await deleteItem(res?.data?.id);
         }

@@ -45,11 +45,16 @@ const SalesTable = (props) => {
   const { postSalesItem, putSalesItem } = useSalesServices();
 
   const [handleKeyDown, formRef] = useOnKey(tableItemRef, setTableItemRef);
-  const [handleKeyDown2, formRef2] = useOnKey(tableItemRefList, setTableItemRefList,tableItemRef, tableItemList);
+  const [handleKeyDown2, formRef2] = useOnKey(tableItemRefList, setTableItemRefList,tableItemRef,'false', tableItemList);
 
   useEffect(() => {
     getTableData();
   }, []);
+  
+  useEffect(()=>{
+    if(tableItemList?.length>10)
+    document.getElementById('tableItemFkItem').scrollIntoView({ behavior: "smooth" });
+  },[tableItemList])
 
   // useEffect(()=>{
   //   handleAmountCalculation(tableItem,e)
@@ -115,12 +120,12 @@ const SalesTable = (props) => {
     let lengthOfTh = tableHeadList.filter(
       (x) => x.saleShow && x.visible
     ).length;
-    for (let i = 0; i < 9 - tableItemList.length || 0; i++) {
+    for (let i = 0; i < 8 - tableItemList.length || 0; i++) {
       a.push(
         <tr className="border-0" key={i}>
           <td
             className="border-0"
-            style={{ height: "1.7rem", display: "" }}
+            style={{ /* height: "1.82rem", */ display: "" }}
             colSpan={lengthOfTh + 2}
           ></td>
         </tr>
@@ -267,6 +272,7 @@ const SalesTable = (props) => {
     }
     try {
       if (!tableItem.fk_items || !tableItem.quantity || !tableItem.rate) {
+        handleKeyDown(e)
         Swal.fire({
           title: "Please Enter essential details first",
           text: "Select item , enter quantity, enter rate , enter sales rate",
@@ -632,7 +638,7 @@ const SalesTable = (props) => {
 
   return (
     <>
-      <div className="px-2 " id="TableToPrint">
+      <div className="mx-2 sales-table-item-container" id="TableToPrint">
         <table
           style={{ tableLayout: "fixed" }}
           className="table table-secondary purchase-table mb-0"
@@ -679,7 +685,7 @@ const SalesTable = (props) => {
               {/* <th></th> */}
             </tr>
           </thead>
-          <tbody className="purchase-table-body">
+          <tbody className="sales-table-body">
             {/* table Item List-----------------------------------------start */}
             {tableItemList?.length > 0 &&
               tableItemList?.map((data, i) => {
@@ -782,6 +788,7 @@ const SalesTable = (props) => {
                                   name={item.state}
                                   type="number"
                                   placeholder="0"
+                                  disabled={item?.readOnly}
                                   className="purchase-table-items-input"
                                   value={
                                     data[item?.state] && data[item?.state] > -1
@@ -1064,6 +1071,7 @@ const SalesTable = (props) => {
                         <input
                           onKeyDown={handleKeyDown}
                           name={item.state}
+                          disabled={item?.readOnly}
                           onChange={(e) =>
                             handleChangeTableItem(e, null, tableItem, true)
                           }

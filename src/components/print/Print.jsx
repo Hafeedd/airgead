@@ -114,7 +114,7 @@ export const GenerateDynamicHtml = (props) => {
   const printType = localStorage.getItem('printType')|| "A4_normal"
 
   return (
-    <div className="w-100 d-flex justify-content-center">
+    <div className="d-flex justify-content-center" style={{width:'fit-content'}}>
       {printType == "A4_normal" ? (
         <NormaA4
           {...{

@@ -581,6 +581,15 @@ const SalesTransaction = () => {
         });
         return 0;
       }
+      if (salesAdd?.change_due<0 && !salesAdd.fk_customer) {
+        Swal.fire({          
+          icon: "warning",
+          text: "Please select a customer .Balance pending!",
+          // showConfirmButton: false,
+          timer: 2500,
+        });
+        return 0;
+      }
       // const isValidForm = formValidation(formRef.current);
       // if (!isValidForm) return false;
       let submitData = { ...salesAdd, items: tableItemKeys };
@@ -864,6 +873,7 @@ const SalesTransaction = () => {
       <Modal
         show={showPrint}
         centered
+        contentClassName="sales-bill"
         size={printStyle == "thermal" ? "md" : "lg"}
         onHide={() => handleSalesAllReset()}
       >

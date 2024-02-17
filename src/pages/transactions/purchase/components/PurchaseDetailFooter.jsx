@@ -43,7 +43,7 @@ const PurchaseDetailFooter = (props) => {
         }));
       }
     }catch(err){
-      console.log(err)
+      // console.log(err)
     }
     };
 

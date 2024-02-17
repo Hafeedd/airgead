@@ -1,3 +1,8 @@
 .normalA4-print.table tbody tr td{
     border: 0px !important;
 }
+
+.sales-bill{
+    width: fit-content;
+    max-width: fit-content;
+}
