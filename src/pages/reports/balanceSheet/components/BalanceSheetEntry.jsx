@@ -3,19 +3,21 @@ import { TfiEmail, TfiPrinter } from "react-icons/tfi";
 import { BsWhatsapp, BsFiletypePdf } from "react-icons/bs";
 import { RiFileExcel2Line } from "react-icons/ri";
 import { Form } from "react-bootstrap";
+import { Dropdown } from 'semantic-ui-react'
 
 const BalanceSheetEntry = (props) => {
-    const {params, setParams} = props
+    const { params, setParams } = props
 
-    const handleChange = ((e)=>{
+    const handleChange = ((e) => {
         console.log(e.target.value)
-        if (e.target.vslue == ""){
-            setParams({...params,[e.target.name]:null})
+        if (e.target.vslue == "") {
+            setParams({ ...params, [e.target.name]: null })
         }
-        else{
-            setParams({...params,[e.target.name]:e.target.value})
+        else {
+            setParams({ ...params, [e.target.name]: e.target.value })
         }
     })
+    
     return (
         <div className="row mx-0">
             <div className="col-12 px-0 mt-1 d-flex justify-content-start">
@@ -82,6 +84,14 @@ const BalanceSheetEntry = (props) => {
                         type="date"
                     />
                 </Form.Group>
+
+                <div className='col-3 d-flex align-items-center mt-1'>
+                    <select className='p-1 ' name="" id="">
+                        <option value="">Normal Balance Sheet</option>
+                        <option value="">Group Head Wise Balance Sheet</option>
+                        <option value="">Detailed Balance Sheet</option>
+                    </select>
+                </div>
             </div>
         </div>
     )

@@ -1,4 +1,31 @@
+.bal-sheet-table-head{
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
 .bal-sheet-table-head th{
     background-color: black;
     color: white;
+    text-align: left;
+}
+.bg-liability-color td{
+    background-color: rgb(234, 219, 242);
+    position: sticky;
+    top: 0px;
+    text-align: left;
+}
+.bg-asset-color td{
+    background-color: rgb(219, 242, 241);
+    text-align: left;
+}
+
+.balance-sheet-btm-field{
+    position: sticky;
+    bottom: 0px;
+   
+}
+.balance-sheet-btm-field td{
+    background-color: rgb(80, 80, 89);
+    color: white;
+    text-align: left;
 }

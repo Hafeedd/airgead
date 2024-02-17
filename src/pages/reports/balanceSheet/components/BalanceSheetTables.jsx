@@ -1,11 +1,10 @@
 import React from 'react'
 import { GrRefresh } from "react-icons/gr";
 import searchIcon from "../../../../assets/icons/search.png";
-
 const BalanceSheetTables = (props) => {
-    const {balanceSheetData} = props
+    const { balanceSheetData } = props
 
-    
+
     return (
         <>
             <div className='bg-black mt-3 d-flex justify-content-end rounded-top'>
@@ -25,49 +24,77 @@ const BalanceSheetTables = (props) => {
 
             </div>
             <div className='d-flex'>
-                <table className='table border border-5 border-dark'>
-                    <thead>
-                        <tr className='bal-sheet-table-head'>
-                            <th>Sn</th>
-                            <th>Assets</th>
-                            <th>Amount</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>1</td>
-                            <td>account one</td>
-                            <td>15051</td>
-                        </tr>
-                        <tr>
-                            <td>1</td>
-                            <td>account one</td>
-                            <td>15051</td>
-                        </tr>
-                    </tbody>
-                </table>
+                <div className='w-100' style={{ height: '31rem', overflow: 'hidden', overflowY: 'scroll' }}>
 
-                <table className='table border border-5 border-dark '>
-                    <thead>
-                        <tr className='bal-sheet-table-head'>
-                            <th>Sn</th>
-                            <th>Assets</th>
-                            <th>Amount</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>1</td>
-                            <td>account one</td>
-                            <td>15051</td>
-                        </tr>
-                        <tr>
-                            <td>1</td>
-                            <td>account one</td>
-                            <td>15051</td>
-                        </tr>
-                    </tbody>
-                </table>
+                    <table className='table table-striped border border-5 border-dark'>
+                        <thead>
+                            <tr className='bal-sheet-table-head '>
+                                <th>Sn</th>
+                                <th>Assets</th>
+                                <th>Amount</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {
+                                balanceSheetData?.length > 0 &&
+                                balanceSheetData?.map((data, i) => {
+
+                                    return data?.acc_group == "ASSET" && (
+                                        <>
+                                            <tr className='bg-asset-color'>
+                                                <td>{i}</td>
+                                                <td>{data?.account_name}</td>
+                                                <td>{data?.closing_balance.toFixed(2)}</td>
+                                            </tr>
+                                        </>
+                                    )
+                                })
+                            }
+                            <tr className='balance-sheet-btm-field'>
+                                <td colSpan={2}></td>
+                                <td><span>{100}</span></td>
+                            </tr>
+
+                        </tbody>
+                    </table>
+                </div>
+
+                <div className='w-100' style={{ height: '31rem', overflow: 'hidden', overflowY: 'scroll' }}>
+
+
+                    <table className='table table-striped border border-5 border-dark '>
+                        <thead>
+                            <tr className='bal-sheet-table-head mb-1'>
+                                <th>Sn</th>
+                                <th>Liability</th>
+                                <th>Amount</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {
+                                balanceSheetData?.length > 0 &&
+                                balanceSheetData?.map((data, i) => {
+
+                                    return data?.acc_group == "LIABILITY" && (
+                                        <>
+                                            <tr className='bg-liability-color'>
+                                                <td>{i}</td>
+                                                <td>{data.account_name}</td>
+                                                <td>{data.closing_balance.toFixed(2)}</td>
+                                            </tr>
+                                        </>
+                                    )
+                                })
+                            }
+
+                            <tr className='balance-sheet-btm-field'>
+                                <td colSpan={2}></td>
+                                <td><span>{100}</span></td>
+                            </tr>
+
+                        </tbody>
+                    </table>
+                </div>
             </div>
 
         </>

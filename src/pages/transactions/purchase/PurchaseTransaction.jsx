@@ -487,7 +487,7 @@ const PurchaseTransaction = ({ returnPage }) => {
         });
         return 0;
       }
-      let submitData = { ...purchaseAdd, items: tableItemKeys };
+      let submitData = { ...purchaseAdd, items: tableItemList };
       let response;
       // console.log(submitData.change_due)
       // return 0
