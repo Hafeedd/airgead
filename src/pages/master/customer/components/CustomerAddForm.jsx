@@ -121,7 +121,7 @@ const CustomerAddForm = (props) => {
 
   }, [edit]);
 
-  const { handleKeyDown, formRef } = useOnKey(ref, setRef);
+  const [ handleKeyDown, formRef ] = useOnKey(ref, setRef);
 
   const handleRatesClear = () => {
     let x = Object.keys(rates);
@@ -197,7 +197,7 @@ const CustomerAddForm = (props) => {
       data?.map((x) => {
         if (keys.indexOf(x.property_type) > -1) {
           if (!list[x.property_type]?.length > 0) {
-            list[x.property_type] = [];
+            list[x.property_type] = [{value:null,text:"SELECT"}];
             if (x.property_type === "unit") {
               list["transaction_unit"] = [];
             }
