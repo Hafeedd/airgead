@@ -232,9 +232,6 @@ const PurchaseTransaction = ({ returnPage }) => {
       setPurchaseAdd((data) => {
         return { ...data, ...tempPurchaseAdd };
       });
-      if (itemEdit) {
-        putPurchase(edit.id, { ...tempPurchaseAdd, items: tableItemKeys });
-      }
     } else {
       setPurchaseAdd((data) => ({
         ...data,
@@ -255,7 +252,6 @@ const PurchaseTransaction = ({ returnPage }) => {
   };
 
   const handleGetCode = async (nextCode,firstReload) => {
-    console.log(nextCode,firstReload)
     //  nextCode arg is sent form handleNext fucnt
     //  in purchaseTable and handleReset in purchaseDetailFooter
     //  it is for reseting doc_no instead of checking edit
@@ -486,7 +482,7 @@ const PurchaseTransaction = ({ returnPage }) => {
       //   });
       //   return 0;
       // }
-      let submitData = { ...purchaseAdd, items: tableItemKeys };
+      let submitData = { ...purchaseAdd, items: tableItemList };
       let response;
       // console.log(submitData.change_due)
       // return 0
@@ -500,7 +496,8 @@ const PurchaseTransaction = ({ returnPage }) => {
       }
       if (response?.success) {
         handlePurchaseAllReset();
-        getData();
+        handleGetCode(true);
+        getData()
         Swal.fire("Purchase added successfully", "", "success");
       } else {
         if (response?.data?.length > 0) {
@@ -533,92 +530,95 @@ const PurchaseTransaction = ({ returnPage }) => {
     }
   };
 
-  const handleBatchSubmit = async (tempItems) => {
-    try {
-      let ItemTempList = [...tableItemBatchList],
-        itemTemp = {};
-      if (tableItemBatchList.length > 0) {
-        tableItemBatchList?.map((data) => {
-          let itemTemp = { ...data };
-          itemTemp = { ...itemTemp, ["cstm_id"]: cstm_id };
-          setTableItemBatchList(ItemTempList);
-        });
-      }
-      try {
-        let submitData = { ...tableItem };
-        if (purchaseAdd.isBatch)
-          submitData = { ...submitData, batch_items: batchKeys };
-        let response;
-        if (!tableEdit) {
-          if (returnPage) response = await postPurchaseReturnItem(submitData);
-          else response = await postPurchaseItem(submitData);
-        }
-        if (response?.success && !tableEdit) {
-          let tempItemKeys = [...tableItemKeys];
-          tempItemKeys.push({
-            id: returnPage ? response?.data?.id : response?.data?.purchase?.id,
-          });
-          ItemTempList.push(itemTemp);
-          setTableItemKeys(tempItemKeys);
-          tempItems?.map((x, i) => {
-            if (x.cstm_id == cstm_id) {
-              x.id = returnPage
-                ? response?.data?.id
-                : response?.data?.purchase?.id;
-              tempItems.splice(i, 1);
-              tempItems.push({ ...x });
-              setTableItemList(tempItems);
-            }
-          });
-        }
-        // else if ((edit || tableEdit) && response.success) {
-        //   const data = await getData();
-        //   // setEdit(data);
-        //   tempItems?.map((x, i) => {
-        //     if (x.id == tableEdit) {
-        //       x = { ...x, ...tableItem };
-        //       tempItems.splice(i, 1);
-        //       tempItems.push({ ...x });
-        //       setTableItemList(tempItems);
-        //     }
-        //   });
-        //   setTableEdit(false);
-        //   // }else if(edit){
-        //   //   setEdit(false)
-        // }
-        else {
-          Swal.fire(
-            "Error",
-            response.message ||
-              "Error while adding new item , Please try again",
-            "error"
-          );
-        }
-      } catch (err) {
-        // setTableItemList([...tableItemList])
-        const key = Object.keys(err?.response?.data?.data)[0]
-          ?.split("_")
-          .join(" ");
-        const value = Object.values(err?.response?.data?.data)[0][0];
-        Swal.fire(
-          "Error",
-          key + " " + value || "Failed to add Item , please try again.",
-          "error"
-        );
-      }
-      // setPurchaseItemSerielModal(false);
-      handleTableItemReset();
-      handlePurchAllCalc(tempItems, false);
-    } catch (err) {
-      console.log(err);
-      Swal.fire(
-        "Error",
-        "Failed while adding item to table. Pls try again later",
-        "error"
-      );
-    }
-  };
+  // const handleBatchSubmit = async (tempItems) => {
+  //   try {
+  //     let ItemTempList = [...tableItemBatchList],
+  //       itemTemp = {};
+  //     if (tableItemBatchList.length > 0) {
+  //       tableItemBatchList?.map((data) => {
+  //         let itemTemp = { ...data };
+  //         itemTemp = { ...itemTemp, ["cstm_id"]: cstm_id };
+  //         setTableItemBatchList(ItemTempList);
+  //       });
+  //     }
+  //     try {
+  //       let submitData = { ...tableItem };
+  //       if (purchaseAdd.isBatch)
+  //         submitData = { ...submitData, batch_items: batchKeys };
+  //       let response;
+  //       if (!tableEdit) {
+  //         if (returnPage) response = await postPurchaseReturnItem(submitData);
+  //         else response = await postPurchaseItem(submitData);
+  //       }
+  //       if (response?.success && !tableEdit) {
+  //         let tempItemKeys = [...tableItemKeys];
+  //         tempItemKeys.push({
+  //           id: returnPage ? response?.data?.id : response?.data?.purchase?.id,
+  //         });
+  //         ItemTempList.push(itemTemp);
+  //         setTableItemKeys(tempItemKeys);
+  //         tempItems?.map((x, i) => {
+  //           if (x.cstm_id == cstm_id) {
+  //             x.id = returnPage
+  //               ? response?.data?.id
+  //               : response?.data?.purchase?.id;
+  //             tempItems.splice(i, 1);
+  //             tempItems.push({ ...x });
+  //             setTableItemList(tempItems);
+  //           }
+  //         });
+  //       }
+  //       // else if ((edit || tableEdit) && response.success) {
+  //       //   const data = await getData();
+  //       //   // setEdit(data);
+  //       //   tempItems?.map((x, i) => {
+  //       //     if (x.id == tableEdit) {
+  //       //       x = { ...x, ...tableItem };
+  //       //       tempItems.splice(i, 1);
+  //       //       tempItems.push({ ...x });
+  //       //       setTableItemList(tempItems);
+  //       //     }
+  //       //   });
+  //       //   setTableEdit(false);
+  //       //   // }else if(edit){
+  //       //   //   setEdit(false)
+  //       // }
+  //       else {
+  //         Swal.fire(
+  //           "Error",
+  //           response.message ||
+  //             "Error while adding new item , Please try again",
+  //           "error"
+  //         );
+  //       }
+  //     } catch (err) {
+  //       // setTableItemList([...tableItemList])
+  //       const key = Object.keys(err?.response?.data?.data)[0]
+  //         ?.split("_")
+  //         .join(" ");
+  //       const value = Object.values(err?.response?.data?.data)[0][0];
+  //       Swal.fire(
+  //         "Error",
+  //         key + " " + value || "Failed to add Item , please try again.",
+  //         "error"
+  //       );
+  //     }
+  //     // setPurchaseItemSerielModal(false);
+  //     handleTableItemReset();
+  //     handlePurchAllCalc(tempItems, false);
+  //   } catch (err) {
+  //     console.log(err);
+  //     Swal.fire(
+  //       "Error",
+  //       "Failed while adding item to table. Pls try again later",
+  //       "error"
+  //     );
+  //   }
+  // };
 
+  const handleBatchSubmit = (tempItems) =>{
+    
+  }
   return (
     <div className="item_add">
       <div className={`itemList_header row mx-0 mb-3`}>
