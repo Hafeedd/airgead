@@ -132,6 +132,7 @@ const PurchaseTable = (props) => {
   };
 
   const handleItemNameSelection = (e, { value }) => {
+    // Swal.fire()
     let data = value?.toUpperCase();
     if (data) {
       navigate("/add", {
@@ -395,7 +396,12 @@ const PurchaseTable = (props) => {
 
   const AdjustHeightOfTable = () => {
     let tableTr = [];
-    for (let i = 0; i < 9 - purchaseAdd.total_items || 0; i++) {
+    tableTr.push(
+      <tr>
+        <td className="border-0" colSpan={tableHeadList.length + 2}></td>
+      </tr>
+    );
+    for (let i = 0; i < 8 - purchaseAdd.total_items || 0; i++) {
       tableTr.push(
         <tr key={i}>
           <td className="border-0" colSpan={tableHeadList.length + 2}></td>
@@ -506,9 +512,7 @@ const PurchaseTable = (props) => {
                                   purchaseAdd.total_items > 4 ? true : false
                                 }
                                 search={search}
-                                onKeyDown={(e) => {
-                                  handleKeyDown2(e);
-                                }}
+                                onKeyDown={handleKeyDown2}
                                 placeholder="SELECT"
                                 className="purchase_search_drop border-0 w-100 ps-2"
                                 name={"name"}
@@ -522,9 +526,7 @@ const PurchaseTable = (props) => {
                                 onChange={(e) =>
                                   handleChangeTableItem(e, null, data, i)
                                 }
-                                onKeyDown={(e) => {
-                                  handleKeyDown2(e);
-                                }}
+                                onKeyDown={handleKeyDown2}
                                 name="unit"
                                 value={data.unit}
                                 style={{
@@ -548,9 +550,7 @@ const PurchaseTable = (props) => {
                                 onChange={(e) =>
                                   handleChangeTableItem(e, null, data, i)
                                 }
-                                onKeyDown={(e) => {
-                                  handleKeyDown2(e);
-                                }}
+                                onKeyDown={handleKeyDown2}
                                 name={item.state}
                                 type="number"
                                 disabled={item.readOnly}

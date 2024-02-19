@@ -99,21 +99,11 @@ const SalesTransaction = () => {
   const [salesItemModal, setSalesItemModal] = useState(false);
   const [salesEditModal, setSalesEditModal] = useState(false);
   const [pageHeadItem, setPageHeadItem] = useState(1);
-  const [salesBatchShow, setSalesBatchShow] = useState(false);
-  // const [salesHeader, setSalesHeader] = useState(1)
-  const [tableEdit, setTableEdit] = useState(false);
   const [edit, setEdit] = useState(false);
-  const [docNoRecheck, setDocNoRecheck] = useState(null);
-  const [cstm_id, setCstm_id] = useState(false);
   const [customerList, setCustomerList] = useState(null);
-  // const [salesItemSerielModal, setSalesItemSerielModal] = useState(false)
   const [tableItemList, setTableItemList] = useState([]);
-  // const [tableItemBatch, setTableItemBatch] = useState(null)
-  const [tableItemBatchList, setTableItemBatchList] = useState([]);
   const [salesList, setSalesList] = useState([]);
-  const [tableItemKeys, setTableItemKeys] = useState([]);
   const [billType, setBillType] = useState([]);
-  const [billTypeDocNo, setBillTypeDocNo] = useState(null);
   const [codeWithBillTypeList, setCodeWithBillTypeList] = useState([]);
   const [showPrint, setShowPrint] = useState(false);
   const [bankSelect, setBankSelect] = useState(false);
@@ -144,7 +134,6 @@ const SalesTransaction = () => {
     setTableItemList([]);
     setEdit(false);
     setShowPrint(false);
-    setTableItemKeys([]);
     handleGetCode();
     localStorage.setItem("salesData", false);
   };
@@ -172,9 +161,6 @@ const SalesTransaction = () => {
         ...others,
         change_due: others.change_due || "0.00",
       };
-      if (tablekeys?.length > 0) {
-        setTableItemKeys([...tablekeys]);
-      }
       setSalesAdd((data) => ({ ...data, tempData }));
       if (items) {
         setTableItemList([...items]);
@@ -187,21 +173,15 @@ const SalesTransaction = () => {
     const allSaleState = {
       ...salesAdd,
       items: [...tableItemList],
-      tablekeys: tableItemKeys,
       edit: edit,
     };
     localStorage.setItem("salesData", JSON.stringify(allSaleState));
   };
 
-  // useEffect(() => {
-
-  // }, [edit]);
-
   const handleSetEdit = (data) => {
     if (data) {
       let { sales_item, updated_at, ...others } = data;
       let tempData = { ...others, change_due: others.change_due || "0.00" };
-      // console.log(others)
       setSalesAdd((data) => ({ ...data, ...tempData }));
       if (sales_item) {
         setTableItemList([...sales_item]);
@@ -571,13 +551,12 @@ const SalesTransaction = () => {
         });
         return 0;
       }
-      if (tableItemKeys?.length < 1 && !edit) {
+      if (tableItemList?.length < 1) {
         Swal.fire({
           title: "Item not added",
           icon: "warning",
           text: "Please add an item before submitting purchase",
-          showConfirmButton: false,
-          timer: 1500,
+          timer: 2000,
         });
         return 0;
       }
@@ -585,14 +564,13 @@ const SalesTransaction = () => {
         Swal.fire({          
           icon: "warning",
           text: "Please select a customer .Balance pending!",
-          // showConfirmButton: false,
           timer: 2500,
         });
         return 0;
       }
       // const isValidForm = formValidation(formRef.current);
       // if (!isValidForm) return false;
-      let submitData = { ...salesAdd, items: tableItemKeys };
+      let submitData = { ...salesAdd, items: tableItemList };
       let response;
       // console.log(submitData.change_due)
       // return 0
@@ -609,17 +587,10 @@ const SalesTransaction = () => {
         Swal.fire(response?.data, "", "error");
       }
     } catch (err) {
-      // let data = err?.response?.data?.data;
-      // if(data?.length<1) return 0
-      // let index;
-      // if (typeof data == "object") index = Object.keys(data)[0];
-      // let error = data[index][0];
       Swal.fire({
         title:
-          // index.toUpperCase(),
           "Error",
         text:
-          // error ||
           "Something went wrong , Pls try again",
         icon: "error",
         timer: 1000,
@@ -803,31 +774,19 @@ const SalesTransaction = () => {
             tableItemRef,
             setTableItemRef,
             handleSetEdit,
-            handleSalesAddCalc,
-            tableHeadList,
-            salesBatchShow,
-            setSalesBatchShow,
             tableItem,
+            handleSalesAddCalc,
             setSalesItemModal,
+            tableHeadList,
+            setTableItem,
             salesAdd,
-            salesList,
-            setSalesList,
             edit,
             setEdit,
             handleSalesAllReset,
-            setTableItemList,
-            setTableItem,
-            tableEdit,
-            setTableEdit,
             tableItemList,
-            cstm_id,
-            setCstm_id,
+            salesList,
+            setTableItemList,
             handleTableItemReset,
-            getData,
-            tableItemBatchList,
-            setTableItemBatchList,
-            tableItemKeys,
-            setTableItemKeys,
           }}
         />
         <SalesDetailFooter

@@ -32,8 +32,7 @@ const PurchaseTransaction = ({ returnPage }) => {
   const [supplierList, setSupplierList] = useState(null);
   const [purchaseEditModal, setPurchaseEditModal] = useState(false);
   const [purchaseItemSerielModal, setPurchaseItemSerielModal] = useState(false);
-  const [pageHeadItem, setPageHeadItem] = useState(1);
-  const [tableItemKeys, setTableItemKeys] = useState([]);
+  const [pageHeadItem, setPageHeadItem] = useState(1);  
   const [edit, setEdit] = useState(null);
   const [showStock, setShowStock] = useState(false);
   const [showBatch, setShowBatch] = useState(false);
@@ -101,7 +100,6 @@ const PurchaseTransaction = ({ returnPage }) => {
     const allPurchState = {
       ...purchaseAdd,
       items: [...tableItemList],
-      tablekeys: tableItemKeys,
       edit: edit,
     };
     localStorage.setItem("purchaseData", JSON.stringify(allPurchState));
@@ -119,8 +117,7 @@ const PurchaseTransaction = ({ returnPage }) => {
         ...others,
         change_due: others.change_due || "0.00",
       };
-      if (tablekeys?.length > 0) {
-        setTableItemKeys([...tablekeys]);
+      if (tablekeys?.length > 0) {        
       }
       setPurchaseAdd((data) => ({ ...data, ...tempData }));
       if (items) {
@@ -336,8 +333,7 @@ const PurchaseTransaction = ({ returnPage }) => {
     setPurchaseAdd(initialPurchaseAdd);
     setTableItemList([]);
     setTableItemBatchList([]);
-    setTableItem(initialTableItem);
-    setTableItemKeys([]);
+    setTableItem(initialTableItem);    
     setEdit(false);
     if (!returnPage) localStorage.setItem("purchaseData", false);
   };
@@ -469,20 +465,10 @@ const PurchaseTransaction = ({ returnPage }) => {
         });
         return 0;
       }
-      // if (tableItemEdited) {
-      //   Swal.fire({
-      //     title: "Item edited but edit button is not clicked",
-      //     icon: "warning",
-      //     text: "",
-      //     showConfirmButton: true,
-      //     timer: 1500,
-      //   });
-      //   return 0;
-      // }
+      
       let submitData = { ...purchaseAdd, items: tableItemList };
       let response;
-      // console.log(submitData.change_due)
-      // return 0
+
       if (!edit) {
         if (returnPage) response = await postPurchaseReturn(submitData);
         else response = await postPurchase(submitData);
@@ -552,8 +538,7 @@ const PurchaseTransaction = ({ returnPage }) => {
   //         tempItemKeys.push({
   //           id: returnPage ? response?.data?.id : response?.data?.purchase?.id,
   //         });
-  //         ItemTempList.push(itemTemp);
-  //         setTableItemKeys(tempItemKeys);
+  //         ItemTempList.push(itemTemp);  
   //         tempItems?.map((x, i) => {
   //           if (x.cstm_id == cstm_id) {
   //             x.id = returnPage
