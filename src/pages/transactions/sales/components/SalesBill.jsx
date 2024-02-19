@@ -141,19 +141,12 @@ export const PrintFIle = (props) => {
         <button onClick={handleSalesAllReset} className="btn btn-sm btn-dark">
           Close
         </button>
-        <ReactToPrint
-          trigger={() => (
-            <button
-              className="btn btn-sm btn-dark"
-              // onClick={()=>handleConvertToPdf("print")}
-            >
-              Print
-            </button>
-          )}
-          content={()=>document.getElementById('new')}
-          style={{padding:"0px"}}
-        ></ReactToPrint>
-
+        <button
+          className="btn btn-sm btn-dark"
+          onClick={() => handleConvertToPdf("print")}
+        >
+          Print
+        </button>
         <button
           className="btn btn-sm btn-dark"
           onClick={() => handleConvertToPdf("pdf")}

@@ -8,26 +8,20 @@ import { useEffect, useState } from "react";
 // import e from "express";
 
 const Header = () => {
-  const [colorForHeader, setColorForHeader] = useState(null);
   const location = useLocation();
-  let color = 'transparent'
 
   useEffect(() => {
     console.log(location.pathname)
-    const element = document.getElementsByClassName("active-header2")[0];
+    const element = document.getElementsByClassName("page_head")[0];
     const element2 = document.getElementsByClassName("main header")[0]
     if (element) {
       element2.style.backgroundColor = getComputedStyle(element).backgroundColor
-      setColorForHeader(getComputedStyle(element).background);
-      color = getComputedStyle(element).background
-    }else{
-
     }
   }, [location.pathname]);
   
   const navigate = useNavigate();
   return (
-    <div className="header main" style={{background:color}}>
+    <div className="header main">
       <div className="header-cont w-100 px-4 h-100 d-flex justify-content-between bg-dark text-light">
         <div className="prev_btn btn" onClick={() => navigate(-1)}>
           <img className="me-2" src={arrow} width={"7px"} height={"10px"} />

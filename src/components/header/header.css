@@ -36,3 +36,9 @@
     background-color: #4E4E4E;
     padding: 0.1rem 0.4rem;
 }
+
+@media print {
+    #new {
+      border: 1px solid black !important; /* Important for overriding defaults */
+    }
+  }

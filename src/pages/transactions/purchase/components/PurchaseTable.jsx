@@ -1,55 +1,46 @@
 import React, { useEffect, useState } from "react";
 import useItemServices from "../../../../services/master/itemServices";
 import { Dropdown } from "semantic-ui-react";
-import { FiEdit } from "react-icons/fi";
 import { BsTrashFill } from "react-icons/bs";
 import Swal from "sweetalert2";
-import usePurchaseServices from "../../../../services/transactions/purchcaseServices";
 import useOnKey from "../../../../hooks/onKeyFunct/onKeyFunct";
 import { useLocation, useNavigate } from "react-router";
-import usePurchaseReturnServices from "../../../../services/transactions/purchaseReturn";
+// import usePurchaseServices from "../../../../services/transactions/purchcaseServices";
+// import usePurchaseReturnServices from "../../../../services/transactions/purchaseReturn";
 
 const PurchaseTable = (props) => {
   const {
-    returnPage,
     purchaseInvoiceRef,
     tableItemRef,
     setTableItemRef,
-    setTableItemKeys,
-    tableItemKeys,
     handleGetCode,
     handleSetEdit,
-    setTableItemEdited,
     tableHeadList,
     setPurchaseItemModal,
     tableItem,
     setTableItem,
     edit,
     handlePurchAllCalc,
-    setPurchaseItemSerielModal,
-    cstm_id,
     purchaseAdd,
-    setCstm_id,
     tableItemList,
     setTableItemList,
     tableEdit,
     setEdit,
-    handleBatchSubmit,
     itemNameList,
     setItemNameList,
     purchaseList,
-    getData,
+    handleTableItemReset,
     handlePurchaseAllReset,
     setShowBatch,
   } = props;
-  const [tableHeight, setTableHeight] = useState();
   const [unitList, setUnitList] = useState();
   const [tableItemListRef, setTableItemListRef] = useState(null);
 
   const { getItemNameList, getProperty } = useItemServices();
-  const { deletePurchaseItem, putPurchaseItem, putPurchase } = usePurchaseServices();
-  const { deletePurchaseReturnItem, putPurchaseReturnItem } =
-    usePurchaseReturnServices();
+  // const { deletePurchaseItem, putPurchaseItem, putPurchase } =
+  //   usePurchaseServices();
+  // const { deletePurchaseReturnItem, putPurchaseReturnItem } =
+  //   usePurchaseReturnServices();
   const [handleKeyDown, formRef] = useOnKey(
     tableItemRef,
     setTableItemRef,
@@ -67,9 +58,7 @@ const PurchaseTable = (props) => {
   const location = useLocation();
   const navigate = useNavigate();
 
-  useEffect(()=>{
-
-  },[purchaseAdd.total])
+  useEffect(() => {}, [purchaseAdd.total]);
 
   useEffect(() => {
     getTableData();
@@ -96,63 +85,16 @@ const PurchaseTable = (props) => {
       };
       setTableItem({ ...tempItem });
       navigate(null, { state: null });
-
       document
         .getElementById("tableItemFkItem")
-        ?.querySelector("input")
-        ?.focus();
+        ?.parentNode?.nextSibling?.firstChild?.focus();
     }
   }, []);
 
-  useEffect(() => {
-    const tempList = [...tableItemList];
-    const editedList = tempList.filter((x) => x.edited);
-    if (editedList.length < 1) setTableItemEdited(false);
-  }, [tableItemList, setTableItemEdited]);
-
-  const handleKeyTableItemEdit = async (e, data, i) => {
-    if (e.key === "Enter" && !e.ctrlKey) {
-      e.preventDefault();
-      handleTableItemEdit(e, data, i);
-    } else handleKeyDown2(e);
-  };
-
-  const handleTableItemEdit = async (e, data, i) => {
-    e.preventDefault();
-    try {
-      if (!data.item_name || !data.quantity || !data.rate) {
-        Swal.fire({
-          title: "please enter Essential details firs",
-          text: "Enter Rate , Quantity and Select Item First",
-          icon: "warning",
-          // showConfirmButton: false,
-          timer: 1500,
-        });
-        handleKeyDown2(e);
-        return 0;
-      }
-      let response;
-      if (returnPage) response = await putPurchaseReturnItem(data.id, data);
-      else{ 
-        response = await putPurchaseItem(data.id, data);}
-      if (response.success) {
-        handleKeyDown2(e);
-        getData();
-      } else {
-        Swal.fire({
-          title: "Failed to edit",
-          text: response.message || "Something went wrong! please try again",
-          icon: "warning",
-          timer: 1500,
-        });
-      }
-      let tempList = [...tableItemList];
-      let { edited, ...others } = data;
-      tempList.splice(i, 1, others);
-      setTableItemList([...tempList]);
-      handlePurchAllCalc(tempList, false,false,true);
-    } catch (err) {}
-  };
+  useEffect(()=>{
+    if(tableItemList?.length>10)
+    document.getElementById('tableItemFkItem').scrollIntoView({ behavior: "smooth" });
+  },[tableItemList])
 
   const getTableData = async () => {
     const minFunct = (data) => {
@@ -178,6 +120,7 @@ const PurchaseTable = (props) => {
       });
       setItemNameList([...tempList]);
     };
+
     try {
       let res2 = await getProperty();
       let res = await getItemNameList();
@@ -189,6 +132,7 @@ const PurchaseTable = (props) => {
   };
 
   const handleItemNameSelection = (e, { value }) => {
+    // Swal.fire()
     let data = value?.toUpperCase();
     if (data) {
       navigate("/add", {
@@ -238,7 +182,6 @@ const PurchaseTable = (props) => {
       let tempList = [...tableItemList];
       tempList.splice(toTableItem, 1, { ...calculatedData, edited: true });
       setTableItemList([...tempList]);
-      setTableItemEdited(true);
     }
   };
 
@@ -359,7 +302,7 @@ const PurchaseTable = (props) => {
       tempItem = {
         ...tempItem,
         value: 0,
-        /* tax_gst:0, */ sgst: 0,
+        sgst: 0,
         cgst_or_igst: 0,
         total: 0,
         cost: 0,
@@ -379,25 +322,8 @@ const PurchaseTable = (props) => {
 
   // -----------------------------------------------------
 
-  const handleFocus = (e) => {
-    if (!tableItem[e.target.name])
-      setTableItem((data) => ({ ...data, [e.target.name]: "" }));
-  };
-
-  const handleBlur = (e) => {
-    if (
-      !tableItem[e.target.name] ||
-      tableItem[e.target.name] === "" ||
-      tableItem[e.target.name] === "0"
-    ) {
-      setTableItem((data) => ({ ...data, [e.target.name]: 0 }));
-    }
-  };
-
-  const handleAddBatchOpen = (e) => {
+  const handleAddOpenBatch = (e) => {
     e.preventDefault();
-    let itemTempList = [...tableItemList];
-
     if (e.type === "keydown") {
       if (e?.key !== "Enter") return 0;
     }
@@ -415,20 +341,16 @@ const PurchaseTable = (props) => {
       });
       return 0;
     }
-    if (!tableEdit) {
-      let itemTemp = { ...tableItem };
-      itemTemp = { ...itemTemp, cstm_id: cstm_id };
-      itemTempList.unshift(itemTemp);
-      // setTableItemList(itemTempList);
-      setCstm_id(cstm_id + 1);
-      setPurchaseItemSerielModal(cstm_id);
-      if (purchaseAdd.isBatch) setShowBatch(true);
-    } else {
-      setPurchaseItemSerielModal(tableEdit || true);
-    }
+
+    let tempList = [...tableItemList];
+    tempList.push({ ...tableItem });
+    setTableItemList([...tempList]);
+    handlePurchAllCalc([...tempList]);
     if (purchaseAdd.isBatch) setShowBatch(true);
-    else handleBatchSubmit(itemTempList, false);
-    handleKeyDown(e);
+    else {
+      handleTableItemReset();
+      handleKeyDown(e);
+    }
   };
 
   const handlePrev = () => {
@@ -473,19 +395,20 @@ const PurchaseTable = (props) => {
   };
 
   const AdjustHeightOfTable = () => {
-    let a = [];
-    for (let i = 0; i < 9 - purchaseAdd.total_items || 0; i++) {
-      a.push(
+    let tableTr = [];
+    tableTr.push(
+      <tr>
+        <td className="border-0" colSpan={tableHeadList.length + 2}></td>
+      </tr>
+    );
+    for (let i = 0; i < 8 - purchaseAdd.total_items || 0; i++) {
+      tableTr.push(
         <tr key={i}>
-          <td
-            className="border-0"
-            style={{ /*  height: "1.65rem", */ display: "" }}
-            colSpan={tableHeadList.length + 2}
-          ></td>
+          <td className="border-0" colSpan={tableHeadList.length + 2}></td>
         </tr>
       );
     }
-    return a;
+    return tableTr;
   };
 
   const handleTableItemDelete = async (data, i) => {
@@ -498,50 +421,10 @@ const PurchaseTable = (props) => {
       });
       return 0;
     }
-    if (!data.created_at) {
-      let tempList = [...tableItemList];
-      tempList.splice(i, 1);
-      setTableItemList([...tempList]);
-    }
-    try {
-      let response;
-      if (returnPage) response = await deletePurchaseReturnItem(data.id);
-      else response = await deletePurchaseItem(data.id);
-      if (response.success) {
-        Swal.fire({
-          icon: "success",
-          showConfirmButton: false,
-          timer: 1500,
-        });
-        let tempList = [...tableItemList];
-        tempList.splice(i, 1);
-
-        let tempTableItemKeys = [...tableItemKeys];
-
-        let ind = tempTableItemKeys.findIndex((x) => x.id == data.id);
-        if (ind > -1) {
-          tempTableItemKeys.splice(ind, 1);
-          setTableItemKeys([...tempTableItemKeys]);
-        }
-
-        setTableItemList([...tempList]);
-        handlePurchAllCalc(tempList, false);
-        getData();
-      }
-      // else if (response.success && !data.created_at) {
-      //   Swal.fire({
-      //     title: "Item deleted successfully",
-      //     icon: "success",
-      //     showConfirmButton: false,
-      //     timer: 1500,
-      //   });
-      // }
-      else {
-        Swal.fire(response.message, "", "error");
-      }
-    } catch (err) {
-      Swal.fire("Fialed to delete item", "please try again", "warning");
-    }
+    let tempList = [...tableItemList];
+    tempList.splice(i, 1);
+    setTableItemList([...tempList]);
+    handlePurchAllCalc(tempList, false);
   };
 
   const search = (options, searchValue) => {
@@ -557,28 +440,9 @@ const PurchaseTable = (props) => {
   return (
     <>
       <div className="mx-2 mt-1 purchase-table-item-container px-0">
-        <table
-          // style={{ tableLayout: "fixed" }}
-          className="table table-secondary purchase-table mb-0"
-        >
+        <table className="table table-secondary purchase-table mb-0">
           <thead className="purchase-table-header">
             <tr>
-              {/* <th className="text-start" colSpan={2}>
-                Item Name
-              </th>
-              <th>Qty</th>
-              <th>Ut</th>
-              <th width="65">P. Rate</th>
-              <th>Disc%</th>
-              <th>Disc</th>
-              <th>Value</th>
-              <th>Tax%</th>
-              <th>CGST/IGST</th>
-              <th>SGST</th>
-              <th>Total</th>
-              <th>Cost</th>
-              <th>Margin%</th>
-              <th>S.Rate</th> */}
               <th width="30">SL</th>
               {tableHeadList?.length > 0 &&
                 tableHeadList.map((item, i) => {
@@ -635,227 +499,77 @@ const PurchaseTable = (props) => {
                     {tableHeadList?.length > 0 &&
                       tableHeadList.map((item, index) => {
                         if (item.visible && item.purchaseShow)
-                          return (
-                            // item.state === "item_name"?
-                            index === 0 ? (
-                              <td className="text-start ps-3 pe-2" colSpan={1}>
-                                <Dropdown
-                                  // onClick={()=>setShowStock(data=>!data)}
-                                  selection
-                                  onChange={(e, a) =>
-                                    handleChangeTableItem(e, a, data, i)
-                                  }
-                                  required
-                                  upward={
-                                    purchaseAdd.total_items > 4 ? true : false
-                                  }
-                                  search={search}
-                                  onKeyDown={(e) => {
-                                    if (data?.edited)
-                                      handleKeyTableItemEdit(e, data, i);
-                                    else handleKeyDown2(e);
-                                  }}
-                                  placeholder="SELECT"
-                                  className="purchase_search_drop border-0 w-100 ps-2"
-                                  name={"name"}
-                                  value={data.fk_items || data.name}
-                                  options={itemNameList}
-                                />
-                              </td>
-                            ) : item.state === "unit" ? (
-                              <td>
-                                <select
-                                  onChange={(e) =>
-                                    handleChangeTableItem(e, null, data, i)
-                                  }
-                                  onKeyDown={(e) => {
-                                    if (data?.edited)
-                                      handleKeyTableItemEdit(e, data, i);
-                                    else handleKeyDown2(e);
-                                  }}
-                                  name="unit"
-                                  value={data.unit}
-                                  style={{
-                                    WebkitAppearance: "none",
-                                    fontSize: "10px",
-                                    padding: "3.5px 1px",
-                                  }}
-                                  className="purchase_input border-0 w-100 text-center"
-                                >
-                                  {unitList &&
-                                    unitList.map((x, i) => (
-                                      <option key={i} value={x.value}>
-                                        {x.text}
-                                      </option>
-                                    ))}
-                                </select>
-                              </td>
-                            ) : (
-                              <td>
-                                <input
-                                  onChange={(e) =>
-                                    handleChangeTableItem(e, null, data, i)
-                                  }
-                                  onKeyDown={(e) => {
-                                    if (data?.edited)
-                                      handleKeyTableItemEdit(e, data, i);
-                                    else handleKeyDown2(e);
-                                  }}
-                                  name={item.state}
-                                  type="number"
-                                  disabled={item.readOnly}
-                                  placeholder="0"
-                                  className="purchase-table-items-input"
-                                  value={data[item?.state] || ""}
-                                />
-                              </td>
-                            )
+                          return index === 0 ? (
+                            <td className="text-start ps-3 pe-2" colSpan={1}>
+                              <Dropdown
+                                // onClick={()=>setShowStock(data=>!data)}
+                                selection
+                                onChange={(e, a) =>
+                                  handleChangeTableItem(e, a, data, i)
+                                }
+                                required
+                                upward={
+                                  purchaseAdd.total_items > 4 ? true : false
+                                }
+                                search={search}
+                                onKeyDown={handleKeyDown2}
+                                placeholder="SELECT"
+                                className="purchase_search_drop border-0 w-100 ps-2"
+                                name={"name"}
+                                value={data.fk_items || data.name}
+                                options={itemNameList}
+                              />
+                            </td>
+                          ) : item.state === "unit" ? (
+                            <td>
+                              <select
+                                onChange={(e) =>
+                                  handleChangeTableItem(e, null, data, i)
+                                }
+                                onKeyDown={handleKeyDown2}
+                                name="unit"
+                                value={data.unit}
+                                style={{
+                                  WebkitAppearance: "none",
+                                  fontSize: "10px",
+                                  padding: "3.5px 1px",
+                                }}
+                                className="purchase_input border-0 w-100 text-center"
+                              >
+                                {unitList &&
+                                  unitList.map((x, i) => (
+                                    <option key={i} value={x.value}>
+                                      {x.text}
+                                    </option>
+                                  ))}
+                              </select>
+                            </td>
+                          ) : (
+                            <td>
+                              <input
+                                onChange={(e) =>
+                                  handleChangeTableItem(e, null, data, i)
+                                }
+                                onKeyDown={handleKeyDown2}
+                                name={item.state}
+                                type="number"
+                                disabled={item.readOnly}
+                                placeholder="0"
+                                className="purchase-table-items-input"
+                                value={data[item?.state] || ""}
+                              />
+                            </td>
                           );
                         else return null;
                       })}
-                    {/*
                     <td>
-                      <input
-                        onChange={(e) =>
-                          handleChangeTableItem(e, null, data, i)
-                        }
-                        onKeyDown={handleKeyDown2}
-                        name="rate"
-                        className="purchase-table-items-input"
-                        value={data.rate}
-                      />
-                    </td>
-                     <td>
-                      <input
-                      onKeyDown={handleKeyDown2}
-                        onChange={(e) =>
-                          handleChangeTableItem(e, null, data, i)
-                        }
-                        name="discount_1_percentage"
-                        className="purchase-table-items-input"
-                        value={data.discount_1_percentage}
-                      />
-                    </td>
-                    <td>
-                      <input
-                        onKeyDown={handleKeyDown2}
-                        onChange={(e) =>
-                          handleChangeTableItem(e, null, data, i)
-                        }
-                        name="discount_1_amount"
-                        className="purchase-table-items-input"
-                        value={data.discount_1_amount}
-                      />
-                    </td>
-                    <td>
-                      <input
-                        disabled
-                        onChange={(e) =>
-                          handleChangeTableItem(e, null, data, i)
-                        }
-                        name="value"
-                        className="purchase-table-items-input"
-                        value={data.value}
-                      />
-                    </td>
-                    <td>
-                      <input
-                        onKeyDown={handleKeyDown2}
-                        onChange={(e) =>
-                          handleChangeTableItem(e, null, data, i)
-                        }
-                        name="tax_gst"
-                        className="purchase-table-items-input"
-                        value={data.tax_gst}
-                      />
-                    </td>
-                    <td>
-                      <input
-                        disabled
-                        onChange={(e) =>
-                          handleChangeTableItem(e, null, data, i)
-                        }
-                        name="cgst_or_igst"
-                        className="purchase-table-items-input"
-                        value={data.cgst_or_igst}
-                      />
-                    </td>
-                    <td>
-                      <input
-                        disabled
-                        onChange={(e) =>
-                          handleChangeTableItem(e, null, data, i)
-                        }
-                        name="sgst"
-                        className="purchase-table-items-input"
-                        value={data.sgst}
-                      />
-                    </td>
-                    <td>
-                      <input
-                        disabled
-                        onChange={(e) =>
-                          handleChangeTableItem(e, null, data, i)
-                        }
-                        name="total"
-                        className="purchase-table-items-input"
-                        value={data.total}
-                      />
-                    </td>
-                    <td>
-                      <input
-                        disabled
-                        onChange={(e) =>
-                          handleChangeTableItem(e, null, data, i)
-                        }
-                        name="cost"
-                        className="purchase-table-items-input"
-                        value={data.cost}
-                      />
-                    </td>
-                    <td>
-                      <input
-                        onKeyDown={handleKeyDown2}
-                        onChange={(e) =>
-                          handleChangeTableItem(e, null, data, i)
-                        }
-                        name="margin"
-                        className="purchase-table-items-input"
-                        value={data.margin}
-                      />
-                    </td>
-                    <td>
-                      <input
-                        onKeyDown={handleKeyDown2}
-                        onChange={(e) =>
-                          handleChangeTableItem(e, null, data, i)
-                        }
-                        name="sales_rate"
-                        className="purchase-table-items-input"
-                        value={data.sales_rate}
-                      />
-                    </td> */}
-                    <td>
-                      {/* {data.edited ? (
-                        <button
-                          // type="clear"
-                          onKeyDown={(e) => handleKeyTableItemEdit(e, data, i)}
-                          onClick={(e) => handleTableItemEdit(e, data, i)}
-                          className="text-center border-0 bg-transparent"
-                        >
-                          <FiEdit className="mb-1 btn p-0" size={"16px"} />
-                        </button>
-                      ) : ( */}
                       <div
                         onClick={() => confirmDelete()}
                         className="text-center w-100"
                       >
                         <BsTrashFill className="mb-1 btn p-0" size={"16px"} />
                       </div>
-                      {/* )} */}
                     </td>
-                    {/* <td className="p-0">
-                  </td> */}
                   </tr>
                 );
               })}
@@ -884,10 +598,8 @@ const PurchaseTable = (props) => {
                           id="tableItemFkItem"
                           onAddItem={handleItemNameSelection}
                           name={"name"}
-                          onChange={
-                            (e, data) =>
-                              handleChangeTableItem(e, data, tableItem, true)
-                            // handleItemNameSelection(e,data)
+                          onChange={(e, data) =>
+                            handleChangeTableItem(e, data, tableItem, true)
                           }
                           value={
                             tableItem.fk_items === "" || tableItem.fk_items
@@ -934,8 +646,6 @@ const PurchaseTable = (props) => {
                           onChange={(e) =>
                             handleChangeTableItem(e, null, tableItem, true)
                           }
-                          onFocus={handleFocus}
-                          onBlur={handleBlur}
                           disabled={item.readOnly}
                           value={
                             tableItem[item.state] === "" ||
@@ -951,211 +661,10 @@ const PurchaseTable = (props) => {
                     );
                   else return null;
                 })}
-              <>
-                {/* <td>
-                <input
-                  onKeyDown={handleKeyDown}
-                  name={"rate"}
-                  onChange={(e) =>
-                    handleChangeTableItem(e, null, tableItem, true)
-                  }
-                  value={
-                    tableItem.rate==="" || tableItem.rate ? tableItem.rate : ""
-                  }
-                  onFocus={handleFocus}
-                  onBlur={handleBlur}
-                  type="number"
-                  className="purchase_input border-0 w-100 text-center"
-                />
-              </td>
-              <td>
-                <input
-                  onKeyDown={handleKeyDown}
-                  name={"discount_1_percentage"}
-                  onChange={(e) =>
-                    handleChangeTableItem(e, null, tableItem, true)
-                  }
-                  value={
-                    tableItem.discount_1_percentage==="" ||
-                    tableItem.discount_1_percentage
-                      ? tableItem.discount_1_percentage
-                      : ""
-                  }
-                  onFocus={handleFocus}
-                  onBlur={handleBlur}
-                  type="number"
-                  className="purchase_input border-0 w-100 text-center"
-                />
-              </td>
-              <td>
-                <input
-                  onKeyDown={handleKeyDown}
-                  name={"discount_1_amount"}
-                  onChange={(e) =>
-                    handleChangeTableItem(e, null, tableItem, true)
-                  }
-                  value={
-                    tableItem.discount_1_amount==="" ||
-                    tableItem.discount_1_amount
-                      ? tableItem.discount_1_amount
-                      : ""
-                  }
-                  onFocus={handleFocus}
-                  onBlur={handleBlur}
-                  type="number"
-                  className="purchase_input border-0 w-100 text-center"
-                />
-              </td>
-              <td>
-                <input
-                  disabled
-                  onKeyDown={handleKeyDown}
-                  name={"value"}
-                  onChange={(e) =>
-                    handleChangeTableItem(e, null, tableItem, true)
-                  }
-                  value={
-                    tableItem.value==="" || tableItem.value
-                      ? tableItem.value
-                      : ""
-                  }
-                  onFocus={handleFocus}
-                  onBlur={handleBlur}
-                  type="number"
-                  className="purchase_input border-0 w-100 text-center"
-                />
-              </td>
-              <td>
-                <input
-                  onKeyDown={handleKeyDown}
-                  name={"tax_gst"}
-                  onChange={(e) =>
-                    handleChangeTableItem(e, null, tableItem, true)
-                  }
-                  value={
-                    tableItem.tax_gst==="" || tableItem.tax_gst
-                      ? tableItem.tax_gst
-                      : ""
-                  }
-                  onFocus={handleFocus}
-                  onBlur={handleBlur}
-                  type="number"
-                  className="purchase_input border-0 w-100 text-center"
-                />
-              </td>
-              <td>
-                <input
-                  disabled
-                  onKeyDown={handleKeyDown}
-                  name={"cgst_or_igst"}
-                  onChange={(e) =>
-                    handleChangeTableItem(e, null, tableItem, true)
-                  }
-                  value={
-                    tableItem.cgst_or_igst==="" || tableItem.cgst_or_igst
-                      ? tableItem.cgst_or_igst
-                      : ""
-                  }
-                  onFocus={handleFocus}
-                  onBlur={handleBlur}
-                  type="number"
-                  className="purchase_input border-0 w-100 text-center"
-                />
-              </td>
-              <td>
-                <input
-                  disabled
-                  onKeyDown={handleKeyDown}
-                  name={"sgst"}
-                  onChange={(e) =>
-                    handleChangeTableItem(e, null, tableItem, true)
-                  }
-                  value={
-                    tableItem.sgst==="" || tableItem.sgst ? tableItem.sgst : ""
-                  }
-                  onFocus={handleFocus}
-                  onBlur={handleBlur}
-                  type="number"
-                  className="purchase_input border-0 w-100 text-center"
-                />
-              </td>
-              <td>
-                <input
-                  disabled
-                  onKeyDown={handleKeyDown}
-                  name={"total"}
-                  onChange={(e) =>
-                    handleChangeTableItem(e, null, tableItem, true)
-                  }
-                  value={
-                    tableItem.total==="" || tableItem.total
-                      ? tableItem.total
-                      : ""
-                  }
-                  onFocus={handleFocus}
-                  onBlur={handleBlur}
-                  type="number"
-                  className="purchase_input border-0 w-100 text-center"
-                />
-              </td>
-              <td>
-                <input
-                  disabled
-                  onKeyDown={handleKeyDown}
-                  name={"cost"}
-                  onChange={(e) =>
-                    handleChangeTableItem(e, null, tableItem, true)
-                  }
-                  value={
-                    tableItem.cost==="" || tableItem.cost ? tableItem.cost : ""
-                  }
-                  onFocus={handleFocus}
-                  onBlur={handleBlur}
-                  type="number"
-                  className="purchase_input border-0 w-100 text-center"
-                />
-              </td>
-              <td>
-                <input
-                  onKeyDown={handleKeyDown}
-                  name={"margin"}
-                  onChange={(e) =>
-                    handleChangeTableItem(e, null, tableItem, true)
-                  }
-                  value={
-                    tableItem.margin==="" || tableItem.margin
-                      ? tableItem.margin
-                      : ""
-                  }
-                  onFocus={handleFocus}
-                  onBlur={handleBlur}
-                  type="number"
-                  className="purchase_input border-0 w-100 text-center"
-                />
-              </td>
-              <td>
-                <input
-                  onKeyDown={handleKeyDown}
-                  name={"sales_rate"}
-                  onChange={(e) =>
-                    handleChangeTableItem(e, null, tableItem, true)
-                  }
-                  value={
-                    tableItem.sales_rate==="" || tableItem.sales_rate
-                      ? tableItem.sales_rate
-                      : ""
-                  }
-                  onFocus={handleFocus}
-                  onBlur={handleBlur}
-                  type="number"
-                  className="purchase_input border-0 w-100 text-center"
-                />
-              </td> */}
-              </>
               <td className="align-top">
                 <input
-                  onKeyDown={handleAddBatchOpen}
-                  onClick={handleAddBatchOpen}
+                  onKeyDown={handleAddOpenBatch}
+                  onClick={handleAddOpenBatch}
                   type="button"
                   className="table-item-add-btn rounded-1 btn-sm align-middle"
                   value={"+"}
@@ -1167,22 +676,6 @@ const PurchaseTable = (props) => {
           </tbody>
           <tfoot>
             <tr className="purchase-table-green">
-              {/* <td className="item2 col-1">
-                <div
-                  className="btn bg-none outline-none text-light border-none"
-                  onClick={handlePrev}
-                >
-                  {"<"} Previous
-                </div>
-              </td>
-              <td className="item3 px-3 col-1">
-                <div
-                  className="btn bg-none outline-none text-light border-none"
-                  onClick={handleNext}
-                >
-                  Next {">"}
-                </div>
-              </td> */}
               <td colSpan={2} className="col-2 text-start">
                 <div className="d-flex justify-items-start">
                   <div
@@ -1235,41 +728,6 @@ const PurchaseTable = (props) => {
                     );
                   else return null;
                 })}
-              <>
-                {/* <td></td>
-              <td></td>
-              <td className="item">
-                <div className="purch-green-table-item">
-                {purchaseAdd.total_disc || 0}%
-                </div>
-                </td>
-                <td className="item">
-                <div className="purch-green-table-item">
-                {purchaseAdd.total_value || 0}
-                </div>
-                </td>
-                <td></td>
-                <td className="item">
-                <div className="purch-green-table-item">
-                  {purchaseAdd.total_scGst || 0}
-                </div>
-                </td>
-              <td className="item">
-                <div className="purch-green-table-item">
-                {purchaseAdd.total_scGst || 0}
-                </div>
-                </td>
-                <td className="item">
-                <div className="purch-green-table-item">
-                {purchaseAdd.total_total || 0}
-                </div>
-                </td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-              <td></td> */}
-              </>
             </tr>
           </tfoot>
         </table>

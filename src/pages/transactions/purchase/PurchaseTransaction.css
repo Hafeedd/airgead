@@ -650,3 +650,15 @@ td.n_clr {
 .page_head.purchase-return {
   background: #7b66ff !important;
 }
+
+#tableItemFkItem .text.divider{
+  text-overflow: "---" !important;
+  overflow: hidden !important;
+  height: 100% !important;
+}
+
+#tableItemFkItem div .item{
+  /* white-space: nowrap; */
+  /* text-wrap: nowrap; */
+  width: fit-content !important;
+}

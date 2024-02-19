@@ -29,12 +29,10 @@ export const initialPurchaseTableStatePositionLocal = JSON.parse(
 
 const PurchaseTransaction = ({ returnPage }) => {
   const [purchaseItemModal, setPurchaseItemModal] = useState(false);
-  const [cstm_id, setCstm_id] = useState(1);
   const [supplierList, setSupplierList] = useState(null);
   const [purchaseEditModal, setPurchaseEditModal] = useState(false);
   const [purchaseItemSerielModal, setPurchaseItemSerielModal] = useState(false);
-  const [pageHeadItem, setPageHeadItem] = useState(1);
-  const [tableItemKeys, setTableItemKeys] = useState([]);
+  const [pageHeadItem, setPageHeadItem] = useState(1);  
   const [edit, setEdit] = useState(null);
   const [showStock, setShowStock] = useState(false);
   const [showBatch, setShowBatch] = useState(false);
@@ -48,9 +46,6 @@ const PurchaseTransaction = ({ returnPage }) => {
       initialPurchaseSalesTableStatePosition
   );
 
-  // this below state is to check if a table item is edited and -
-  // the save button is not checked or not . false if checked
-  const [tableItemEdited, setTableItemEdited] = useState(false);
   const [purchaseList, setPurchaseList] = useState();
   const [tableItemList, setTableItemList] = useState([]);
   const [tableItemBatchList, setTableItemBatchList] = useState([]);
@@ -72,7 +67,6 @@ const PurchaseTransaction = ({ returnPage }) => {
   const { postPurchase, putPurchase, getPurchase, postPurchaseItem } =
     usePurchaseServices();
   const {
-    postPurchaseReturnItem,
     postPurchaseReturn,
     getPurchaseReturn,
     putPurchaseReturn,
@@ -84,7 +78,7 @@ const PurchaseTransaction = ({ returnPage }) => {
     getData();
     // handleGetCode();
     if (!returnPage) handleReloadData();
-    else if(returnPage) handlePurchaseAllReset();
+    else if (returnPage) handlePurchaseAllReset();
 
     let supplier = location.state;
     if (supplier?.id) {
@@ -106,7 +100,6 @@ const PurchaseTransaction = ({ returnPage }) => {
     const allPurchState = {
       ...purchaseAdd,
       items: [...tableItemList],
-      tablekeys: tableItemKeys,
       edit: edit,
     };
     localStorage.setItem("purchaseData", JSON.stringify(allPurchState));
@@ -124,15 +117,14 @@ const PurchaseTransaction = ({ returnPage }) => {
         ...others,
         change_due: others.change_due || "0.00",
       };
-      if (tablekeys?.length > 0) {
-        setTableItemKeys([...tablekeys]);
+      if (tablekeys?.length > 0) {        
       }
       setPurchaseAdd((data) => ({ ...data, ...tempData }));
       if (items) {
         setTableItemList([...items]);
         handlePurchAllCalc(items, true, tempData);
       }
-    }else handleGetCode(false,true)
+    } else handleGetCode(false, true);
   };
 
   useEffect(() => {
@@ -163,7 +155,6 @@ const PurchaseTransaction = ({ returnPage }) => {
         handlePurchAllCalc(items, true, tempData);
       }
     }
-    // else handleGetCode();
   };
 
   const handlePurchAllCalc = (dataList, fromEdit, purchaseData, itemEdit) => {
@@ -232,9 +223,6 @@ const PurchaseTransaction = ({ returnPage }) => {
       setPurchaseAdd((data) => {
         return { ...data, ...tempPurchaseAdd };
       });
-      if (itemEdit) {
-        putPurchase(edit.id, { ...tempPurchaseAdd, items: tableItemKeys });
-      }
     } else {
       setPurchaseAdd((data) => ({
         ...data,
@@ -254,16 +242,18 @@ const PurchaseTransaction = ({ returnPage }) => {
     }
   };
 
-  const handleGetCode = async (nextCode,firstReload) => {
-    console.log(nextCode,firstReload)
+  const handleGetCode = async (nextCode, firstReload) => {
     //  nextCode arg is sent form handleNext fucnt
     //  in purchaseTable and handleReset in purchaseDetailFooter
     //  it is for reseting doc_no instead of checking edit
     try {
       let code;
       let response = await getCode();
-      console.log(((!edit && nextCode ) || nextCode || firstReload))
-      if (response.success && ((!edit && nextCode ) || nextCode || (!nextCode&&firstReload))) {
+      console.log((!edit && nextCode) || nextCode || firstReload);
+      if (
+        response.success &&
+        ((!edit && nextCode) || nextCode || (!nextCode && firstReload))
+      ) {
         for (let i of response.data) {
           let type = "PUR";
           if (i.sub_id == type) {
@@ -343,8 +333,7 @@ const PurchaseTransaction = ({ returnPage }) => {
     setPurchaseAdd(initialPurchaseAdd);
     setTableItemList([]);
     setTableItemBatchList([]);
-    setTableItem(initialTableItem);
-    setTableItemKeys([]);
+    setTableItem(initialTableItem);    
     setEdit(false);
     if (!returnPage) localStorage.setItem("purchaseData", false);
   };
@@ -476,20 +465,10 @@ const PurchaseTransaction = ({ returnPage }) => {
         });
         return 0;
       }
-      if (tableItemEdited) {
-        Swal.fire({
-          title: "Item edited but edit button is not clicked",
-          icon: "warning",
-          text: "",
-          showConfirmButton: true,
-          timer: 1500,
-        });
-        return 0;
-      }
+      
       let submitData = { ...purchaseAdd, items: tableItemList };
       let response;
-      // console.log(submitData.change_due)
-      // return 0
+
       if (!edit) {
         if (returnPage) response = await postPurchaseReturn(submitData);
         else response = await postPurchase(submitData);
@@ -500,6 +479,7 @@ const PurchaseTransaction = ({ returnPage }) => {
       }
       if (response?.success) {
         handlePurchaseAllReset();
+        handleGetCode(true);
         getData();
         Swal.fire("Purchase added successfully", "", "success");
       } else {
@@ -533,92 +513,92 @@ const PurchaseTransaction = ({ returnPage }) => {
     }
   };
 
-  const handleBatchSubmit = async (tempItems) => {
-    try {
-      let ItemTempList = [...tableItemBatchList],
-        itemTemp = {};
-      if (tableItemBatchList.length > 0) {
-        tableItemBatchList?.map((data) => {
-          let itemTemp = { ...data };
-          itemTemp = { ...itemTemp, ["cstm_id"]: cstm_id };
-          setTableItemBatchList(ItemTempList);
-        });
-      }
-      try {
-        let submitData = { ...tableItem };
-        if (purchaseAdd.isBatch)
-          submitData = { ...submitData, batch_items: batchKeys };
-        let response;
-        if (!tableEdit) {
-          if (returnPage) response = await postPurchaseReturnItem(submitData);
-          else response = await postPurchaseItem(submitData);
-        }
-        if (response?.success && !tableEdit) {
-          let tempItemKeys = [...tableItemKeys];
-          tempItemKeys.push({
-            id: returnPage ? response?.data?.id : response?.data?.purchase?.id,
-          });
-          ItemTempList.push(itemTemp);
-          setTableItemKeys(tempItemKeys);
-          tempItems?.map((x, i) => {
-            if (x.cstm_id == cstm_id) {
-              x.id = returnPage
-                ? response?.data?.id
-                : response?.data?.purchase?.id;
-              tempItems.splice(i, 1);
-              tempItems.push({ ...x });
-              setTableItemList(tempItems);
-            }
-          });
-        }
-        // else if ((edit || tableEdit) && response.success) {
-        //   const data = await getData();
-        //   // setEdit(data);
-        //   tempItems?.map((x, i) => {
-        //     if (x.id == tableEdit) {
-        //       x = { ...x, ...tableItem };
-        //       tempItems.splice(i, 1);
-        //       tempItems.push({ ...x });
-        //       setTableItemList(tempItems);
-        //     }
-        //   });
-        //   setTableEdit(false);
-        //   // }else if(edit){
-        //   //   setEdit(false)
-        // }
-        else {
-          Swal.fire(
-            "Error",
-            response.message ||
-              "Error while adding new item , Please try again",
-            "error"
-          );
-        }
-      } catch (err) {
-        // setTableItemList([...tableItemList])
-        const key = Object.keys(err?.response?.data?.data)[0]
-          ?.split("_")
-          .join(" ");
-        const value = Object.values(err?.response?.data?.data)[0][0];
-        Swal.fire(
-          "Error",
-          key + " " + value || "Failed to add Item , please try again.",
-          "error"
-        );
-      }
-      // setPurchaseItemSerielModal(false);
-      handleTableItemReset();
-      handlePurchAllCalc(tempItems, false);
-    } catch (err) {
-      console.log(err);
-      Swal.fire(
-        "Error",
-        "Failed while adding item to table. Pls try again later",
-        "error"
-      );
-    }
-  };
+  // const handleBatchSubmit = async (tempItems) => {
+  //   try {
+  //     let ItemTempList = [...tableItemBatchList],
+  //       itemTemp = {};
+  //     if (tableItemBatchList.length > 0) {
+  //       tableItemBatchList?.map((data) => {
+  //         let itemTemp = { ...data };
+  //         itemTemp = { ...itemTemp, ["cstm_id"]: cstm_id };
+  //         setTableItemBatchList(ItemTempList);
+  //       });
+  //     }
+  //     try {
+  //       let submitData = { ...tableItem };
+  //       if (purchaseAdd.isBatch)
+  //         submitData = { ...submitData, batch_items: batchKeys };
+  //       let response;
+  //       if (!tableEdit) {
+  //         if (returnPage) response = await postPurchaseReturnItem(submitData);
+  //         else response = await postPurchaseItem(submitData);
+  //       }
+  //       if (response?.success && !tableEdit) {
+  //         let tempItemKeys = [...tableItemKeys];
+  //         tempItemKeys.push({
+  //           id: returnPage ? response?.data?.id : response?.data?.purchase?.id,
+  //         });
+  //         ItemTempList.push(itemTemp);  
+  //         tempItems?.map((x, i) => {
+  //           if (x.cstm_id == cstm_id) {
+  //             x.id = returnPage
+  //               ? response?.data?.id
+  //               : response?.data?.purchase?.id;
+  //             tempItems.splice(i, 1);
+  //             tempItems.push({ ...x });
+  //             setTableItemList(tempItems);
+  //           }
+  //         });
+  //       }
+  //       // else if ((edit || tableEdit) && response.success) {
+  //       //   const data = await getData();
+  //       //   // setEdit(data);
+  //       //   tempItems?.map((x, i) => {
+  //       //     if (x.id == tableEdit) {
+  //       //       x = { ...x, ...tableItem };
+  //       //       tempItems.splice(i, 1);
+  //       //       tempItems.push({ ...x });
+  //       //       setTableItemList(tempItems);
+  //       //     }
+  //       //   });
+  //       //   setTableEdit(false);
+  //       //   // }else if(edit){
+  //       //   //   setEdit(false)
+  //       // }
+  //       else {
+  //         Swal.fire(
+  //           "Error",
+  //           response.message ||
+  //             "Error while adding new item , Please try again",
+  //           "error"
+  //         );
+  //       }
+  //     } catch (err) {
+  //       // setTableItemList([...tableItemList])
+  //       const key = Object.keys(err?.response?.data?.data)[0]
+  //         ?.split("_")
+  //         .join(" ");
+  //       const value = Object.values(err?.response?.data?.data)[0][0];
+  //       Swal.fire(
+  //         "Error",
+  //         key + " " + value || "Failed to add Item , please try again.",
+  //         "error"
+  //       );
+  //     }
+  //     // setPurchaseItemSerielModal(false);
+  //     handleTableItemReset();
+  //     handlePurchAllCalc(tempItems, false);
+  //   } catch (err) {
+  //     console.log(err);
+  //     Swal.fire(
+  //       "Error",
+  //       "Failed while adding item to table. Pls try again later",
+  //       "error"
+  //     );
+  //   }
+  // };
 
+  const handleBatchSubmit = (tempItems) => {};
   return (
     <div className="item_add">
       <div className={`itemList_header row mx-0 mb-3`}>
@@ -702,54 +682,31 @@ const PurchaseTransaction = ({ returnPage }) => {
               />
             )
           )
-          // : (
-          //   pageHeadItem == 4 && (
-          //     <PurchaseInvoiceDetails
-          //       {...{
-          //         handleEdit,
-          //         purchaseAdd,
-          //         handleChange,
-          //         supplierList,
-          //         setSupplierList,
-          //       }}
-          //     />
-          //   )
-          // )
         }
         {/* {purchaseHeader} ---------------------------------------------------------*/}
         <PurchaseTable
           {...{
-            returnPage,
             purchaseInvoiceRef,
             tableItemRef,
             setTableItemRef,
-            tableItemKeys,
-            setTableItemKeys,
             handleGetCode,
             handleSetEdit,
-            setTableItemEdited,
             tableHeadList,
             setPurchaseItemModal,
             tableItem,
             setTableItem,
             edit,
             handlePurchAllCalc,
-            setPurchaseItemSerielModal,
-            cstm_id,
             purchaseAdd,
-            setCstm_id,
             tableItemList,
             setTableItemList,
             tableEdit,
-            setTableEdit,
             setEdit,
-            handleBatchSubmit,
             itemNameList,
             setItemNameList,
             purchaseList,
-            getData,
-            handlePurchaseAllReset,
             handleTableItemReset,
+            handlePurchaseAllReset,
             setShowBatch,
           }}
         />

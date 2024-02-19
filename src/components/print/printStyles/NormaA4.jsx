@@ -11,15 +11,12 @@ export const NormaA4 = (props) => {
     c_gstin,
     vehicle_no,
     driver,
-    taxPerc,
     total_qty,
     total_disc,
     total_value,
-    total_cgst,
     total_sgst,
     total,
     roundOff,
-    hsn,
     TableHeigth,
     tableHead,
     tableTrBody,
@@ -59,27 +56,12 @@ export const NormaA4 = (props) => {
         </div>
         <div
           className="row border-bottom mx-0 border-secondary"
-          // style={{ }}
           style={{
-            // border: '2px solid black',
             height: "120px",
-            // padding: "0",
-            // margin: "0px",
-            // overflow: "none",
           }}
         >
-          <div 
-          // style={{
-          //   resize: "horizontal",
-          //   overflow:"auto",
-          //   minWidth: "20%",
-          //   maxWidth:"70%",
-          //   height: "100%",
-          //   margin: "0px",
-          //   padding: "6px",
-          //   display: "flex",
-          // }}
-          className="col-6 text-start position-relative ps-5 py-3 border-end flex-wrap border-secondary d-flex">
+          <div
+          className="w-100 text-start position-relative ps-5 py-0 d-flex">
             <Rnd
               default={{
                 x: 0,
@@ -112,7 +94,7 @@ export const NormaA4 = (props) => {
                 <div className="text-center">GST Number: {c_gstin}</div>
               </div>
             </Rnd>
-          </div>
+          {/* </div>
           <div 
           // style={{
           //   resize: "horizontal",
@@ -124,10 +106,10 @@ export const NormaA4 = (props) => {
           //   display: "flex",
           // }}
           style={{minWidth:'fit-content'}}
-          className="col-6 position-relative text-start ps-5">
+          className="col-6 position-relative text-start ps-5"> */}
             <Rnd
               default={{
-                x: 60,
+                x: 460,
                 y: 0,
               }}
               enableResizing="false"
@@ -139,8 +121,21 @@ export const NormaA4 = (props) => {
               </div>
             </Rnd>
             <Rnd
+            default={{
+              x:400,
+              y:0,
+              height:"120px",
+              width:'10px'
+            }}
+            minHeight="100%"
+            enableResizing="false"
+            dragAxis="x"
+            bounds="parent">
+            <div style={{minHeight:'100%'}} className="border-end border-secondary h-100 p-0 m-0"></div>
+            </Rnd>
+            <Rnd
               default={{
-                x: 160,
+                x: 560,
                 y: 20,
               }}
               enableResizing="false"
