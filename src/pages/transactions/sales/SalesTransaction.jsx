@@ -74,7 +74,7 @@ const initialTableItemState = {
   fk_items: null,
   code: null,
   quantity: 0.0,
-  unit: null,
+  fk_unit: null,
   gross: 0.0,
   transaction_unit: null,
   rate: 0.0,

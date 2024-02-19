@@ -65,13 +65,12 @@ const SalesTable = (props) => {
   const handleDataNameList = (data) => {
     let tempList = [];
     data?.map((x) => {
-      const { id, code, name, fk_unit, ...others } = x;
+      const { id, code, name, ...others } = x;
       tempList.push({
+        ...others,
         text: x.name,
         description: x.code,
         value: x.id,
-        unit: x.fk_unit,
-        ...others,
       });
     });
     setItemNameList([...tempList]);
@@ -195,7 +194,6 @@ const SalesTable = (props) => {
         id,
         code,
         name,
-        fk_unit,
         tax_gst,
         retail_rate,
         purchase_rate,
@@ -226,7 +224,6 @@ const SalesTable = (props) => {
         item_name: newObj?.text,
         code: newObj?.description,
         fk_items: newObj?.value,
-        unit: newObj?.unit,
         sales_rate: retail_rate || 0,
         rate: retail_rate || 0,
         gross: gross || 0,
@@ -590,8 +587,8 @@ const SalesTable = (props) => {
                                     handleChangeTableItem(e, null, data, i)
                                   }
                                   onKeyDown={handleKeyDown2}
-                                  name="unit"
-                                  value={data.unit}
+                                  name="fk_unit"
+                                  value={data.fk_unit}
                                   style={{
                                     WebkitAppearance: "none",
                                     fontSize: "10px",
@@ -686,13 +683,13 @@ const SalesTable = (props) => {
                       <td colSpan={i === 0 ? 2 : 1}>
                         <select
                           onKeyDown={handleKeyDown}
-                          name={"unit"}
+                          name={"fk_unit"}
                           onChange={(e) =>
                             handleChangeTableItem(e, null, tableItem, true)
                           }
                           value={
-                            tableItem.unit === "" || tableItem.unit
-                              ? tableItem.unit
+                            tableItem.fk_unit === "" || tableItem.fk_unit
+                              ? tableItem.fk_unit
                               : ""
                           }
                           style={{
