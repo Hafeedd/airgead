@@ -10,39 +10,29 @@ import { useLocation, useNavigate } from "react-router";
 
 const PurchaseTable = (props) => {
   const {
-    returnPage,
     purchaseInvoiceRef,
     tableItemRef,
     setTableItemRef,
-    setTableItemKeys,
-    tableItemKeys,
     handleGetCode,
     handleSetEdit,
-    setTableItemEdited,
     tableHeadList,
     setPurchaseItemModal,
     tableItem,
     setTableItem,
     edit,
     handlePurchAllCalc,
-    setPurchaseItemSerielModal,
-    cstm_id,
     purchaseAdd,
-    setCstm_id,
     tableItemList,
     setTableItemList,
     tableEdit,
     setEdit,
-    handleBatchSubmit,
     itemNameList,
     setItemNameList,
     purchaseList,
     handleTableItemReset,
-    getData,
     handlePurchaseAllReset,
     setShowBatch,
   } = props;
-  const [tableHeight, setTableHeight] = useState();
   const [unitList, setUnitList] = useState();
   const [tableItemListRef, setTableItemListRef] = useState(null);
 
@@ -95,48 +85,16 @@ const PurchaseTable = (props) => {
       };
       setTableItem({ ...tempItem });
       navigate(null, { state: null });
-
       document
         .getElementById("tableItemFkItem")
-        ?.querySelector("input")
-        ?.focus();
+        ?.parentNode?.nextSibling?.firstChild?.focus();
     }
   }, []);
 
-  useEffect(() => {
-    const tempList = [...tableItemList];
-    const editedList = tempList.filter((x) => x.edited);
-    if (editedList.length < 1) setTableItemEdited(false);
-  }, [tableItemList, setTableItemEdited]);
-
-  const handleKeyTableItemEdit = async (e, data, i) => {
-    if (e.key === "Enter" && !e.ctrlKey) {
-      e.preventDefault();
-      handleTableItemEdit(e, data, i);
-    } else handleKeyDown2(e);
-  };
-
-  const handleTableItemEdit = async (e, data, i) => {
-    e.preventDefault();
-    try {
-      if (!data.item_name || !data.quantity || !data.rate) {
-        Swal.fire({
-          title: "please enter Essential details firs",
-          text: "Enter Rate , Quantity and Select Item First",
-          icon: "warning",
-          // showConfirmButton: false,
-          timer: 1500,
-        });
-        handleKeyDown2(e);
-        return 0;
-      }
-      let tempList = [...tableItemList];
-      let { edited, ...others } = data;
-      tempList.splice(i, 1, others);
-      setTableItemList([...tempList]);
-      handlePurchAllCalc(tempList, false, false, true);
-    } catch (err) {}
-  };
+  useEffect(()=>{
+    if(tableItemList?.length>10)
+    document.getElementById('tableItemFkItem').scrollIntoView({ behavior: "smooth" });
+  },[tableItemList])
 
   const getTableData = async () => {
     const minFunct = (data) => {
@@ -162,6 +120,7 @@ const PurchaseTable = (props) => {
       });
       setItemNameList([...tempList]);
     };
+
     try {
       let res2 = await getProperty();
       let res = await getItemNameList();
@@ -222,7 +181,6 @@ const PurchaseTable = (props) => {
       let tempList = [...tableItemList];
       tempList.splice(toTableItem, 1, { ...calculatedData, edited: true });
       setTableItemList([...tempList]);
-      setTableItemEdited(true);
     }
   };
 
@@ -436,18 +394,15 @@ const PurchaseTable = (props) => {
   };
 
   const AdjustHeightOfTable = () => {
-    let a = [];
+    let tableTr = [];
     for (let i = 0; i < 9 - purchaseAdd.total_items || 0; i++) {
-      a.push(
+      tableTr.push(
         <tr key={i}>
-          <td
-            className="border-0"          
-            colSpan={tableHeadList.length + 2}
-          ></td>
+          <td className="border-0" colSpan={tableHeadList.length + 2}></td>
         </tr>
       );
     }
-    return a;
+    return tableTr;
   };
 
   const handleTableItemDelete = async (data, i) => {
@@ -479,9 +434,7 @@ const PurchaseTable = (props) => {
   return (
     <>
       <div className="mx-2 mt-1 purchase-table-item-container px-0">
-        <table
-          className="table table-secondary purchase-table mb-0"
-        >
+        <table className="table table-secondary purchase-table mb-0">
           <thead className="purchase-table-header">
             <tr>
               <th width="30">SL</th>
@@ -540,74 +493,72 @@ const PurchaseTable = (props) => {
                     {tableHeadList?.length > 0 &&
                       tableHeadList.map((item, index) => {
                         if (item.visible && item.purchaseShow)
-                          return (
-                            index === 0 ? (
-                              <td className="text-start ps-3 pe-2" colSpan={1}>
-                                <Dropdown
-                                  // onClick={()=>setShowStock(data=>!data)}
-                                  selection
-                                  onChange={(e, a) =>
-                                    handleChangeTableItem(e, a, data, i)
-                                  }
-                                  required
-                                  upward={
-                                    purchaseAdd.total_items > 4 ? true : false
-                                  }
-                                  search={search}
-                                  onKeyDown={(e) => {
-                                    handleKeyDown2(e);
-                                  }}
-                                  placeholder="SELECT"
-                                  className="purchase_search_drop border-0 w-100 ps-2"
-                                  name={"name"}
-                                  value={data.fk_items || data.name}
-                                  options={itemNameList}
-                                />
-                              </td>
-                            ) : item.state === "unit" ? (
-                              <td>
-                                <select
-                                  onChange={(e) =>
-                                    handleChangeTableItem(e, null, data, i)
-                                  }
-                                  onKeyDown={(e) => {
-                                    handleKeyDown2(e);
-                                  }}
-                                  name="unit"
-                                  value={data.unit}
-                                  style={{
-                                    WebkitAppearance: "none",
-                                    fontSize: "10px",
-                                    padding: "3.5px 1px",
-                                  }}
-                                  className="purchase_input border-0 w-100 text-center"
-                                >
-                                  {unitList &&
-                                    unitList.map((x, i) => (
-                                      <option key={i} value={x.value}>
-                                        {x.text}
-                                      </option>
-                                    ))}
-                                </select>
-                              </td>
-                            ) : (
-                              <td>
-                                <input
-                                  onChange={(e) =>
-                                    handleChangeTableItem(e, null, data, i)
-                                  }
-                                  onKeyDown={(e) => {
-                                    handleKeyDown2(e);
-                                  }}
-                                  name={item.state}
-                                  type="number"
-                                  disabled={item.readOnly}
-                                  placeholder="0"
-                                  className="purchase-table-items-input"
-                                  value={data[item?.state] || ""}
-                                />
-                              </td>
-                            )
+                          return index === 0 ? (
+                            <td className="text-start ps-3 pe-2" colSpan={1}>
+                              <Dropdown
+                                // onClick={()=>setShowStock(data=>!data)}
+                                selection
+                                onChange={(e, a) =>
+                                  handleChangeTableItem(e, a, data, i)
+                                }
+                                required
+                                upward={
+                                  purchaseAdd.total_items > 4 ? true : false
+                                }
+                                search={search}
+                                onKeyDown={(e) => {
+                                  handleKeyDown2(e);
+                                }}
+                                placeholder="SELECT"
+                                className="purchase_search_drop border-0 w-100 ps-2"
+                                name={"name"}
+                                value={data.fk_items || data.name}
+                                options={itemNameList}
+                              />
+                            </td>
+                          ) : item.state === "unit" ? (
+                            <td>
+                              <select
+                                onChange={(e) =>
+                                  handleChangeTableItem(e, null, data, i)
+                                }
+                                onKeyDown={(e) => {
+                                  handleKeyDown2(e);
+                                }}
+                                name="unit"
+                                value={data.unit}
+                                style={{
+                                  WebkitAppearance: "none",
+                                  fontSize: "10px",
+                                  padding: "3.5px 1px",
+                                }}
+                                className="purchase_input border-0 w-100 text-center"
+                              >
+                                {unitList &&
+                                  unitList.map((x, i) => (
+                                    <option key={i} value={x.value}>
+                                      {x.text}
+                                    </option>
+                                  ))}
+                              </select>
+                            </td>
+                          ) : (
+                            <td>
+                              <input
+                                onChange={(e) =>
+                                  handleChangeTableItem(e, null, data, i)
+                                }
+                                onKeyDown={(e) => {
+                                  handleKeyDown2(e);
+                                }}
+                                name={item.state}
+                                type="number"
+                                disabled={item.readOnly}
+                                placeholder="0"
+                                className="purchase-table-items-input"
+                                value={data[item?.state] || ""}
+                              />
+                            </td>
                           );
                         else return null;
                       })}

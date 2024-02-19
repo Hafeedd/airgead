@@ -29,7 +29,6 @@ export const initialPurchaseTableStatePositionLocal = JSON.parse(
 
 const PurchaseTransaction = ({ returnPage }) => {
   const [purchaseItemModal, setPurchaseItemModal] = useState(false);
-  const [cstm_id, setCstm_id] = useState(1);
   const [supplierList, setSupplierList] = useState(null);
   const [purchaseEditModal, setPurchaseEditModal] = useState(false);
   const [purchaseItemSerielModal, setPurchaseItemSerielModal] = useState(false);
@@ -48,9 +47,6 @@ const PurchaseTransaction = ({ returnPage }) => {
       initialPurchaseSalesTableStatePosition
   );
 
-  // this below state is to check if a table item is edited and -
-  // the save button is not checked or not . false if checked
-  const [tableItemEdited, setTableItemEdited] = useState(false);
   const [purchaseList, setPurchaseList] = useState();
   const [tableItemList, setTableItemList] = useState([]);
   const [tableItemBatchList, setTableItemBatchList] = useState([]);
@@ -72,7 +68,6 @@ const PurchaseTransaction = ({ returnPage }) => {
   const { postPurchase, putPurchase, getPurchase, postPurchaseItem } =
     usePurchaseServices();
   const {
-    postPurchaseReturnItem,
     postPurchaseReturn,
     getPurchaseReturn,
     putPurchaseReturn,
@@ -84,7 +79,7 @@ const PurchaseTransaction = ({ returnPage }) => {
     getData();
     // handleGetCode();
     if (!returnPage) handleReloadData();
-    else if(returnPage) handlePurchaseAllReset();
+    else if (returnPage) handlePurchaseAllReset();
 
     let supplier = location.state;
     if (supplier?.id) {
@@ -132,7 +127,7 @@ const PurchaseTransaction = ({ returnPage }) => {
         setTableItemList([...items]);
         handlePurchAllCalc(items, true, tempData);
       }
-    }else handleGetCode(false,true)
+    } else handleGetCode(false, true);
   };
 
   useEffect(() => {
@@ -163,7 +158,6 @@ const PurchaseTransaction = ({ returnPage }) => {
         handlePurchAllCalc(items, true, tempData);
       }
     }
-    // else handleGetCode();
   };
 
   const handlePurchAllCalc = (dataList, fromEdit, purchaseData, itemEdit) => {
@@ -251,15 +245,18 @@ const PurchaseTransaction = ({ returnPage }) => {
     }
   };
 
-  const handleGetCode = async (nextCode,firstReload) => {
+  const handleGetCode = async (nextCode, firstReload) => {
     //  nextCode arg is sent form handleNext fucnt
     //  in purchaseTable and handleReset in purchaseDetailFooter
     //  it is for reseting doc_no instead of checking edit
     try {
       let code;
       let response = await getCode();
-      console.log(((!edit && nextCode ) || nextCode || firstReload))
-      if (response.success && ((!edit && nextCode ) || nextCode || (!nextCode&&firstReload))) {
+      console.log((!edit && nextCode) || nextCode || firstReload);
+      if (
+        response.success &&
+        ((!edit && nextCode) || nextCode || (!nextCode && firstReload))
+      ) {
         for (let i of response.data) {
           let type = "PUR";
           if (i.sub_id == type) {
@@ -497,7 +494,7 @@ const PurchaseTransaction = ({ returnPage }) => {
       if (response?.success) {
         handlePurchaseAllReset();
         handleGetCode(true);
-        getData()
+        getData();
         Swal.fire("Purchase added successfully", "", "success");
       } else {
         if (response?.data?.length > 0) {
@@ -616,9 +613,7 @@ const PurchaseTransaction = ({ returnPage }) => {
   //   }
   // };
 
-  const handleBatchSubmit = (tempItems) =>{
-    
-  }
+  const handleBatchSubmit = (tempItems) => {};
   return (
     <div className="item_add">
       <div className={`itemList_header row mx-0 mb-3`}>
@@ -702,54 +697,31 @@ const PurchaseTransaction = ({ returnPage }) => {
               />
             )
           )
-          // : (
-          //   pageHeadItem == 4 && (
-          //     <PurchaseInvoiceDetails
-          //       {...{
-          //         handleEdit,
-          //         purchaseAdd,
-          //         handleChange,
-          //         supplierList,
-          //         setSupplierList,
-          //       }}
-          //     />
-          //   )
-          // )
         }
         {/* {purchaseHeader} ---------------------------------------------------------*/}
         <PurchaseTable
           {...{
-            returnPage,
             purchaseInvoiceRef,
             tableItemRef,
             setTableItemRef,
-            tableItemKeys,
-            setTableItemKeys,
             handleGetCode,
             handleSetEdit,
-            setTableItemEdited,
             tableHeadList,
             setPurchaseItemModal,
             tableItem,
             setTableItem,
             edit,
             handlePurchAllCalc,
-            setPurchaseItemSerielModal,
-            cstm_id,
             purchaseAdd,
-            setCstm_id,
             tableItemList,
             setTableItemList,
             tableEdit,
-            setTableEdit,
             setEdit,
-            handleBatchSubmit,
             itemNameList,
             setItemNameList,
             purchaseList,
-            getData,
-            handlePurchaseAllReset,
             handleTableItemReset,
+            handlePurchaseAllReset,
             setShowBatch,
           }}
         />
