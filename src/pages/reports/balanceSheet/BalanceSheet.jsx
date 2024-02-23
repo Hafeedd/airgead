@@ -5,6 +5,7 @@ import BalanceSheetTables from './components/BalanceSheetTables'
 import { useReportsServices } from '../../../services/reports/reports'
 
 
+
 const BalanceSheet = () => {
 
     const {getBalanceSheet} = useReportsServices()
@@ -22,7 +23,10 @@ const BalanceSheet = () => {
 
     const getData = async () =>{
         try{
-            const date = {from_date: params?.from_date,to_date: params?.to_date}
+            const date = {
+                from_date: params?.from_date,
+                to_date: params?.to_date
+            }
             const response = await getBalanceSheet(date)
             if (response.success){
                 setBalanceSheetData(response.data)

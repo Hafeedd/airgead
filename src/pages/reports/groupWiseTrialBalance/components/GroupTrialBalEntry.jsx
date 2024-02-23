@@ -3,27 +3,20 @@ import { TfiEmail, TfiPrinter } from "react-icons/tfi";
 import { BsWhatsapp, BsFiletypePdf } from "react-icons/bs";
 import { RiFileExcel2Line } from "react-icons/ri";
 import { Form } from "react-bootstrap";
-// import { Dropdown } from 'semantic-ui-react'
-import { useLocation,useNavigate } from 'react-router'
 
-const BalanceSheetEntry = (props) => {
-    const { params, setParams } = props
+const GroupTrialBalEntry = (props) => {
+    const {params, setParams} = props
 
-    const navigate = useNavigate()
-    const location = useLocation();
-
-    const handleChange = ((e) => {
-        console.log(e.target.value)
-        if (e.target.vslue == "") {
-            setParams({ ...params, [e.target.name]: null })
+    const handleChange = ((e)=>{
+        if (e.target.value == ""){
+            setParams({...params,[e.target.name]: null});
         }
-        else {
-            setParams({ ...params, [e.target.name]: e.target.value })
+        else{
+            setParams(param=>({...params,[e.target.name]:e.target.value}))
         }
     })
-    
-    return (
-        <div className="row mx-0">
+  return (
+    <div className="row mx-0">
             <div className="col-12 px-0 mt-1 d-flex justify-content-start">
                 <div
                     style={{ background: "#4B4B4B" }}
@@ -65,19 +58,6 @@ const BalanceSheetEntry = (props) => {
                 <Form.Group className="col-4 col-3 pe-4 ps-0 mx-0 d-flex align-items-center mt-1">
                     <Form.Label className="col-2 purchase-input-label pb-1">
                         {/* {from=="stock" ? "Item Code":"Details"} */}
-                        From
-                    </Form.Label>
-                    <Form.Control
-                        name="from_date"
-                        value={params?.from_date || new Date()?.toISOString()?.slice(0, 10)}
-                        onChange={handleChange}
-                        className="purchase-input-text me-2 text-start"
-                        type="date"
-                    />
-                </Form.Group>
-                <Form.Group className="col-4 col-3 pe-4 ps-0 mx-0 d-flex align-items-center mt-1">
-                    <Form.Label className="col-2 purchase-input-label pb-1">
-                        {/* {from=="stock" ? "Item Code":"Details"} */}
                         Upto
                     </Form.Label>
                     <Form.Control
@@ -88,25 +68,9 @@ const BalanceSheetEntry = (props) => {
                         type="date"
                     />
                 </Form.Group>
-
-                <div className='col-3 d-flex align-items-center mt-1'>
-                    <select className='p-1 ' name="" id="">
-                        <option 
-                            onClick={() => navigate("/balance-sheet")}
-                            className={`${location.pathname==="/balance-sheet"&&"active"}`}
-                            value="">Normal Balance Sheet
-                        </option>
-                        <option 
-                            onClick={() => navigate("/group-balance-sheet")}
-                            className={`${location.pathname==="/group-balance-sheet"&&"active"}`}
-                            value="">Group Head Wise Balance Sheet
-                        </option>
-                        <option value="">Detailed Balance Sheet</option>
-                    </select>
-                </div>
             </div>
         </div>
-    )
+  )
 }
 
-export default BalanceSheetEntry
+export default GroupTrialBalEntry

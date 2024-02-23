@@ -3,8 +3,9 @@ import { GrRefresh } from "react-icons/gr";
 import searchIcon from "../../../../assets/icons/search.png";
 const BalanceSheetTables = (props) => {
     const { balanceSheetData } = props
-
-
+    console.log(balanceSheetData)
+    var total_bal=0;
+    var countAsset = 0;
     return (
         <>
             <div className='bg-black mt-3 d-flex justify-content-end rounded-top'>
@@ -29,30 +30,35 @@ const BalanceSheetTables = (props) => {
                     <table className='table table-striped border border-5 border-dark'>
                         <thead>
                             <tr className='bal-sheet-table-head '>
-                                <th>Sn</th>
+                                {/* <th>Sn</th> */}
                                 <th>Assets</th>
                                 <th>Amount</th>
                             </tr>
                         </thead>
                         <tbody>
+                            
                             {
                                 balanceSheetData?.length > 0 &&
                                 balanceSheetData?.map((data, i) => {
-
+                                    
+                                    total_bal= total_bal+data?.closing_balance
+                                    
+                                    countAsset = countAsset+1
                                     return data?.acc_group == "ASSET" && (
                                         <>
                                             <tr className='bg-asset-color'>
-                                                <td>{i}</td>
+                                                {/* <td>{countAsset}</td> */}
                                                 <td>{data?.account_name}</td>
                                                 <td>{data?.closing_balance.toFixed(2)}</td>
+                                                
                                             </tr>
                                         </>
                                     )
                                 })
                             }
                             <tr className='balance-sheet-btm-field'>
-                                <td colSpan={2}></td>
-                                <td><span>{100}</span></td>
+                                <td colSpan={1}></td>
+                                <td><span>{total_bal.toFixed(2)}</span></td>
                             </tr>
 
                         </tbody>
@@ -65,7 +71,7 @@ const BalanceSheetTables = (props) => {
                     <table className='table table-striped border border-5 border-dark '>
                         <thead>
                             <tr className='bal-sheet-table-head mb-1'>
-                                <th>Sn</th>
+                                {/* <th>Sn</th> */}
                                 <th>Liability</th>
                                 <th>Amount</th>
                             </tr>
@@ -74,11 +80,11 @@ const BalanceSheetTables = (props) => {
                             {
                                 balanceSheetData?.length > 0 &&
                                 balanceSheetData?.map((data, i) => {
-
+                                    total_bal= total_bal+data?.closing_balance
                                     return data?.acc_group == "LIABILITY" && (
                                         <>
                                             <tr className='bg-liability-color'>
-                                                <td>{i}</td>
+                                                {/* <td>{i}</td> */}
                                                 <td>{data.account_name}</td>
                                                 <td>{data.closing_balance.toFixed(2)}</td>
                                             </tr>
@@ -88,8 +94,8 @@ const BalanceSheetTables = (props) => {
                             }
 
                             <tr className='balance-sheet-btm-field'>
-                                <td colSpan={2}></td>
-                                <td><span>{100}</span></td>
+                                <td colSpan={1}></td>
+                                <td><span>{total_bal.toFixed(2)}</span></td>
                             </tr>
 
                         </tbody>
