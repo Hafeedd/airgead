@@ -44,6 +44,8 @@ import CompanyList from "./pages/authentication/companyList/CompanyList";
 import CompanyPassword from "./pages/authentication/companyPassword/CompanyPassword";
 import TrialBalance from "./pages/reports/trial_balance/TrialBalance";
 import BalanceSheet from "./pages/reports/balanceSheet/BalanceSheet";
+import GroupWiseTrialBalance from "./pages/reports/groupWiseTrialBalance/GroupWiseTrialBalance";
+import GroupBalanceSheet from "./pages/reports/balanceSheetGroup/GroupBalanceSheet";
 
 function App() {
   return (
@@ -110,7 +112,9 @@ function App() {
             <Route path="/production-transaction" element={<ProductionTransaction/>}/>
 
             <Route path="/trial-balance" element={<TrialBalance/>}/>
+            <Route path="/group-trial-balance" element={<GroupWiseTrialBalance/>}/>
             <Route path="/balance-sheet" element={<BalanceSheet/>}/>
+            <Route path="/group-balance-sheet" element={<GroupBalanceSheet/>}/>
 
           </Route>
         </Route>

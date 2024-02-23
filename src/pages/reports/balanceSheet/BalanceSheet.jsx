@@ -1,20 +1,41 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import './balanceSheet.css'
 import BalanceSheetEntry from './components/BalanceSheetEntry'
 import BalanceSheetTables from './components/BalanceSheetTables'
 import { useReportsServices } from '../../../services/reports/reports'
 
 
+
 const BalanceSheet = () => {
 
     const {getBalanceSheet} = useReportsServices()
 
-    const [balanceSheetData, setBalanaceSheetData] = useState([])
+    const [balanceSheetData, setBalanceSheetData] = useState([])
 
     const [params, setParams] = useState([{
         "from_date": null,
         "to_date": null
     }])
+
+    useEffect (()=>{
+        getData()
+    },[params.from_date,params.to_date])
+
+    const getData = async () =>{
+        try{
+            const date = {
+                from_date: params?.from_date,
+                to_date: params?.to_date
+            }
+            const response = await getBalanceSheet(date)
+            if (response.success){
+                setBalanceSheetData(response.data)
+            }
+        }
+        catch(err){
+            console.log(err)
+        }
+    }
     return (
         <div className="item_add">
             <div className="itemList_header row mx-0">
@@ -37,7 +58,7 @@ const BalanceSheet = () => {
             <div className="p-3">
                 <div className="p-2 bg-light rounded-1 px-3">
                     <BalanceSheetEntry {...{params, setParams}}/>
-                    <BalanceSheetTables/>
+                    <BalanceSheetTables {...{balanceSheetData}}/>
                 </div>
             </div>
         </div>

@@ -369,6 +369,14 @@ const Sidebar = () => {
             <span className="SidebarSpan d-flex ms-5 ps-3">
               <div
                 className="SidebarItemText"
+                onClick={() => navigate("/group-trial-balance")}
+              >
+                Group Wise Trial balance
+              </div>
+            </span>
+            <span className="SidebarSpan d-flex ms-5 ps-3">
+              <div
+                className="SidebarItemText"
                 onClick={() => navigate("/balance-sheet")}
               >
                 Balance Sheet
