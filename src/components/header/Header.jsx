@@ -11,7 +11,6 @@ const Header = () => {
   const location = useLocation();
 
   useEffect(() => {
-    console.log(location.pathname)
     const element = document.getElementsByClassName("page_head")[0];
     const element2 = document.getElementsByClassName("main header")[0]
     if (element) {

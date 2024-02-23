@@ -180,8 +180,9 @@ const PurchaseTable = (props) => {
     if (toTableItem === true) setTableItem(calculatedData);
     else {
       let tempList = [...tableItemList];
-      tempList.splice(toTableItem, 1, { ...calculatedData, edited: true });
+      tempList.splice(toTableItem, 1, { ...calculatedData});
       setTableItemList([...tempList]);
+      handlePurchAllCalc([...tempList],false,false)
     }
   };
 

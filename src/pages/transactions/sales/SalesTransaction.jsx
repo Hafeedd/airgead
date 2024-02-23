@@ -71,7 +71,7 @@ const initialSalesState = {
 const initialTableItemState = {
   cstm_id: null,
   item_name: null,
-  fk_items: null,
+  fk_item: null,
   code: null,
   quantity: 0.0,
   fk_unit: null,
@@ -184,6 +184,7 @@ const SalesTransaction = () => {
       let tempData = { ...others, change_due: others.change_due || "0.00" };
       setSalesAdd((data) => ({ ...data, ...tempData }));
       if (sales_item) {
+        console.log(sales_item)
         setTableItemList([...sales_item]);
         handleSalesAddCalc(sales_item, true, tempData);
       }

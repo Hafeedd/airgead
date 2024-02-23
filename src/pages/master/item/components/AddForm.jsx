@@ -128,7 +128,6 @@ export const ItemAddForm = ({ edit, refresh, setToEdit }) => {
         ) {
           let a = "fk_" + key;
           if (edit[a]) {
-            // setItemAdd(data=>({...data,[key]:edit[a]}))
             items = { ...items, [key]: edit[a] };
           }
         } else items = { ...items, [key]: edit[key] };
@@ -138,6 +137,7 @@ export const ItemAddForm = ({ edit, refresh, setToEdit }) => {
     // else {
     //   handleReset();
     // }
+    console.log(items)
     setItemAdd(items);
   }, [edit]);
 

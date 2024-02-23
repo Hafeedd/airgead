@@ -249,6 +249,7 @@ const SalesTable = (props) => {
       let tempList = [...tableItemList];
       tempList.splice(totableItem, 1, { ...calculatedData, edited: true });
       setTableItemList([...tempList]);
+      handleSalesAddCalc(tempList,false,false)
     }
   };
 

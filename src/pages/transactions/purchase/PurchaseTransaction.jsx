@@ -92,8 +92,8 @@ const PurchaseTransaction = ({ returnPage }) => {
   }, [location.pathname]);
 
   useEffect(() => {
-    if (!returnPage) window.onmousedown = myBeforeUnloadFunction;
-    // myBeforeUnloadFunction()
+    // if (!returnPage) window.onmousedown = myBeforeUnloadFunction;
+    myBeforeUnloadFunction()
   }, [purchaseAdd, tableItemList, edit]);
 
   const myBeforeUnloadFunction = () => {
@@ -157,7 +157,7 @@ const PurchaseTransaction = ({ returnPage }) => {
     }
   };
 
-  const handlePurchAllCalc = (dataList, fromEdit, purchaseData, itemEdit) => {
+  const handlePurchAllCalc = (dataList, fromEdit, purchaseData) => {
     // dataList is the list of tableItemList
     if (dataList?.length > 0) {
       let tempPurchaseAdd = purchaseData || { ...purchaseAdd };
