@@ -169,6 +169,8 @@ export const StockJournalEdit = (props) => {
     setShow(false);
   };
 
+  console.log(from.includes("Rtn"))
+
   return (
     <div className="p-0">
       <div className="stockJ-edit rounded-top-2 py-2 ps-3">{title}</div>
@@ -229,12 +231,12 @@ export const StockJournalEdit = (props) => {
         </div>
         <div
           className={`stockJ-edit-table-cont px-0 ${
-            from === "purchRtn" && "p-return"
+            from.includes('Rtn') && "p-return"
           } `}
         >
           <table className="stockJ-edit-table table ">
             <thead>
-              {from !== "purchRtn" ? (
+              {!from.includes("Rtn") ? (
                 <>
                   <th width="150" className="ps-4">
                     Date
@@ -261,7 +263,7 @@ export const StockJournalEdit = (props) => {
               )}
             </thead>
             <tbody>
-              {from !== "purchRtn" && searchedList?.length > 0 ? (
+              {!from.includes('Rtn') && searchedList?.length > 0 ? (
                 searchedList?.map((data, i) => {
                   return (
                     <>
@@ -302,7 +304,7 @@ export const StockJournalEdit = (props) => {
                     </>
                   );
                 })
-              ) : from !== "purchRtn" ? (
+              ) : !from.includes('Rtn') ? (
                 <tr>
                   <td colSpan={5} className="border-0">{`No ${
                     from === "acc" ? "Account Journal" :from =="production"?"Production":"Stock Journal"

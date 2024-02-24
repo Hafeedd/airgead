@@ -17,6 +17,7 @@ import Swal from "sweetalert2";
 import useItemServices from "../../../services/master/itemServices";
 import { PrintFIle } from "./components/SalesBill";
 import { initialPurchaseSalesTableStatePosition } from "../purchase/InitialData/data";
+import { StockJournalEdit } from "../stockjurnal/components/StockJournalEdit";
 // import { initialPurchaseSalesTableStatePositionLocal } from "../purchase/PurchaseTransaction";
 
 const initialSalesState = {
@@ -95,13 +96,15 @@ export const initialSalesTableStatePositionLocal = JSON.parse(
   localStorage.getItem("initialSalesTableStatePositionLocal")
 );
 
-const SalesTransaction = () => {
+const SalesTransaction = ({returnPage}) => {
+  const [showSalesReturn, setShowSalesReturn] = useState(false);
   const [salesItemModal, setSalesItemModal] = useState(false);
   const [salesEditModal, setSalesEditModal] = useState(false);
   const [pageHeadItem, setPageHeadItem] = useState(1);
   const [edit, setEdit] = useState(false);
   const [customerList, setCustomerList] = useState(null);
   const [tableItemList, setTableItemList] = useState([]);
+  const [salesOnlyList, setSalesOnlyList] = useState([]);
   const [salesList, setSalesList] = useState([]);
   const [billType, setBillType] = useState([]);
   const [codeWithBillTypeList, setCodeWithBillTypeList] = useState([]);
@@ -145,8 +148,22 @@ const SalesTransaction = () => {
   };
 
   useEffect(() => {
-    window.onmousedown = myBeforeUnloadFunction;
-    // myBeforeUnloadFunction()
+    const handleKeyDown = (e) => {
+      if (e.key === 'E' && e.shiftKey) {
+        setShowSalesReturn(true)
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, []);
+
+  useEffect(() => {
+    // window.onmousedown = myBeforeUnloadFunction;
+    myBeforeUnloadFunction()
   }, [salesAdd, tableItemList, edit]);
 
   const handleReloadData = () => {
@@ -175,6 +192,7 @@ const SalesTransaction = () => {
       items: [...tableItemList],
       edit: edit,
     };
+    if(!returnPage)
     localStorage.setItem("salesData", JSON.stringify(allSaleState));
   };
 
@@ -192,9 +210,17 @@ const SalesTransaction = () => {
   };
 
   useEffect(() => {
+    // getData();
+    // handleGetCode();
+    // handleReloadData();
     getData();
-    handleGetCode();
+    if (!returnPage){
     handleReloadData();
+  }
+    else if (returnPage) {
+      handleSalesAllReset()
+      handleGetCode(true)
+    }
 
     let customer = location.state;
     if (customer?.id) {
@@ -205,7 +231,7 @@ const SalesTransaction = () => {
       }));
       navigate(null, { replace: true, state: { id: null, name: null } });
     }
-  }, []);
+  }, [location.pathname]);
 
   const navigate = useNavigate();
 
@@ -434,6 +460,9 @@ const SalesTransaction = () => {
 
   const getData = async () => {
     try {
+      // if(returnPage){
+      // let response1 = await getSalesReturn
+    // }
       let response = await getSales();
       if (response?.success) {
         setSalesList(response?.data);
@@ -605,9 +634,9 @@ const SalesTransaction = () => {
   return (
     <div className="item_add">
       <div className="itemList_header row mx-0 mb-3">
-        <div className="page_head ps-4 d-flex pe-0">
+        <div className={`page_head ps-4 d-flex pe-0 ${returnPage && "s-return"}`}>
           <div className="col-5 col-6">
-            <div className="fw-600 fs-5">Sales</div>
+            <div className="fw-600 fs-5">{`Sales ${returnPage?"Return":""}`}</div>
             <div className="page_head_items mb-1">
               <div
                 onClick={() => {
@@ -615,7 +644,7 @@ const SalesTransaction = () => {
                 }}
                 className={`page_head_item active`}
               >
-                Sales Details
+                {`Sales ${returnPage?"Return":""} Details`}
               </div>
             </div>
           </div>
@@ -693,14 +722,9 @@ const SalesTransaction = () => {
             <div className="col-12 gap-2 d-flex align-items-end justify-content-start px-0 mx-0 mt-1">
               <div className="">
                 <div className="btn btn-sm btn-secondary rounded-bottom-0 px-3">
-                  Sales
+                  {`Sales ${returnPage ? "Return":""}`}
                 </div>
-              </div>
-              <div className="">
-                <div className="btn btn-sm btn-secondary rounded-bottom-0 px-3">
-                  S.Return
-                </div>
-              </div>
+              </div>            
               <div className="">
                 <div className="btn btn-sm btn-secondary rounded-bottom-0 px-3">
                   Other
@@ -856,6 +880,26 @@ const SalesTransaction = () => {
           roundOff={salesAdd.roundoff}
           hsnCalc={salesAdd.hsnCalc}
           {...{ handleSalesAllReset }}
+        />
+      </Modal>
+
+      <Modal
+      show={showSalesReturn && returnPage}
+      centered
+      size="xl"
+      onHide={()=>setShowSalesReturn(false)}
+      >
+        <StockJournalEdit
+        list={salesOnlyList}
+        title="Sales Return Item List"
+        setShow={setShowSalesReturn}        
+        handleCalc={handleSalesAddCalc}
+        show={showSalesReturn}
+        setItemList={setTableItemList}
+        handleClearAll={handleSalesAllReset}
+        supplierCustomer={salesAdd.customer_name}
+        from="salesRtn" 
+        {...{getData,setEdit}}
         />
       </Modal>
     </div>
