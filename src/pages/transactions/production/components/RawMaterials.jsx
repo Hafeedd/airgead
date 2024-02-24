@@ -24,19 +24,19 @@ const RawMaterials = (props) => {
   };
 
   return (
-    <div className="col-6"  style={{ height: "140px", overflowY: "scroll" }}>
+    <div className="col-12 mt-1" style={{ height: "149px", overflowY: "scroll" }}>
     <div className="div-head rounded-top ps-3 pt-1 my-0 py-0" style={{ top: "0", position: "sticky", zIndex: 1 }}>Raw Materials Used</div>
     <table className="w-100 ProdTable1">
       <thead>
         <tr className="bg-dark text-light">
-          <th>Item<br />Produced</th>
+          <th>Item Produced</th>
           <th>Item Used</th>
-          <th>Qty</th>
-          <th>Unit</th>
-          <th>Cost</th>
-          <th>Value</th>
+          <th width='100'>Qty</th>
+          <th width='100'>Unit</th>
+          <th width='100'>Cost</th>
+          <th width='200'>Value</th>
           <th>Godown</th>
-          <th>+</th>
+          <th><span className='pe-1'>+</span></th>
         </tr>
       </thead>
       <tbody ref={formRef1}>
@@ -84,7 +84,7 @@ const RawMaterials = (props) => {
             <td>
               <input
               type='text'
-              className='border border-secondary rounded-1 w-100' 
+              className='border-0 rounded-1 w-100' 
               value={data.item_produced_name}
               // onChange={handleChange}
               onKeyDown={handleKeyDown1}
@@ -94,7 +94,7 @@ const RawMaterials = (props) => {
             <td>
             <input
               type='text'
-              className='border border-secondary rounded-1 w-100' 
+              className='border-0 rounded-1 w-100' 
               value={data.item_name}
               // onChange={handleChange}
               onKeyDown={handleKeyDown1}
@@ -104,7 +104,7 @@ const RawMaterials = (props) => {
             <td>
             <input
               type='text'
-              className='border border-secondary rounded-1 w-75' 
+              className='border-0 rounded-1 w-75' 
               value={data.qty}
               onChange={handleChange}
               onKeyDown={handleKeyDown1}
@@ -127,7 +127,7 @@ const RawMaterials = (props) => {
               </td>
             <td><input
               type='text'
-              className='border border-secondary rounded-1 w-75' 
+              className='border-0 rounded-1 w-75' 
               value={data.cost}
               onChange={handleChange}
               onKeyDown={handleKeyDown1}
@@ -135,7 +135,7 @@ const RawMaterials = (props) => {
               /></td>
             <td><input
               type='text'
-              className='border border-secondary rounded-1 w-75' 
+              className='border-0 rounded-1 w-75' 
               value={data.value}
               onChange={handleChange}
               onKeyDown={handleKeyDown1}
@@ -143,7 +143,7 @@ const RawMaterials = (props) => {
               /></td>
             <td><input
               type='text'
-              className='border border-secondary rounded-1 w-75' 
+              className='border-0 rounded-1 w-75' 
               value={data.godown}
               // onChange={handleChange}
               onKeyDown={handleKeyDown1}
@@ -157,22 +157,22 @@ const RawMaterials = (props) => {
         })}
 
        {fullRawData?.length>0?fullRawData?.map((data,key)=>{
-          //  const handleChange = (e, drop_data) => {
-          //   if (drop_data)
-          //     data = { ...data, [drop_data.name]: drop_data.value };
-          //   else data = { ...data, [e.target.name]: e.target.value };
-          //   let tempList = [...fullRawData];
-          //   tempList.splice(key, 1, data);
-          //   setFullRawData([...tempList]);
-          // };
+           const handleChange = (e, drop_data) => {
+            if (drop_data)
+              data = { ...data, [drop_data.name]: drop_data.value };
+            else data = { ...data, [e.target.name]: e.target.value };
+            let tempList = [...fullRawData];
+            tempList.splice(key, 1, data);
+            setFullRawData([...tempList]);
+          };
           return(
             <tr key={key}>
             <td>
               <input
               type='text'
-              className='border border-secondary rounded-1 w-100' 
+              className='border-0 rounded-1 w-100' 
               value={data.item_produced_name}
-              // onChange={handleChange}
+              onChange={handleChange}
               onKeyDown={handleKeyDown1}
               name='item_produced_name'
               />
@@ -180,9 +180,9 @@ const RawMaterials = (props) => {
             <td>
             <input
               type='text'
-              className='border border-secondary rounded-1 w-100' 
+              className='border-0 rounded-1 w-100' 
               value={data.item_name}
-              // onChange={handleChange}
+              onChange={handleChange}
               onKeyDown={handleKeyDown1}
               name='item_name'
               />
@@ -190,9 +190,9 @@ const RawMaterials = (props) => {
             <td>
             <input
               type='text'
-              className='border border-secondary rounded-1 w-75' 
+              className='border-0 rounded-1 w-75' 
               value={data.qty}
-              // onChange={handleChange}
+              onChange={handleChange}
               onKeyDown={handleKeyDown1}
               name='qty'
               />
@@ -203,7 +203,7 @@ const RawMaterials = (props) => {
                   required
                   search={search}
                   onKeyDown={handleKeyDown1}
-                  // onChange={handleDropdownChangeUnit}
+                  onChange={handleDropdownChangeUnit}
                   className="purchase-input-text table-drop d-flex align-items-center py-0 form-control custom-dropdown-width "
                   name="fk_unit"
                   placeholder="Select"
@@ -213,25 +213,25 @@ const RawMaterials = (props) => {
               </td>
             <td><input
               type='text'
-              className='border border-secondary rounded-1 w-75' 
+              className='border-0 rounded-1 w-75' 
               value={data.cost}
-              // onChange={handleChange}
+              onChange={handleChange}
               onKeyDown={handleKeyDown1}
               name='cost'
               /></td>
             <td><input
               type='text'
-              className='border border-secondary rounded-1 w-75' 
+              className='border-0 rounded-1 w-75' 
               value={data.value}
-              // onChange={handleChange}
+              onChange={handleChange}
               onKeyDown={handleKeyDown1}
               name='value'
               /></td>
             <td><input
               type='text'
-              className='border border-secondary rounded-1 w-75' 
+              className='border-0 rounded-1 w-75' 
               value={data.godown}
-              // onChange={handleChange}
+              onChange={handleChange}
               onKeyDown={handleKeyDown1}
               name='godown_rate'
               disabled
@@ -245,7 +245,7 @@ const RawMaterials = (props) => {
           <td>
             <input
             type='text'
-            className='border border-secondary rounded-1 w-100' 
+            className='border-0 rounded-1 w-100' 
             // value={data.item_produced_name}
             // onChange={handleChange}
             onKeyDown={handleKeyDown1}
@@ -255,7 +255,7 @@ const RawMaterials = (props) => {
           <td>
           <input
             type='text'
-            className='border border-secondary rounded-1 w-100' 
+            className='border-0 rounded-1 w-100' 
             // value={data.item_name}
             // onChange={handleChange}
             onKeyDown={handleKeyDown1}
@@ -265,7 +265,7 @@ const RawMaterials = (props) => {
           <td>
           <input
             type='text'
-            className='border border-secondary rounded-1 w-75' 
+            className='border-0 rounded-1 w-75' 
             // value={data.qty}
             // onChange={handleChange}
             onKeyDown={handleKeyDown1}
@@ -288,7 +288,7 @@ const RawMaterials = (props) => {
             </td>
           <td><input
             type='text'
-            className='border border-secondary rounded-1 w-75' 
+            className='border-0 rounded-1 w-75' 
             // value={data.cost}
             // onChange={handleChange}
             onKeyDown={handleKeyDown1}
@@ -296,7 +296,7 @@ const RawMaterials = (props) => {
             /></td>
           <td><input
             type='text'
-            className='border border-secondary rounded-1 w-75' 
+            className='border-0 rounded-1 w-75' 
             // value={data.value}
             // onChange={handleChange}
             onKeyDown={handleKeyDown1}
@@ -304,7 +304,7 @@ const RawMaterials = (props) => {
             /></td>
           <td><input
             type='text'
-            className='border border-secondary rounded-1 w-75' 
+            className='border-0 rounded-1 w-75' 
             // value={data.godown}
             // onChange={handleChange}
             onKeyDown={handleKeyDown1}
@@ -318,6 +318,12 @@ const RawMaterials = (props) => {
         
     
       </tbody>
+      <tfoot>
+        <tr className="text-dark">
+          <td>Total Value :</td>
+          <td colSpan={7}> </td>          
+        </tr>
+      </tfoot>
     </table>
   </div>
   )

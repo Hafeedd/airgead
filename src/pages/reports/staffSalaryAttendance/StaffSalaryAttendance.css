@@ -1,5 +1,5 @@
 .StaffTables thead tr th{
-    border: 2px solid black;
+    border: 0;
     background-color: black;
     color: white;
     position: sticky;
@@ -11,7 +11,7 @@
 }
 
 .StaffTables tfoot tr td{
-    border: 2px solid black;
+    border:0;
     background-color: black;
     color: white;
     position: sticky;

@@ -10,12 +10,17 @@ const useProductionTransactionServices = ()=>{
         const response = await axiosPrivate.get('/production/production_daybook_part_list/',{params:{...params}})
         return response?.data
     }
-
+    
+    const getProductionDetails = async(id)=>{
+        const response = await axiosPrivate.get(`/production/${id}/`)
+        return response?.data
+    }
     return{
         // post
         postProductionData,
         //get
         getProductionDaybookPart,
+        getProductionDetails,
     }
 }
 

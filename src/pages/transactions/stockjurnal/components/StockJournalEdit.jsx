@@ -119,20 +119,6 @@ export const StockJournalEdit = (props) => {
           </Form.Label>
           <Form.Control
             required
-            onChange={(e) => setDate({ ...date, end: e.target.value })}
-            name="fk_supplier"
-            className="purchase-input-text me-2"
-            placeholder="Document number"
-            type="date"
-            value={date.end}
-          />
-        </Form.Group>
-        <Form.Group className="col-4 col-3 pe-4 ps-0 mx-0 d-flex align-items-start mt-1">
-          <Form.Label className="col-2 purchase-input-label align-middle">
-            From
-          </Form.Label>
-          <Form.Control
-            required
             onChange={(e) => setDate({ ...date, start: e.target.value })}
             name="fk_supplier"
             className="purchase-input-text me-2"
@@ -142,6 +128,21 @@ export const StockJournalEdit = (props) => {
           />
         </Form.Group>
         
+      <Form.Group className="col-4 col-3 pe-4 ps-0 mx-0 d-flex align-items-start mt-1">
+          <Form.Label className="col-2 purchase-input-label align-middle">
+            To
+          </Form.Label>
+          <Form.Control
+            required
+            onChange={(e) => setDate({ ...date, end: e.target.value })}
+            name="fk_supplier"
+            className="purchase-input-text me-2"
+            placeholder="Document number"
+            type="date"
+            value={date.end}
+          />
+        </Form.Group>
+       
       </div>
       <div className="p-2 px-3 row mx-0">
         <div className="bg-dark py-2 ps-4 rounded-top-1">
@@ -211,6 +212,7 @@ export const StockJournalEdit = (props) => {
                       </td>
                       <td width="150" className="text-start ps-3">
                         {from ? data?.voucher_number : data?.code}
+                        {productionPage && data?.voucher_number}
                       </td>
                       {!from && (
                         <td className="text-center">{data?.total_items}</td>
@@ -219,15 +221,15 @@ export const StockJournalEdit = (props) => {
                       <td className="ps-2">
                         <div className="d-flex gap-4 p-0 pe-3">
                           <img
-                            src={deleteBtn}
-                            className="cursor"
-                            onClick={() => handleDelete(data)}
-                            alt="editBtn"
-                          />
-                          <img
                             src={editBtn}
                             className="cursor"
                             onClick={() => handleEditClick(data)}
+                            alt="editBtn"
+                          />
+                          <img
+                            src={deleteBtn}
+                            className="cursor"
+                            onClick={() => handleDelete(data)}
                             alt="editBtn"
                           />
                         </div>

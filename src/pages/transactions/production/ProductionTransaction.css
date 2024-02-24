@@ -8,11 +8,10 @@
     background-color: black;
 }
 .ProdTable tbody td {
-    padding: .3rem .3rem;
+    padding:  .08rem .08rem;
     z-index: 1;
+    background-color:#a6cdec;
 }
-
-
 
 .ProdTable thead th:last-child{
     background-color: #4a00a8;
@@ -23,9 +22,9 @@
     border-right: 1px solid black ;
 }
 .ProdTable tbody tr{
-    border-bottom: 1px solid gray;
-    border-left: 1px solid gray ;
-    border-right: 1px solid gray ;
+    border-bottom: 1px solid rgb(0, 0, 0);
+    border-left: 1px solid black ;
+    border-right: 1px solid black ;
 }
 
 
@@ -33,52 +32,84 @@
     padding:0;
 }
 .ProdTable1 tbody td {
-    padding: .3rem .3rem;
+    padding: .08rem .08rem;
+    background-color: #a6cdec;
 }
 .div-head{
-    background-color: #51385D;
+    /* background-color: #51385D; */
+    background-color: black;
     color: white;
 }
 .ProdTable1 thead th{
-    background-color: #51385D;
+    /* background-color: #51385D; */
+    background-color: black;
 }
 
 .ProdTable1 thead th:last-child{
-    background-color: #51385D;
+    /* background-color: #51385D; */
+    background-color: black;
 }
 
 .ProdTable1 thead tr{
     border-left: 1px solid black ;
     border-right: 1px solid black ;
 }
-.ProdTable1 tbody{
-    border-bottom: 1px solid gray;
-    border-left: 1px solid gray ;
-    border-right: 1px solid gray ;
+.ProdTable1 tfoot tr{
+    border-top: 1px solid black;
+    border-left: 1px solid black ;
+    border-right: 1px solid black ;
+    border-bottom: 1px solid black;
+    padding: 0;
+}
+.ProdTable1 tbody tr{
+    border-bottom: 1px solid black;
+    border-left: 1px solid black ;
+    border-right: 1px solid black ;
 }
 
 
 .purchase-input-text.table-drop.custom-dropdown-width{
     min-width: 6rem !important; 
     max-width: 6rem !important; 
+    border-color: #a6cdec!important;
+
   }
 
 .ProdTable input{
     padding-left: .5rem;
+    background-color: #a6cdec;
+    text-align: center;
 }
 
 .ProdTable1 input{
     width: '10px';
-    height: '10px'
+    height: '10px';
+    background-color: #a6cdec;
+    text-align: center;
 }
 
+/* .purchase-input-text.table-drop.custom-dropdown-border{
+    min-width: 25rem !important; 
+    border-color: #a6cdec !important;
+} */
 .purchase-input-text.table-drop.custom-dropdown-width1{
     min-width: 25rem !important; 
     /* max-width: 25rem !important; */
+    border-color: #a6cdec !important;
   }
 
 .ProdTable1 thead tr th{
     position: sticky;
     top: 23.5px;
     z-index: 2;
+}
+
+.ProdTable1 tfoot td {
+    padding: .08rem .08rem;
+    background-color: #a6c4fd;
+}
+
+.ProdTable1 tfoot tr td{
+    position:sticky;
+    bottom: 0;
 }
