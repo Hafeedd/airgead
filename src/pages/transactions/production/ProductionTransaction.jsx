@@ -15,8 +15,8 @@ import Swal from "sweetalert2";
 import { Modal } from "react-bootstrap";
 import useProductionTransactionServices from "../../../services/transactions/productionTransaction";
 import { StockJournalEdit } from "../stockjurnal/components/StockJournalEdit";
-const Initial_data = {
-  qty: null,
+const Initial_data =
+  {qty: null,
   fk_item: null,
   fk_type: null,
   fk_unit: null,
@@ -29,8 +29,7 @@ const Initial_data = {
   super_wholesale_rate: null,
   quotation_rate: null,
   godown: null,
-  batch_no: null,
-};
+  batch_no: null,}
 
 const raw_data = {
   qty: null,
@@ -66,63 +65,49 @@ const labour_data = {
   item_produced_name: null,
 };
 const ProductionTransaction = () => {
-  const location = useLocation();
 
+  const location = useLocation();
   const [materialList, setMaterialList] = useState();
   const [items, setItems] = useState();
   const [units, setUnits] = useState();
   const [types, setTypes] = useState();
   const [accDetails, setAccDetails] = useState();
-
   const [date, setDate] = useState(new Date().toISOString().slice(0, 10));
   const [narration, setNarration] = useState("Production");
   const [staffDetails, setStaffDetails] = useState();
   const [code, setCode] = useState();
-
   const [fullProdData, setFullProdData] = useState([]);
   const [produceData, setProduceData] = useState(Initial_data);
-
   const [fullRawData, setFullRawData] = useState([]);
   const [rawItems, setRawItems] = useState(raw_data);
-
   const [fullByprodData, setFullByprodData] = useState([]);
   const [byProductItems, setByProductItems] = useState(by_prod_data);
-
   const [fullLabourData, setFullLabourData] = useState([]);
   const [labourDetails, setLabourDetails] = useState(labour_data);
-
-  // const [listProduction,setListProduction] = useState([])
-
-  // const [selectedStaffAccount, setSelectedStaffAccount] = useState("");
-  // const [show, setShow] = useState(false);
-
-  // const [listProduction,setListProduction] = useState([])
-
-  // const [selectedStaffAccount, setSelectedStaffAccount] = useState("");
   const [show, setShow] = useState(false);
-
   const [listProduction, setListProduction] = useState([]);
-
   const [selectedStaffAccount, setSelectedStaffAccount] = useState("");
-  const [showProductionEdit, setShowProductionEdit] = useState(false);
+  const [edit,setEdit]=useState()
   const { getMaterialComposition } = useProductionServices();
   const { getStaff } = useStaffServices();
   const { getItemList, getProperty, getCode } = useItemServices();
   const { getAccountList } = useAccountServices();
-  const { postProductionData, getProductionDaybookPart } =
-    useProductionTransactionServices();
+  const { postProductionData, getProductionDaybookPart ,getProductionDetails} =useProductionTransactionServices();
+  const [productionList, setProductionList] = useState();
+  const [isByOpen, setIsByOpen] = useState(false);
+  const [isLabOpen, setIsLabOpen] = useState(true);
 
-  const [getProductList, setGetProductList] = useState();
   const getProductData = async () => {
     const response = await getProductionDaybookPart();
-    setGetProductList(response.data);
+    setProductionList(response.data);
   };
-
+  
   const getDocNumber = async () => {
     const response = await getCode();
     let data = response.data.filter((code) => code.types === "PRODUCTION_CODE");
     setCode(data[0].next_code);
   };
+  
   const getAllMaterialCompositions = async () => {
     const response = await getMaterialComposition();
     setMaterialList(response.data);
@@ -226,36 +211,137 @@ const ProductionTransaction = () => {
     });
   };
 
-  console.log("doc", date, narration, selectedStaffAccount, code);
-  console.log("1.raw", rawItems);
-  console.log("2.bypro", byProductItems);
-  console.log("3.labour", labourDetails);
-  console.log("4.product", produceData);
+  const getSelectedData = async (id) =>{
+    const response = await getProductionDetails(id=edit?.id)
+    let d=response?.data
+    console.log(d,"selected")
+    if (response?.success) {
+      setDate(d.date)
+      setCode(d.code)
+      setNarration(d.narration)
+      setSelectedStaffAccount(d.checked_by)
+      let tempList =[]
+      tempList=d.produced_items
+      const tempRawOnly = tempList.flatMap((data) => data.raw_materials);
+      const tempByproductOnly = tempList.flatMap((data) => data.by_products);
+      const tempLabourOnly = tempList.flatMap((data) => data.expense_accounts);
+      const tempProductionItem =[]
+      tempList.map((data)=>{
+        tempProductionItem.push({
+          id:data.id,
+          initial_qty: data.qty,
+          fk_item: data.fk_item,
+          fk_unit: data.fk_unit,
+          cost: data.item_details.cost,
+          value:data.value,
+          margin: data.item_details.margin,
+          mrp_rate: data.item_details.mrp_rate,
+          item_produced_name: data.item_details.name,
+          item_name: data.item_details.name,
+          godown_rate: null,
+          qty:data.qty,
+          retail_rate:data.retail_rate,
+          wholesale_rate:data.wholesale_rate,
+          batch_no:data.batch_no,
+          fk_type:data.fk_type
+        })
+      })
+      const tempRaw = []
+      const tempByproduct = []
+      const tempLabour =[]
 
-  console.log("full", fullProdData);
-  console.log("full_raw", fullRawData);
-  console.log("full_bypro", fullByprodData);
-  console.log("full_labourData", fullLabourData);
-  console.log("product_data", getProductList);
+      tempRawOnly.map((data)=>{
+        let choosenItem = tempList.filter(item=> item.id === data.fk_production_item)
+        let itemName=choosenItem[0].item_details.name
+        tempRaw.push({
+          initial_qty: data.qty,
+            fk_item: data.fk_item,
+            fk_unit: data.fk_unit,
+            cost: data.item_details.cost,
+            value:data.value,
+            margin: data.item_details.margin,
+            mrp_rate: data.item_details.mrp_rate,
+            item_produced_name:itemName,
+            item_name: data.item_details.name,
+            godown_rate: null,
+            qty:data.qty
+        })
+      })
+
+      tempByproductOnly.map((data)=>{
+        let choosenItem = tempList.filter(item=> item.id === data.fk_production_item)
+        let itemName=choosenItem[0].item_details.name
+        tempByproduct.push({
+          qty: data.qty,
+          fk_item: data.fk_item,
+          fk_unit: data.fk_unit,
+          cost: data.item_details.cost,
+          value: data.value,
+          margin: data.item_details.margin,
+          mrp_rate: data.item_details.mrp_rate,
+          p_type: null,
+          s_rate: data.item_details.retail_rate,
+          item_name: data.item_details.name,
+          item_produced_name: itemName,
+        })
+      })
+
+      tempLabourOnly.map((data)=>{
+        let choosenItem = tempList.filter(item=> item.id === data.fk_production_item)
+        let itemName=choosenItem[0].item_details.name
+        tempLabour.push({
+          fk_debit_account: data.fk_debit_account,
+          debit_name:data.debit_name,
+          fk_credit_account: data.fk_credit_account,
+          credit_name:data.credit_name,
+          amount: data.amount,
+          item_produced_name: itemName,
+          initial_amount:data.amount,
+        })
+      })
+
+      setRawItems(tempRaw)
+      setFullProdData(tempProductionItem)
+      setFullByprodData(tempByproduct)
+      setFullLabourData(tempLabour)
+    }
+  }
+
+  useEffect(()=>{
+    if (edit) {
+      getSelectedData();
+    }
+  },[edit])
+
+
   const handleDropdownStaffAccount = (event, data) => {
     setSelectedStaffAccount(data.value);
   };
+
   const handleResetAll = () => {
-    // setDate('')
-    // setCode('')
-    // setNarration('')
-    // setSelectedStaffAccount('')
-    // setRawItems('')
-    // setByProductItems('')
-    // setLabourDetails('')
-    // setProduceData('')
-    // setFullRawData([])
-    // setFullByprodData([])
-    // setFullLabourData([])
-    // setFullProdData([])
+    setDate(new Date().toISOString().slice(0, 10))
+    setCode('')
+    setNarration('')
+    setSelectedStaffAccount('')
+    setRawItems([])
+    setByProductItems([])
+    setLabourDetails('')
+    setProduceData('')
+    setFullRawData([])
+    setFullByprodData([])
+    setFullLabourData([])
+    setFullProdData([])
   };
 
   const handleFinalSubmit = async () => {
+    let tempItemList = []
+    if(listProduction?.length<0 && Object.values(produceData).filter(x=>x).length>4)
+      tempItemList = [produceData]
+    else if(listProduction?.length>0)
+      tempItemList = [...listProduction]
+    else {
+      Swal.fire('No Item Added . Please Add An Item','','error')
+    }
     let submitData = {
       voucher_number: code,
       date: date,
@@ -285,6 +371,7 @@ const ProductionTransaction = () => {
     getAllStaffDetails();
     getProductData();
   }, []);
+
   return (
     <div className="item_add">
       <div className="itemList_header row mx-0">
@@ -316,10 +403,11 @@ const ProductionTransaction = () => {
               />
             </div>
             <div className="col-1 d-flex mx-0">
-              <button className="bg-dark text-light border border-dark rounded w-25">
+              <button
+              onClick={() => setShow(true)}
+               className="bg-dark text-light border border-dark rounded w-25">
                 <LuClipboardEdit
-                  className="my-1"
-                  onClick={() => setShow(true)}
+                  className="my-1"                  
                 />
               </button>
             </div>
@@ -359,28 +447,20 @@ const ProductionTransaction = () => {
               setListProduction,
             }}
           />
-          <div className="col-12 mt-1 d-flex">
+         
             <RawMaterials
               {...{
                 rawItems,
                 setRawItems,
+                fullProdData,
+                setFullProdData,
                 units,
                 fullRawData,
                 setFullRawData,
                 setProduceData,
               }}
             />
-            <ByProductDetails
-              {...{
-                byProductItems,
-                setByProductItems,
-                units,
-                fullByprodData,
-                setFullByprodData,
-              }}
-            />
-          </div>
-          <LabourAndExpense
+            <LabourAndExpense
             {...{
               labourDetails,
               setLabourDetails,
@@ -388,8 +468,25 @@ const ProductionTransaction = () => {
               fullLabourData,
               setFullLabourData,
               setProduceData,
+              isLabOpen, 
+              setIsLabOpen,
+              setIsByOpen
             }}
           />
+            <ByProductDetails
+              {...{
+                byProductItems,
+                setByProductItems,
+                units,
+                fullByprodData,
+                setFullByprodData,
+                isByOpen,
+                setIsByOpen,
+                setIsLabOpen
+              }}
+            />
+          
+          
 
           <div className="col-12 d-flex justify-content-end mb-1 mt-2">
             <div className="col-4 d-flex pe-3">
@@ -418,7 +515,7 @@ const ProductionTransaction = () => {
               />
             </div>
             <div className="col-4 d-flex justify-content-end">
-              <button className="col-4 col-5 mx-1 rounded border border-dark bg-dark text-light py-1">
+              <button onClick={handleResetAll} className="col-4 col-5 mx-1 rounded border border-dark bg-dark text-light py-1">
                 Clear
               </button>
               <button
@@ -435,6 +532,17 @@ const ProductionTransaction = () => {
         <Modal.Body className="p-0 rounded-3">
           <StockJournalEdit
             title={"Production List"}
+            list = {productionList}
+            setShow = {setShow}
+            from={"production"}
+            handleClearAll ={handleResetAll}
+            getData={getProductData}
+            {
+              ...{
+                edit,
+                setEdit,
+              }
+            }
             productionPage={true}
           />
         </Modal.Body>

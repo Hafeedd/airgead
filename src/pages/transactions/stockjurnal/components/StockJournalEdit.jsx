@@ -186,8 +186,10 @@ export const StockJournalEdit = (props) => {
             value={date.start}
           />
         </Form.Group>
-        <Form.Group className="col-4 col-3 pe-4 ps-0 mx-0 d-flex align-items-start mt-1">
+        
+      <Form.Group className="col-4 col-3 pe-4 ps-0 mx-0 d-flex align-items-start mt-1">
           <Form.Label className="col-2 purchase-input-label align-middle">
+            To
             To
           </Form.Label>
           <Form.Control
@@ -264,12 +266,12 @@ export const StockJournalEdit = (props) => {
                     <>
                       <tr key={i ? i : 0}>
                         <td width="150" className="text-start ps-2">
-                          {!from
+                          {from !== "acc"
                             ? new Date(
-                                data?.date?.slice(0, 10)
+                                data?.date
                               ).toLocaleDateString()
                             : new Date(
-                                data?.created_at.slice(0, 10)
+                                data?.created_at
                               ).toLocaleDateString()}
                         </td>
                         <td width="150" className="text-start ps-3">
@@ -301,9 +303,9 @@ export const StockJournalEdit = (props) => {
                 })
               ) : from !== "purchRtn" ? (
                 <tr>
-                  <td colSpan={5}>{`No ${
-                    from === "acc" ? "Account" : "Stock"
-                  } Journal Transactions`}</td>
+                  <td colSpan={5} className="border-0">{`No ${
+                    from === "acc" ? "Account Journal" :from =="production"?"Production":"Stock Journal"
+                  } Transactions`}</td>
                 </tr>
               ) : (
                 from === "purchRtn" &&

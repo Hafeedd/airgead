@@ -508,7 +508,6 @@ const PurchaseTable = (props) => {
                                 onChange={(e, a) =>
                                   handleChangeTableItem(e, a, data, i)
                                 }
-                                required
                                 upward={
                                   purchaseAdd.total_items > 4 ? true : false
                                 }

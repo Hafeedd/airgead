@@ -1,14 +1,28 @@
 import React, { useState } from 'react'
 import { Dropdown } from "semantic-ui-react";
+import { AiFillEyeInvisible,AiFillEye } from "react-icons/ai";
 import useOnKey from '../../../../hooks/onKeyFunct/onKeyFunct';
 const LabourAndExpense = (props) => {
   
   const{
-    labourDetails,setLabourDetails,accDetails,fullLabourData,setFullLabourData,setProduceData
+    labourDetails,
+    setLabourDetails,
+    accDetails,
+    fullLabourData,
+    setFullLabourData,
+    setProduceData,
+    isLabOpen, 
+    setIsLabOpen,
+    setIsByOpen,
   }=props
 
   const [ref1, setRef1] = useState();
   const [handleKeyDown1, formRef1] = useOnKey(ref1, setRef1);
+
+  const toggleAccordion = () => {
+    setIsLabOpen(!isLabOpen);
+    setIsByOpen(false)
+  };
 
   const search = (options, searchValue) => {
     searchValue = searchValue.toUpperCase();
@@ -29,8 +43,16 @@ const LabourAndExpense = (props) => {
     setLabourDetails((obj) => ({ ...obj, fk_credit_account: data.value }));
   };
   return (
-    <div className="col-12 mt-1" style={{ height: "140px", overflowY: "scroll" }}>
-    <div className="div-head rounded-top ps-3 pt-1 my-0 py-0" style={{ top: "0", position: "sticky", zIndex: 1 }}>Labour and Expenses</div>
+    <div className="col-12 mt-1" 
+    style={{
+      display: isLabOpen ? 'block' : 'block',
+      height: isLabOpen ? "120px" : "2rem",
+      overflowY: isLabOpen ? "scroll" : "hidden"
+    }}>
+    <div className="div-head rounded-top ps-3 my-0 py-0 d-flex justify-content-between" style={{ top: "0", position: "sticky", zIndex: 1 }}>
+      <div className='pt-1'>Labour and Expenses</div>
+      <div className='btn  btn-sm text-light border-0 ' onClick={toggleAccordion}>{isLabOpen ? <AiFillEyeInvisible size={15}/> : <AiFillEye size={15} />}</div>
+      </div>
     <table className="w-100 ProdTable1">
         <thead>
           <tr className="bg-dark text-light">
@@ -58,7 +80,7 @@ const LabourAndExpense = (props) => {
             <td>
             <input
               type='text'
-              className='border border-secondary rounded-1 w-75' 
+              className='border-0 rounded-1 w-75' 
               value={data.item_produced_name}
               onChange={handleChange}
               onKeyDown={handleKeyDown1}
@@ -81,7 +103,7 @@ const LabourAndExpense = (props) => {
               </td>
             <td><input
               type='text'
-              className='border border-secondary rounded-1 w-25' 
+              className='border-0 rounded-1 w-25' 
               value={data.amount}
               onChange={handleChange}
               onKeyDown={handleKeyDown1}
@@ -106,22 +128,22 @@ const LabourAndExpense = (props) => {
         })}
 
        {fullLabourData?.length>0?fullLabourData?.map((data,i)=>{
-          // const handleChange = (e, drop_data) => {
-          //   if (drop_data)
-          //     data = { ...data, [drop_data.name]: drop_data.value };
-          //   else data = { ...data, [e.target.name]: e.target.value };
-          //   let tempList = [...fullLabourData];
-          //   tempList.splice(i, 1, data);
-          //   setFullLabourData([...tempList]);
-          // };
+          const handleChange = (e, drop_data) => {
+            if (drop_data)
+              data = { ...data, [drop_data.name]: drop_data.value };
+            else data = { ...data, [e.target.name]: e.target.value };
+            let tempList = [...fullLabourData];
+            tempList.splice(i, 1, data);
+            setFullLabourData([...tempList]);
+          };
           return(
             <tr key={i}>
             <td>
             <input
               type='text'
-              className='border border-secondary rounded-1 w-75' 
+              className='border-0 rounded-1 w-75' 
               value={data.item_produced_name}
-              // onChange={handleChange}
+              onChange={handleChange}
               onKeyDown={handleKeyDown1}
               name='item_produced_name'
               />
@@ -132,7 +154,7 @@ const LabourAndExpense = (props) => {
                   required
                   search={search}
                   onKeyDown={handleKeyDown1}
-                  // onChange={handleDropdownChangeDebit}
+                  onChange={handleDropdownChangeDebit}
                   className="purchase-input-text table-drop d-flex align-items-center py-0 form-control custom-dropdown-width1"
                   name="fk_debit_account"
                   placeholder="Select"
@@ -142,9 +164,9 @@ const LabourAndExpense = (props) => {
               </td>
             <td><input
               type='text'
-              className='border border-secondary rounded-1 w-25' 
+              className='border-0 rounded-1 w-25' 
               value={data.amount}
-              // onChange={handleChange}
+              onChange={handleChange}
               onKeyDown={handleKeyDown1}
               name='amount'
               /></td>
@@ -154,7 +176,7 @@ const LabourAndExpense = (props) => {
                   required
                   search={search}
                   onKeyDown={handleKeyDown1}
-                  // onChange={handleDropdownChangeCredit}
+                  onChange={handleDropdownChangeCredit}
                   className="purchase-input-text table-drop d-flex align-items-center py-0 form-control custom-dropdown-width1 "
                   name="fk_credit_account"
                   placeholder="Select"
@@ -168,7 +190,7 @@ const LabourAndExpense = (props) => {
           <td>
           <input
             type='text'
-            className='border border-secondary rounded-1 w-75' 
+            className='border-0 rounded-1 w-75' 
             // value={data.item_produced_name}
             // onChange={handleChange}
             // onKeyDown={handleKeyDown1}
@@ -191,7 +213,7 @@ const LabourAndExpense = (props) => {
             </td>
           <td><input
             type='text'
-            className='border border-secondary rounded-1 w-25' 
+            className='border-0 rounded-1 w-25' 
             // value={data.amount}
             // onChange={handleChange}
             // onKeyDown={handleKeyDown1}
@@ -212,9 +234,15 @@ const LabourAndExpense = (props) => {
               />
             </td>
         </tr>)}
-
-      
         </tbody>
+        <tfoot>
+          <tr className="text-dark">
+            <td>Total Amount:</td>
+            <td></td>
+            <td></td>
+            <td></td>
+          </tr>
+        </tfoot>
       </table>
     </div>
   )
