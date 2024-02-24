@@ -93,12 +93,12 @@ const RawMaterials = (props) => {
                 setRawItems([...tempList]);
                 let r_sum = tempList.reduce((a, b) => a + +b.value || a, 0);
                 if (rawItems?.length > 0) {
-                  let tempList = [...fullProdData]
+                  let tempList = [...fullProdData];
                   let ind = tempList.findIndex(
                     (x) => x.item_name === data.item_produced_name
                   );
-                  let tempItem = produceData
-                  if(ind){
+                  let tempItem = { ...produceData };
+                  if (ind > -1) {
                     tempItem = tempList[ind];
                   }
                   tempItem = {
@@ -107,8 +107,9 @@ const RawMaterials = (props) => {
                     r_sum: r_sum,
                     cost: ((tempItem.l_sum || 0) + r_sum) / tempItem.qty,
                   };
-                  tempList.splice(ind,1,tempItem)
-                  setFullProdData([...tempList])
+                  tempList.splice(ind, 1, tempItem);
+                  if (ind > -1) setFullProdData([...tempList]);
+                  else setProduceData({ ...tempItem });
                 } else
                   setProduceData((data) => ({
                     ...data,
