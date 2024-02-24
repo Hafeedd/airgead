@@ -453,6 +453,7 @@ const ProductionTransaction = () => {
                 rawItems,
                 setRawItems,
                 fullProdData,
+                produceData,
                 setFullProdData,
                 units,
                 fullRawData,

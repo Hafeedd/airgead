@@ -11,6 +11,7 @@ import useStockJournalServices from "../../../../services/transactions/stockJour
 export const StockJournalEdit = (props) => {
   const {
     list,
+    handleCalc,
     getData,
     setShow,
     from,
@@ -163,8 +164,8 @@ export const StockJournalEdit = (props) => {
 
   const handePurchaseReturnSubmit = (e) => {
     e.preventDefault();
-    console.log(selectedItemList);
     setItemList([...selectedItemList]);
+    handleCalc(selectedItemList,false,false)
     setShow(false);
   };
 

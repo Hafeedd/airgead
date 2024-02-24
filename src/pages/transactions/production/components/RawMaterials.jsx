@@ -9,6 +9,7 @@ const RawMaterials = (props) => {
     fullRawData,
     setFullRawData,
     setFullProdData,
+    produceData,
     fullProdData,
     setProduceData,
   } = props;
@@ -96,8 +97,10 @@ const RawMaterials = (props) => {
                   let ind = tempList.findIndex(
                     (x) => x.item_name === data.item_produced_name
                   );
-                  let tempItem = tempList[ind];
-                  console.log(tempItem)
+                  let tempItem = produceData
+                  if(ind){
+                    tempItem = tempList[ind];
+                  }
                   tempItem = {
                     ...tempItem,
                     value: (tempItem.l_sum || 0) + r_sum,
@@ -105,7 +108,6 @@ const RawMaterials = (props) => {
                     cost: ((tempItem.l_sum || 0) + r_sum) / tempItem.qty,
                   };
                   tempList.splice(ind,1,tempItem)
-                  console.log(tempList)
                   setFullProdData([...tempList])
                 } else
                   setProduceData((data) => ({

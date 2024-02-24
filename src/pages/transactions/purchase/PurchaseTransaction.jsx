@@ -841,7 +841,8 @@ const PurchaseTransaction = ({ returnPage }) => {
         <StockJournalEdit
         list={purchaseOnlyList}
         title="Purchase Return Item List"
-        setShow={setShowPurchaseReturn}
+        setShow={setShowPurchaseReturn}        
+        handleCalc={handlePurchAllCalc}
         show={showPurchaseReturn}
         setItemList={setTableItemList}
         handleClearAll={handlePurchaseAllReset}
