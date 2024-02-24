@@ -6,7 +6,7 @@ const usePurchaseReturnServices = () => {
 
     // post full purchase_return data 
     const postPurchaseReturn = async (data) =>{
-        const response = await axiosPrivate.post('purchase/purchase_return/created/',data)
+        const response = await axiosPrivate.post('purchase/purchase_returns/created/',data)
         return response.data
     }
     // post purchase_return item
@@ -24,7 +24,7 @@ const usePurchaseReturnServices = () => {
 
     // update full purchase_return data
     const putPurchaseReturn = async (id,data) =>{
-        const response = await axiosPrivate.put('purchase/purchase_return/updated/'+id+'/',data)
+        const response = await axiosPrivate.put('purchase/purchase_returns/updated/'+id+'/',data)
         return response.data
     }
     // update purchase_return item
@@ -42,7 +42,7 @@ const usePurchaseReturnServices = () => {
 
     // get all purchase_return data
     const getPurchaseReturn = async (id) =>{
-        const response = await axiosPrivate.get('purchase/purchase_return/created/')
+        const response = await axiosPrivate.get('purchase/purchase_returns/created/')
         return response.data
     }
     // get purchase_return item 

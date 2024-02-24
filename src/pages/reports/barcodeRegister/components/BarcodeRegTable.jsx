@@ -3,7 +3,6 @@ import { GrRefresh } from "react-icons/gr";
 import searchIcon from "../../../../assets/icons/search.png";
 import { useReportsServices } from "../../../../services/reports/reports";
 import { Checkbox } from "semantic-ui-react";
-import { useNavigate } from "react-router";
 import { Modal } from "react-bootstrap";
 import BarcodePDF from "./BarcodePrint";
 import Swal from "sweetalert2";

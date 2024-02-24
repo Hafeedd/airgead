@@ -652,13 +652,12 @@ td.n_clr {
 }
 
 #tableItemFkItem .text.divider{
-  text-overflow: "---" !important;
-  overflow: hidden !important;
-  height: 100% !important;
+  display: flex;
+  align-items: center;
+  text-overflow: ellipsis;
 }
 
-#tableItemFkItem div .item{
-  /* white-space: nowrap; */
-  /* text-wrap: nowrap; */
-  width: fit-content !important;
+#tableItemFkItem{
+  height: 100% !important;
+  max-height: 100% !important;
 }

@@ -148,11 +148,11 @@
 }
 
 .stockJ-edit-table {
-  position: relative;
-  border: 1px solid #c9c9c9;
+  border: 0px
 }
 
 .stockJ-edit-table thead th {
+  z-index: 4;
   position: sticky;
   top: 0;
   background: #a4a1a1;
@@ -163,10 +163,22 @@
   padding: 0.6rem 0;
 }
 
-.stockJ-edit-table-cont {
-  height: 20rem !important;
+.stockJ-edit-table-cont{
+  border: 1px solid #c9c9c9;
+  height: 30rem !important;
   overflow: hidden;
   overflow-y: scroll;
+}
+
+.stockJ-edit-table-cont.p-return tbody tr td{
+  border:0px;
+  border-top: 1px solid lightgray;
+}
+
+.stockJ-edit-table-cont.p-return tbody tr.first-child td{
+  background-color: #B5C0D0;
+  border-top: 1px solid black !important;
+  border-bottom: 1px solid black !important;
 }
 
 .add-less-btn:focus {

@@ -381,6 +381,7 @@ export const AccJournalDetails = () => {
           <StockJournalEdit
             list={accJnlList}
             from={"acc"}
+            title={"Account Journal List"}
             setShow={setShowAccJnl}
             {...{
               edit,

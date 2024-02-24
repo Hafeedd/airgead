@@ -348,6 +348,7 @@ export const StockJournal = () => {
           <Modal.Body className="p-0 rounded-3">
             <StockJournalEdit
             list = {stockJList}
+            title={"Stock Journal List"}
             setShow = {setShowJournalFilter}
               {...{
                 edit,

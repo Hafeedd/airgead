@@ -4,6 +4,7 @@ import deleteBtn from "../../../../assets/icons/delete.svg";
 import editBtn from "../../../../assets/icons/edit-black.svg";
 import { useEffect, useState } from "react";
 import Swal from "sweetalert2";
+import { Checkbox } from "semantic-ui-react";
 import useAccJournalServices from "../../../../services/transactions/accJournalServices";
 import useStockJournalServices from "../../../../services/transactions/stockJournal";
 
@@ -13,13 +14,16 @@ export const StockJournalEdit = (props) => {
     getData,
     setShow,
     from,
+    title,
     setEdit,
     handleClearAll,
-    productionPage,
+    setItemList,
+    supplierCustomer,
   } = props;
 
-  const [tempStockJList, setTempStockJList] = useState([]);
+  const [searchedList, setSearchedList] = useState([]);
   const [search, setSearch] = useState("");
+  const [selectedItemList, setSelectedItemList] = useState([]);
   const [date, setDate] = useState({
     start: new Date().toISOString().slice(0, 10),
     end: new Date().toISOString().slice(0, 10),
@@ -35,34 +39,48 @@ export const StockJournalEdit = (props) => {
   };
 
   useEffect(() => {
+    handleDateFilter();
+  }, [date, list]);
+
+  const handleDateFilter = () => {
     let tempList;
     let filterList;
-    filterList = [...list];
-    if (date.start && date.end) {
+    if (date.start && date.end && list?.length > 0) {
+      filterList = [...list];
       let startDate = new Date(date.start.slice(0, 10));
       let endDate = new Date(date.end.slice(0, 10));
       tempList = filterList?.filter((x) => {
-        console.log(x);
         let dateOfItem = new Date(x.created_at || x.date);
         if (dateOfItem >= startDate && dateOfItem <= endDate) {
-          return true;
+          if (supplierCustomer) {
+            if (
+              x?.supplier_name === supplierCustomer ||
+              x?.customer_name === supplierCustomer
+            )
+              return true;
+          } else return true;
         }
         return false;
       });
-      if (from == "acc") setTempStockJList(tempList.reverse());
-      else setTempStockJList(tempList);
+      if (from == "acc") setSearchedList(tempList.reverse());
+      else setSearchedList(tempList);
     }
-  }, [date, list]);
+  };
 
   useEffect(() => {
     let tempList;
     let filterList;
-    filterList = list;
-    if (list?.length > 0) {
+    if (searchedList?.length > 0 && search) {
+      filterList = [...searchedList];
       tempList = filterList?.filter((x) => {
-        let a = "code";
-        if (from === "acc") a = "voucher_number";
-        if (x?.[a]?.toLowerCase().toString()?.includes(search?.toLowerCase())) {
+        let property = "code";
+        if (from === "acc") property = "voucher_number";
+        if (
+          x?.[property]
+            ?.toLowerCase()
+            .toString()
+            ?.includes(search?.toLowerCase())
+        ) {
           let dateOfItem = new Date(x.date);
           let startDate = new Date(date?.start?.slice(0, 10));
           let endDate = new Date(date?.end?.slice(0, 10));
@@ -75,7 +93,9 @@ export const StockJournalEdit = (props) => {
         }
         return false;
       });
-      setTempStockJList(tempList);
+      setSearchedList(tempList);
+    } else {
+      handleDateFilter();
     }
   }, [search, from, list]);
 
@@ -115,17 +135,42 @@ export const StockJournalEdit = (props) => {
     }
   };
 
+  const handleDelete = async (data) => {
+    Swal.fire({
+      title: "Delete",
+      text: `Are you sure, you want to delete ${
+        from == "acc" ? "journal" : "stock"
+      } ${data.documents_no || data.voucher_number}?`,
+      icon: "question",
+      showDenyButton: true,
+      showCancelButton: false,
+      confirmButtonText: "Yes",
+      denyButtonText: "Cancel",
+      showLoaderOnConfirm: true,
+      preConfirm: async () => {
+        await handleDeleteData(data?.id);
+      },
+      preDeny: () => {
+        Swal.fire({
+          title: "Cancelled",
+          icon: "info",
+          timer: 1000,
+          showConfirmButton: false,
+        });
+      },
+    });
+  };
+
+  const handePurchaseReturnSubmit = (e) => {
+    e.preventDefault();
+    console.log(selectedItemList);
+    setItemList([...selectedItemList]);
+    setShow(false);
+  };
+
   return (
     <div className="p-0">
-      {productionPage != true ? (
-        <div className="stockJ-edit rounded-top-2 py-2 ps-3">
-          Journal Details
-        </div>
-      ) : (
-        <div className="stockJ-edit rounded-top-2 py-2 ps-3">
-          Productions List
-        </div>
-      )}
+      <div className="stockJ-edit rounded-top-2 py-2 ps-3">{title}</div>
       <div className="row mx-0 p-2 px-3">
         <Form.Group className="col-4 col-3 pe-4 ps-0 mx-0 d-flex align-items-start mt-1">
           <Form.Label className="col-2 purchase-input-label align-middle">
@@ -157,7 +202,7 @@ export const StockJournalEdit = (props) => {
         </Form.Group>
       </div>
       <div className="p-2 px-3 row mx-0">
-        <div className="bg-dark py-2 ps-4 rounded-top-1">
+        <div className="bg-dark py-2 ps-4 rounded-top-1 d-flex justify-content-between">
           <div className="item_seach_bar_cont rounded-2 col-3">
             <img
               src={searchIcon}
@@ -172,91 +217,170 @@ export const StockJournalEdit = (props) => {
               type="text"
             />
           </div>
+          {supplierCustomer && (
+            <div className="text-light d-flex align-items-center">
+              <div className="text-success">SUPPLIER &nbsp;:&emsp;</div>
+              {supplierCustomer}
+            </div>
+          )}
         </div>
-        <div className="stockJ-edit-table-cont px-0">
-          <table className="stockJ-edit-table table">
+        <div
+          className={`stockJ-edit-table-cont px-0 ${
+            from === "purchRtn" && "p-return"
+          } `}
+        >
+          <table className="stockJ-edit-table table ">
             <thead>
-              <th width="150" className="ps-4">
-                Date
-              </th>
-              <th width="150" className="ps-4">
-                Doc No.
-              </th>
-              {!from && <th className="text-center">Items</th>}
-              <th className="text-center">Narration</th>
-              <th width="60" className="text-end pe-4"></th>
+              {from !== "purchRtn" ? (
+                <>
+                  <th width="150" className="ps-4">
+                    Date
+                  </th>
+                  <th width="150" className="ps-4">
+                    Doc No.
+                  </th>
+                  {!from && <th className="text-center">Items</th>}
+                  <th className="text-center">Narration</th>
+                  <th width="60" className="text-end pe-4"></th>
+                </>
+              ) : (
+                <>
+                  <th width="100">Code</th>
+                  <th width="300" className="text-start ps-4">
+                    Name
+                  </th>
+                  <th>Qty</th>
+                  <th>P. Rate</th>
+                  <th>Value</th>
+                  <th>Tax</th>
+                  <th></th>
+                </>
+              )}
             </thead>
             <tbody>
-              {tempStockJList?.length > 0 &&
-                tempStockJList?.map((data, i) => {
-                  const handleDelete = async (e) => {
-                    Swal.fire({
-                      title: "Delete",
-                      text: `Are you sure, you want to delete ${
-                        from == "acc" ? "journal" : "stock"
-                      } ${data.documents_no || data.voucher_number}?`,
-                      icon: "question",
-                      showDenyButton: true,
-                      showCancelButton: false,
-                      confirmButtonText: "Yes",
-                      denyButtonText: "Cancel",
-                      showLoaderOnConfirm: true,
-                      preConfirm: async () => {
-                        await handleDeleteData(data?.id);
-                      },
-                      preDeny: () => {
-                        Swal.fire({
-                          title: "Cancelled",
-                          icon: "info",
-                          timer: 1000,
-                          showConfirmButton: false,
-                        });
-                      },
-                    });
-                  };
-
+              {from !== "purchRtn" && searchedList?.length > 0 ? (
+                searchedList?.map((data, i) => {
                   return (
-                    <tr key={i ? i : 0}>
-                      <td width="150" className="text-start ps-2">
-                        {!from
-                          ? data?.date?.slice(0, 10)
-                          : data?.created_at.slice(0, 10)}
-                      </td>
-                      <td width="150" className="text-start ps-3">
-                        {from ? data?.voucher_number : data?.code}
-                      </td>
-                      {!from && (
-                        <td className="text-center">{data?.total_items}</td>
-                      )}
-                      <td className="text-center">{data?.narration}</td>
-                      <td className="ps-2">
-                        <div className="d-flex gap-4 p-0 pe-3">
-                          <img
-                            src={deleteBtn}
-                            className="cursor"
-                            onClick={() => handleDelete(data)}
-                            alt="editBtn"
-                          />
-                          <img
-                            src={editBtn}
-                            className="cursor"
-                            onClick={() => handleEditClick(data)}
-                            alt="editBtn"
-                          />
-                        </div>
-                      </td>
-                    </tr>
+                    <>
+                      <tr key={i ? i : 0}>
+                        <td width="150" className="text-start ps-2">
+                          {!from
+                            ? new Date(
+                                data?.date?.slice(0, 10)
+                              ).toLocaleDateString()
+                            : new Date(
+                                data?.created_at.slice(0, 10)
+                              ).toLocaleDateString()}
+                        </td>
+                        <td width="150" className="text-start ps-3">
+                          {from ? data?.voucher_number : data?.code}
+                        </td>
+                        {!from && (
+                          <td className="text-center">{data?.total_items}</td>
+                        )}
+                        <td className="text-center">{data?.narration}</td>
+                        <td className="ps-2">
+                          <div className="d-flex gap-4 p-0 pe-3">
+                            <img
+                              src={deleteBtn}
+                              className="cursor"
+                              onClick={() => handleDelete(data)}
+                              alt="editBtn"
+                            />
+                            <img
+                              src={editBtn}
+                              className="cursor"
+                              onClick={() => handleEditClick(data)}
+                              alt="editBtn"
+                            />
+                          </div>
+                        </td>
+                      </tr>
+                    </>
                   );
-                })}
+                })
+              ) : from !== "purchRtn" ? (
+                <tr>
+                  <td colSpan={5}>{`No ${
+                    from === "acc" ? "Account" : "Stock"
+                  } Journal Transactions`}</td>
+                </tr>
+              ) : (
+                from === "purchRtn" &&
+                searchedList.length > 0 &&
+                searchedList.map((data, i1) => {
+                  return (
+                    <>
+                      <tr className="first-child" key={i1}>
+                        <td>
+                          {new Date(data?.created_at).toLocaleDateString()}
+                        </td>
+                        <td className="text-start ps-4" colSpan={6}>
+                          {data.documents_no}
+                        </td>
+                      </tr>
+                      {data.items.map((item, indexofItem) => {
+                        const handleSelection = (checked) => {
+                          let tempListItemSelected = [...selectedItemList];
+                          if (checked) {
+                            tempListItemSelected.push(item);
+                            setSelectedItemList([...tempListItemSelected]);
+                          } else {
+                            let index = tempListItemSelected.findIndex(
+                              (x) => x.id === item.id
+                            );
+                            console.log(index);
+                            tempListItemSelected.splice(index, 1);
+                            setSelectedItemList([...tempListItemSelected]);
+                          }
+                        };
+                        return (
+                          <tr key={indexofItem}>
+                            <td>{item.code}</td>
+                            <td className="text-start">{item.item_name}</td>
+                            <td>{item.quantity}</td>
+                            <td>{item.rate}</td>
+                            <td>{item.value}</td>
+                            <td>{item.tax_gst}</td>
+                            <td>
+                              <Checkbox
+                                checked={
+                                  selectedItemList?.filter(
+                                    (x) => x.id === item.id
+                                  ).length > 0
+                                    ? true
+                                    : false
+                                }
+                                onChange={(e, { checked }) =>
+                                  handleSelection(checked)
+                                }
+                              />
+                            </td>
+                          </tr>
+                        );
+                      })}
+                    </>
+                  );
+                })
+              )}
             </tbody>
           </table>
         </div>
-        <span className="col-10" />
-        <div
-          onClick={() => setShow(false)}
-          className="btn col-2 btn-dark py-1 px-5"
-        >
-          Close
+        <div className="gap-2 d-flex w-100 justify-content-end p-0">
+          <div
+            onClick={() => setShow(false)}
+            className="btn col-2 btn-dark py-1 px-5 mt-3"
+          >
+            Close
+          </div>
+          {from === "purchRtn" && (
+            <div
+              onClick={handePurchaseReturnSubmit}
+              className="btn col-2 btn-dark py-1 px-5 mt-3"
+            >
+              Submit
+            </div>
+          )}
         </div>
       </div>
     </div>

@@ -9,8 +9,7 @@ import usePurchaseServices from "../../../../services/transactions/purchcaseServ
 const PurchaseEditList = (props) => {
   const {
     handleSetEdit,
-    purchaseList,
-    // setPurchaseList,
+    purchaseOrReturnList,
     // edit,
     from,
     closeEditModal,
@@ -21,8 +20,7 @@ const PurchaseEditList = (props) => {
   const {deleteSales} = useSalesServices()
   const {deletePurchase} = usePurchaseServices()
   const [searchedList, setSearchedList] = useState([])
-  // const {deleteSales} = use()
-
+  
   const handleDeleteData = async (id) => {
     try {
       let response;
@@ -63,9 +61,9 @@ const PurchaseEditList = (props) => {
   };
 
   useEffect(()=>{
-    if(purchaseList?.length>0)
-    setSearchedList([...purchaseList])
-  },[purchaseList])
+    if(purchaseOrReturnList?.length>0)
+    setSearchedList([...purchaseOrReturnList])
+  },[purchaseOrReturnList])
 
   const handleSearch = async (e) => {
     let tempData;
@@ -73,7 +71,7 @@ const PurchaseEditList = (props) => {
     if (searchedList?.length>0) {
       let value = e.target.value;
       if (value !== "") {
-        const tmepList = [...purchaseList]
+        const tmepList = [...purchaseOrReturnList]
         if (tmepList?.length > 0) {
           tempData = tmepList?.filter((x) => {
             let searchInString = `${
@@ -93,7 +91,7 @@ const PurchaseEditList = (props) => {
           setSearchedList([...tempData]);
         }
       } else {
-        setSearchedList([...purchaseList])
+        setSearchedList([...purchaseOrReturnList])
       }
     }
   };

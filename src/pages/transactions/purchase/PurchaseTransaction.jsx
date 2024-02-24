@@ -22,6 +22,7 @@ import {
   initialTableItem,
 } from "./InitialData/data";
 import usePurchaseReturnServices from "../../../services/transactions/purchaseReturn";
+import { StockJournalEdit } from "../stockjurnal/components/StockJournalEdit";
 
 export const initialPurchaseTableStatePositionLocal = JSON.parse(
   localStorage.getItem("initialPurchaseTableStatePositionLocal")
@@ -29,6 +30,7 @@ export const initialPurchaseTableStatePositionLocal = JSON.parse(
 
 const PurchaseTransaction = ({ returnPage }) => {
   const [purchaseItemModal, setPurchaseItemModal] = useState(false);
+  const [showPurchaseReturn, setShowPurchaseReturn] = useState(false);
   const [supplierList, setSupplierList] = useState(null);
   const [purchaseEditModal, setPurchaseEditModal] = useState(false);
   const [purchaseItemSerielModal, setPurchaseItemSerielModal] = useState(false);
@@ -46,7 +48,8 @@ const PurchaseTransaction = ({ returnPage }) => {
       initialPurchaseSalesTableStatePosition
   );
 
-  const [purchaseList, setPurchaseList] = useState();
+  const [purchaseOnlyList, setPurchaseOnlyList] = useState([]);
+  const [purchaseOrReturnList, setPurchaseOrReturnList] = useState([]);
   const [tableItemList, setTableItemList] = useState([]);
   const [tableItemBatchList, setTableItemBatchList] = useState([]);
 
@@ -64,7 +67,7 @@ const PurchaseTransaction = ({ returnPage }) => {
   const { getCode } = useItemServices();
 
   const { getAccountList } = useAccountServices();
-  const { postPurchase, putPurchase, getPurchase, postPurchaseItem } =
+  const { postPurchase, putPurchase, getPurchase } =
     usePurchaseServices();
   const {
     postPurchaseReturn,
@@ -76,9 +79,13 @@ const PurchaseTransaction = ({ returnPage }) => {
 
   useEffect(() => {
     getData();
-    // handleGetCode();
-    if (!returnPage) handleReloadData();
-    else if (returnPage) handlePurchaseAllReset();
+    if (!returnPage){
+    handleReloadData();
+  }
+    else if (returnPage) {
+      handlePurchaseAllReset()
+      handleGetCode(true)
+    }
 
     let supplier = location.state;
     if (supplier?.id) {
@@ -92,6 +99,20 @@ const PurchaseTransaction = ({ returnPage }) => {
   }, [location.pathname]);
 
   useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.key === 'E' && e.shiftKey) {
+        setShowPurchaseReturn(true)
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, []);
+
+  useEffect(() => {
     // if (!returnPage) window.onmousedown = myBeforeUnloadFunction;
     myBeforeUnloadFunction()
   }, [purchaseAdd, tableItemList, edit]);
@@ -102,6 +123,7 @@ const PurchaseTransaction = ({ returnPage }) => {
       items: [...tableItemList],
       edit: edit,
     };
+    if(!returnPage)
     localStorage.setItem("purchaseData", JSON.stringify(allPurchState));
   };
 
@@ -111,7 +133,7 @@ const PurchaseTransaction = ({ returnPage }) => {
     if (data?.edit) {
       setEdit({ ...data.edit });
       handleSetEdit(data?.edit);
-    } else if (data?.documents_no) {
+    } else if (data.created_at) {
       let { items, updated_at, edit, tablekeys, ...others } = data;
       let tempData = {
         ...others,
@@ -249,13 +271,15 @@ const PurchaseTransaction = ({ returnPage }) => {
     try {
       let code;
       let response = await getCode();
-      console.log((!edit && nextCode) || nextCode || firstReload);
       if (
         response.success &&
         ((!edit && nextCode) || nextCode || (!nextCode && firstReload))
       ) {
         for (let i of response.data) {
           let type = "PUR";
+          if(returnPage){
+            type = "PURT"
+          }
           if (i.sub_id == type) {
             code = i.next_code;
           }
@@ -266,9 +290,24 @@ const PurchaseTransaction = ({ returnPage }) => {
   };
 
   const getData = async () => {
+  
     try {
-      let response, response1, response3, suppList, bankList, purchList;
-
+      let response, response1, response3,response4, suppList, bankList, purOrRetList,purOnlyList;
+      
+      const handleSuppNameAdd = (data) =>{
+        let list = [];
+          data.map((purData) => {
+            if (purData.fk_supplier > -1) {
+              let supplierName = suppList?.filter(
+                (supData) => supData.value == purData.fk_supplier
+              )[0]?.name;
+              purData = { ...purData, supplier_name: supplierName };
+            }
+            list.push(purData);
+          });
+          return list
+      }
+      
       response = await getSupplier();
       if (!response?.success) return 0;
       suppList = [];
@@ -282,20 +321,16 @@ const PurchaseTransaction = ({ returnPage }) => {
         suppList.push(a);
       });
       setSupplierList(suppList);
-      if (returnPage) response1 = await getPurchaseReturn();
+      if (returnPage){         
+        response4 = await getPurchase();
+        response1 = await getPurchaseReturn();}
       else response1 = await getPurchase();
-      if (response1?.success) {
-        purchList = [];
-        response1?.data.map((purData) => {
-          if (purData.fk_supplier > -1) {
-            let supplierName = suppList.filter(
-              (supData) => supData.value == purData.fk_supplier
-            )[0]?.name;
-            purData = { ...purData, supplier_name: supplierName };
-          }
-          purchList.push(purData);
-        });
-        setPurchaseList(purchList);
+      if (response1?.success && ((returnPage && response4.success)|| !returnPage)) {
+        purOrRetList = handleSuppNameAdd(response1.data)
+        if(returnPage && response4.success)
+        purOnlyList = handleSuppNameAdd(response4.data)
+        setPurchaseOrReturnList(purOrRetList);
+        setPurchaseOnlyList(purOnlyList)
       }
 
       response3 = await getAccountList();
@@ -314,9 +349,9 @@ const PurchaseTransaction = ({ returnPage }) => {
 
         setBankList([...bankList]);
       }
-      return { suppList, purchList, bankList };
+      return { suppList, bankList };
     } catch (err) {
-      // console.log(err);
+      console.log(err);
     }
   };
 
@@ -335,7 +370,9 @@ const PurchaseTransaction = ({ returnPage }) => {
     setTableItemBatchList([]);
     setTableItem(initialTableItem);    
     setEdit(false);
-    if (!returnPage) localStorage.setItem("purchaseData", false);
+    if (!returnPage) {
+    localStorage.setItem("purchaseData", false);
+  }
   };
 
   const handleChange = (e, data) => {
@@ -599,6 +636,7 @@ const PurchaseTransaction = ({ returnPage }) => {
   // };
 
   const handleBatchSubmit = (tempItems) => {};
+
   return (
     <div className="item_add">
       <div className={`itemList_header row mx-0 mb-3`}>
@@ -704,7 +742,7 @@ const PurchaseTransaction = ({ returnPage }) => {
             setEdit,
             itemNameList,
             setItemNameList,
-            purchaseList,
+            purchaseOrReturnList,
             handleTableItemReset,
             handlePurchaseAllReset,
             setShowBatch,
@@ -749,10 +787,10 @@ const PurchaseTransaction = ({ returnPage }) => {
           closeEditModal={setPurchaseEditModal}
           {...{
             handleSetEdit,
-            purchaseList,
+            purchaseOrReturnList,
             setEdit,
             edit,
-            setPurchaseList,
+            setPurchaseOrReturnList,
             getData,
           }}
         />
@@ -792,6 +830,24 @@ const PurchaseTransaction = ({ returnPage }) => {
       >
         <StockPop
           {...{ itemNameList, setTableItem, tableItem, setShowStock }}
+        />
+      </Modal>
+      <Modal
+      show={showPurchaseReturn && returnPage}
+      centered
+      size="xl"
+      onHide={()=>setShowPurchaseReturn(false)}
+      >
+        <StockJournalEdit
+        list={purchaseOnlyList}
+        title="Purchase Return Item List"
+        setShow={setShowPurchaseReturn}
+        show={showPurchaseReturn}
+        setItemList={setTableItemList}
+        handleClearAll={handlePurchaseAllReset}
+        supplierCustomer={purchaseAdd.supplier_name}
+        from="purchRtn" 
+        {...{getData,setEdit}}
         />
       </Modal>
     </div>

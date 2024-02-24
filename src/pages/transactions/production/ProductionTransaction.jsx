@@ -434,16 +434,7 @@ const ProductionTransaction = () => {
       <Modal show={show} centered size="lg" onHide={() => setShow(false)}>
         <Modal.Body className="p-0 rounded-3">
           <StockJournalEdit
-            //list = {stockJList}
-            // setShow = {setShowJournalFilter}
-            {
-              ...{
-                // edit,
-                // getData,
-                // setEdit,
-                // handleClearAll,
-              }
-            }
+            title={"Production List"}
             productionPage={true}
           />
         </Modal.Body>

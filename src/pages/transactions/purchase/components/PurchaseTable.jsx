@@ -28,7 +28,7 @@ const PurchaseTable = (props) => {
     setEdit,
     itemNameList,
     setItemNameList,
-    purchaseList,
+    purchaseOrReturnList,
     handleTableItemReset,
     handlePurchaseAllReset,
     setShowBatch,
@@ -355,17 +355,17 @@ const PurchaseTable = (props) => {
   };
 
   const handlePrev = () => {
-    if (purchaseList?.length > 0) {
+    if (purchaseOrReturnList?.length > 0) {
       if (!edit) {
         handlePurchaseAllReset();
-        setEdit({ ...purchaseList[0] });
-        handleSetEdit(purchaseList[0]);
+        setEdit({ ...purchaseOrReturnList[0] });
+        handleSetEdit(purchaseOrReturnList[0]);
       } else {
-        let ind = purchaseList?.findIndex((x) => edit.id === x.id);
-        if (ind !== purchaseList?.length - 1) {
+        let ind = purchaseOrReturnList?.findIndex((x) => edit.id === x.id);
+        if (ind !== purchaseOrReturnList?.length - 1) {
           handlePurchaseAllReset();
-          setEdit({ ...purchaseList[ind + 1] });
-          handleSetEdit(purchaseList[ind + 1]);
+          setEdit({ ...purchaseOrReturnList[ind + 1] });
+          handleSetEdit(purchaseOrReturnList[ind + 1]);
         } else {
           Swal.fire("No more purchase to edit", "go for next", "warning");
         }
@@ -376,18 +376,18 @@ const PurchaseTable = (props) => {
   };
 
   const handleNext = () => {
-    if (purchaseList?.length > 0)
+    if (purchaseOrReturnList?.length > 0)
       if (!edit) {
         Swal.fire("No more purchase to edit", "go for prev", "warning");
-      } else if (edit?.id === purchaseList[0]?.id) {
+      } else if (edit?.id === purchaseOrReturnList[0]?.id) {
         handlePurchaseAllReset();
         handleGetCode(true);
       } else {
         handlePurchaseAllReset();
-        let ind = purchaseList?.findIndex((x) => edit.id === x.id);
-        if (ind !== purchaseList[0]) {
-          setEdit(purchaseList[ind - 1]);
-          handleSetEdit(purchaseList[ind - 1]);
+        let ind = purchaseOrReturnList?.findIndex((x) => edit.id === x.id);
+        if (ind !== purchaseOrReturnList[0]) {
+          setEdit(purchaseOrReturnList[ind - 1]);
+          handleSetEdit(purchaseOrReturnList[ind - 1]);
         } else {
           handlePurchaseAllReset();
           Swal.fire("No more purchase to edit", "go for prev", "warning");
