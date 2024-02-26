@@ -133,7 +133,7 @@ const PurchaseTransaction = ({ returnPage }) => {
     if (data?.edit) {
       setEdit({ ...data.edit });
       handleSetEdit(data?.edit);
-    } else if (data.created_at) {
+    } else if (data?.created_at) {
       let { items, updated_at, edit, tablekeys, ...others } = data;
       let tempData = {
         ...others,
