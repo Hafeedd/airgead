@@ -21,7 +21,7 @@ import {
   initialPurchaseSalesTableStatePosition,
   initialTableItem,
 } from "./InitialData/data";
-import usePurchaseReturnServices from "../../../services/transactions/purchaseReturn";
+import usePurchaseReturnServices from "../../../services/transactions/purchaseReturnService";
 import { StockJournalEdit } from "../stockjurnal/components/StockJournalEdit";
 
 export const initialPurchaseTableStatePositionLocal = JSON.parse(

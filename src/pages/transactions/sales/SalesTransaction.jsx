@@ -18,7 +18,7 @@ import useItemServices from "../../../services/master/itemServices";
 import { PrintFIle } from "./components/SalesBill";
 import { initialPurchaseSalesTableStatePosition } from "../purchase/InitialData/data";
 import { StockJournalEdit } from "../stockjurnal/components/StockJournalEdit";
-// import { initialPurchaseSalesTableStatePositionLocal } from "../purchase/PurchaseTransaction";
+import { useSalesReturnServices } from "../../../services/transactions/salesReturnService";
 
 const initialSalesState = {
   cstm_id: null,
@@ -96,7 +96,7 @@ export const initialSalesTableStatePositionLocal = JSON.parse(
   localStorage.getItem("initialSalesTableStatePositionLocal")
 );
 
-const SalesTransaction = ({returnPage}) => {
+const SalesTransaction = ({ returnPage }) => {
   const [showSalesReturn, setShowSalesReturn] = useState(false);
   const [salesItemModal, setSalesItemModal] = useState(false);
   const [salesEditModal, setSalesEditModal] = useState(false);
@@ -130,6 +130,8 @@ const SalesTransaction = ({returnPage}) => {
   const { getCustomer } = useCustomerServices();
   const { getSales, postSales, putSales, getAllUserAc, getCodeWithBillType } =
     useSalesServices();
+  const { getSalesReturn, postSalesReturn, putSalesReturn } =
+    useSalesReturnServices();
 
   const handleSalesAllReset = () => {
     setSalesAdd(initialSalesState);
@@ -149,21 +151,21 @@ const SalesTransaction = ({returnPage}) => {
 
   useEffect(() => {
     const handleKeyDown = (e) => {
-      if (e.key === 'E' && e.shiftKey) {
-        setShowSalesReturn(true)
+      if (e.key === "E" && e.shiftKey) {
+        setShowSalesReturn(true);
       }
     };
 
-    window.addEventListener('keydown', handleKeyDown);
+    window.addEventListener("keydown", handleKeyDown);
 
     return () => {
-      window.removeEventListener('keydown', handleKeyDown);
+      window.removeEventListener("keydown", handleKeyDown);
     };
   }, []);
 
   useEffect(() => {
     // window.onmousedown = myBeforeUnloadFunction;
-    myBeforeUnloadFunction()
+    myBeforeUnloadFunction();
   }, [salesAdd, tableItemList, edit]);
 
   const handleReloadData = () => {
@@ -192,8 +194,8 @@ const SalesTransaction = ({returnPage}) => {
       items: [...tableItemList],
       edit: edit,
     };
-    if(!returnPage)
-    localStorage.setItem("salesData", JSON.stringify(allSaleState));
+    if (!returnPage)
+      localStorage.setItem("salesData", JSON.stringify(allSaleState));
   };
 
   const handleSetEdit = (data) => {
@@ -202,7 +204,7 @@ const SalesTransaction = ({returnPage}) => {
       let tempData = { ...others, change_due: others.change_due || "0.00" };
       setSalesAdd((data) => ({ ...data, ...tempData }));
       if (sales_item) {
-        console.log(sales_item)
+        console.log(sales_item);
         setTableItemList([...sales_item]);
         handleSalesAddCalc(sales_item, true, tempData);
       }
@@ -214,12 +216,11 @@ const SalesTransaction = ({returnPage}) => {
     // handleGetCode();
     // handleReloadData();
     getData();
-    if (!returnPage){
-    handleReloadData();
-  }
-    else if (returnPage) {
-      handleSalesAllReset()
-      handleGetCode(true)
+    if (!returnPage) {
+      handleReloadData();
+    } else if (returnPage) {
+      handleSalesAllReset();
+      handleGetCode(true);
     }
 
     let customer = location.state;
@@ -460,14 +461,18 @@ const SalesTransaction = ({returnPage}) => {
 
   const getData = async () => {
     try {
-      // if(returnPage){
-      // let response1 = await getSalesReturn
-    // }
-      let response = await getSales();
-      if (response?.success) {
-        setSalesList(response?.data);
+      let response1, response2;
+      if (returnPage) {
+        response1 = await getSalesReturn();
       }
-      return response?.data;
+      response2 = await getSales();
+      if (response1?.success && response2?.success) {
+        setSalesOnlyList(response2?.data);
+        setSalesList(response1?.data);
+      } else if (response2?.success) {
+        setSalesList(response2?.data);
+      }
+      return response2?.data;
     } catch (err) {
       console.log(err);
     }
@@ -590,8 +595,8 @@ const SalesTransaction = ({returnPage}) => {
         });
         return 0;
       }
-      if (salesAdd?.change_due<0 && !salesAdd.fk_customer) {
-        Swal.fire({          
+      if (salesAdd?.change_due < 0 && !salesAdd.fk_customer) {
+        Swal.fire({
           icon: "warning",
           text: "Please select a customer .Balance pending!",
           timer: 2500,
@@ -618,10 +623,8 @@ const SalesTransaction = ({returnPage}) => {
       }
     } catch (err) {
       Swal.fire({
-        title:
-          "Error",
-        text:
-          "Something went wrong , Pls try again",
+        title: "Error",
+        text: "Something went wrong , Pls try again",
         icon: "error",
         timer: 1000,
         showConfirmButton: false,
@@ -634,9 +637,13 @@ const SalesTransaction = ({returnPage}) => {
   return (
     <div className="item_add">
       <div className="itemList_header row mx-0 mb-3">
-        <div className={`page_head ps-4 d-flex pe-0 ${returnPage && "s-return"}`}>
+        <div
+          className={`page_head ps-4 d-flex pe-0 ${returnPage && "s-return"}`}
+        >
           <div className="col-5 col-6">
-            <div className="fw-600 fs-5">{`Sales ${returnPage?"Return":""}`}</div>
+            <div className="fw-600 fs-5">{`Sales ${
+              returnPage ? "Return" : ""
+            }`}</div>
             <div className="page_head_items mb-1">
               <div
                 onClick={() => {
@@ -644,7 +651,7 @@ const SalesTransaction = ({returnPage}) => {
                 }}
                 className={`page_head_item active`}
               >
-                {`Sales ${returnPage?"Return":""} Details`}
+                {`Sales ${returnPage ? "Return" : ""} Details`}
               </div>
             </div>
           </div>
@@ -701,10 +708,7 @@ const SalesTransaction = ({returnPage}) => {
           </div>
         </div>
       </div>
-      <form
-        onSubmit={handleSubmit}
-        className="item_add_cont px-3 pb-1 pt-0"
-      >
+      <form onSubmit={handleSubmit} className="item_add_cont px-3 pb-1 pt-0">
         <div className="row mx-0 mb-0 justify-content-between">
           <div className="col-3 mx-0 px-0 ps-2 row">
             <div className="col-12 sales-supplier-container px-0 py-3 row mx-0 mt-1">
@@ -722,9 +726,9 @@ const SalesTransaction = ({returnPage}) => {
             <div className="col-12 gap-2 d-flex align-items-end justify-content-start px-0 mx-0 mt-1">
               <div className="">
                 <div className="btn btn-sm btn-secondary rounded-bottom-0 px-3">
-                  {`Sales ${returnPage ? "Return":""}`}
+                  {`Sales ${returnPage ? "Return" : ""}`}
                 </div>
-              </div>            
+              </div>
               <div className="">
                 <div className="btn btn-sm btn-secondary rounded-bottom-0 px-3">
                   Other
@@ -816,7 +820,7 @@ const SalesTransaction = ({returnPage}) => {
         />
         <SalesDetailFooter
           {...{
-            bankSelect,            
+            bankSelect,
             salesAdd,
             handleChange,
             edit,
@@ -884,22 +888,22 @@ const SalesTransaction = ({returnPage}) => {
       </Modal>
 
       <Modal
-      show={showSalesReturn && returnPage}
-      centered
-      size="xl"
-      onHide={()=>setShowSalesReturn(false)}
+        show={showSalesReturn && returnPage}
+        centered
+        size="xl"
+        onHide={() => setShowSalesReturn(false)}
       >
         <StockJournalEdit
-        list={salesOnlyList}
-        title="Sales Return Item List"
-        setShow={setShowSalesReturn}        
-        handleCalc={handleSalesAddCalc}
-        show={showSalesReturn}
-        setItemList={setTableItemList}
-        handleClearAll={handleSalesAllReset}
-        supplierCustomer={salesAdd.customer_name}
-        from="salesRtn" 
-        {...{getData,setEdit}}
+          list={salesOnlyList}
+          title="Sales Return Item List"
+          setShow={setShowSalesReturn}
+          handleCalc={handleSalesAddCalc}
+          show={showSalesReturn}
+          setItemList={setTableItemList}
+          handleClearAll={handleSalesAllReset}
+          supplierCustomer={salesAdd.customer_name}
+          from="salesRtn"
+          {...{ getData, setEdit }}
         />
       </Modal>
     </div>
