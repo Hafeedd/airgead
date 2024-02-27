@@ -139,8 +139,6 @@ const PurchaseTransaction = ({ returnPage }) => {
         ...others,
         change_due: others.change_due || "0.00",
       };
-      if (tablekeys?.length > 0) {        
-      }
       setPurchaseAdd((data) => ({ ...data, ...tempData }));
       if (items) {
         setTableItemList([...items]);

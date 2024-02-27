@@ -1,7 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { Form } from "react-bootstrap";
-import useItemServices from "../../../../services/master/itemServices";
-import useSalesServices from "../../../../services/transactions/salesServices";
 import useOnKey from "../../../../hooks/onKeyFunct/onKeyFunct";
 
 const SalesInvoiceDetails = (props) => {

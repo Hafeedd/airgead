@@ -150,9 +150,9 @@ const PurchaseInvoiceDetails = (props) => {
           Date
         </Form.Label>
         <Form.Control
-          name="created_at"
+          name="date"
           value={
-            purchaseAdd?.created_at?.slice(0, 10) ||
+            purchaseAdd?.date?.slice(0, 10) ||
             new Date().toISOString().slice(0, 10)
           }
           onKeyDown={handleKeyDown}

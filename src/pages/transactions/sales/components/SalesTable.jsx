@@ -7,6 +7,7 @@ import Swal from "sweetalert2";
 
 const SalesTable = (props) => {
   const {
+    handleGetSalesReturnCode,
     tableItemRef,
     setTableItemRef,
     handleSetEdit,
@@ -478,6 +479,7 @@ const SalesTable = (props) => {
     } else if (edit?.id == salesList[0]?.id) {
       handleSalesAllReset();
       handleSetEdit(true);
+      handleGetSalesReturnCode()
     } else {
       handleSalesAllReset();
       let ind = salesList?.findIndex((x) => edit.id == x.id);

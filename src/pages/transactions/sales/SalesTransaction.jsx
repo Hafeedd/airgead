@@ -133,13 +133,14 @@ const SalesTransaction = ({ returnPage }) => {
   const { getSalesReturn, postSalesReturn, putSalesReturn } =
     useSalesReturnServices();
 
+  const { getCode } = useItemServices();
+
   const handleSalesAllReset = () => {
     setSalesAdd(initialSalesState);
     handleTableItemReset();
     setTableItemList([]);
     setEdit(false);
     setShowPrint(false);
-    handleGetCode();
     localStorage.setItem("salesData", false);
   };
 
@@ -165,7 +166,7 @@ const SalesTransaction = ({ returnPage }) => {
 
   useEffect(() => {
     // window.onmousedown = myBeforeUnloadFunction;
-    myBeforeUnloadFunction();
+    if ((edit || tableItemList.length > 0) && !returnPage) myBeforeUnloadFunction();
   }, [salesAdd, tableItemList, edit]);
 
   const handleReloadData = () => {
@@ -174,18 +175,18 @@ const SalesTransaction = ({ returnPage }) => {
     if (data?.edit) {
       setEdit({ ...data.edit });
       handleSetEdit(data?.edit);
-    } else if (data) {
+    } else if (data?.created_at) {
       let { items, updated_at, edit, tablekeys, ...others } = data;
       let tempData = {
         ...others,
         change_due: others.change_due || "0.00",
       };
-      setSalesAdd((data) => ({ ...data, tempData }));
+      setSalesAdd((data) => ({ ...data, ...tempData }));
       if (items) {
         setTableItemList([...items]);
         handleSalesAddCalc(items, true, tempData);
       }
-    }
+    } else handleGetSalesReturnCode();
   };
 
   const myBeforeUnloadFunction = () => {
@@ -218,9 +219,10 @@ const SalesTransaction = ({ returnPage }) => {
     getData();
     if (!returnPage) {
       handleReloadData();
+      handleGetCode();
     } else if (returnPage) {
       handleSalesAllReset();
-      handleGetCode(true);
+      handleGetSalesReturnCode();
     }
 
     let customer = location.state;
@@ -451,8 +453,30 @@ const SalesTransaction = ({ returnPage }) => {
   const handleGetCode = async () => {
     try {
       const response2 = await getCodeWithBillType();
+      console.log("fdsfdsf");
       if (response2.success) {
         setCodeWithBillTypeList(response2.data);
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const handleGetSalesReturnCode = async () => {
+    if (!returnPage) return 0;
+    try {
+      let code;
+      let response = await getCode();
+      if (
+        response.success
+        // &&((!edit && nextCode) || nextCode || (!nextCode && firstReload))
+      ) {
+        for (let i of response.data) {
+          if (i.sub_id == "SLRT") {
+            code = i.next_code;
+          }
+          setSalesAdd((data) => ({ ...data, documents_no: code }));
+        }
       }
     } catch (err) {
       console.log(err);
@@ -511,6 +535,7 @@ const SalesTransaction = ({ returnPage }) => {
         paid_cash: discPrice?.toFixed(0),
         change_due: "0.00",
         bank_amount: 0,
+        payment_type:(data.paid_cash>0)?"CASH":"CREDIT"
       }));
     } else if (e.target.name == "paid_cash") {
       if (
@@ -524,7 +549,7 @@ const SalesTransaction = ({ returnPage }) => {
           timer: 1560,
         });
       } else {
-        let value = e.target.value == "" ? null : e.target.value;
+        let value = e.target.value == "" ? null : e.target.value;        
         setSalesAdd((data) => ({
           ...data,
           change_due:
@@ -534,6 +559,7 @@ const SalesTransaction = ({ returnPage }) => {
               value -
               salesAdd.total_amount || "0.00",
           paid_cash: value,
+          payment_type:(value === 0|| !value)?"CREDIT":"CASH"
         }));
       }
     } else if (e.target.name == "bank_amount") {
@@ -610,9 +636,11 @@ const SalesTransaction = ({ returnPage }) => {
       // console.log(submitData.change_due)
       // return 0
       if (!edit) {
-        response = await postSales(submitData);
+        if (returnPage) response = await postSalesReturn(submitData);
+        else response = await postSales(submitData);
       } else {
-        response = await putSales(edit?.id, submitData);
+        if (returnPage) response = await putSalesReturn(edit?.id, submitData);
+        else response = await putSales(edit?.id, submitData);
       }
       if (response?.success) {
         getData();
@@ -800,6 +828,7 @@ const SalesTransaction = ({ returnPage }) => {
         </div>
         <SalesTable
           {...{
+            handleGetSalesReturnCode,
             tableItemRef,
             setTableItemRef,
             handleSetEdit,
@@ -820,6 +849,7 @@ const SalesTransaction = ({ returnPage }) => {
         />
         <SalesDetailFooter
           {...{
+            handleGetSalesReturnCode,
             bankSelect,
             salesAdd,
             handleChange,

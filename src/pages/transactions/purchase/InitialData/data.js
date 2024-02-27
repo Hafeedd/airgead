@@ -8,6 +8,7 @@ export const initialPurchaseAdd = {
     bank_amount: null,
     fk_bank: null,
     bill_no: null,
+    date:null,
     created_at: null,
     bill_date: null,
     interstate: false,

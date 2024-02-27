@@ -52,7 +52,7 @@ export const StockJournalEdit = (props) => {
       let endDate = new Date(date.end.slice(0, 10));
       tempList = filterList?.filter((x) => {
         let dateOfItem = new Date(x.created_at || x.date);
-        if (dateOfItem >= startDate && dateOfItem <= endDate) {
+        if (dateOfItem >= startDate && dateOfItem <= endDate) {          
           if (supplierCustomer) {
             if (
               x?.supplier_name === supplierCustomer ||
@@ -63,6 +63,7 @@ export const StockJournalEdit = (props) => {
         }
         return false;
       });
+      console.log(tempList)
       if (from == "acc") setSearchedList(tempList.reverse());
       else setSearchedList(tempList);
     }
@@ -168,8 +169,6 @@ export const StockJournalEdit = (props) => {
     handleCalc(selectedItemList,false,false)
     setShow(false);
   };
-
-  console.log(from.includes("Rtn"))
 
   return (
     <div className="p-0">
@@ -311,7 +310,7 @@ export const StockJournalEdit = (props) => {
                   } Transactions`}</td>
                 </tr>
               ) : (
-                from === "purchRtn" &&
+                from.includes('Rtn') &&
                 searchedList.length > 0 &&
                 searchedList.map((data, i1) => {
                   return (
@@ -324,7 +323,7 @@ export const StockJournalEdit = (props) => {
                           {data.documents_no}
                         </td>
                       </tr>
-                      {data.items.map((item, indexofItem) => {
+                      {data[from == 'salesRtn'?'sales_item':'items']?.map((item, indexofItem) => {
                         const handleSelection = (checked) => {
                           let tempListItemSelected = [...selectedItemList];
                           if (checked) {
@@ -378,7 +377,7 @@ export const StockJournalEdit = (props) => {
           >
             Close
           </div>
-          {from === "purchRtn" && (
+          {from.includes('Rtn') && (
             <div
               onClick={handePurchaseReturnSubmit}
               className="btn col-2 btn-dark py-1 px-5 mt-3"
