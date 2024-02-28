@@ -139,10 +139,13 @@ const SalesInvoiceDetails = (props) => {
           onChange={handleChange}
           onKeyDown={(e)=>{e.preventDefault();handleKeyDown(e)}}
           className="purchase-input-text"
+          name="date"
+          type="date"
           value={
-            edit
-              ? salesAdd?.created_at?.slice(0, 10)
-              : new Date().toISOString().slice(0, 10)
+            // edit
+            //   ? salesAdd?.created_at?.slice(0, 10)
+            //   : new Date().toISOString().slice(0, 10)
+            salesAdd?.date?.slice(0,10)
           }
         />
       </Form.Group>

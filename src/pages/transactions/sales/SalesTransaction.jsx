@@ -34,7 +34,7 @@ const initialSalesState = {
   bill_no: null,
   created_at: null,
   rate_types: "RETAIL_RATE",
-  bill_date: null,
+  date: new Date().toISOString()?.slice(0,10),
   tax_gst: null,
   interstate: false,
   reverse_charge: false,

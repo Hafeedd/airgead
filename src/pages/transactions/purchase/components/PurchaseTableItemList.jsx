@@ -5,23 +5,43 @@ const PurchaseTableItemList = (props) => {
   const { tableHeadList, setTableHeadList, from } = props;
   const [selectedItem, setSelectedItem] = useState(3);
 
-  useEffect(()=>{
-    let tempList = tableHeadList.filter(x=>(from==='sal'&&x.saleShow)||(from==='pur'&&x.purchaseShow))
-    setTableHeadList(tempList)
-  },[selectedItem,from,tableHeadList,setTableHeadList])
+  useEffect(() => {
+    let tempList = tableHeadList.filter(
+      (x) =>
+        (from === "sal" && x.saleShow) || (from === "pur" && x.purchaseShow)
+    );
+    setTableHeadList(tempList);
+  }, [selectedItem, from, tableHeadList, setTableHeadList]);
 
   const handleTableHeadChange = (index, state) => {
-    let tempList = [...tableHeadList]
+    let tempList = [...tableHeadList];
     if (tempList?.length > 0) {
       if (state === "visible") {
         tempList[index].visible = !tempList[index].visible;
+        for (let i = 0; i < tempList.length; i++) {
+          let oppositeState = "";
+          let relatedState = "";
+          if (tempList[index].state === "vat") {
+            oppositeState = "cgst_or_igst sgst tax_gst";
+            relatedState = "vat_perc";
+          } else if (tempList[index].state === "tax_gst") {
+            oppositeState = "vat vat_perc";
+            relatedState = "cgst_or_igst sgst";
+          }
+          if (oppositeState !== "" && relatedState !== "") {
+            if (oppositeState.includes(tempList[i].state))
+              tempList[i].visible = !tempList[index].visible;
+            if (relatedState.includes(tempList[i].state))
+              tempList[i].visible = tempList[index].visible;
+          }
+        }
       }
       if (state === "changeUp") {
-        [tempList[index].position, tempList[index-1].position] = [
-          tempList[index-1].position,
+        [tempList[index].position, tempList[index - 1].position] = [
+          tempList[index - 1].position,
           tempList[index].position,
           setSelectedItem(index - 1),
-        ]
+        ];
       }
       if (state === "changeDown") {
         [tempList[index].position, tempList[index + 1].position] = [
@@ -32,13 +52,12 @@ const PurchaseTableItemList = (props) => {
       }
     }
     tempList.sort((a, b) => a.position - b.position);
-    if(from == 'pur'){
-    localStorage.setItem(
-      "initialPurchaseTableStatePositionLocal",
-      JSON.stringify(tempList)
-    );
-  }
-    else{
+    if (from == "pur") {
+      localStorage.setItem(
+        "initialPurchaseTableStatePositionLocal",
+        JSON.stringify(tempList)
+      );
+    } else {
       localStorage.setItem(
         "initialSalesTableStatePositionLocal",
         JSON.stringify(tempList)
@@ -46,7 +65,6 @@ const PurchaseTableItemList = (props) => {
     }
     setTableHeadList([...tempList]);
   };
-
 
   return (
     <div className="p-0 row mx-0">
@@ -74,7 +92,9 @@ const PurchaseTableItemList = (props) => {
                 (from === "pur" && data.purchaseShow)
               )
                 return (
-                  <tr className={`${selectedItem === i && "table-select-item"}`}>
+                  <tr
+                    className={`${selectedItem === i && "table-select-item"}`}
+                  >
                     <td
                       onClick={() => {
                         setSelectedItem(i);
@@ -124,7 +144,7 @@ const PurchaseTableItemList = (props) => {
               </div> */}
                   </tr>
                 );
-                else return null
+              else return null;
             })}
         </tbody>
       </table>

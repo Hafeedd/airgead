@@ -412,15 +412,10 @@ const PurchaseTransaction = ({ returnPage }) => {
     } else if (e.target.name == "bank_amount") {
       let value = e.target.value == "" ? null : +e.target.value;
       let totalAmount = purchaseAdd.total_amount;
-      // (+purchaseAdd.change_due || 0) +
-      // (+purchaseAdd.paid_cash || 0) +
-      // (/* +purchaseAdd.bank_amount */+value || 0);
-      // console.log("paid cash :",+totalAmount - value)
       setPurchaseAdd((data) => ({
         ...data,
         paid_cash: +totalAmount - value,
-        change_due:
-          /* +purchaseAdd.total_amount - (value + +totalAmount - value)|| */ "0.00",
+        change_due: "0.00",
         bank_amount: value,
       }));
     } else if (e.target.name == "paid_cash") {
