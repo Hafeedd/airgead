@@ -332,7 +332,7 @@ const ItemProduce = (props) => {
             <th width="40">Qtn Rate</th>
             <th width="40">Godown</th>
             <th width="100">Batch No</th>
-            <th>+</th>
+            <th width='30'><div>+</div></th>
           </tr>
         </thead>
         <tbody ref={formRef1}>
