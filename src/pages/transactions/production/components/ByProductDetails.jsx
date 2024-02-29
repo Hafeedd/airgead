@@ -2,14 +2,13 @@ import React, { useState } from 'react'
 import { Dropdown } from "semantic-ui-react";
 import useOnKey from '../../../../hooks/onKeyFunct/onKeyFunct';
 import { AiFillEyeInvisible,AiFillEye } from "react-icons/ai";
+import deleteBtn from "../../../../assets/icons/delete.svg";
 
 const ByProductDetails = (props) => {
   const{
     byProductItems,
     setByProductItems,
     units,
-    fullByprodData,
-    setFullByprodData,
     isByOpen,
     setIsByOpen,
     setIsLabOpen
@@ -39,7 +38,7 @@ const ByProductDetails = (props) => {
     <div className="col-12 mt-1"
     style={{
       display: isByOpen ? 'block' : 'block',
-      height: isByOpen ? "120px" : "2.5rem",
+      height: isByOpen ? "120px" : "2rem",
       overflowY: isByOpen ? "scroll" : "hidden"
     }}
     >
@@ -47,7 +46,7 @@ const ByProductDetails = (props) => {
       <div className='pt-1'>By Products Details</div>
       <div className='btn  btn-sm text-light border-0 ' onClick={toggleAccordion}>{isByOpen ? <AiFillEyeInvisible size={15} /> : <AiFillEye size={15} />}</div>
       </div>
-      <table className="w-100 ProdTable1"  style={{ display: isByOpen ? 'block' : 'none' }}>
+      <table className="w-100 ProdTable1"  >
         <thead>
           <tr className="bg-dark text-light">
             <th>Item Produced</th>
@@ -59,7 +58,7 @@ const ByProductDetails = (props) => {
             <th>Margin</th>
             <th>MRP</th>
             <th>S.Rate</th>
-            <th><span className='pe-1'>+</span></th>
+            <th width="20"><span className='pe-1'>+</span></th>
           </tr>
         </thead>
         <tbody ref={formRef1}>
@@ -72,6 +71,11 @@ const ByProductDetails = (props) => {
               tempList.splice(i, 1, data);
               setByProductItems([...tempList]);
             };
+            const handleDelete = () =>{
+              let tempList = byProductItems||[]
+              tempList.splice(i,1)
+              setByProductItems([...tempList])
+            }
           return(
             <tr key={i}>
             <td>
@@ -158,13 +162,19 @@ const ByProductDetails = (props) => {
               onKeyDown={handleKeyDown1}
               name='s_rate'
               /></td>
-            <td></td>
+            <td><img
+                              src={deleteBtn}
+                              className="cursor pe-1"
+                              style={{maxWidth:'17px'}}
+                              onClick={() => handleDelete()}
+                              alt="editBtn"
+                            /></td>
           </tr>
   
           )
         })}
        
-       {fullByprodData?.length>0?fullByprodData?.map((data,i)=>{
+       {/* {fullByprodData?.length>0?fullByprodData?.map((data,i)=>{
             const handleChange = (e, drop_data) => {
               if (drop_data)
                 data = { ...data, [drop_data.name]: drop_data.value };
@@ -351,7 +361,7 @@ const ByProductDetails = (props) => {
               /></td>
             <td></td>
           </tr>
-        )}
+        )} */}
        
         </tbody>
       </table>

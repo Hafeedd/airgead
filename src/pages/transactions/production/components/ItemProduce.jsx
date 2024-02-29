@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Dropdown } from "semantic-ui-react";
 import useOnKey from "../../../../hooks/onKeyFunct/onKeyFunct";
 import { BsPlusSquareFill } from "react-icons/bs";
+import deleteBtn from "../../../../assets/icons/delete.svg";
 const ItemProduce = (props) => {
   const {
     items,
@@ -74,11 +75,11 @@ const ItemProduce = (props) => {
   };
 
   const search = (options, searchValue) => {
-    searchValue = searchValue.toUpperCase();
+    searchValue = searchValue?.toString()?.toLowerCase();
     return options.filter((option) => {
       return (
-        option?.value?.toString()?.includes(searchValue) ||
-        option?.text?.toString()?.includes(searchValue)
+        option?.value?.toString()?.toLowerCase()?.includes(searchValue) ||
+        option?.text?.toString()?.toLowerCase()?.includes(searchValue)
       );
     });
   };
@@ -155,9 +156,18 @@ const ItemProduce = (props) => {
     setRawItems(mappedRaw);
 
     let mappedByprod = [];
+    if (byProductItems?.length > 0) mappedByprod = [...byProductItems];
+    let tempMappedByprod= [];
+
+    if (mappedByprod.length>0 && mappedByprod.filter(x=>x.item_produced_name == prodItem.item_name).length>0) {
+      mappedByprod = mappedByprod.filter((item) => {
+        if (item.item_produced_name !== prodItem.item_name) return true;
+        else return false;
+      });
+    }
     filteredRawMaterialList[0]?.by_products?.length > 0 &&
       filteredRawMaterialList[0]?.by_products?.map((data) => {
-        mappedByprod.push({
+        tempMappedByprod.push({
           qty: data.qty,
           fk_item: data.fk_item,
           fk_unit: data.fk_unit,
@@ -171,16 +181,26 @@ const ItemProduce = (props) => {
           item_produced_name: null,
         });
       });
-    mappedByprod = mappedByprod.map((item) => ({
+      tempMappedByprod = tempMappedByprod.map((item) => ({
       ...item,
       item_produced_name: filteredRawMaterialList[0]?.item_details.name,
     }));
-
+    mappedByprod = [...mappedByprod, ...tempMappedByprod];
     setByProductItems(mappedByprod);
+
     let mappedLabour = [];
+    if (labourDetails?.length > 0) mappedLabour = [...labourDetails];
+    let tempMappedLabour = [];
+
+    if (mappedLabour.length>0 && mappedLabour.filter(x=>x.item_produced_name == prodItem.item_name).length>0) {
+      mappedLabour = mappedLabour.filter((item) => {
+        if (item.item_produced_name !== prodItem.item_name) return true;
+        else return false;
+      });
+    }
     filteredRawMaterialList[0]?.expense_accounts?.length > 0 &&
       filteredRawMaterialList[0]?.expense_accounts?.map((data) => {
-        mappedLabour.push({
+        tempMappedLabour.push({
           fk_debit_account: data.debit_account_details.id,
           debit_name: data.debit_account_details.fk_customer.name,
           fk_credit_account: data.credit_account_details.id,
@@ -190,14 +210,15 @@ const ItemProduce = (props) => {
           initial_amount: data.amount,
         });
       });
-    mappedLabour = mappedLabour.map((item) => ({
+      tempMappedLabour = tempMappedLabour.map((item) => ({
       ...item,
       item_produced_name: filteredRawMaterialList[0]?.item_details.name,
       amount:
         (item.initial_amount * e.target.value) /
         filteredRawMaterialList[0]?.qty,
     }));
-    let l_sum = mappedLabour.reduce((a, b) => a + +b.amount || 0, 0);
+    let l_sum = tempMappedLabour.reduce((a, b) => a + +b.amount || 0, 0);
+    mappedLabour = [...mappedLabour, ...tempMappedLabour];
     setLabourDetails(mappedLabour);
 
     let total_cost = Number((r_sum + l_sum) / e.target.value).toFixed(2);
@@ -273,30 +294,8 @@ const ItemProduce = (props) => {
   };
 
   const handleSubmit = () => {
-    setFullProdData((prevFullRaw) => [...prevFullRaw, { ...produceData }]);
-    let tempRaw = [];
-    tempRaw = [...fullRawData, ...rawItems];
-    setRawItems(tempRaw);
-    let tempByProd = [];
-    tempByProd = [...fullByprodData, ...byProductItems];
-    setFullByprodData(tempByProd);
-
-    let tempLabour = [];
-    tempLabour = [...fullLabourData, ...labourDetails];
-    setFullLabourData(tempLabour);
-
-    let tempList = {
-      ...produceData,
-      raw_materials: [...rawItems],
-      by_products: [...byProductItems],
-      expense_accounts: [...labourDetails],
-    };
-    setListProduction((data) => [...data, tempList]);
-
-    setProduceData("");
-    setRawItems("");
-    setByProductItems("");
-    setLabourDetails("");
+    setFullProdData(data=>[...data, produceData]);
+    setProduceData({});
   };
 
   return (
@@ -339,6 +338,19 @@ const ItemProduce = (props) => {
         <tbody ref={formRef1}>
           {fullProdData?.length > 0 &&
             fullProdData.map((data, key) => {
+
+              const handleDelete = () =>{
+                let tempList = fullProdData||[]
+                tempList.splice(key,1)
+                setFullProdData([...tempList])
+                
+                let tempRawList = rawItems.filter(item=>item.item_produced_name != data.item_name)
+                setRawItems([...tempRawList])
+                let tempByList = byProductItems.filter(item=>item.item_produced_name != data.item_name)
+                setByProductItems([...tempByList])
+                let tempLabourList = labourDetails.filter(item=>item.item_produced_name != data.item_name)
+                setLabourDetails([...tempLabourList])
+              }
               return (
                 <tr key={key}>
                   <td>
@@ -403,8 +415,8 @@ const ItemProduce = (props) => {
                     <input
                       type="text"
                       className="border-0 rounded-1 w-100 "
-                      value={data.cost?.toFixed(2) || ""}
-                      onChange={handleChange}
+                      value={data.cost || ""}
+                      onChange={(e)=>handleChange(e, data, key)}
                       onKeyDown={handleKeyDown1}
                       name="cost"
                     />
@@ -413,8 +425,8 @@ const ItemProduce = (props) => {
                     <input
                       type="text"
                       className="border-0 rounded-1 w-100 "
-                      value={data.value?.toFixed(2) || ""}
-                      onChange={handleChange}
+                      value={data.value || ""}
+                      onChange={(e)=>handleChange(e, data, key)}
                       onKeyDown={handleKeyDown1}
                       name="value"
                     />
@@ -423,8 +435,8 @@ const ItemProduce = (props) => {
                     <input
                       type="text"
                       className="border-0 rounded-1 w-100 "
-                      value={data.margin?.toFixed(2) || ""}
-                      onChange={handleMarginChange}
+                      value={data.margin || ""}
+                      onChange={(e)=>handleMarginChange(e,data, key)}
                       onKeyDown={handleKeyDown1}
                       name="margin"
                     />
@@ -434,7 +446,7 @@ const ItemProduce = (props) => {
                       type="text"
                       className="border-0 rounded-1 w-100 "
                       value={data.retail_rate || ""}
-                      onChange={handleRetailChange}
+                      onChange={(e)=>handleRetailChange(e,data,key)}
                       onKeyDown={handleKeyDown1}
                       name="retail_rate"
                     />
@@ -444,7 +456,7 @@ const ItemProduce = (props) => {
                       type="text"
                       className="border-0 rounded-1 w-100 "
                       value={data.wholesale_rate || ""}
-                      onChange={handleChange}
+                      onChange={(e)=>handleChange(e, data, key)}
                       onKeyDown={handleKeyDown1}
                       name="wholesale_rate"
                     />
@@ -454,7 +466,7 @@ const ItemProduce = (props) => {
                       type="text"
                       className="border-0 rounded-1 w-100 "
                       value={data.mrp_rate || ""}
-                      onChange={handleChange}
+                      onChange={(e)=>handleChange(e, data, key)}
                       onKeyDown={handleKeyDown1}
                       name="mrp_rate"
                     />
@@ -489,12 +501,18 @@ const ItemProduce = (props) => {
                       type="text"
                       className="border-0 rounded-1 w-100 "
                       value={data.batch_no || ""}
-                      onChange={handleChange}
+                      onChange={(e)=>handleChange(e, data, key)}
                       onKeyDown={handleKeyDown1}
                       name="batch_no"
                     />
                   </td>
-                  <td></td>
+                  <td><img
+                              src={deleteBtn}
+                              className="cursor pe-1"
+                              style={{maxWidth:'17px'}}
+                              onClick={() => handleDelete()}
+                              alt="editBtn"
+                            /></td>
                 </tr>
               );
             })}
@@ -564,7 +582,7 @@ const ItemProduce = (props) => {
                 type="text"
                 className="border-0 rounded-1 w-100 "
                 value={produceData.cost || ""}
-                onChange={handleChange}
+                onChange={(e)=>handleChange(e,produceData)}
                 onKeyDown={handleKeyDown1}
                 name="cost"
               />
@@ -574,7 +592,7 @@ const ItemProduce = (props) => {
                 type="text"
                 className="border-0 rounded-1 w-100 "
                 value={produceData.value || ""}
-                onChange={handleChange}
+                onChange={(e)=>handleChange(e,produceData)}
                 onKeyDown={handleKeyDown1}
                 name="value"
               />
@@ -584,7 +602,7 @@ const ItemProduce = (props) => {
                 type="text"
                 className="border-0 rounded-1 w-100 "
                 value={produceData.margin || ""}
-                onChange={handleMarginChange}
+                onChange={(e)=>handleMarginChange(e,produceData)}
                 onKeyDown={handleKeyDown1}
                 name="margin"
               />
@@ -594,7 +612,7 @@ const ItemProduce = (props) => {
                 type="text"
                 className="border-0 rounded-1 w-100 "
                 value={produceData.retail_rate || ""}
-                onChange={handleRetailChange}
+                onChange={(e)=>handleRetailChange(e,produceData)}
                 onKeyDown={handleKeyDown1}
                 name="retail_rate"
               />
@@ -604,7 +622,7 @@ const ItemProduce = (props) => {
                 type="text"
                 className="border-0 rounded-1 w-100 "
                 value={produceData.wholesale_rate || ""}
-                onChange={handleChange}
+                onChange={(e)=>handleChange(e,produceData)}
                 onKeyDown={handleKeyDown1}
                 name="wholesale_rate"
               />
@@ -614,7 +632,7 @@ const ItemProduce = (props) => {
                 type="text"
                 className="border-0 rounded-1 w-100 "
                 value={produceData.mrp_rate || ""}
-                onChange={handleChange}
+                onChange={(e)=>handleChange(e,produceData)}
                 onKeyDown={handleKeyDown1}
                 name="mrp_rate"
               />
@@ -649,7 +667,7 @@ const ItemProduce = (props) => {
                 type="text"
                 className="border-0 rounded-1 w-100 "
                 value={produceData.batch_no || ""}
-                onChange={handleChange}
+                onChange={(e)=>handleChange(e,produceData)}
                 onKeyDown={handleKeyDown1}
                 name="batch_no"
               />

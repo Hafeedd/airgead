@@ -1,17 +1,19 @@
 import React, { useState } from "react";
 import { Dropdown } from "semantic-ui-react";
 import useOnKey from "../../../../hooks/onKeyFunct/onKeyFunct";
+import deleteBtn from "../../../../assets/icons/delete.svg";
+
 const RawMaterials = (props) => {
   const {
     rawItems,
     setRawItems,
     units,
-    fullRawData,
-    setFullRawData,
     setFullProdData,
     produceData,
     fullProdData,
     setProduceData,
+    labourDetails,
+    setLabourDetails,
   } = props;
 
   const [ref1, setRef1] = useState();
@@ -37,7 +39,7 @@ const RawMaterials = (props) => {
       style={{ height: "149px", overflowY: "scroll" }}
     >
       <div
-        className="div-head rounded-top ps-3 pt-1 my-0 py-0"
+        className="div-head rounded-top ps-3 pt-1 my-0 py-0 mx-0 px-0"
         style={{ top: "0", position: "sticky", zIndex: 1 }}
       >
         Raw Materials Used
@@ -52,7 +54,7 @@ const RawMaterials = (props) => {
             <th width="100">Cost</th>
             <th width="200">Value</th>
             <th>Godown</th>
-            <th>
+            <th width="20">
               <span className="pe-1">+</span>
             </th>
           </tr>
@@ -91,7 +93,20 @@ const RawMaterials = (props) => {
                 // Update the rawItems array again with the modified data
                 tempList.splice(key, 1, updatedData);
                 setRawItems([...tempList]);
-                let r_sum = tempList.reduce((a, b) => a + +b.value || a, 0);
+                let r_sum = tempList.reduce(
+                  (a, b) =>
+                    b.item_produced_name == data.item_produced_name
+                      ? +a + +b.value
+                      : a,
+                  0
+                );
+                let l_sum = labourDetails.reduce(
+                  (a, b) =>
+                    b.item_produced_name == data.item_produced_name
+                      ? +a + +b.amount
+                      : a,
+                  0
+                );
                 if (rawItems?.length > 0) {
                   let tempList = [...fullProdData];
                   let ind = tempList.findIndex(
@@ -103,9 +118,16 @@ const RawMaterials = (props) => {
                   }
                   tempItem = {
                     ...tempItem,
-                    value: (tempItem.l_sum || 0) + r_sum,
+                    value: ((l_sum || 0) + r_sum)?.toFixed(2),
                     r_sum: r_sum,
-                    cost: ((tempItem.l_sum || 0) + r_sum) / tempItem.qty,
+                    cost: (
+                      ((tempItem.l_sum || 0) + r_sum) /
+                      tempItem.qty
+                    )?.toFixed(2),
+                    retail_rate:
+                      ((l_sum || 0) + r_sum) / tempItem.qty +
+                      (((l_sum || 0) + r_sum) / tempItem.qty) *
+                        (tempItem.margin / 100),
                   };
                   tempList.splice(ind, 1, tempItem);
                   if (ind > -1) setFullProdData([...tempList]);
@@ -113,9 +135,61 @@ const RawMaterials = (props) => {
                 } else
                   setProduceData((data) => ({
                     ...data,
-                    value: (data.l_sum || 0) + r_sum,
+                    value: ((l_sum || 0) + r_sum)?.toFixed(2),
                     r_sum: r_sum,
-                    cost: ((data.l_sum || 0) + r_sum) / data.qty,
+                    cost: (((l_sum || 0) + r_sum) / data.qty)?.toFixed(2),
+                  }));
+              };
+              const handleDelete = () => {
+                let tempList = rawItems || [];
+                tempList.splice(key, 1);
+                setRawItems([...tempList]);
+                let r_sum = tempList.reduce(
+                  (a, b) =>
+                    b.item_produced_name == data.item_produced_name
+                      ? +a + +b.value
+                      : a,
+                  0
+                );
+                let l_sum = labourDetails.reduce(
+                  (a, b) =>
+                    b.item_produced_name == data.item_produced_name
+                      ? +a + +b.amount
+                      : a,
+                  0
+                );
+                if (rawItems?.length > 0) {
+                  let tempList = [...fullProdData];
+                  let ind = tempList.findIndex(
+                    (x) => x.item_name === data.item_produced_name
+                  );
+                  let tempItem = { ...produceData };
+                  if (ind > -1) {
+                    tempItem = tempList[ind];
+                  }
+                  tempItem = {
+                    ...tempItem,
+                    value: ((l_sum || 0) + r_sum)?.toFixed(2),
+                    r_sum: r_sum,
+                    cost: (
+                      ((tempItem.l_sum || 0) + r_sum) /
+                      tempItem.qty
+                    )?.toFixed(2),
+                    retail_rate:
+                      ((l_sum || 0) + r_sum) / tempItem.qty +
+                      (((l_sum || 0) + r_sum) / tempItem.qty) *
+                        (tempItem.margin / 100),
+                  };
+                  if (tempItem.value == 0 || !tempItem) tempList.splice(ind, 1);
+                  else tempList.splice(ind, 1, tempItem);
+                  if (ind > -1) setFullProdData([...tempList]);
+                  else setProduceData({ ...tempItem });
+                } else
+                  setProduceData((data) => ({
+                    ...data,
+                    value: ((l_sum || 0) + r_sum)?.toFixed(2),
+                    r_sum: r_sum,
+                    cost: (((l_sum || 0) + r_sum) / data.qty)?.toFixed(2),
                   }));
               };
               return (
@@ -196,7 +270,15 @@ const RawMaterials = (props) => {
                       disabled
                     />
                   </td>
-                  <td></td>
+                  <td>
+                    <img
+                      src={deleteBtn}
+                      className="cursor pe-1"
+                      style={{ maxWidth: "17px" }}
+                      onClick={() => handleDelete()}
+                      alt="editBtn"
+                    />
+                  </td>
                 </tr>
               );
             })}
@@ -360,10 +442,16 @@ const RawMaterials = (props) => {
         </tr>)} */}
         </tbody>
         <tfoot>
-          <tr className="text-dark">
-            <td>Total Value :</td>
-            <td colSpan={7}> </td>
-          </tr>
+          {rawItems.length > 0 && (
+            <tr className="text-dark">
+              <td colSpan={4}></td>
+              <td>Total Value :</td>
+              <td className="text-left">
+                {rawItems.reduce((acc, item) => +acc + +item.value, 0)}
+              </td>
+              <td colSpan={2}></td>
+            </tr>
+          )}
         </tfoot>
       </table>
     </div>
