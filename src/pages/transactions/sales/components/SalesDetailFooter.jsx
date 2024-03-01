@@ -9,6 +9,7 @@ const SalesDetailFooter = (props) => {
     bankSelect,
     salesAdd,
     handleChange,
+    handleGetSalesReturnCode,
     edit,
     handleSalesAllReset,
   } = props;
@@ -48,7 +49,7 @@ const SalesDetailFooter = (props) => {
 
   const handleReset = () =>{
     handleSalesAllReset()
-    
+    handleGetSalesReturnCode()
   }
 
   return (

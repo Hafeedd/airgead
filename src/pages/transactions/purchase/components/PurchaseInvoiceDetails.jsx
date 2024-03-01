@@ -7,6 +7,7 @@ import useOnKey from "../../../../hooks/onKeyFunct/onKeyFunct";
 
 const PurchaseInvoiceDetails = (props) => {
   const {
+    orderPage,
     returnPage,
     purchaseInvoiceRef,
     setPurchaseInvoiceRef,
@@ -14,6 +15,7 @@ const PurchaseInvoiceDetails = (props) => {
     handleEdit,
     purchaseAdd,
     handleChange,
+    orderDocList,
     supplierList,
   } = props;
 
@@ -73,26 +75,24 @@ const PurchaseInvoiceDetails = (props) => {
       <Form.Group className="col-3 ps-4 mx-0 d-flex align-items-center mt-1">
         <Form.Label className="col-3 purchase-input-label">Supplier</Form.Label>
         <Form.Control
-          disabled
+          disabled={purchaseAdd?.fk_supplier}
           required={purchaseAdd?.change_due > 0 ? true : false}
-          name="fk_supplier"
-          value={
-            supplierList?.filter((x) => x.value === purchaseAdd.fk_supplier)[0]
-              ?.name || ""
-          }
+          name="supplier_name"
+          value={purchaseAdd?.supplier_name || ""}
           onKeyDown={handleKeyDown}
-          onChange={(e) => e.target.value}
+          onChange={handleChange}
           className="purchase-input-text"
           placeholder="Name"
           type="text"
         />
       </Form.Group>
       <Form.Group className="col-3 ps-5 mx-0 d-flex align-items-center mt-1">
-        <Form.Label className="col-3 purchase-input-label">
-          {returnPage?"Bill No":"Bill Date"}</Form.Label>
+        <Form.Label className="col-3 lh-1 purchase-input-label">
+          Supp. invoice No
+        </Form.Label>
         <Form.Control
-          name={returnPage?"bill_no":"bill_date"}
-          value={returnPage?purchaseAdd.bill_no:purchaseAdd.bill_date || ""}
+          name={"bill_no"}
+          value={purchaseAdd.bill_no || ""}
           onKeyDown={handleKeyDown}
           onChange={handleChange}
           className="purchase-input-text"
@@ -127,34 +127,27 @@ const PurchaseInvoiceDetails = (props) => {
           Add Supplier
         </div>
       </div>
-      <span className="col-3" />
-      <Form.Group className="col-3 ps-5 mx-0 d-flex align-items-center mt-2">
-        {returnPage && (
-          <>
-            <Form.Label className="col-3 purchase-input-label">
-              Bill Date
-            </Form.Label>
-            <Form.Control
-              name="bill_date"
-              value={purchaseAdd.bill_date?.slice(0, 10) || ""}
-              onKeyDown={handleKeyDown}
-              onChange={handleChange}
-              className="purchase-input-text"
-              type="date"
-            />
-          </>
-        )}
+      <Form.Group className="col-3 ps-4 mx-0 d-flex align-items-center mt-0 pt-0">
+        <Form.Label className="col-3 purchase-input-label">
+          Supp. invoice
+        </Form.Label>
+        <Form.Control
+          name="bill_date"
+          value={purchaseAdd.bill_date?.slice(0, 10) || ""}
+          onKeyDown={handleKeyDown}
+          onChange={handleChange}
+          className="purchase-input-text"
+          type="date"
+        />
       </Form.Group>
-      <Form.Group className="col-3 col-4 mx-0 d-flex align-items-center my-1 mt-2">
+      <span className="col-3" />
+      <Form.Group className="col-3 col-4 mx-0 d-flex align-items-center my-1">
         <Form.Label className="col-3 col-4 purchase-input-label">
           Date
         </Form.Label>
         <Form.Control
-          name="created_at"
-          value={
-            purchaseAdd?.created_at?.slice(0, 10) ||
-            new Date().toISOString().slice(0, 10)
-          }
+          name="date"
+          value={purchaseAdd?.date?.slice(0, 10) || ""}
           onKeyDown={handleKeyDown}
           onChange={handleChange}
           className="purchase-input-text"
@@ -165,7 +158,7 @@ const PurchaseInvoiceDetails = (props) => {
       <div className="col-4 col-3 pe-0 d-flex align-items-end justify-content-start ps-1">
         <div className="px-1">
           <div className="btn btn-sm btn-secondary px-3">
-            Purchase{returnPage && " Return"}
+            Purchase{returnPage ? " Return" : orderPage && " Order"}
           </div>
         </div>
         <div className="">
@@ -240,17 +233,25 @@ const PurchaseInvoiceDetails = (props) => {
         </div>
       </div>
       <Form.Group className="col-3 col-4 mx-0 d-flex align-items-center my-1">
+       {!returnPage && !orderPage
+        && <>
         <Form.Label className="col-3 col-4 purchase-input-label">
           Order No
         </Form.Label>
-        <Form.Control
-          name="order_no"
-          value={purchaseAdd.order_no || ""}
+        <Dropdown
+          clearable
+          selection
+          search={true}
           onKeyDown={handleKeyDown}
           onChange={handleChange}
-          className="purchase-input-text"
-          type="text"
+          className="pruchase-select d-flex align-items-center py-0 form-control"
+          name="order_no"
+          value={purchaseAdd.order_no || ""}
+          placeholder="Select"
+          options={orderDocList}
         />
+        </>
+        }
       </Form.Group>
     </div>
   );

@@ -85,7 +85,7 @@ const SalesCustomerDetails = (props) => {
 
   const handleChange = (e, data) => {
     if (data && data?.name == "fk_customer") {
-      let customer_data = data.options.filter((x) => x.value === data.value)[0];
+      let customer_data = data?.options?.filter((x) => x.value === data.value)[0];
       let bill_type = billType[0]?.value,
         rateType;
       if (customer_data?.bill_type) {
@@ -104,6 +104,22 @@ const SalesCustomerDetails = (props) => {
         ["rate_types"]: rateType,
       }));
     }
+    if (e.target.name == "payment_type") {
+      if (e.target.value === "CREDIT" && salesAdd.paid_cash>0)
+        setSalesAdd((data) => ({
+          ...data,
+          paid_cash: '0',
+          change_due: data.total_amount,
+          [e.target.name]: e.target.value,
+        }));
+      else if(e.target.value === "CASH" && salesAdd.change_due>0)
+        setSalesAdd((data) => ({
+          ...data,
+          paid_cash: data.total_amount,
+          change_due: '0',
+          [e.target.name]: e.target.value,
+        }));
+    }else
     if (data && data?.name == "careof_user") {
       let careof_data = data.options.filter((x) => x.value === data.value)[0];
       setSalesAdd((data) => ({ ...data, ["careof_user"]: careof_data?.value }));
@@ -136,8 +152,9 @@ const SalesCustomerDetails = (props) => {
             Customer
           </Form.Label>
           <Form.Control
+          disabled={salesAdd?.fk_customer}
             onKeyDown={handleKeyDown}
-            // onChange={handleChange}
+            onChange={handleChange}
             className="purchase-input-text"
             placeholder="Agencies"
             type="text"

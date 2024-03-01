@@ -91,10 +91,12 @@ const PurchaseTable = (props) => {
     }
   }, []);
 
-  useEffect(()=>{
-    if(tableItemList?.length>10)
-    document.getElementById('tableItemFkItem').scrollIntoView({ behavior: "smooth" });
-  },[tableItemList])
+  useEffect(() => {
+    if (tableItemList?.length > 10)
+      document
+        .getElementById("tableItemFkItem")
+        .scrollIntoView({ behavior: "smooth" });
+  }, [tableItemList]);
 
   const getTableData = async () => {
     const minFunct = (data) => {
@@ -180,9 +182,9 @@ const PurchaseTable = (props) => {
     if (toTableItem === true) setTableItem(calculatedData);
     else {
       let tempList = [...tableItemList];
-      tempList.splice(toTableItem, 1, { ...calculatedData});
+      tempList.splice(toTableItem, 1, { ...calculatedData });
       setTableItemList([...tempList]);
-      handlePurchAllCalc([...tempList],false,false)
+      handlePurchAllCalc([...tempList], false, false);
     }
   };
 
@@ -222,6 +224,35 @@ const PurchaseTable = (props) => {
           discount_1_amount_per_item: 0,
         };
       }
+      // -------------------vat
+      // tempItem = {...tempItem,...value}
+      // if(name !== 'vat_perc' && tempItem.vat > 0){
+      //   value = {
+      //     ...value,
+      //     vat_perc:(tempItem.vat / value.value) * 100
+      //   }
+      // }else if(name == 'vat' && tempItem.vat === ''){
+      //   value = {
+      //     ...value,
+      //     vat_perc:0,
+      //   }
+      // }
+      // tempItem = {...tempItem,...value}
+      // if(name !== 'vat' && tempItem.vat_perc > 0){
+      //   value = {
+      //     ...value,
+      //     vat:value.value -
+      //     (value.value -
+      //       tempItem.vat_perc * (value.value / 100)),
+      //   }
+      // }else if(name == 'vat_perc' && tempItem.vat_perc === ''){
+      //   value = {
+      //     ...value,
+      //     vat:0,
+      //   }
+      // }
+      // ---------------------------------vat
+      tempItem = { ...tempItem, ...value };
       if (name === "discount_1_amount" && tempItem.discount_1_amount) {
         value = {
           ...value,
@@ -258,6 +289,8 @@ const PurchaseTable = (props) => {
       if (tempItem.tax_gst) {
         let totalTaxAmnt = +tempItem.tax_gst * (+tempItem.value / 100);
         let sgst = (totalTaxAmnt / 2)?.toFixed(2);
+        let isVat = tableHeadList?.filter((x) => x.state == "vat")[0]
+          ?.visible;
         value = {
           ...value,
           total: +tempItem.value + sgst * 2,
@@ -266,11 +299,22 @@ const PurchaseTable = (props) => {
             +tempItem.discount_1_amount_per_item +
             +tempItem.tax_gst *
               ((+tempItem.rate - +tempItem.discount_1_amount_per_item) / 100),
-          cgst_or_igst: sgst,
-          sgst: sgst,
         };
+        console.log(isVat)
+        if (isVat) {
+          value = {
+            ...value,
+            vat_perc: sgst * 2,
+          };
+        } else {
+          value = {
+            ...value,
+            cgst_or_igst: sgst,
+            sgst: sgst,
+          };
+        }
       } else {
-        value = { ...value, cgst_or_igst: 0, sgst: 0 };
+        value = { ...value, cgst_or_igst: 0, sgst: 0, vat_perc: 0 };
       }
 
       tempItem = { ...tempItem, ...value };
@@ -551,12 +595,18 @@ const PurchaseTable = (props) => {
                                   handleChangeTableItem(e, null, data, i)
                                 }
                                 onKeyDown={handleKeyDown2}
-                                name={item.state}
+                                name={
+                                  item.state == "vat" ? "tax_gst" : item.state
+                                }
                                 type="number"
                                 disabled={item.readOnly}
                                 placeholder="0"
                                 className="purchase-table-items-input"
-                                value={data[item?.state] || ""}
+                                value={
+                                  item.state === "vat"
+                                    ? data.tax_gst || ""
+                                    : data[item?.state] || ""
+                                }
                               />
                             </td>
                           );
@@ -642,16 +692,16 @@ const PurchaseTable = (props) => {
                       <td colSpan={1}>
                         <input
                           onKeyDown={handleKeyDown}
-                          name={item.state}
+                          name={item.state == "vat" ? "tax_gst" : item.state}
                           onChange={(e) =>
                             handleChangeTableItem(e, null, tableItem, true)
                           }
                           disabled={item.readOnly}
-                          value={
-                            tableItem[item.state] === "" ||
-                            tableItem[item.state] ||
-                            tableItem[item.state] === 0
-                              ? tableItem[item.state]
+                          value={                            
+                            tableItem[item.state === 'vat'?'tax_gst':item.state] === "" ||
+                            tableItem[item.state === 'vat'?'tax_gst':item.state] ||
+                            tableItem[item.state === 'vat'?'tax_gst':item.state] === 0
+                              ? tableItem[item.state === 'vat'?'tax_gst':item.state]
                               : ""
                           }
                           type="number"
@@ -711,7 +761,7 @@ const PurchaseTable = (props) => {
                         </div>
                       </td>
                     ) : item.state === "cgst_or_igst" ||
-                      (item.state === "sgst" && item.visible) ? (
+                      (item.state === "sgst"|| item.state === "vat_perc" && item.visible) ? (
                       <td className="item">
                         <div className="purch-green-table-item">
                           {purchaseAdd.total_scGst || 0}

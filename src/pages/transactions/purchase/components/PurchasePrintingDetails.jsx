@@ -4,7 +4,8 @@ import { FiEdit } from "react-icons/fi";
 import useOnKey from "../../../../hooks/onKeyFunct/onKeyFunct";
 
 const PurchasePrintingDetails = (props) => {
-  const { handleEdit, purchaseAdd, handleChange,returnPage} = props;
+  const { handleEdit, purchaseAdd, handleChange, returnPage, orderPage } =
+    props;
   const [ref, setRef] = useState(null);
 
   const { handleKeyDown, formRef } = useOnKey(ref, setRef);
@@ -114,7 +115,9 @@ const PurchasePrintingDetails = (props) => {
       {/* Row 3 -------------------------------------------------------------------------------------------------------- */}
       <div className="col-3 col-2 d-flex align-items-end justify-content-start ps-1 pe-0">
         <div className="px-1">
-          <div className="btn btn-sm btn-secondary px-3">Purchase{returnPage&& " Return"}</div>
+          <div className="btn btn-sm btn-secondary px-3">
+            Purchase{returnPage ? " Return" : orderPage && " Order"}
+          </div>
         </div>
         <div>
           {/* <div className="btn btn-sm btn-secondary px-3">P.Return</div> */}
@@ -134,7 +137,7 @@ const PurchasePrintingDetails = (props) => {
       </div>
       <div className="col-1"></div>
       {/* <div className="col-1 d-flex align-items-end ps-0 "> */}
-        {/* <div className="btn btn-dark btn-sm purchase-edit-btn" onClick={handleEdit}>
+      {/* <div className="btn btn-dark btn-sm purchase-edit-btn" onClick={handleEdit}>
                     <FiEdit size={'1rem'} />Edit
                 </div> */}
       {/* </div> */}

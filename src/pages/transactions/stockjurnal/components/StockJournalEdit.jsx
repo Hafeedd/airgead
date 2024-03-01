@@ -52,7 +52,7 @@ export const StockJournalEdit = (props) => {
       let endDate = new Date(date.end.slice(0, 10));
       tempList = filterList?.filter((x) => {
         let dateOfItem = new Date(x.created_at || x.date);
-        if (dateOfItem >= startDate && dateOfItem <= endDate) {
+        if (dateOfItem >= startDate && dateOfItem <= endDate) {          
           if (supplierCustomer) {
             if (
               x?.supplier_name === supplierCustomer ||
@@ -229,12 +229,12 @@ export const StockJournalEdit = (props) => {
         </div>
         <div
           className={`stockJ-edit-table-cont px-0 ${
-            from === "purchRtn" && "p-return"
+            from.includes('Rtn') && "p-return"
           } `}
         >
           <table className="stockJ-edit-table table ">
             <thead>
-              {from !== "purchRtn" ? (
+              {!from.includes("Rtn") ? (
                 <>
                   <th width="150" className="ps-4">
                     Date
@@ -261,7 +261,7 @@ export const StockJournalEdit = (props) => {
               )}
             </thead>
             <tbody>
-              {from !== "purchRtn" && searchedList?.length > 0 ? (
+              {!from.includes('Rtn') && searchedList?.length > 0 ? (
                 searchedList?.map((data, i) => {
                   return (
                     <>
@@ -302,14 +302,14 @@ export const StockJournalEdit = (props) => {
                     </>
                   );
                 })
-              ) : from !== "purchRtn" ? (
+              ) : !from.includes('Rtn') ? (
                 <tr>
                   <td colSpan={5} className="border-0">{`No ${
                     from === "acc" ? "Account Journal" :from =="production"?"Production":"Stock Journal"
                   } Transactions`}</td>
                 </tr>
               ) : (
-                from === "purchRtn" &&
+                from.includes('Rtn') &&
                 searchedList.length > 0 &&
                 searchedList.map((data, i1) => {
                   return (
@@ -322,7 +322,7 @@ export const StockJournalEdit = (props) => {
                           {data.documents_no}
                         </td>
                       </tr>
-                      {data.items.map((item, indexofItem) => {
+                      {data[from == 'salesRtn'?'sales_item':'items']?.map((item, indexofItem) => {
                         const handleSelection = (checked) => {
                           let tempListItemSelected = [...selectedItemList];
                           if (checked) {
@@ -376,7 +376,7 @@ export const StockJournalEdit = (props) => {
           >
             Close
           </div>
-          {from === "purchRtn" && (
+          {from.includes('Rtn') && (
             <div
               onClick={handePurchaseReturnSubmit}
               className="btn col-2 btn-dark py-1 px-5 mt-3"

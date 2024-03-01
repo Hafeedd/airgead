@@ -4,7 +4,7 @@ import { FiEdit } from "react-icons/fi";
 import useOnKey from "../../../../hooks/onKeyFunct/onKeyFunct";
 
 const PurchaseDeliveryDetails = (props) => {
-  const { handleEdit, purchaseAdd , handleChange, returnPage} = props;
+  const { handleEdit,orderPage, purchaseAdd , handleChange, returnPage} = props;
   const [ref, setRef] = useState(null);
 
   const { handleKeyDown, formRef } = useOnKey(ref, setRef);
@@ -79,7 +79,7 @@ const PurchaseDeliveryDetails = (props) => {
       {/* Row 3 -------------------------------------------------------------------------------------------------------- */}
       <div className="col-3 col-2 pe-0 d-flex align-items-end justify-content-start ps-1">
         <div className="px-1">
-          <div className="btn btn-sm btn-secondary px-3">Purchase{returnPage&& " Return"}</div>
+          <div className="btn btn-sm btn-secondary px-3">Purchase{returnPage? " Return":orderPage&& " Order"}</div>
         </div>
         <div className="">
           {/* <div className="btn btn-sm btn-secondary px-3">P.Return</div> */}

@@ -7,6 +7,7 @@ import Swal from "sweetalert2";
 
 const SalesTable = (props) => {
   const {
+    handleGetSalesReturnCode,
     tableItemRef,
     setTableItemRef,
     handleSetEdit,
@@ -113,19 +114,13 @@ const SalesTable = (props) => {
     ).length;
     tempTableTr.push(
       <tr className="border-0">
-        <td
-          className="border-0"
-          colSpan={lengthOfTh + 2}
-        ></td>
+        <td className="border-0" colSpan={lengthOfTh + 2}></td>
       </tr>
     );
     for (let i = 0; i < 7 - tableItemList.length || 0; i++) {
       tempTableTr.push(
         <tr className="border-0" key={i}>
-          <td
-            className="border-0"
-            colSpan={lengthOfTh + 2}
-          ></td>
+          <td className="border-0" colSpan={lengthOfTh + 2}></td>
         </tr>
       );
     }
@@ -249,7 +244,7 @@ const SalesTable = (props) => {
       let tempList = [...tableItemList];
       tempList.splice(totableItem, 1, { ...calculatedData, edited: true });
       setTableItemList([...tempList]);
-      handleSalesAddCalc(tempList,false,false)
+      handleSalesAddCalc(tempList, false, false);
     }
   };
 
@@ -396,11 +391,11 @@ const SalesTable = (props) => {
       }
       tempItem = { ...tempItem, ...value };
 
-      tempItem = { ...tempItem, ...value };
-
       if (tempItem.tax_gst) {
         let totalTaxAmnt = +tempItem.tax_gst * (+tempItem.value / 100);
         let sgst = (totalTaxAmnt / 2)?.toFixed(2);
+        let isVat = tableHeadList?.filter((x) => x.state == "vat")[0]
+          ?.visible;
         value = {
           ...value,
           ["total"]: +tempItem.value + sgst * 2,
@@ -409,9 +404,19 @@ const SalesTable = (props) => {
             +tempItem.discount_1_amount_per_item +
             +tempItem.tax_gst *
               ((+tempItem.rate - +tempItem.discount_1_amount_per_item) / 100),
-          ["cgst_or_igst"]: sgst,
-          ["sgst"]: sgst,
         };
+        if (isVat) {
+          value = {
+            ...value,
+            vat_perc: sgst * 2,
+          };
+        } else {
+          value = {
+            ...value,
+            cgst_or_igst: sgst,
+            sgst: sgst,
+          };
+        }
       } else {
         value = { ...value, cgst_or_igst: 0, sgst: 0 };
       }
@@ -478,6 +483,7 @@ const SalesTable = (props) => {
     } else if (edit?.id == salesList[0]?.id) {
       handleSalesAllReset();
       handleSetEdit(true);
+      handleGetSalesReturnCode();
     } else {
       handleSalesAllReset();
       let ind = salesList?.findIndex((x) => edit.id == x.id);
@@ -612,15 +618,17 @@ const SalesTable = (props) => {
                                     handleChangeTableItem(e, null, data, i)
                                   }
                                   onKeyDown={handleKeyDown2}
-                                  name={item.state}
+                                  name={
+                                    item.state == "vat" ? "tax_gst" : item.state
+                                  }
                                   type="number"
                                   placeholder="0"
                                   disabled={item?.readOnly}
                                   className="purchase-table-items-input"
                                   value={
-                                    data[item?.state] && data[item?.state] > -1
-                                      ? data[item?.state]
-                                      : ""
+                                    item.state === "vat"
+                                      ? data.tax_gst || ""
+                                      : data[item?.state] || ""
                                   }
                                 />
                               </td>
@@ -713,18 +721,26 @@ const SalesTable = (props) => {
                       <td colSpan={i === 0 ? 2 : 1}>
                         <input
                           onKeyDown={handleKeyDown}
-                          name={item.state}
+                          // name={item.state}
+                          name={item.state == "vat" ? "tax_gst" : item.state}
                           disabled={item?.readOnly}
                           onChange={(e) =>
                             handleChangeTableItem(e, null, tableItem, true)
                           }
                           onFocus={handleFocus}
                           onBlur={handleBlur}
-                          value={
-                            tableItem[item.state] === "" ||
-                            tableItem[item.state] ||
-                            tableItem[item.state] === 0
-                              ? tableItem[item.state]
+                          // value={
+                          //   tableItem[item.state] === "" ||
+                          //   tableItem[item.state] ||
+                          //   tableItem[item.state] === 0
+                          //     ? tableItem[item.state]
+                          //     : ""
+                          // }
+                          value={                            
+                            tableItem[item.state === 'vat'?'tax_gst':item.state] === "" ||
+                            tableItem[item.state === 'vat'?'tax_gst':item.state] ||
+                            tableItem[item.state === 'vat'?'tax_gst':item.state] === 0
+                              ? tableItem[item.state === 'vat'?'tax_gst':item.state]
                               : ""
                           }
                           type="number"

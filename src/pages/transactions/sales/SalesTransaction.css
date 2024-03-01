@@ -272,3 +272,11 @@
       padding-bottom: 0.09rem; */
     padding: 0;
   }
+
+  .page_head.s-return{
+    background: cadetblue;
+  }
+
+  .page_head.s-order{
+    background: rgba(220, 176, 95, 0.99);
+  }
