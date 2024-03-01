@@ -6,9 +6,9 @@
     top: 50px;
     z-index: 2;
 }
-.materials thead tr th:first-child{
+/* .materials thead tr th:first-child{
     width: 250px;
-}
+} */
 .materials tbody tr input{
     border-radius: 5px;
     border: 1px solid gray;

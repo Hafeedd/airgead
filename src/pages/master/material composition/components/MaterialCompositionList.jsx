@@ -59,8 +59,8 @@ const MaterialCompositionList = (props) => {
     } catch {}
   };
   return (
-    <div className="d-flex justify-content-center" style={{ height: "500px" }}>
-      <div style={{ width: "950px" }} className="mt-3">
+    <div className="d-flex justify-content-center">
+      <div style={{ width: "800px" }} className="mt-3">
         <div className="mx-0 TabHead py-2  text-center rounded-top d-flex justify-content-end ">
           <div className="col-3 p-1 stock-ledger-search d-flex align-items-center  me-1">
             <div className="col-1 me-2">

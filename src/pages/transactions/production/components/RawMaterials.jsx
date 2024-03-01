@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Dropdown } from "semantic-ui-react";
 import useOnKey from "../../../../hooks/onKeyFunct/onKeyFunct";
 import deleteBtn from "../../../../assets/icons/delete.svg";
-
+import { BsPlusSquareFill } from "react-icons/bs";
 const RawMaterials = (props) => {
   const {
     rawItems,
@@ -282,6 +282,83 @@ const RawMaterials = (props) => {
                 </tr>
               );
             })}
+              <tr>
+              <td>
+                <input
+                type='text'
+                className='border-0 rounded-1 w-100' 
+                // value={data.item_produced_name}
+                // onChange={handleChange}
+                onKeyDown={handleKeyDown1}
+                name='item_produced_name'
+                />
+                </td>
+              <td>
+              <input
+                type='text'
+                className='border-0 rounded-1 w-100' 
+                // value={data.item_name}
+                // onChange={handleChange}
+                onKeyDown={handleKeyDown1}
+                name='item_name'
+                />
+              </td>
+              <td>
+              <input
+                type='text'
+                className='border-0 rounded-1 w-75' 
+                // value={data.qty}
+                // onChange={handleChange}
+                onKeyDown={handleKeyDown1}
+                name='qty'
+                />
+              </td>
+              <td><Dropdown
+                    clearable
+                    selection
+                    required
+                    search={search}
+                    onKeyDown={handleKeyDown1}
+                    // onChange={handleDropdownChangeUnit}
+                    className="purchase-input-text table-drop d-flex align-items-center py-0 form-control custom-dropdown-width "
+                    name="fk_unit"
+                    placeholder="Select"
+                    // value={data.fk_unit}
+                    options={units}
+                  />
+                </td>
+              <td><input
+                type='text'
+                className='border-0 rounded-1 w-75' 
+                // value={data.cost}
+                // onChange={handleChange}
+                onKeyDown={handleKeyDown1}
+                name='cost'
+                /></td>
+              <td><input
+                type='text'
+                className='border-0 rounded-1 w-75' 
+                // value={data.value}
+                // onChange={handleChange}
+                onKeyDown={handleKeyDown1}
+                name='value'
+                /></td>
+              <td><input
+                type='text'
+                className='border-0 rounded-1 w-75' 
+                // value={data.godown}
+                // onChange={handleChange}
+                onKeyDown={handleKeyDown1}
+                name='godown_rate'
+                disabled
+                /></td>
+              <td><BsPlusSquareFill 
+                className="me-1"
+                style={{ color: "black" }}
+                // onClick={handleSubmit}
+                // onKeyDown={handleSubmit}
+              /></td>
+            </tr>
 
           {/* {fullRawData?.length>0?fullRawData?.map((data,key)=>{
            const handleChange = (e, drop_data) => {

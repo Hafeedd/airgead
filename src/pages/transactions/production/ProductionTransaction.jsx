@@ -91,11 +91,23 @@ const ProductionTransaction = () => {
   const { getStaff } = useStaffServices();
   const { getItemList, getProperty, getCode } = useItemServices();
   const { getAccountList } = useAccountServices();
-  const { postProductionData, getProductionDaybookPart, getProductionDetails, putProductionData } =
-    useProductionTransactionServices();
+  const { postProductionData, getProductionDaybookPart, getProductionDetails, putProductionData } = useProductionTransactionServices();
   const [productionList, setProductionList] = useState();
   const [isByOpen, setIsByOpen] = useState(false);
   const [isLabOpen, setIsLabOpen] = useState(true);
+  // const [entryList, setEntryList] = useState([])
+
+  // const getEntryList=(data)=>{
+  //   let tempList = [];
+  //   data?.map((item) => {
+  //   let a = {
+  //     text: item.item_details.name,
+  //     value: item.fk_item,
+  //   };
+  //   tempList.push(a);
+  //   })
+  //   setEntryList(tempList)
+  // } 
 
   const location = useLocation();
 
@@ -264,7 +276,7 @@ const ProductionTransaction = () => {
           initial_qty: data.qty,
           fk_item: data.fk_item,
           fk_unit: data.fk_unit,
-          cost: data.item_details.cost,
+          cost: data.cost,
           value: data.value,
           margin: data.item_details.margin,
           mrp_rate: data.item_details.mrp_rate,
@@ -285,7 +297,7 @@ const ProductionTransaction = () => {
           qty: data.qty,
           fk_item: data.fk_item,
           fk_unit: data.fk_unit,
-          cost: data.item_details.cost,
+          cost: data.cost,
           value: data.value,
           margin: data.item_details.margin,
           mrp_rate: data.item_details.mrp_rate,
@@ -489,6 +501,7 @@ const ProductionTransaction = () => {
               labourDetails,
               listProduction,
               setListProduction,
+              // getEntryList,
             }}
           />
 

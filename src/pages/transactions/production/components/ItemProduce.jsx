@@ -25,6 +25,7 @@ const ItemProduce = (props) => {
     setFullLabourData,
     labourDetails,
     setListProduction,
+    // getEntryList
   } = props;
 
   const [ref1, setRef1] = useState();
@@ -110,7 +111,7 @@ const ItemProduce = (props) => {
     );
 
     prodItem = { ...prodItem, fk_unit: filteredRawMaterialList[0]?.fk_unit };
-
+  
     let mappedRaw = [];
     if (rawItems?.length > 0) mappedRaw = [...rawItems];
     let tempMappedRaw = [];

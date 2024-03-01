@@ -3,6 +3,7 @@ import { Dropdown } from "semantic-ui-react";
 import { AiFillEyeInvisible, AiFillEye } from "react-icons/ai";
 import useOnKey from "../../../../hooks/onKeyFunct/onKeyFunct";
 import deleteBtn from "../../../../assets/icons/delete.svg";
+import { BsPlusSquareFill } from "react-icons/bs";
 const LabourAndExpense = (props) => {
   const {
     labourDetails,
@@ -162,7 +163,8 @@ const LabourAndExpense = (props) => {
                   cost: (((r_sum || 0) + l_sum) / tempItem.qty)?.toFixed(2),
                   retail_rate:(((tempItem.margin/100)*(((r_sum || 0) + l_sum) / tempItem.qty))+(((r_sum || 0) + l_sum) / tempItem.qty))?.toFixed(2)
                 }
-                tempListOfProdData.splice(ind,1,tempItem)
+                if (tempItem.value == 0 || !tempItem) tempList.splice(ind, 1);
+                else tempListOfProdData.splice(ind,1,tempItem)
                 if(ind>-1) setFullProdData([...tempListOfProdData])
                 else setProduceData({...tempItem})
               }
@@ -228,7 +230,60 @@ const LabourAndExpense = (props) => {
                 </tr>
               );
             })}
-
+            <tr>
+              <td>
+              <input
+                type='text'
+                className='border-0 rounded-1 w-75' 
+                // value={data.item_produced_name}
+                // onChange={handleChange}
+                // onKeyDown={handleKeyDown1}
+                name='item_produced_name'
+                />
+              </td>
+              <td><Dropdown
+                    clearable
+                    selection
+                    required
+                    // search={search}
+                    // onKeyDown={handleKeyDown1}
+                    // onChange={handleDropdownChangeUnit}
+                    className="purchase-input-text table-drop d-flex align-items-center py-0 form-control custom-dropdown-width1 "
+                    name="fk_unit"
+                    placeholder="Select"
+                    // value={data.fk_debit_account}
+                    options={accDetails}
+                  />
+                </td>
+              <td><input
+                type='text'
+                className='border-0 rounded-1 w-25' 
+                // value={data.amount}
+                // onChange={handleChange}
+                // onKeyDown={handleKeyDown1}
+                name='amount'
+                /></td>
+                  <td><Dropdown
+                    clearable
+                    selection
+                    required
+                    // search={search}
+                    // onKeyDown={handleKeyDown1}
+                    // onChange={handleDropdownChangeUnit}
+                    className="purchase-input-text table-drop d-flex align-items-center py-0 form-control custom-dropdown-width1 "
+                    name="fk_unit"
+                    placeholder="Select"
+                    // value={data.fk_credit_account}
+                    options={accDetails}
+                  />
+                </td>
+                <td><BsPlusSquareFill
+                className="me-1"
+                style={{ color: "black" }}
+                // onClick={handleSubmit}
+                // onKeyDown={handleSubmit}
+              /></td>
+            </tr>
           {/* {fullLabourData?.length>0?fullLabourData?.map((data,i)=>{
           const handleChange = (e, drop_data) => {
             if (drop_data)
