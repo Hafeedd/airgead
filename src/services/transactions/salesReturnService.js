@@ -17,13 +17,13 @@ export const useSalesReturnServices = () => {
     
     //put sales
     const putSalesReturn = async(id,data) =>{
-        const response = await axiosPrivate.put('/sales/sales_master/updated/'+id+'/',data)
+        const response = await axiosPrivate.put('/sales/sales_return_master/updated/'+id+'/',data)
         return response.data
     }
     
     //delete sales item
     const deleteSalesReturn = async(id) =>{
-        const response = await axiosPrivate.delete('/sales/sales_master/updated/'+id+'/')
+        const response = await axiosPrivate.delete('/sales/sales_return_master/updated/'+id+'/')
         return response.data
     }
 

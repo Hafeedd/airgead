@@ -19,84 +19,14 @@ import { PrintFIle } from "./components/SalesBill";
 import { initialPurchaseSalesTableStatePosition } from "../purchase/InitialData/data";
 import { StockJournalEdit } from "../stockjurnal/components/StockJournalEdit";
 import { useSalesReturnServices } from "../../../services/transactions/salesReturnService";
-
-const initialSalesState = {
-  cstm_id: null,
-  fk_bill_type: null,
-  fk_customer: null,
-  customer_name: null,
-  customer_address: null,
-  customer_mobile: null,
-  documents_no: null,
-  careof_user: null,
-  payment_type: "CASH",
-  order_no: null,
-  bill_no: null,
-  created_at: null,
-  rate_types: "RETAIL_RATE",
-  date: new Date().toISOString()?.slice(0,10),
-  tax_gst: null,
-  interstate: false,
-  reverse_charge: false,
-  tax_bill: false,
-  total_item: null,
-  total_amount: null,
-  total_amount2: null,
-  bank_amount: null,
-  fk_bank: null,
-  gst_in: null,
-  item: null,
-  total_discount: null,
-  discount: null,
-  roundoff: null,
-  paid_cash: null,
-  change_due: null,
-  vehicle_no: null,
-  total_margin: null,
-  total_items: null,
-  total_disc: null,
-  total_value: null,
-  total_qty: null,
-  driver: null,
-  poject: null,
-  address: null,
-  bank: null,
-  total_cgst: null,
-  total_scGst: null,
-  return_value: null,
-  return_cgst_sgst: null,
-  transfer_account: null,
-  delivery_address: null,
-};
-
-const initialTableItemState = {
-  cstm_id: null,
-  item_name: null,
-  fk_item: null,
-  code: null,
-  quantity: 0.0,
-  fk_unit: null,
-  gross: 0.0,
-  transaction_unit: null,
-  rate: 0.0,
-  sales_rate: 0.0,
-  margin: 0.0,
-  cost: 0.0,
-  total: 0.0,
-  sgst: 0.0,
-  cgst_or_igst: 0.0,
-  tax_gst: 0.0,
-  value: 0.0,
-  sale_discount: 0.0,
-  discount_1_percentage: 0.0,
-  discount_1_amount: 0.0,
-};
+import { initialSalesState, initialTableItemState } from "./initialData/data";
+import { useSalesOrderServices } from "../../../services/transactions/salesOrderServices";
 
 export const initialSalesTableStatePositionLocal = JSON.parse(
   localStorage.getItem("initialSalesTableStatePositionLocal")
 );
 
-const SalesTransaction = ({ returnPage }) => {
+const SalesTransaction = ({ returnPage, orderPage }) => {
   const [showSalesReturn, setShowSalesReturn] = useState(false);
   const [salesItemModal, setSalesItemModal] = useState(false);
   const [salesEditModal, setSalesEditModal] = useState(false);
@@ -132,6 +62,8 @@ const SalesTransaction = ({ returnPage }) => {
     useSalesServices();
   const { getSalesReturn, postSalesReturn, putSalesReturn } =
     useSalesReturnServices();
+  const { getSalesOrder, postSalesOrder, putSalesOrder } =
+    useSalesOrderServices();
 
   const { getCode } = useItemServices();
 
@@ -141,7 +73,9 @@ const SalesTransaction = ({ returnPage }) => {
     setTableItemList([]);
     setEdit(false);
     setShowPrint(false);
+    if(!returnPage && !orderPage)
     localStorage.setItem("salesData", false);
+    else if(returnPage || orderPage) handleGetCode()
   };
 
   const location = useLocation();
@@ -152,7 +86,7 @@ const SalesTransaction = ({ returnPage }) => {
 
   useEffect(() => {
     const handleKeyDown = (e) => {
-      if (e.key === "E" && e.shiftKey) {
+      if (e.key === "E" && e.shiftKey && returnPage) {
         setShowSalesReturn(true);
       }
     };
@@ -166,7 +100,7 @@ const SalesTransaction = ({ returnPage }) => {
 
   useEffect(() => {
     // window.onmousedown = myBeforeUnloadFunction;
-    if ((edit || tableItemList.length > 0) && !returnPage) myBeforeUnloadFunction();
+    if ((edit || tableItemList.length > 0) && (!returnPage && !orderPage)) myBeforeUnloadFunction();
   }, [salesAdd, tableItemList, edit]);
 
   const handleReloadData = () => {
@@ -195,7 +129,7 @@ const SalesTransaction = ({ returnPage }) => {
       items: [...tableItemList],
       edit: edit,
     };
-    if (!returnPage)
+    if (!returnPage && !orderPage)
       localStorage.setItem("salesData", JSON.stringify(allSaleState));
   };
 
@@ -205,7 +139,6 @@ const SalesTransaction = ({ returnPage }) => {
       let tempData = { ...others, change_due: others.change_due || "0.00" };
       setSalesAdd((data) => ({ ...data, ...tempData }));
       if (sales_item) {
-        console.log(sales_item);
         setTableItemList([...sales_item]);
         handleSalesAddCalc(sales_item, true, tempData);
       }
@@ -213,14 +146,11 @@ const SalesTransaction = ({ returnPage }) => {
   };
 
   useEffect(() => {
-    // getData();
-    // handleGetCode();
-    // handleReloadData();
     getData();
-    if (!returnPage) {
+    if (!returnPage && !orderPage) {
       handleReloadData();
       handleGetCode();
-    } else if (returnPage) {
+    } else if (returnPage || orderPage) {
       handleSalesAllReset();
       handleGetSalesReturnCode();
     }
@@ -453,8 +383,7 @@ const SalesTransaction = ({ returnPage }) => {
   const handleGetCode = async () => {
     try {
       const response2 = await getCodeWithBillType();
-      console.log("fdsfdsf");
-      if (response2.success) {
+      if (response2.success && !returnPage && !orderPage) {
         setCodeWithBillTypeList(response2.data);
       }
     } catch (err) {
@@ -463,16 +392,19 @@ const SalesTransaction = ({ returnPage }) => {
   };
 
   const handleGetSalesReturnCode = async () => {
-    if (!returnPage) return 0;
+    if (!returnPage && !orderPage) return 0;
     try {
       let code;
       let response = await getCode();
+      let type = "SLRT"
+      if(orderPage){
+        type = "SALORD"
+      }
       if (
         response.success
-        // &&((!edit && nextCode) || nextCode || (!nextCode && firstReload))
       ) {
         for (let i of response.data) {
-          if (i.sub_id == "SLRT") {
+          if (i.sub_id == type) {
             code = i.next_code;
           }
           setSalesAdd((data) => ({ ...data, documents_no: code }));
@@ -489,8 +421,11 @@ const SalesTransaction = ({ returnPage }) => {
       if (returnPage) {
         response1 = await getSalesReturn();
       }
-      response2 = await getSales();
-      if (response1?.success && response2?.success) {
+      if(orderPage){
+        response2 = await getSalesOrder();
+      }else
+        response2 = await getSales();
+      if (response1?.success && response2?.success && returnPage) {
         setSalesOnlyList(response2?.data);
         setSalesList(response1?.data);
       } else if (response2?.success) {
@@ -595,14 +530,14 @@ const SalesTransaction = ({ returnPage }) => {
           setSalesAdd((data) => ({ ...data, fk_bill_type: list[0]?.value }));
       }
     } catch (err) {
-      console.log(err);
+      console.log(err.message);
     }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      if (salesAdd.change_due > 0 && !salesAdd.fk_customer) {
+      if (salesAdd.change_due > 0 && !salesAdd.fk_customer && !orderPage) {
         Swal.fire({
           title: "Customer not selected",
           icon: "warning",
@@ -621,7 +556,7 @@ const SalesTransaction = ({ returnPage }) => {
         });
         return 0;
       }
-      if (salesAdd?.change_due < 0 && !salesAdd.fk_customer) {
+      if (salesAdd?.change_due < 0 && !salesAdd.fk_customer && !orderPage) {
         Swal.fire({
           icon: "warning",
           text: "Please select a customer .Balance pending!",
@@ -629,25 +564,39 @@ const SalesTransaction = ({ returnPage }) => {
         });
         return 0;
       }
+      if (
+        orderPage &&
+        ((!salesAdd.fk_customer && salesAdd.paid_cash > 0) ||
+          (salesAdd.fk_customer && !salesAdd.paid_cash))
+      ) {
+        Swal.fire({
+          title: "Please Select Customer",
+          icon: "warning",
+          text: "Please select customer or empty paid cash",
+          showConfirmButton: false,
+          timer: 1500,
+        });
+        return 0;
+      }
       // const isValidForm = formValidation(formRef.current);
       // if (!isValidForm) return false;
       let submitData = { ...salesAdd, items: tableItemList };
       let response;
-      // console.log(submitData.change_due)
-      // return 0
       if (!edit) {
         if (returnPage) response = await postSalesReturn(submitData);
+        else if (orderPage) response = await postSalesOrder(submitData);
         else response = await postSales(submitData);
       } else {
         if (returnPage) response = await putSalesReturn(edit?.id, submitData);
+        else if (orderPage) response = await putSalesOrder(edit?.id, submitData);
         else response = await putSales(edit?.id, submitData);
       }
       if (response?.success) {
         getData();
         setShowPrint(true);
-        Swal.fire("Purchase added successfully", "", "success");
+        Swal.fire(`Sales ${returnPage?"return":orderPage?"order":""} added successfully`, "a", "success");
       } else {
-        Swal.fire(response?.data, "", "error");
+        Swal.fire(response?.data||"Something went wrong pls try again later", "", "error");
       }
     } catch (err) {
       Swal.fire({
@@ -666,11 +615,11 @@ const SalesTransaction = ({ returnPage }) => {
     <div className="item_add">
       <div className="itemList_header row mx-0 mb-3">
         <div
-          className={`page_head ps-4 d-flex pe-0 ${returnPage && "s-return"}`}
+          className={`page_head ps-4 d-flex pe-0 ${returnPage ? "s-return":orderPage&&"s-order"}`}
         >
           <div className="col-5 col-6">
             <div className="fw-600 fs-5">{`Sales ${
-              returnPage ? "Return" : ""
+              returnPage ? "Return" :orderPage ? "Order":""
             }`}</div>
             <div className="page_head_items mb-1">
               <div
@@ -679,7 +628,7 @@ const SalesTransaction = ({ returnPage }) => {
                 }}
                 className={`page_head_item active`}
               >
-                {`Sales ${returnPage ? "Return" : ""} Details`}
+                {`Sales ${returnPage ? "Return" : orderPage ? "Order":""} Details`}
               </div>
             </div>
           </div>
@@ -754,7 +703,7 @@ const SalesTransaction = ({ returnPage }) => {
             <div className="col-12 gap-2 d-flex align-items-end justify-content-start px-0 mx-0 mt-1">
               <div className="">
                 <div className="btn btn-sm btn-secondary rounded-bottom-0 px-3">
-                  {`Sales ${returnPage ? "Return" : ""}`}
+                  {`Sales ${returnPage ? "Return" :orderPage ? "Order":""}`}
                 </div>
               </div>
               <div className="">
@@ -786,6 +735,8 @@ const SalesTransaction = ({ returnPage }) => {
           <div className={`col-9 ${pageHeadItem !== 1 && "d-none"}`}>
             <SalesInvoiceDetails
               {...{
+                returnPage,
+                orderPage,
                 tableItemRef,
                 salesAdd,
                 setSalesAdd,
@@ -881,7 +832,7 @@ const SalesTransaction = ({ returnPage }) => {
         onHide={() => setSalesEditModal(false)}
       >
         <PurchaseEditList
-          purchaseList={salesList}
+          purchaseOrReturnList={salesList}
           from="sales"
           setPurchaseList={setSalesList}
           closeEditModal={setSalesEditModal}

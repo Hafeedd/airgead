@@ -289,7 +289,7 @@ const PurchaseTable = (props) => {
       if (tempItem.tax_gst) {
         let totalTaxAmnt = +tempItem.tax_gst * (+tempItem.value / 100);
         let sgst = (totalTaxAmnt / 2)?.toFixed(2);
-        let isVat = tableHeadList?.findIndex((x) => x.state == "vat")[0]
+        let isVat = tableHeadList?.filter((x) => x.state == "vat")[0]
           ?.visible;
         value = {
           ...value,
@@ -300,16 +300,17 @@ const PurchaseTable = (props) => {
             +tempItem.tax_gst *
               ((+tempItem.rate - +tempItem.discount_1_amount_per_item) / 100),
         };
+        console.log(isVat)
         if (isVat) {
           value = {
             ...value,
-            cgst_or_igst: sgst,
-            sgst: sgst,
+            vat_perc: sgst * 2,
           };
         } else {
           value = {
             ...value,
-            vat_perc: sgst * 2,
+            cgst_or_igst: sgst,
+            sgst: sgst,
           };
         }
       } else {
@@ -760,7 +761,7 @@ const PurchaseTable = (props) => {
                         </div>
                       </td>
                     ) : item.state === "cgst_or_igst" ||
-                      (item.state === "sgst" && item.visible) ? (
+                      (item.state === "sgst"|| item.state === "vat_perc" && item.visible) ? (
                       <td className="item">
                         <div className="purch-green-table-item">
                           {purchaseAdd.total_scGst || 0}

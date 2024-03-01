@@ -391,12 +391,10 @@ const SalesTable = (props) => {
       }
       tempItem = { ...tempItem, ...value };
 
-      tempItem = { ...tempItem, ...value };
-
       if (tempItem.tax_gst) {
         let totalTaxAmnt = +tempItem.tax_gst * (+tempItem.value / 100);
         let sgst = (totalTaxAmnt / 2)?.toFixed(2);
-        let isVat = tableHeadList?.findIndex((x) => x.state == "vat")[0]
+        let isVat = tableHeadList?.filter((x) => x.state == "vat")[0]
           ?.visible;
         value = {
           ...value,
@@ -410,13 +408,13 @@ const SalesTable = (props) => {
         if (isVat) {
           value = {
             ...value,
-            cgst_or_igst: sgst,
-            sgst: sgst,
+            vat_perc: sgst * 2,
           };
         } else {
           value = {
             ...value,
-            vat_perc: sgst * 2,
+            cgst_or_igst: sgst,
+            sgst: sgst,
           };
         }
       } else {

@@ -399,7 +399,7 @@ td.n_clr {
 .ui.search.selection.dropdown.pruchase-select {
   border-radius: 0.3rem !important;
   background: #eeeeee !important;
-  min-height: 1.7em !important;
+  min-height: 1.7rem !important;
   text-transform: uppercase;
   padding-left: 0.4rem;
   color: black;
@@ -649,6 +649,9 @@ td.n_clr {
 
 .page_head.purchase-return {
   background: #7b66ff !important;
+}
+.page_head.purchase-order {
+  background: #a94e9a !important;
 }
 
 #tableItemFkItem .text.divider{

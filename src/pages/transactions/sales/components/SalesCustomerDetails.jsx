@@ -85,7 +85,7 @@ const SalesCustomerDetails = (props) => {
 
   const handleChange = (e, data) => {
     if (data && data?.name == "fk_customer") {
-      let customer_data = data.options.filter((x) => x.value === data.value)[0];
+      let customer_data = data?.options?.filter((x) => x.value === data.value)[0];
       let bill_type = billType[0]?.value,
         rateType;
       if (customer_data?.bill_type) {
@@ -152,8 +152,9 @@ const SalesCustomerDetails = (props) => {
             Customer
           </Form.Label>
           <Form.Control
+          disabled={salesAdd?.fk_customer}
             onKeyDown={handleKeyDown}
-            // onChange={handleChange}
+            onChange={handleChange}
             className="purchase-input-text"
             placeholder="Agencies"
             type="text"

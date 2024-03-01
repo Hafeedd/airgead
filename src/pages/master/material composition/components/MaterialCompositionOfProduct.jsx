@@ -276,7 +276,7 @@ const MaterialCompositionOfProduct = (props) => {
     }
   }
   return (
-    <div className="px-0" >
+    <div className="px-0 row">
       <div className="col-12">
         <div className="col-12 d-flex justify-content-between border border-2 rounded border-secondary px-1 py-1 " ref={formRef1} >
           <div className="col-3 border-2 pe-5 ms-4 my-2">
@@ -330,12 +330,12 @@ const MaterialCompositionOfProduct = (props) => {
               </div>
             </Form.Group>
           </div>
-          <div className="col-3 border-2 mx-0 my-2 ps-4">
-            <Form.Group className="col-5  ps-0 mx-0 d-flex align-items-center mt-2">
-              <Form.Label className="col-2 me-2 ms-1 purchase-input-label pb-1">
+          <div className="col-3 border-2 mx-0 my-2">
+            <Form.Group className="row ps-0 mx-0 d-flex align-items-center mt-2">
+              <Form.Label className="col-1 px-0 me-2 ms-1 purchase-input-label pb-1">
                 Qty
               </Form.Label>
-              <div className="col-5 me-1">
+              <div className="col-2 me-1 px-0">
                 <input
                   type="text"
                   className="rounded border border-dark w-100 h-125"
@@ -344,6 +344,7 @@ const MaterialCompositionOfProduct = (props) => {
                   onChange={(e) => setItemQuantity(e.target.value)}
                 />
               </div>
+              <div className="col-7 px-0">
               <Dropdown
                 clearable
                 selection
@@ -356,19 +357,20 @@ const MaterialCompositionOfProduct = (props) => {
                 placeholder="select"
                 value={itemQuantityUnit}
                 options={unitList}
-              />
+                />
+                </div>
             </Form.Group>
           </div>
         </div>
 
-        <div className="col-12 d-flex mt-2">
+        <div className="row mx-0 d-flex mt-2">
           <div
-            className="col-6 pe-1 ms-0 "
+            className="col-12 px-0 pe-1 ms-0"
             style={{ height: "250px", overflowY: "scroll" }}
             
           >
             <div
-              className="mx-0 TabHead  border-bottom border-light border-2 py-3  text-center rounded-top"
+              className="mx-0 TabHead  border-bottom border-light border-2 py-3 w-100  text-center rounded-top"
               style={{ top: "0", position: "sticky", zIndex: 1 }}
             >
               Quantity of a material used
@@ -494,7 +496,7 @@ const MaterialCompositionOfProduct = (props) => {
             </table>
           </div>
           <div
-            className="col-6 pe-0"
+            className="col-12  px-0"
             style={{ height: "250px", overflowY: "scroll" }}            
           >
             <div

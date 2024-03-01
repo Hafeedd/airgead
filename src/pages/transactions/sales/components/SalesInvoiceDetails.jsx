@@ -4,6 +4,8 @@ import useOnKey from "../../../../hooks/onKeyFunct/onKeyFunct";
 
 const SalesInvoiceDetails = (props) => {
   const {
+    orderPage,
+    returnPage,
     tableItemRef,
     salesAdd,
     setSalesAdd,
@@ -15,10 +17,11 @@ const SalesInvoiceDetails = (props) => {
 
   const [ref, setRef] = useState(null);
 
-  const [ handleKeyDown , formRef ] = useOnKey(ref, setRef,tableItemRef);
+  const [handleKeyDown, formRef] = useOnKey(ref, setRef, tableItemRef);
 
   useEffect(() => {
-    if (codeWithBillTypeList?.length > 0) handleBillTypeSelection();
+    if (codeWithBillTypeList?.length > 0 && !returnPage)
+      handleBillTypeSelection();
   }, [salesAdd?.fk_bill_type, codeWithBillTypeList]);
 
   const handleBillTypeSelection = () => {
@@ -38,11 +41,11 @@ const SalesInvoiceDetails = (props) => {
         documents_no: tempCode?.sub_id + tempCode?.next_value,
       }));
     } else {
-      tempCode = codeWithBillTypeList[codeWithBillTypeList.length-1];
+      tempCode = codeWithBillTypeList[codeWithBillTypeList.length - 1];
       setSalesAdd((data) => ({
         ...data,
         documents_no: tempCode?.sub_id + tempCode?.next_value,
-        fk_bill_type:tempCode.fk_bill_type
+        fk_bill_type: tempCode.fk_bill_type,
       }));
     }
   };
@@ -89,16 +92,20 @@ const SalesInvoiceDetails = (props) => {
       <span className="col-2" />
       {/* Row 2 -------------------------------------------------------------------------------------------------------- */}
       <Form.Group className="col-5 mx-0 d-flex align-items-center mt-1">
-        <Form.Label className="col-3 purchase-input-label">Order No</Form.Label>
-        <Form.Control
-          onChange={handleChange}
-          onKeyDown={handleKeyDown}
-          name="order_no"
-          className="purchase-input-text"
-          type="text"
-        />
+            <Form.Label className="col-3 purchase-input-label">
+              {(!returnPage&&!orderPage)?"Order No":"Date"}
+            </Form.Label>
+            <Form.Control
+              onChange={handleChange}
+              onKeyDown={handleKeyDown}
+              name={(!returnPage&&!orderPage)?"order_no":"date"}
+              value={(!returnPage&&!orderPage)?salesAdd?.order_no||"":salesAdd?.date||""}
+              className="purchase-input-text"
+              type={(!returnPage&&!orderPage)?"text":"date"}
+            />
+         
       </Form.Group>
-      <Form.Group className="col-5 mx-0 d-flex align-items-center mt-1">
+      <Form.Group className="col-5 mx-0 d-flex align-items-center mt-1">        
         <Form.Label className="col-3 purchase-input-label">
           Rate Type
         </Form.Label>
@@ -134,20 +141,22 @@ const SalesInvoiceDetails = (props) => {
       </div>
       {/* Row 3 -------------------------------------------------------------------------------------------------------- */}
       <Form.Group className="col-5 mx-0 d-flex align-items-center mt-1">
+      {!returnPage && !orderPage &&
+          <>
         <Form.Label className="col-3 purchase-input-label">Date</Form.Label>
         <Form.Control
           onChange={handleChange}
-          onKeyDown={(e)=>{e.preventDefault();handleKeyDown(e)}}
+          onKeyDown={(e) => {
+            e.preventDefault();
+            handleKeyDown(e);
+          }}
           className="purchase-input-text"
           name="date"
           type="date"
-          value={
-            // edit
-            //   ? salesAdd?.created_at?.slice(0, 10)
-            //   : new Date().toISOString().slice(0, 10)
-            salesAdd?.date?.slice(0,10)
-          }
+          value={salesAdd?.date?.slice(0, 10)}
         />
+         </>
+        }
       </Form.Group>
       <Form.Group className="col-5 mx-0 d-flex align-items-center mt-1">
         <Form.Label className="col-3 purchase-input-label">Salesman</Form.Label>

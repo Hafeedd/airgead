@@ -63,7 +63,6 @@ export const StockJournalEdit = (props) => {
         }
         return false;
       });
-      console.log(tempList)
       if (from == "acc") setSearchedList(tempList.reverse());
       else setSearchedList(tempList);
     }
