@@ -73,9 +73,8 @@ const SalesTransaction = ({ returnPage, orderPage }) => {
     setTableItemList([]);
     setEdit(false);
     setShowPrint(false);
-    if(!returnPage && !orderPage)
-    localStorage.setItem("salesData", false);
-    else if(returnPage || orderPage) handleGetCode()
+    if (!returnPage && !orderPage) localStorage.setItem("salesData", false);
+    else if (returnPage || orderPage) handleGetSalesReturnCode();
   };
 
   const location = useLocation();
@@ -100,7 +99,8 @@ const SalesTransaction = ({ returnPage, orderPage }) => {
 
   useEffect(() => {
     // window.onmousedown = myBeforeUnloadFunction;
-    if ((edit || tableItemList.length > 0) && (!returnPage && !orderPage)) myBeforeUnloadFunction();
+    if ((edit || tableItemList.length > 0) && !returnPage && !orderPage)
+      myBeforeUnloadFunction();
   }, [salesAdd, tableItemList, edit]);
 
   const handleReloadData = () => {
@@ -396,13 +396,11 @@ const SalesTransaction = ({ returnPage, orderPage }) => {
     try {
       let code;
       let response = await getCode();
-      let type = "SLRT"
-      if(orderPage){
-        type = "SALORD"
+      let type = "SLRT";
+      if (orderPage) {
+        type = "SALORD";
       }
-      if (
-        response.success
-      ) {
+      if (response.success) {
         for (let i of response.data) {
           if (i.sub_id == type) {
             code = i.next_code;
@@ -421,10 +419,9 @@ const SalesTransaction = ({ returnPage, orderPage }) => {
       if (returnPage) {
         response1 = await getSalesReturn();
       }
-      if(orderPage){
+      if (orderPage) {
         response2 = await getSalesOrder();
-      }else
-        response2 = await getSales();
+      } else response2 = await getSales();
       if (response1?.success && response2?.success && returnPage) {
         setSalesOnlyList(response2?.data);
         setSalesList(response1?.data);
@@ -470,7 +467,7 @@ const SalesTransaction = ({ returnPage, orderPage }) => {
         paid_cash: discPrice?.toFixed(0),
         change_due: "0.00",
         bank_amount: 0,
-        payment_type:(data.paid_cash>0)?"CASH":"CREDIT"
+        payment_type: data.paid_cash > 0 ? "CASH" : "CREDIT",
       }));
     } else if (e.target.name == "paid_cash") {
       if (
@@ -484,7 +481,7 @@ const SalesTransaction = ({ returnPage, orderPage }) => {
           timer: 1560,
         });
       } else {
-        let value = e.target.value == "" ? null : e.target.value;        
+        let value = e.target.value == "" ? null : e.target.value;
         setSalesAdd((data) => ({
           ...data,
           change_due:
@@ -494,7 +491,7 @@ const SalesTransaction = ({ returnPage, orderPage }) => {
               value -
               salesAdd.total_amount || "0.00",
           paid_cash: value,
-          payment_type:(value === 0|| !value)?"CREDIT":"CASH"
+          payment_type: value === 0 || !value ? "CREDIT" : "CASH",
         }));
       }
     } else if (e.target.name == "bank_amount") {
@@ -580,7 +577,11 @@ const SalesTransaction = ({ returnPage, orderPage }) => {
       }
       // const isValidForm = formValidation(formRef.current);
       // if (!isValidForm) return false;
-      let submitData = { ...salesAdd, items: tableItemList };
+      let submitData = {
+        ...salesAdd,
+        items: tableItemList,
+        advance_amt: salesAdd.paid_cash,
+      };
       let response;
       if (!edit) {
         if (returnPage) response = await postSalesReturn(submitData);
@@ -588,15 +589,26 @@ const SalesTransaction = ({ returnPage, orderPage }) => {
         else response = await postSales(submitData);
       } else {
         if (returnPage) response = await putSalesReturn(edit?.id, submitData);
-        else if (orderPage) response = await putSalesOrder(edit?.id, submitData);
+        else if (orderPage)
+          response = await putSalesOrder(edit?.id, submitData);
         else response = await putSales(edit?.id, submitData);
       }
       if (response?.success) {
         getData();
         setShowPrint(true);
-        Swal.fire(`Sales ${returnPage?"return":orderPage?"order":""} added successfully`, "a", "success");
+        Swal.fire(
+          `Sales ${
+            returnPage ? "return" : orderPage ? "order" : ""
+          } added successfully`,
+          "",
+          "success"
+        );
       } else {
-        Swal.fire(response?.data||"Something went wrong pls try again later", "", "error");
+        Swal.fire(
+          response?.data || "Something went wrong pls try again later",
+          "",
+          "error"
+        );
       }
     } catch (err) {
       Swal.fire({
@@ -615,11 +627,13 @@ const SalesTransaction = ({ returnPage, orderPage }) => {
     <div className="item_add">
       <div className="itemList_header row mx-0 mb-3">
         <div
-          className={`page_head ps-4 d-flex pe-0 ${returnPage ? "s-return":orderPage&&"s-order"}`}
+          className={`page_head ps-4 d-flex pe-0 ${
+            returnPage ? "s-return" : orderPage && "s-order"
+          }`}
         >
           <div className="col-5 col-6">
             <div className="fw-600 fs-5">{`Sales ${
-              returnPage ? "Return" :orderPage ? "Order":""
+              returnPage ? "Return" : orderPage ? "Order" : ""
             }`}</div>
             <div className="page_head_items mb-1">
               <div
@@ -628,7 +642,9 @@ const SalesTransaction = ({ returnPage, orderPage }) => {
                 }}
                 className={`page_head_item active`}
               >
-                {`Sales ${returnPage ? "Return" : orderPage ? "Order":""} Details`}
+                {`Sales ${
+                  returnPage ? "Return" : orderPage ? "Order" : ""
+                } Details`}
               </div>
             </div>
           </div>
@@ -703,7 +719,7 @@ const SalesTransaction = ({ returnPage, orderPage }) => {
             <div className="col-12 gap-2 d-flex align-items-end justify-content-start px-0 mx-0 mt-1">
               <div className="">
                 <div className="btn btn-sm btn-secondary rounded-bottom-0 px-3">
-                  {`Sales ${returnPage ? "Return" :orderPage ? "Order":""}`}
+                  {`Sales ${returnPage ? "Return" : orderPage ? "Order" : ""}`}
                 </div>
               </div>
               <div className="">

@@ -21,8 +21,13 @@ const usePurchaseServices = () => {
     //get requests ===================================
 
     // get all purchase data
-    const getPurchase = async (id) =>{
-        const response = await axiosPrivate.get('purchase/purchase/created/')
+    const getPurchaseList = async (id) =>{
+        const response = await axiosPrivate.get('purchase/purchase/code/')
+        return response.data
+    }
+    // get all purchase data
+    const getPurchaseWithId = async (id) =>{
+        const response = await axiosPrivate.get('purchase/purchase/updated/'+id+'/')
         return response.data
     }
 
@@ -41,7 +46,8 @@ const usePurchaseServices = () => {
         //put
         putPurchase,
         //get
-        getPurchase,
+        getPurchaseList,
+        getPurchaseWithId,
         //delete
         deletePurchase,
     }

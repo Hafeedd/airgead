@@ -171,7 +171,7 @@ const PurchaseEditList = (props) => {
                 <tr key={i}>
                   <td className="text-start ps-3">{data?.documents_no}</td>
                   <td className="">
-                    {new Date(data?.created_at)
+                    {new Date(data?.date)
                       ?.toISOString()
                       .slice(0, 10)
                       .split("-")

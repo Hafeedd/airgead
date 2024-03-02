@@ -137,7 +137,6 @@ export const ItemAddForm = ({ edit, refresh, setToEdit }) => {
     // else {
     //   handleReset();
     // }
-    console.log(items)
     setItemAdd(items);
   }, [edit]);
 

@@ -21,8 +21,13 @@ const usePurchaseReturnServices = () => {
     //get requests ===================================
 
     // get all purchase_return data
-    const getPurchaseReturn = async (id) =>{
-        const response = await axiosPrivate.get('purchase/purchase_returns/created/')
+    const getPurchaseReturnList = async (id) =>{
+        const response = await axiosPrivate.get('purchase/purchase_return/code/')
+        return response.data
+    }
+    // get all purchase_return data
+    const getPurchaseReturnWithId = async (id) =>{
+        const response = await axiosPrivate.get('purchase/purchase_returns/updated/'+id+'/')
         return response.data
     }
 
@@ -40,7 +45,8 @@ const usePurchaseReturnServices = () => {
         //put
         putPurchaseReturn,
         //get
-        getPurchaseReturn,
+        getPurchaseReturnList,
+        getPurchaseReturnWithId,
         //delete
         deletePurchaseReturn,
     }

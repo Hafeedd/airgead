@@ -21,13 +21,7 @@ const usePurchaseOrderServices = () => {
     //get requests ===================================
 
     // get all purchase data
-    const getPurchaseOrder = async () =>{
-        const response = await axiosPrivate.get('purchase/purchase_order/created/')
-        return response.data
-    }
-
-    // get all purchase data
-    const getPurchaseOrderDoc = async () =>{
+    const getPurchaseOrderList = async () =>{
         const response = await axiosPrivate.get('purchase/purchase_order/code/')
         return response.data
     }
@@ -54,8 +48,7 @@ const usePurchaseOrderServices = () => {
         //put
         putPurchaseOrder,
         //get
-        getPurchaseOrder,
-        getPurchaseOrderDoc,
+        getPurchaseOrderList,
         getPurchaseOrderWithId,
         //delete
         deletePurchaseOrder,

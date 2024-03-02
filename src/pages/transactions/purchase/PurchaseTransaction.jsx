@@ -69,15 +69,19 @@ const PurchaseTransaction = ({ returnPage, orderPage }) => {
   const { getCode } = useItemServices();
 
   const { getAccountList } = useAccountServices();
-  const { postPurchase, putPurchase, getPurchase } = usePurchaseServices();
-  const { postPurchaseReturn, getPurchaseReturn, putPurchaseReturn } =
-    usePurchaseReturnServices();
+  const { postPurchase, putPurchase, getPurchaseList, getPurchaseWithId } =
+    usePurchaseServices();
+  const {
+    postPurchaseReturn,
+    getPurchaseReturnList,
+    getPurchaseReturnWithId,
+    putPurchaseReturn,
+  } = usePurchaseReturnServices();
 
   const {
     postPurchaseOrder,
-    getPurchaseOrder,
     getPurchaseOrderWithId,
-    getPurchaseOrderDoc,
+    getPurchaseOrderList,
     putPurchaseOrder,
   } = usePurchaseOrderServices();
 
@@ -166,18 +170,28 @@ const PurchaseTransaction = ({ returnPage, orderPage }) => {
     setPurchaseAdd((data) => ({ ...data, payment_type: paymentType }));
   }, [purchaseAdd.change_due]);
 
-  const handleSetEdit = (state) => {
-    if (state) {
-      let { items, updated_at, ...others } = state;
-      let tempData = {
-        ...others,
-        change_due: others.change_due || "0.00",
-      };
-      setPurchaseAdd((data) => ({ ...data, ...tempData }));
-      if (items) {
-        setTableItemList([...items]);
-        handlePurchAllCalc(items, true, tempData);
+  const handleSetEdit = async (state) => {
+    try {
+      let purchaseData;
+      if (!returnPage && !orderPage)
+        purchaseData = await getPurchaseWithId(state.id);
+      if (returnPage) purchaseData = await getPurchaseReturnWithId(state.id);
+      if (orderPage) purchaseData = await getPurchaseOrderWithId(state.id);
+
+      if (purchaseData?.data) {
+        let { items, updated_at, ...others } = purchaseData.data;
+        let tempData = {
+          ...others,
+          change_due: others.change_due || "0.00",
+        };
+        setPurchaseAdd((data) => ({ ...data, ...tempData }));
+        if (items) {
+          setTableItemList([...items]);
+          handlePurchAllCalc(items, true, tempData);
+        }
       }
+    } catch (err) {
+      handlePurchaseAllReset()
     }
   };
 
@@ -303,29 +317,30 @@ const PurchaseTransaction = ({ returnPage, orderPage }) => {
         response4,
         response5,
         suppList,
-        bankList
+        bankList;
 
       const handleSuppNameAdd = (data) => {
         let list = [];
-        data.map((purData) => {
+        data.map((purData, key) => {
           if (purData.fk_supplier > -1) {
             let supplierName = suppList?.filter(
               (supData) => supData.value == purData.fk_supplier
             )[0]?.name;
             purData = { ...purData, supplier_name: supplierName };
           }
-          list.push(purData);
+          list.splice(key, 1, purData);
         });
         return list;
       };
-
-      response5 = await getPurchaseOrderDoc();
-      if (response5?.success) {
-        setOrderDocList((data) => {
-          return response5.data.map((doc) => {
-            return { text: doc.documents_no, value: doc.id };
+      if (!returnPage && !orderPage) {
+        response5 = await getPurchaseOrderList();
+        if (response5?.success) {
+          setOrderDocList((data) => {
+            return response5.data.map((doc) => {
+              return { text: doc.documents_no, value: doc.id };
+            });
           });
-        });
+        }
       }
 
       response = await getSupplier();
@@ -343,17 +358,16 @@ const PurchaseTransaction = ({ returnPage, orderPage }) => {
       setSupplierList(suppList);
 
       if (returnPage) {
-        response4 = await getPurchase();
-        response1 = await getPurchaseReturn();
-      }
-      if (orderPage) {
-        response1 = await getPurchaseOrder();
-      } else response1 = await getPurchase();
-      if (response1?.success && response4.success && returnPage) {
+        response4 = await getPurchaseList();
+        response1 = await getPurchaseReturnList();
+      } else if (orderPage) {
+        response1 = await getPurchaseOrderList();
+      } else response1 = await getPurchaseList();
+      if (response1?.success && response4?.success && returnPage) {
         setPurchaseOrReturnList(handleSuppNameAdd(response1.data));
         setPurchaseOnlyList(handleSuppNameAdd(response4.data));
-      }else if(response1.success){
-        setPurchaseOrReturnList(handleSuppNameAdd(response1.data))
+      } else if (response1.success) {
+        setPurchaseOrReturnList(handleSuppNameAdd(response1.data));
       }
 
       response3 = await getAccountList();
@@ -577,7 +591,13 @@ const PurchaseTransaction = ({ returnPage, orderPage }) => {
         handlePurchaseAllReset();
         handleGetCode(true);
         getData();
-        Swal.fire(`Purchase  ${returnPage?"return":orderPage?"order":""} added successfully`, "", "success");
+        Swal.fire(
+          `Purchase  ${
+            returnPage ? "return" : orderPage ? "order" : ""
+          } added successfully`,
+          "",
+          "success"
+        );
       } else {
         if (response?.data?.length > 0) {
           if (response?.data) {

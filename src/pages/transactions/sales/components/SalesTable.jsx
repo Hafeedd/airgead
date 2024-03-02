@@ -418,7 +418,7 @@ const SalesTable = (props) => {
           };
         }
       } else {
-        value = { ...value, cgst_or_igst: 0, sgst: 0 };
+        value = { ...value, cgst_or_igst: 0, sgst: 0,vat_perc:0 };
       }
 
       tempItem = { ...tempItem, ...value };
