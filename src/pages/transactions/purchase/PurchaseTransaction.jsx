@@ -89,10 +89,10 @@ const PurchaseTransaction = ({ returnPage, orderPage }) => {
 
   useEffect(() => {
     getData();
+    handlePurchaseAllReset();
     if (!returnPage && !orderPage) {
       handleReloadData();
     } else if (returnPage || orderPage) {
-      handlePurchaseAllReset();
       handleGetCode(true);
     }
 
@@ -122,7 +122,8 @@ const PurchaseTransaction = ({ returnPage, orderPage }) => {
   }, []);
 
   useEffect(() => {
-    myBeforeUnloadFunction();
+    if (!returnPage && !orderPage && tableItemList?.length > 0)
+      myBeforeUnloadFunction();
   }, [purchaseAdd, tableItemList, edit]);
 
   const myBeforeUnloadFunction = () => {
@@ -170,6 +171,17 @@ const PurchaseTransaction = ({ returnPage, orderPage }) => {
     setPurchaseAdd((data) => ({ ...data, payment_type: paymentType }));
   }, [purchaseAdd.change_due]);
 
+  const filterOutNullValues = (items) =>{
+   items.forEach((item,i) => {
+      for (const [key,value] of Object.entries(item)) {
+        if (value === 0 || value === null || value === undefined) {
+          delete items[i][key]
+        }
+      }
+    })
+    return items
+  }
+
   const handleSetEdit = async (state) => {
     try {
       let purchaseData;
@@ -186,12 +198,15 @@ const PurchaseTransaction = ({ returnPage, orderPage }) => {
         };
         setPurchaseAdd((data) => ({ ...data, ...tempData }));
         if (items) {
+          items = filterOutNullValues(items)
           setTableItemList([...items]);
           handlePurchAllCalc(items, true, tempData);
         }
+      }else{
+        handlePurchaseAllReset()
       }
     } catch (err) {
-      handlePurchaseAllReset()
+      console.log(err)
     }
   };
 
@@ -397,7 +412,6 @@ const PurchaseTransaction = ({ returnPage, orderPage }) => {
     try {
       const response = await getPurchaseOrderWithId(id);
       if (response.success) {
-        console.log(response.data.id);
         setEdit({ ...response.data, order_no: response?.data?.id });
         handleSetEdit({ ...response.data, order_no: response?.data?.id });
       }
@@ -415,13 +429,13 @@ const PurchaseTransaction = ({ returnPage, orderPage }) => {
     setPurchaseEditModal(true);
   };
 
-  const handlePurchaseAllReset = () => {
+  const handlePurchaseAllReset = (resetLocal) => {
     setPurchaseAdd(initialPurchaseAdd);
     setTableItemList([]);
     setTableItemBatchList([]);
     setTableItem(initialTableItem);
     setEdit(false);
-    if (!returnPage && !orderPage) {
+    if (!returnPage && !orderPage && resetLocal) {
       localStorage.setItem("purchaseData", false);
     }
   };
@@ -571,9 +585,10 @@ const PurchaseTransaction = ({ returnPage, orderPage }) => {
 
       let submitData = {
         ...purchaseAdd,
-        items: tableItemList,
+        items: filterOutNullValues(tableItemList),
         advance_amt: purchaseAdd.paid_cash,
       };
+
       let response;
 
       if (!edit) {
@@ -588,7 +603,7 @@ const PurchaseTransaction = ({ returnPage, orderPage }) => {
         else response = await putPurchase(edit?.id, submitData);
       }
       if (response?.success) {
-        handlePurchaseAllReset();
+        handlePurchaseAllReset(true);
         handleGetCode(true);
         getData();
         Swal.fire(

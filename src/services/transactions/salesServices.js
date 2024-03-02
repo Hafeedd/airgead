@@ -10,8 +10,13 @@ const useSalesServices = () => {
     }
     
     // get sales
-    const getSales = async() =>{
-        const response = await axiosPrivate.get('/sales/sales_master/created/')
+    const getSalesList = async() =>{
+        const response = await axiosPrivate.get('/sales/sales_master/code/')
+        return response.data
+    }
+    // get sales id
+    const getSalesWithId = async(id) =>{
+        const response = await axiosPrivate.get('/sales/sales_master/updated/'+id+'/')
         return response.data
     }
     
@@ -35,7 +40,7 @@ const useSalesServices = () => {
         return response.data
     }
 
-    // get purchase item batch 
+    // get all accounts of users only 
     const getAllUserAc = async (id) =>{
         const response = await axiosPrivate.get('/master/all_user/accounts/')
         return response.data
@@ -45,7 +50,8 @@ const useSalesServices = () => {
         //get
         getAllUserAc,
         getCodeWithBillType,
-        getSales,
+        getSalesList,
+        getSalesWithId,
         //post
         postSales,
         //put

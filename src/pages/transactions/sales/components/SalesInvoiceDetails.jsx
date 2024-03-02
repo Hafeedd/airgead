@@ -20,7 +20,7 @@ const SalesInvoiceDetails = (props) => {
   const [handleKeyDown, formRef] = useOnKey(ref, setRef, tableItemRef);
 
   useEffect(() => {
-    if (codeWithBillTypeList?.length > 0 && !returnPage)
+    if (codeWithBillTypeList?.length > 0 && (!returnPage && !orderPage))
       handleBillTypeSelection();
   }, [salesAdd?.fk_bill_type, codeWithBillTypeList]);
 

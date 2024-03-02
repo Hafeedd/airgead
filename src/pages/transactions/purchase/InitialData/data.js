@@ -246,3 +246,9 @@ export const initialPurchaseAdd = {
     },
   ];
   
+
+  // export const handleCalculationInTable = (tempItem, e, data) =>{
+  //   let name = e.target.name;
+
+
+  // }

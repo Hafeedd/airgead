@@ -10,8 +10,13 @@ export const useSalesOrderServices = () => {
     }
     
     // get sales
-    const getSalesOrder = async() =>{
-        const response = await axiosPrivate.get('/sales/sales/order/created/')
+    const getSalesOrderList = async() =>{
+        const response = await axiosPrivate.get('/sales/sales_order/code/')
+        return response.data
+    }
+    // get sales with id
+    const getSalesOrderWithId = async(id) =>{
+        const response = await axiosPrivate.get('/sales/sales/order/updated/'+id+'/')
         return response.data
     }
     
@@ -30,7 +35,8 @@ export const useSalesOrderServices = () => {
 
     return{
         //get
-        getSalesOrder,
+        getSalesOrderList,
+        getSalesOrderWithId,
         //post
         postSalesOrder,
         //put

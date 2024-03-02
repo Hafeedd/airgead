@@ -58,11 +58,11 @@ const SalesTransaction = ({ returnPage, orderPage }) => {
 
   const { getProperty } = useItemServices();
   const { getCustomer } = useCustomerServices();
-  const { getSales, postSales, putSales, getAllUserAc, getCodeWithBillType } =
+  const { getSalesList,getSalesWithId, postSales, putSales, getAllUserAc, getCodeWithBillType } =
     useSalesServices();
-  const { getSalesReturn, postSalesReturn, putSalesReturn } =
+  const { getSalesReturnList,getSalesReturnWihtId, postSalesReturn, putSalesReturn } =
     useSalesReturnServices();
-  const { getSalesOrder, postSalesOrder, putSalesOrder } =
+  const { getSalesOrderList,getSalesOrderWithId, postSalesOrder, putSalesOrder } =
     useSalesOrderServices();
 
   const { getCode } = useItemServices();
@@ -74,7 +74,7 @@ const SalesTransaction = ({ returnPage, orderPage }) => {
     setEdit(false);
     setShowPrint(false);
     if (!returnPage && !orderPage) localStorage.setItem("salesData", false);
-    else if (returnPage || orderPage) handleGetSalesReturnCode();
+    // else if (returnPage || orderPage) handleGetSalesReturnCode();
   };
 
   const location = useLocation();
@@ -133,16 +133,26 @@ const SalesTransaction = ({ returnPage, orderPage }) => {
       localStorage.setItem("salesData", JSON.stringify(allSaleState));
   };
 
-  const handleSetEdit = (data) => {
-    if (data) {
-      let { sales_item, updated_at, ...others } = data;
-      let tempData = { ...others, change_due: others.change_due || "0.00" };
-      setSalesAdd((data) => ({ ...data, ...tempData }));
-      if (sales_item) {
-        setTableItemList([...sales_item]);
-        handleSalesAddCalc(sales_item, true, tempData);
-      }
-    } else handleGetCode();
+  const handleSetEdit = async (data) => {
+    try{
+      let salesData;
+      if (!returnPage && !orderPage)
+        salesData = await getSalesWithId(data.id);
+      if (returnPage) salesData = await getSalesReturnWihtId(data.id);
+      if (orderPage) salesData = await getSalesOrderWithId(data.id);
+
+      if (salesData) {
+        let { sales_item, updated_at, ...others } = salesData.data;
+        let tempData = { ...others, change_due: others.change_due || "0.00" };
+        setSalesAdd((data) => ({ ...data, ...tempData }));
+        if (sales_item) {
+          setTableItemList([...sales_item]);
+          handleSalesAddCalc(sales_item, true, tempData);
+        }
+      } else handleGetCode();
+    }catch(err){
+      console.log(err)
+    }
   };
 
   useEffect(() => {
@@ -417,11 +427,11 @@ const SalesTransaction = ({ returnPage, orderPage }) => {
     try {
       let response1, response2;
       if (returnPage) {
-        response1 = await getSalesReturn();
+        response1 = await getSalesReturnList();
       }
       if (orderPage) {
-        response2 = await getSalesOrder();
-      } else response2 = await getSales();
+        response2 = await getSalesOrderList();
+      } else response2 = await getSalesList();
       if (response1?.success && response2?.success && returnPage) {
         setSalesOnlyList(response2?.data);
         setSalesList(response1?.data);

@@ -18,7 +18,7 @@ const PurchaseDetailFooter = (props) => {
   } = props;
 
   const handleReset = () => {
-    handlePurchaseAllReset();
+    handlePurchaseAllReset(true);
     handleGetCode(true);
   };
 

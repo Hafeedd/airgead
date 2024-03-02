@@ -10,8 +10,13 @@ export const useSalesReturnServices = () => {
     }
     
     // get sales
-    const getSalesReturn = async() =>{
-        const response = await axiosPrivate.get('/sales/sales_return_master/created/')
+    const getSalesReturnList = async() =>{
+        const response = await axiosPrivate.get('/sales/sales_return/code/')
+        return response.data
+    }
+    // get sales wiht id
+    const getSalesReturnWihtId = async(id) =>{
+        const response = await axiosPrivate.get('/sales/sales_return_master/updated/'+id+'/')
         return response.data
     }
     
@@ -30,7 +35,8 @@ export const useSalesReturnServices = () => {
 
     return{
         //get
-        getSalesReturn,
+        getSalesReturnList,
+        getSalesReturnWihtId,
         //post
         postSalesReturn,
         //put

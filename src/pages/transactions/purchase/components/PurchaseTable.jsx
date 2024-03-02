@@ -112,8 +112,9 @@ const PurchaseTable = (props) => {
     const handleDataNameList = (data) => {
       let tempList = [];
       data?.forEach((x) => {
+        const {discount_1_percentage,tax_gst,purchase_rate,retail_rate,margin} = x
         tempList.push({
-          ...x,
+          ...{discount_1_percentage,tax_gst,purchase_rate,retail_rate,margin},
           text: x.name,
           description: x.code,
           value: x.id,
@@ -224,34 +225,7 @@ const PurchaseTable = (props) => {
           discount_1_amount_per_item: 0,
         };
       }
-      // -------------------vat
-      // tempItem = {...tempItem,...value}
-      // if(name !== 'vat_perc' && tempItem.vat > 0){
-      //   value = {
-      //     ...value,
-      //     vat_perc:(tempItem.vat / value.value) * 100
-      //   }
-      // }else if(name == 'vat' && tempItem.vat === ''){
-      //   value = {
-      //     ...value,
-      //     vat_perc:0,
-      //   }
-      // }
-      // tempItem = {...tempItem,...value}
-      // if(name !== 'vat' && tempItem.vat_perc > 0){
-      //   value = {
-      //     ...value,
-      //     vat:value.value -
-      //     (value.value -
-      //       tempItem.vat_perc * (value.value / 100)),
-      //   }
-      // }else if(name == 'vat_perc' && tempItem.vat_perc === ''){
-      //   value = {
-      //     ...value,
-      //     vat:0,
-      //   }
-      // }
-      // ---------------------------------vat
+
       tempItem = { ...tempItem, ...value };
       if (name === "discount_1_amount" && tempItem.discount_1_amount) {
         value = {
@@ -274,7 +248,7 @@ const PurchaseTable = (props) => {
             parseFloat(tempItem.quantity * tempItem.rate) -
             parseFloat(tempItem.discount_1_amount),
           cost:
-            parseFloat(tempItem.rate) - parseFloat(tempItem.discount_1_amount),
+            parseFloat(tempItem.rate) - parseFloat(tempItem.discount_1_amount_per_item),
         };
       } else if (name !== "margin" && name !== "sales_rate") {
         value = {
@@ -300,7 +274,7 @@ const PurchaseTable = (props) => {
             +tempItem.tax_gst *
               ((+tempItem.rate - +tempItem.discount_1_amount_per_item) / 100),
         };
-        console.log(isVat)
+        
         if (isVat) {
           value = {
             ...value,
@@ -319,27 +293,28 @@ const PurchaseTable = (props) => {
 
       tempItem = { ...tempItem, ...value };
       if (name !== "sales_rate") {
-        if (tempItem.margin) {
+        if (tempItem.margin>0 && tempItem.cost>0) {
           value = {
             ...tempItem,
             sales_rate:
-              +state.cost?.toFixed(2) +
-              +state.cost?.toFixed(2) * (+tempItem.margin / 100),
+              +tempItem.cost?.toFixed(2) +
+              +tempItem.cost?.toFixed(2) * (+tempItem.margin / 100),
           };
-        } else {
+        } else{
           value = { ...value, sales_rate: 0 };
         }
       }
       tempItem = { ...tempItem, ...value };
       if (name !== "margin") {
-        if (tempItem.sales_rate) {
+        console.log(tempItem.cost)
+        if (tempItem.sales_rate>0 && tempItem.cost>0) {
           value = {
             ...value,
             margin: parseFloat(
-              ((tempItem.sales_rate - value.cost) / tempItem.cost) * 100
+              ((tempItem.sales_rate - tempItem.cost) / tempItem.cost) * 100
             ),
           };
-        } else {
+        } else{
           value = { ...value, margin: 0 };
         }
       }
@@ -351,6 +326,8 @@ const PurchaseTable = (props) => {
         cgst_or_igst: 0,
         total: 0,
         cost: 0,
+        sales_rate:0,
+        margin:0
       };
     }
     tempItem = { ...tempItem, ...value };
@@ -401,13 +378,13 @@ const PurchaseTable = (props) => {
   const handlePrev = () => {
     if (purchaseOrReturnList?.length > 0) {
       if (!edit) {
-        handlePurchaseAllReset();
+        handlePurchaseAllReset(true);
         setEdit({ ...purchaseOrReturnList[0] });
         handleSetEdit(purchaseOrReturnList[0]);
       } else {
         let ind = purchaseOrReturnList?.findIndex((x) => edit.id === x.id);
         if (ind !== purchaseOrReturnList?.length - 1) {
-          handlePurchaseAllReset();
+          handlePurchaseAllReset(true);
           setEdit({ ...purchaseOrReturnList[ind + 1] });
           handleSetEdit(purchaseOrReturnList[ind + 1]);
         } else {
@@ -424,16 +401,16 @@ const PurchaseTable = (props) => {
       if (!edit) {
         Swal.fire("No more purchase to edit", "go for prev", "warning");
       } else if (edit?.id === purchaseOrReturnList[0]?.id) {
-        handlePurchaseAllReset();
+        handlePurchaseAllReset(true);
         handleGetCode(true);
       } else {
-        handlePurchaseAllReset();
+        handlePurchaseAllReset(true);
         let ind = purchaseOrReturnList?.findIndex((x) => edit.id === x.id);
         if (ind !== purchaseOrReturnList[0]) {
           setEdit(purchaseOrReturnList[ind - 1]);
           handleSetEdit(purchaseOrReturnList[ind - 1]);
         } else {
-          handlePurchaseAllReset();
+          handlePurchaseAllReset(true);
           Swal.fire("No more purchase to edit", "go for prev", "warning");
         }
       }

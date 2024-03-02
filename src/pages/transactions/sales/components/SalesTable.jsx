@@ -255,28 +255,12 @@ const SalesTable = (props) => {
 
     // ---------------------------
     if (
-      e.target.name !== "tax_gst" &&
-      e.target.name !== "rate" &&
-      e.target.name !== "discount_1_percentage" &&
+      name !== "tax_gst" &&
+      name !== "rate" &&
+      name !== "discount_1_percentage" &&
       data?.name !== "name"
     ) {
       if (tempItem.gross && tempItem.tax_gst) {
-        // console.log(
-        //   (tempItem.gross-
-        //   (tempItem.gross -
-        //     (tempItem.gross -
-        //       tempItem?.discount_1_percentage * (tempItem.gross / 100))))
-        // );
-        // console.log(
-
-        //     tempItem.gross
-        //     -
-        //     (tempItem.gross -
-        //       (tempItem.gross -
-        //         tempItem?.discount_1_percentage * (tempItem.gross / 100)))
-        //         /
-        //       (1 + tempItem.tax_gst / 100)
-        // );
         value = {
           ...value,
           rate:
@@ -374,10 +358,6 @@ const SalesTable = (props) => {
 
       if (e.target.name !== "gross") {
         if (tempItem.tax_gst && tempItem.rate) {
-          // console.log(
-          //   (tempItem.rate - tempItem.discount_1_amount_per_item) *
-          //     (tempItem.tax_gst / 100)
-          // );
           value = {
             ...value,
             ["gross"]:

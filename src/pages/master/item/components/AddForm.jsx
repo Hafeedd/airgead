@@ -896,10 +896,10 @@ export const ItemAddForm = ({ edit, refresh, setToEdit }) => {
               Qty in Box
               <input
                 onKeyDown={handleKeyDown}
-                value={itemadd.qty_in_bc ? itemadd.qty_in_bc : ""}
+                value={itemadd.qty_in_box ? itemadd.qty_in_box : ""}
                 type="number"
                 className="item_input col-6 col-7"
-                name="qty_in_bc"
+                name="qty_in_box"
                 onChange={handleChange}
               />
             </div>
@@ -931,10 +931,10 @@ export const ItemAddForm = ({ edit, refresh, setToEdit }) => {
               Dmg. Cost
               <input
                 onKeyDown={handleKeyDown}
-                value={itemadd.damge_cost ? itemadd.damge_cost : ""}
+                value={itemadd.damage_cost ? itemadd.damage_cost : ""}
                 type="number"
                 className="item_input col-6 col-7"
-                name="damge_cost"
+                name="damage_cost"
                 onChange={handleChange}
               />
             </div>
