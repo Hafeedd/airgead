@@ -248,11 +248,11 @@
     border: none;
 }
 
-.ui.search.selection.dropdown.pruchase-select.sales_customer{
+.ui.search.selection.dropdown.purchase-select.sales_customer{
     min-height: 1.8rem !important;
 }
 
-.pruchase-select.sales_customer.selection .dropdown.icon{
+.purchase-select.sales_customer.selection .dropdown.icon{
     top: 0.3rem !important;
 }
 

@@ -65,7 +65,7 @@ const PurchaseInvoiceDetails = (props) => {
           search={search}
           onKeyDown={handleKeyDown}
           onChange={handleChange}
-          className="pruchase-select d-flex align-items-center py-0 form-control"
+          className="purchase-select d-flex align-items-center py-0 form-control"
           name="fk_supplier"
           placeholder="select"
           value={purchaseAdd?.fk_supplier || ""}
@@ -155,19 +155,19 @@ const PurchaseInvoiceDetails = (props) => {
         />
       </Form.Group>
       {/* Row 3 -------------------------------------------------------------------------------------------------------- */}
-      <div className="col-4 col-3 pe-0 d-flex align-items-end justify-content-start ps-1">
-        <div className="px-1">
-          <div className="btn btn-sm btn-secondary px-3">
+      <div className="col-3 pe-0 d-flex align-items-end justify-content-start ps-1">
+        <div className="ps-1">
+          <div className="btn btn-sm purch-table-btn1 px-3">
             Purchase{returnPage ? " Return" : orderPage && " Order"}
           </div>
         </div>
         <div className="">
-          {/* <div className="btn btn-sm btn-secondary px-3">P.Return</div> */}
+          {/* <div className="btn btn-sm purch-table-btn1 px-3">P.Return</div> */}
         </div>
         <div className="ps-1">
-          <div className="btn btn-sm btn-secondary px-3">Other</div>
+          <div className="btn btn-sm purch-table-btn1 px-3">Other</div>
         </div>
-        <div className="ps-1 col-2">
+        <div className="ps-1 col-3 col-2">
           <div
             onClick={handleEdit}
             className="btn btn-sm btn-dark px-1 justify-content-center d-flex align-items-center gap-1"
@@ -178,7 +178,7 @@ const PurchaseInvoiceDetails = (props) => {
         </div>
       </div>
 
-      <div className="mx-0 px-0 col-1 d-flex align-items-center justify-content-start">
+      <div className="mx-0 px-0 col-2 col-1 d-flex align-items-center justify-content-end">
         <input
           type="checkbox"
           name="isBatch"
@@ -232,7 +232,7 @@ const PurchaseInvoiceDetails = (props) => {
           </label>
         </div>
       </div>
-      <Form.Group className="col-3 col-4 mx-0 d-flex align-items-center my-1">
+      <Form.Group className="col-3 col-4 mx-0 d-flex align-items-center mb-1">
        {!returnPage && !orderPage
         && <>
         <Form.Label className="col-3 col-4 purchase-input-label">
@@ -244,7 +244,7 @@ const PurchaseInvoiceDetails = (props) => {
           search={true}
           onKeyDown={handleKeyDown}
           onChange={handleChange}
-          className="pruchase-select d-flex align-items-center py-0 form-control"
+          className="purchase-select d-flex align-items-center py-0 form-control"
           name="order_no"
           value={purchaseAdd.order_no || ""}
           placeholder="Select"

@@ -77,17 +77,17 @@ const PurchaseDeliveryDetails = (props) => {
         />
       </Form.Group>
       {/* Row 3 -------------------------------------------------------------------------------------------------------- */}
-      <div className="col-3 col-2 pe-0 d-flex align-items-end justify-content-start ps-1">
-        <div className="px-1">
-          <div className="btn btn-sm btn-secondary px-3">Purchase{returnPage? " Return":orderPage&& " Order"}</div>
+      <div className="col-3 pe-0 d-flex align-items-end justify-content-start ps-1">
+        <div className="ps-1">
+          <div className="btn btn-sm purch-table-btn1 px-3">Purchase{returnPage? " Return":orderPage&& " Order"}</div>
         </div>
         <div className="">
-          {/* <div className="btn btn-sm btn-secondary px-3">P.Return</div> */}
+          {/* <div className="btn btn-sm purch-table-btn1 px-3">P.Return</div> */}
         </div>
         <div className="ps-1">
-          <div className="btn btn-sm btn-secondary px-3">Other</div>
+          <div className="btn btn-sm purch-table-btn1 px-3">Other</div>
         </div>
-        <div className="ps-1 col-3">
+        <div className="ps-1 col-2 col-3">
         <div
             onClick={handleEdit}
             className="btn btn-sm btn-dark px-1 justify-content-center d-flex align-items-center gap-1"
@@ -107,7 +107,7 @@ const PurchaseDeliveryDetails = (props) => {
           Edit
         </div> */}
       {/* </div> */}
-      <span className="col-5" />
+      <span className="col-5 col-4" />
       <Form.Group className="col-3 col-4 mx-0 d-flex align-items-center my-1">
         <Form.Label className="col-3 col-4 purchase-input-label">
           Order No

@@ -232,7 +232,7 @@ const PurchaseDetailFooter = (props) => {
               <button
                 type="reset"
                 onClick={handleReset}
-                className="btn btn-sm btn-outline-dark w-100"
+                className="btn btn-sm footer-button-clear w-100"
               >
                 Clear
               </button>
@@ -241,7 +241,7 @@ const PurchaseDetailFooter = (props) => {
               <button
                 disabled={!bankSelect}
                 type="submit"
-                className="btn btn-sm btn-dark w-100"
+                className="btn btn-sm footer-button-save w-100"
               >
                 {edit ? "Update" : "Save"}
               </button>

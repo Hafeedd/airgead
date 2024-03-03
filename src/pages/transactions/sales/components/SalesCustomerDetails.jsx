@@ -19,7 +19,7 @@ const SalesCustomerDetails = (props) => {
 
   const [ref, setRef] = useState();
   const [careOfList, setCareOfList] = useState();
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   useEffect(() => {
     getDataOfCustomer();
@@ -85,7 +85,9 @@ const SalesCustomerDetails = (props) => {
 
   const handleChange = (e, data) => {
     if (data && data?.name == "fk_customer") {
-      let customer_data = data?.options?.filter((x) => x.value === data.value)[0];
+      let customer_data = data?.options?.filter(
+        (x) => x.value === data.value
+      )[0];
       let bill_type = billType[0]?.value,
         rateType;
       if (customer_data?.bill_type) {
@@ -105,22 +107,21 @@ const SalesCustomerDetails = (props) => {
       }));
     }
     if (e.target.name == "payment_type") {
-      if (e.target.value === "CREDIT" && salesAdd.paid_cash>0)
+      if (e.target.value === "CREDIT" && salesAdd.paid_cash > 0)
         setSalesAdd((data) => ({
           ...data,
-          paid_cash: '0',
+          paid_cash: "0",
           change_due: data.total_amount,
           [e.target.name]: e.target.value,
         }));
-      else if(e.target.value === "CASH" && salesAdd.change_due>0)
+      else if (e.target.value === "CASH" && salesAdd.change_due > 0)
         setSalesAdd((data) => ({
           ...data,
           paid_cash: data.total_amount,
-          change_due: '0',
+          change_due: "0",
           [e.target.name]: e.target.value,
         }));
-    }else
-    if (data && data?.name == "careof_user") {
+    } else if (data && data?.name == "careof_user") {
       let careof_data = data.options.filter((x) => x.value === data.value)[0];
       setSalesAdd((data) => ({ ...data, ["careof_user"]: careof_data?.value }));
     } else if (e.target.value === "")
@@ -133,18 +134,18 @@ const SalesCustomerDetails = (props) => {
       <div className="col-7 mx-0 pe-0 row pt-2">
         <Form.Group className="col-5 mx-0 d-flex align-items-center ps-0">
           <Form.Label className="col-3 purchase-input-label">Code</Form.Label>
-          <Dropdown
-            clearable
-            selection
-            search={search}
-            onKeyDown={handleKeyDown}
-            onChange={handleChange}
-            className="pruchase-select d-flex align-items-center sales_customer py-0 form-control"
-            name="fk_customer"
-            placeholder="select"
-            value={salesAdd?.fk_customer || ""}
-            options={customerList}
-          />
+            <Dropdown
+              clearable
+              selection
+              search={search}
+              onKeyDown={handleKeyDown}
+              onChange={handleChange}
+              className="purchase-select d-flex align-items-center py-0 form-control"
+              name="fk_customer"
+              placeholder="select"
+              value={salesAdd?.fk_customer || ""}
+              options={customerList}
+            />
         </Form.Group>
 
         <Form.Group className="col-7 mx-0 d-flex align-items-center pe-0">
@@ -152,7 +153,7 @@ const SalesCustomerDetails = (props) => {
             Customer
           </Form.Label>
           <Form.Control
-          disabled={salesAdd?.fk_customer}
+            disabled={salesAdd?.fk_customer}
             onKeyDown={handleKeyDown}
             onChange={handleChange}
             className="purchase-input-text"
@@ -184,25 +185,30 @@ const SalesCustomerDetails = (props) => {
                 Credit
               </Form.Label>
               {/* <div className="mx-0 col px-0"> */}
-                <select
-                  name="payment_type"
-                  className="customer-select w-100"
-                  onKeyDown={handleKeyDown}
-                  onChange={handleChange}
-                  value={salesAdd?.payment_type || ""}
-                >
-                  <option value="CASH">CASH</option>
-                  <option value="CREDIT">CREDIT</option>
-                </select>
+              <select
+                name="payment_type"
+                className="customer-select w-100"
+                onKeyDown={handleKeyDown}
+                onChange={handleChange}
+                value={salesAdd?.payment_type || ""}
+              >
+                <option value="CASH">CASH</option>
+                <option value="CREDIT">CREDIT</option>
+              </select>
               {/* </div> */}
             </Form.Group>
-            <div className="col-6 align-items-center d-flex mt-1 px-0 ps-3"> 
-            <div onClick={
-          () =>
-            navigate("/customer-add", {
-              state: { fromSales: true },
-            }) /* openNewWindow() */
-        } className="px-0 col-12 mx-0 btn btn-dark btn-sm">Add Customer</div>
+            <div className="col-6 align-items-center d-flex mt-1 px-0 ps-3">
+              <div
+                onClick={
+                  () =>
+                    navigate("/customer-add", {
+                      state: { fromSales: true },
+                    }) /* openNewWindow() */
+                }
+                className="px-0 col-12 mx-0 btn btn-dark btn-sm"
+              >
+                Add Customer
+              </div>
             </div>
           </div>
 
@@ -259,7 +265,7 @@ const SalesCustomerDetails = (props) => {
             options={careOfList}
             onKeyDown={handleKeyDown}
             onChange={handleChange}
-            className="pruchase-select d-flex sales_customer align-items-center py-0 form-control"
+            className="purchase-select d-flex align-items-center py-0 form-control"
             placeholder="select"
             name="careof_user"
             value={salesAdd?.careof_user || ""}

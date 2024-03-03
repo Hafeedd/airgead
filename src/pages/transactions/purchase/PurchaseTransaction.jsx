@@ -761,7 +761,7 @@ const PurchaseTransaction = ({ returnPage, orderPage }) => {
             <div className="col-3 d-flex px-0 align-items-center justify-content-end">
               <div
                 onClick={() => setPageHeadItem(2)}
-                className={`btn btn-secondary purchase-nav-btn px-2 
+                className={`btn purchase-nav-btn px-2 
                                 ${pageHeadItem === 2 && "select"}`}
               >
                 Printing details
@@ -770,7 +770,7 @@ const PurchaseTransaction = ({ returnPage, orderPage }) => {
             <div className="col-3 d-flex px-0 align-items-center justify-content-end">
               <div
                 onClick={() => setPageHeadItem(3)}
-                className={`btn btn-secondary purchase-nav-btn px-2 
+                className={`btn purchase-nav-btn px-2 
                                 ${pageHeadItem === 3 && "select"}`}
               >
                 Delivery details
@@ -779,7 +779,7 @@ const PurchaseTransaction = ({ returnPage, orderPage }) => {
             <div className="col-3 d-flex px-0 align-items-center justify-content-end">
               <div
                 onClick={() => setPageHeadItem(1)}
-                className={`btn btn-secondary purchase-nav-btn px-2 
+                className={`btn purchase-nav-btn px-2 
                                 ${pageHeadItem === 1 && "select"}`}
               >
                 Invoice details
