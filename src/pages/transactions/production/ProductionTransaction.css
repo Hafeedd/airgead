@@ -68,13 +68,13 @@
 }
 
 
-.purchase-input-text.table-drop.custom-dropdown-width{
+.purchase-input-text.table-drop.custom-dropdown-width2{
     min-width: 100% !important; 
     max-width: 100% !important;     
     border-color: #a6cdec!important;
 }
 
-.purchase-input-text.table-drop.custom-dropdown-width input{
+.purchase-input-text.table-drop.custom-dropdown-width2 input{
     text-align: start !important;
 }
 

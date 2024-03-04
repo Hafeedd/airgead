@@ -105,17 +105,23 @@ const MaterialCompositionOfProduct = (props) => {
     setSelectedType(data.value);
   };
   const handleDropdownChangeItem = (event, data) => {
+    let filtered_data=data.options.filter((item)=>item.value == data.value)[0];
     setSelectedItem(data.value);
+    setItemQuantityUnit(filtered_data?.fk_unit?filtered_data?.fk_unit:null);
   };
 
   const handleDropdownChangeRaw = (event, data) => {
+    let filtered_data=data.options.filter((item)=>item.value == data.value)[0];
     setSelectedRaw(data.value);
+    setSelectedUnit(filtered_data?.fk_unit?filtered_data?.fk_unit:null);
   };
   const handleDropdownChangeUnit = (event, data) => {
     setSelectedUnit(data.value);
   };
   const handleDropdownChangeByProduct = (event, data) => {
+    let filtered_data=data.options.filter((item)=>item.value == data.value)[0];
     setSelectedByProduct(data.value);
+    setSelectedByProductUnit(filtered_data?.fk_unit?filtered_data?.fk_unit:null);
   };
   const handleDropdownChangeByProductUnit = (event, data) => {
     setSelectedByProductUnit(data.value);
@@ -278,42 +284,12 @@ const MaterialCompositionOfProduct = (props) => {
   return (
     <div className="px-0 row">
       <div className="col-12">
-        <div className="col-12 d-flex justify-content-between border border-2 rounded border-secondary px-1 py-1 " ref={formRef1} >
-          <div className="col-3 border-2 pe-5 ms-4 my-2">
-            <Form.Group className="col-11  ps-0 mx-0 d-flex align-items-start mt-1">
-              <Form.Label className=" col-2 purchase-input-label pb-1 ps-1">
-                Type
-              </Form.Label>
-              <div className="col-3 mx-0 d-flex align-items-center">
-                <Dropdown
-                  clearable
-                  selection
-                  required
-                  search={search}
-                  onKeyDown={handleKeyDown1}
-                  onChange={handleDropdownChangeType}
-                  className="purchase-input-text table-drop d-flex align-items-center py-0 form-control "
-                  name="type"
-                  placeholder="Select"
-                  value={selectedType}
-                  options={typeList}
-                />
-                <div>
-                  <RiAddBoxFill
-                    size={29}
-                    className="rounded-5 "
-                    onClick={() => setShow(true)}
-                  />
-                </div>
-              </div>
-            </Form.Group>
-          </div>
-          <div className="col-3 border-2 mx-0 my-2">
-            <Form.Group className="col-11 ps-0 mx-0 d-flex align-items-start mt-2">
-              <Form.Label className=" col-2  purchase-input-label pb-1 ps-1">
-                Item
-              </Form.Label>
-              <div className="col-3 mx-0  d-flex align-items-center">
+        <div className="row mx-5 px-0 rounded  " style={{backgroundColor:'#a6c4fd'}} ref={formRef1} >
+          
+          <div className="col-3 border-2 px-0 ps-2">
+            <Form.Group className="row ps-0 mx-0 d-flex align-items-center mb-1">
+            <div className="col-2 pe-4 ">Item:</div>
+              <div className="col-10 mx-0  d-flex align-items-center mt-1">
                 <Dropdown
                   clearable
                   selection
@@ -321,7 +297,7 @@ const MaterialCompositionOfProduct = (props) => {
                   search={search}
                   onKeyDown={handleKeyDown1}
                   onChange={handleDropdownChangeItem}
-                  className="purchase-input-text table-drop d-flex align-items-center py-0 form-control"
+                  className="purchase-input-text table-drop d-flex align-items-center py-0 form-control custom-dropdown-width"
                   name="item"
                   placeholder="select"
                   value={selectedItem}
@@ -330,21 +306,20 @@ const MaterialCompositionOfProduct = (props) => {
               </div>
             </Form.Group>
           </div>
-          <div className="col-3 border-2 mx-0 my-2">
-            <Form.Group className="row ps-0 mx-0 d-flex align-items-center mt-2">
-              <Form.Label className="col-1 px-0 me-2 ms-1 purchase-input-label pb-1">
-                Qty
-              </Form.Label>
-              <div className="col-2 me-1 px-0">
+          <div className="col-3 border-2 px-0">
+            <Form.Group className="row ps-0 mx-0 d-flex align-items-center">
+              <div className="col-2 pe-5 ps-2 ">Qty:</div>
+              <div className="col-2 me-1 px-0 mt-1">
                 <input
                   type="text"
-                  className="rounded border border-dark w-100 h-125"
+                  className="rounded-1 border-1 w-100 custom-text"
+                  style={{'border': '1px solid #abc9ff'}}
                   value={itemQuantity}
                   onKeyDown={handleKeyDown1}
                   onChange={(e) => setItemQuantity(e.target.value)}
                 />
               </div>
-              <div className="col-7 px-0">
+              <div className="col-4 px-0 mt-1">
               <Dropdown
                 clearable
                 selection
@@ -352,36 +327,63 @@ const MaterialCompositionOfProduct = (props) => {
                 search={search}
                 onKeyDown={handleKeyDown1}
                 onChange={handleDropdownItemQuantityUnit}
-                className="purchase-input-text table-drop d-flex align-items-center py-0 form-control"
+                className="purchase-input-text table-drop d-flex align-items-center py-0 form-control w-50 custom-dropdown-width"
                 name="code"
                 placeholder="select"
                 value={itemQuantityUnit}
                 options={unitList}
                 />
                 </div>
+                <div className="col-2 ps-5">Type:</div>
+            </Form.Group>
+          </div>
+          <div className="col-3 border-2 px-0">
+            <Form.Group className="row  ps-0 mx-0 d-flex align-items-center">
+              <div className="col-6 mx-0 d-flex align-items-center mt-1">
+                <Dropdown
+                  clearable
+                  selection
+                  required
+                  search={search}
+                  onKeyDown={handleKeyDown1}
+                  onChange={handleDropdownChangeType}
+                  className="purchase-input-text table-drop d-flex align-items-center py-0 w-100 form-control custom-dropdown-width"
+                  name="type"
+                  placeholder="Select"
+                  value={selectedType}
+                  options={typeList}
+                />
+                <div>
+                  <RiAddBoxFill
+                    size={25}
+                    className="rounded-5 "
+                    onClick={() => setShow(true)}
+                  />
+                </div>
+              </div>
             </Form.Group>
           </div>
         </div>
 
         <div className="row mx-0 d-flex mt-2">
           <div
-            className="col-12 px-0 pe-1 ms-0"
-            style={{ height: "250px", overflowY: "scroll" }}
+            className="col-6 px-0 ms-0 ps-5 pe-1"
+            style={{ height: "200px", overflowY: "scroll" }}
             
           >
             <div
-              className="mx-0 TabHead  border-bottom border-light border-2 py-3 w-100  text-center rounded-top"
-              style={{ top: "0", position: "sticky", zIndex: 1 }}
+              className="mx-0 TabHead text-center border-bottom border-light border-2 w-100 py-1  text-dark  rounded-top"
+              style={{ top: "0", position: "sticky", zIndex: 1 ,backgroundColor:'#abc9ff' }}
             >
-              Quantity of a material used
+             <b>Quantity of a material used</b>
             </div>
             <table className="materials w-100 rounded-bottom">
               <thead className="text-light">
                 <tr>
-                  <th>Raw material</th>
-                  <th>Qty</th>
-                  <th>Unit</th>
-                  <th></th>
+                  <th width='70%' className="text-start ps-3">Raw material</th>
+                  <th width='10%'>Qty</th>
+                  <th width='10%'>Unit</th>
+                  <th width='10%'></th>
                 </tr>
               </thead>
               <tbody ref={formRef2}>
@@ -410,7 +412,7 @@ const MaterialCompositionOfProduct = (props) => {
                             search={search}
                             onKeyDown={handleKeyDown2}
                             onChange={handleRawEdit}
-                            className="purchase-input-text table-drop d-flex align-items-center py-0 form-control"
+                            className="purchase-input-text table-drop d-flex align-items-center py-0 form-control custom-dropdown-width w-100"
                             name="fk_item"
                             placeholder="select"
                             value={data.fk_item}
@@ -424,7 +426,7 @@ const MaterialCompositionOfProduct = (props) => {
                             value={data.qty}
                             onChange={handleRawEdit}
                             onKeyDown={handleKeyDown2}
-                            className="rounded-1 border border-dark"
+                            className="rounded-1  border-0 w-100 custom-text"
                           />
                         </td>
                         <td>
@@ -435,7 +437,7 @@ const MaterialCompositionOfProduct = (props) => {
                             search={search}
                             onKeyDown={handleKeyDown2}
                             onChange={handleRawEdit}
-                            className="purchase-input-text table-drop d-flex align-items-center py-0 form-control"
+                            className="purchase-input-text table-drop d-flex align-items-center py-0 form-control  custom-dropdown-width"
                             name="fk_unit"
                             placeholder="select"
                             value={data.fk_unit}
@@ -457,7 +459,7 @@ const MaterialCompositionOfProduct = (props) => {
                       search={search}
                       onKeyDown={handleKeyDown2}
                       onChange={handleDropdownChangeRaw}
-                      className="purchase-input-text table-drop d-flex align-items-center py-0 form-control"
+                      className="purchase-input-text table-drop d-flex align-items-center py-0 form-control border-light  custom-dropdown-width"
                       name="code"
                       placeholder="select"
                       value={selectedRaw}
@@ -470,7 +472,7 @@ const MaterialCompositionOfProduct = (props) => {
                       value={rawQuantity}
                       onKeyDown={handleKeyDown2}
                       onChange={(e) => setRawQuantity(e.target.value)}
-                      className="rounded-1 border border-dark"
+                      className="rounded-1  border-0 w-100 custom-text"
                     />
                   </td>
                   <td>
@@ -481,7 +483,7 @@ const MaterialCompositionOfProduct = (props) => {
                       search={search}
                       onKeyDown={handleKeyDownRawadd}
                       onChange={handleDropdownChangeUnit}
-                      className="purchase-input-text table-drop d-flex align-items-center py-0 form-control"
+                      className="purchase-input-text table-drop d-flex align-items-center py-0 form-control  custom-dropdown-width"
                       name="code"
                       placeholder="select"
                       value={selectedUnit}
@@ -496,23 +498,22 @@ const MaterialCompositionOfProduct = (props) => {
             </table>
           </div>
           <div
-            className="col-12  px-0"
-            style={{ height: "250px", overflowY: "scroll" }}            
+            className="col-6  px-0 ps-1 pe-5"
+            style={{ height: "200px", overflowY: "scroll" }}            
           >
             <div
-              className="mx-0 TabHead text-center border-bottom border-light border-2 py-3 w-100 rounded-top"
-              style={{ top: "0", position: "sticky", zIndex: 1 }}
+              className="mx-0 TabHead text-center  border-bottom border-light border-2 py-1 w-100 text-dark  rounded-top"
+              style={{ top: "0", position: "sticky", zIndex: 1 ,backgroundColor:'#abc9ff' }}
             >
-              By product in the production
+              <b>Byproduct of the production</b>
             </div>
             <table className="materials w-100 rounded-bottom">
               <thead className="text-light">
                 <tr>
-                  <th>Item Name</th>
-                  <th>Qty</th>
-                  <th>Unit</th>
-                  <th></th>
-                  <th></th>
+                  <th width='70%' className="text-start ps-3">Item Name</th>
+                  <th  width='10%'>Qty</th>
+                  <th  width='10%'>Unit</th>
+                  <th width='10%'></th>
                 </tr>
               </thead>
               <tbody ref={formRef3}>
@@ -542,7 +543,7 @@ const MaterialCompositionOfProduct = (props) => {
                             search={search}
                             onKeyDown={handleKeyDown3}
                             onChange={handleByProductEdit}
-                            className="purchase-input-text table-drop d-flex align-items-center py-0 form-control"
+                            className="purchase-input-text table-drop d-flex align-items-center py-0 form-control  custom-dropdown-width"
                             name="fk_item"
                             placeholder="select"
                             value={data.fk_item}
@@ -556,7 +557,7 @@ const MaterialCompositionOfProduct = (props) => {
                             value={data.qty}
                             onKeyDown={handleKeyDown3}
                             onChange={handleByProductEdit}
-                            className="rounded-1 border border-dark"
+                            className="rounded-1  border-0 w-100 custom-text"
                           />
                         </td>
                         <td>
@@ -567,7 +568,7 @@ const MaterialCompositionOfProduct = (props) => {
                             search={search}
                             onKeyDown={handleKeyDown3}
                             onChange={handleByProductEdit}
-                            className="purchase-input-text table-drop d-flex align-items-center py-0 form-control"
+                            className="purchase-input-text table-drop d-flex align-items-center py-0 form-control  custom-dropdown-width"
                             name="fk_unit"
                             placeholder="select"
                             value={data.fk_unit}
@@ -589,7 +590,7 @@ const MaterialCompositionOfProduct = (props) => {
                       search={search}
                       onKeyDown={handleKeyDown3}
                       onChange={handleDropdownChangeByProduct}
-                      className="purchase-input-text table-drop d-flex align-items-center py-0 form-control"
+                      className="purchase-input-text table-drop d-flex align-items-center py-0 form-control  custom-dropdown-width"
                       name="code"
                       placeholder="select"
                       value={selectedByProduct}
@@ -602,7 +603,7 @@ const MaterialCompositionOfProduct = (props) => {
                       value={byproductQuantity}
                       onKeyDown={handleKeyDown3}
                       onChange={(e) => setByProductQuantity(e.target.value)}
-                      className="rounded-1 border border-dark"
+                      className="rounded-1  border-0 w-100 custom-text"
                     />
                   </td>
                   <td>
@@ -613,7 +614,7 @@ const MaterialCompositionOfProduct = (props) => {
                       search={search}
                       onKeyDown={handleKeyDownByproductAdd}
                       onChange={handleDropdownChangeByProductUnit}
-                      className="purchase-input-text table-drop d-flex align-items-center py-0 form-control"
+                      className="purchase-input-text table-drop d-flex align-items-center py-0 form-control  custom-dropdown-width"
                       name="code"
                       placeholder="select"
                       value={selectedByProductUnit}
@@ -629,12 +630,12 @@ const MaterialCompositionOfProduct = (props) => {
           </div>
         </div>
         <div
-          className="col-12 px-0 mt-2"
+          className="col-12 px-5 mt-2"
           style={{ height: "120px", overflowY: "scroll" }}
           
         >
           <div
-            className="mx-0 text-light ps-4 py-2 w-100 rounded-top"
+            className="mx-0 text-light  ps-4 py-1 w-100  rounded-top"
             style={{
               backgroundColor: "#51385D",
               position: "sticky",
@@ -642,15 +643,15 @@ const MaterialCompositionOfProduct = (props) => {
               zIndex: 2,
             }}
           >
-            Labour and Expenses
+           <b>Labour and Expenses</b> 
           </div>
           <table className="materialsub w-100 border border-bottom " >
             <thead className="text-light">
               <tr>
-                <th>Debit Account</th>
-                <th>Amount</th>
-                <th>Credit Account</th>
-                <th></th>
+                <th width='40%'>Debit Account</th>
+                <th width='5%'>Amount</th>
+                <th width='40%'>Credit Account</th>
+                <th width='15%'></th>
               </tr>
             </thead>
             <tbody ref={formRef4}>
@@ -681,7 +682,7 @@ const MaterialCompositionOfProduct = (props) => {
                           search={search}
                           onKeyDown={handleKeyDown4}
                           onChange={handleExpenseEdit}
-                          className="purchase-input-text table-drop d-flex align-items-center py-0 form-control"
+                          className="purchase-input-text table-drop d-flex align-items-center py-0 form-control custom-dropdown-width "
                           name="fk_debit_account"
                           placeholder="select"
                           value={data.fk_debit_account}
@@ -691,7 +692,7 @@ const MaterialCompositionOfProduct = (props) => {
                       <td>
                         <input
                           type="text"
-                          className="rounded-1 border border-dark w-75 ps-4"
+                          className="rounded-1  border-0 w-100 custom-text"
                           onChange={handleExpenseEdit}
                           onKeyDown={handleKeyDown4}
                           value={data.amount}
@@ -706,7 +707,7 @@ const MaterialCompositionOfProduct = (props) => {
                           search={search}
                           onKeyDown={handleKeyDown4}
                           onChange={handleExpenseEdit}
-                          className="purchase-input-text table-drop d-flex align-items-center py-0 form-control"
+                          className="purchase-input-text table-drop d-flex align-items-center py-0 form-control  custom-dropdown-width"
                           name="fk_credit_account"
                           placeholder="select"
                           value={data.fk_credit_account}
@@ -728,7 +729,7 @@ const MaterialCompositionOfProduct = (props) => {
                     search={search}
                     onKeyDown={handleKeyDown4}
                     onChange={handleDropdownChangeDebitAccount}
-                    className="purchase-input-text table-drop d-flex align-items-center py-0 form-control"
+                    className="purchase-input-text table-drop d-flex align-items-center py-0 form-control custom-dropdown-width"
                     name="fk_debit_account"
                     placeholder="select"
                     value={selectDebitAccount}
@@ -738,7 +739,7 @@ const MaterialCompositionOfProduct = (props) => {
                 <td>
                   <input
                     type="text"
-                    className="rounded-1 border border-dark w-75 ps-4"
+                    className="rounded-1  border-0 w-100 custom-text"
                     onChange={(e) => setExpenseAmount(e.target.value)}
                     value={expenseAmount}
                     onKeyDown={handleKeyDown4}
@@ -753,7 +754,7 @@ const MaterialCompositionOfProduct = (props) => {
                     search={search}
                     onKeyDown={handleKeyDownExpenseAdd}
                     onChange={handleDropdownChangeCreditAccount}
-                    className="purchase-input-text table-drop d-flex align-items-center py-0 form-control"
+                    className="purchase-input-text table-drop d-flex align-items-center py-0 form-control custom-dropdown-width"
                     name="fk_credit_account"
                     placeholder="select"
                     value={selectCreditAccount}
@@ -767,15 +768,17 @@ const MaterialCompositionOfProduct = (props) => {
             </tbody>
           </table>
         </div>
-        <div className="col-12 d-flex justify-content-end mt-3">
+        <div className="col-12 d-flex justify-content-end mt-2 me-5 pe-5">
           <div
-            className="btn btn-md mx-1 bg-secondary text-light col-1 col-2 py-1"
+            className="btn btn-md mx-1 text-light col-1 col-2 py-1"
+            style={{backgroundColor:'#624c6d'}}
             onClick={handleMaterialClear}
           >
             Clear
           </div>
           <div
-            className="btn btn-md ms-3 me-1 bg-secondary text-light col-1 col-2 py-1"
+            className="btn btn-md ms-3 me-1 text-dark col-1 col-2 py-1"
+            style={{backgroundColor:'#abc9ff'}}
             onClick={handleMaterialSave}
           >
             Save
