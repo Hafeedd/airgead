@@ -34,9 +34,6 @@
   min-width: 0.5rem !important;
 }
 
-/* .form-control.purchase-select.sales-customer {
-} */
-
 .form-select.purchase-input-text {
   text-transform: uppercase;
   height: 1.75rem;
@@ -632,7 +629,7 @@ td.n_clr {
 }
 
 .page_head.purchase-return {
-  background: #7fff8591 !important;
+  background: #7fff85 !important;
 }
 
 .page_head.purchase-order {

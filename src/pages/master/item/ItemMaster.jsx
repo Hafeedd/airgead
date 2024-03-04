@@ -2,8 +2,6 @@ import React, { useEffect, useState } from "react";
 import useItemServices from "../../../services/master/itemServices";
 import "./ItemMaster.css";
 import { useNavigate, useLocation } from "react-router";
-import Swal from "sweetalert2";
-import "semantic-ui-css/semantic.min.css";
 import ItemList from "./components/ItemList";
 import { ItemAddForm } from "./components/AddForm";
 
@@ -14,7 +12,7 @@ const ItemMaster = () => {
   const [listItem, setListItem] = useState();
   const [search, setSearch] = useState();
   // const [showAddItem, setShowAddItem] = useState(false)
-  const { getItemList, deleteItemList } = useItemServices();
+  const { getItemList } = useItemServices();
   const navigate = useNavigate();
 
   useEffect(() => {

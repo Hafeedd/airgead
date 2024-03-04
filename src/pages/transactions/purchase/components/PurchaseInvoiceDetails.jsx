@@ -20,7 +20,8 @@ const PurchaseInvoiceDetails = (props) => {
   } = props;
 
   const navigate = useNavigate();
-
+  
+  console.log(purchaseAdd.order_no)
   const [handleKeyDown, formRef] = useOnKey(
     purchaseInvoiceRef,
     setPurchaseInvoiceRef,
@@ -87,7 +88,7 @@ const PurchaseInvoiceDetails = (props) => {
         />
       </Form.Group>
       <Form.Group className="col-3 ps-5 mx-0 d-flex align-items-center mt-1">
-        <Form.Label className="col-3 lh-1 purchase-input-label">
+        <Form.Label className="col-4 lh-1 purchase-input-label">
           Supp. invoice No
         </Form.Label>
         <Form.Control
@@ -128,7 +129,7 @@ const PurchaseInvoiceDetails = (props) => {
         </div>
       </div>
       <Form.Group className="col-3 ps-4 mx-0 d-flex align-items-center mt-0 pt-0">
-        <Form.Label className="col-3 purchase-input-label">
+        <Form.Label className="col-3 purchase-input-label lh-1">
           Supp. invoice
         </Form.Label>
         <Form.Control

@@ -731,7 +731,7 @@ export const ItemAddForm = ({ edit, refresh, setToEdit }) => {
             </div>
             <div className="item_inputs right d-flex mx-0 px-0 col-6">
               Rent Type
-              <div className="col-6 col-7">
+              <div className="item-input col-6 col-7">
                 <SearchDropDown
                   id="rent_type"
                   addNew={true}

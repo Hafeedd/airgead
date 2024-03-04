@@ -182,13 +182,15 @@ const PurchaseTransaction = ({ returnPage, orderPage }) => {
     return items
   }
 
-  const handleSetEdit = async (state) => {
+  const handleSetEdit = async (state, orderGet) => {
+    //orderGet is true when the order is selected from order list else false
+     
     try {
       let purchaseData;
-      if (!returnPage && !orderPage)
+      if (!returnPage && !orderPage && !orderGet)
         purchaseData = await getPurchaseWithId(state.id);
       if (returnPage) purchaseData = await getPurchaseReturnWithId(state.id);
-      if (orderPage) purchaseData = await getPurchaseOrderWithId(state.id);
+      if (orderPage || orderGet) purchaseData = await getPurchaseOrderWithId(state.id);
 
       if (purchaseData?.data) {
         let { items, updated_at, ...others } = purchaseData.data;
@@ -196,6 +198,10 @@ const PurchaseTransaction = ({ returnPage, orderPage }) => {
           ...others,
           change_due: others.change_due || "0.00",
         };
+        if(orderGet){
+        tempData = {...tempData,order_no:others.id}
+          delete tempData.documents_no
+      }
         setPurchaseAdd((data) => ({ ...data, ...tempData }));
         if (items) {
           items = filterOutNullValues(items)
@@ -205,6 +211,9 @@ const PurchaseTransaction = ({ returnPage, orderPage }) => {
       }else{
         handlePurchaseAllReset()
       }
+      if (orderGet){
+        setEdit(false)
+        handleGetCode()}
     } catch (err) {
       console.log(err)
     }
@@ -409,15 +418,7 @@ const PurchaseTransaction = ({ returnPage, orderPage }) => {
 
   const handlePurchOrderSelect = async (id) => {
     if (returnPage || orderPage) return 0;
-    try {
-      const response = await getPurchaseOrderWithId(id);
-      if (response.success) {
-        setEdit({ ...response.data, order_no: response?.data?.id });
-        handleSetEdit({ ...response.data, order_no: response?.data?.id });
-      }
-    } catch (err) {
-      console.log(err);
-    }
+        handleSetEdit({id:id},true);
   };
 
   const handleTableItemReset = () => {

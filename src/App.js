@@ -1,4 +1,5 @@
 import "./App.css";
+import "semantic-ui-css/semantic.min.css";
 import { BrowserRouter, Outlet, Route, Routes } from "react-router-dom";
 import { Layout } from "./components/layout/Layout";
 import ItemMaster from "./pages/master/item/ItemMaster";

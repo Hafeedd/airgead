@@ -176,7 +176,7 @@ const SalesDetailFooter = (props) => {
                 </div>
             </div>} */}
       </div>
-      <div className="col-3 row me-0 ps-5">
+      <div className="col-3 row me-0 ">
         <Form.Group className="col-12 mx-0 d-flex align-items-center mt-1">
           <Form.Label className="col-5 purchase-input-label">
             Discount
