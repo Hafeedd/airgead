@@ -3,36 +3,44 @@ import './balanceSheet.css'
 import BalanceSheetEntry from './components/BalanceSheetEntry'
 import BalanceSheetTables from './components/BalanceSheetTables'
 import { useReportsServices } from '../../../services/reports/reports'
+import GroupBalanceTable from './components/GroupBalanceTable'
+import BalanceSheetDetailsTable from './components/BalanceSheetDetailsTable'
+import dropdown from 'semantic-ui-dropdown'
 
 
 
 const BalanceSheet = () => {
 
-    const {getBalanceSheet} = useReportsServices()
-
+    const { getBalanceSheet,getGroupBalanceSheet } = useReportsServices()
+    const [dropDown, setDropDown] = useState('normal')
     const [balanceSheetData, setBalanceSheetData] = useState([])
 
     const [params, setParams] = useState([{
-        "from_date": null,
-        "to_date": null
+        "to_date": new Date()?.toISOString()?.slice(0, 10)
     }])
 
-    useEffect (()=>{
+    useEffect(() => {
         getData()
-    },[params.from_date,params.to_date])
+    }, [params,dropDown,])
 
-    const getData = async () =>{
-        try{
+    const getData = async () => {
+        try {
             const date = {
-                from_date: params?.from_date,
-                to_date: params?.to_date
+                [dropDown==="group"?'date':'to_date']: params?.to_date?.split('-')?.reverse()?.join('-') || new Date()?.toISOString()?.slice(0, 10).split('-')?.reverse()?.join('-')
             }
-            const response = await getBalanceSheet(date)
-            if (response.success){
+            let response
+
+            if (dropDown === "normal")
+                response = await getBalanceSheet(date)
+            else if (dropDown === "group"|| dropdown === "detail")
+                response = await getGroupBalanceSheet(date)
+            // else if (dropDown === "details")
+            //     response = await getBalanceSheet(date)
+            if (response.success) {
                 setBalanceSheetData(response.data)
             }
         }
-        catch(err){
+        catch (err) {
             console.log(err)
         }
     }
@@ -41,12 +49,12 @@ const BalanceSheet = () => {
             <div className="itemList_header row mx-0">
                 <div className="page_head ps-4 d-flex justify-content-between">
                     <div>
-                        <div className="fw-600 fs-5">Balance Sheet</div>
+                        <div className="fw-600 fs-5">{`${dropDown==="group"?'Group':dropDown==="detail"?"Detail":''} Balance Sheet`}</div>
                         <div className="page_head_items mb-2 mt-2">
                             <div
                 /* onClick={()=>navigate("/stock-reports")}  */ className={`page_head_customer active`}
                             >
-                                Balance Sheet
+                               {`${dropDown==="group"?'Group':dropDown==="detail"?"Detail":''} Balance Sheet`}
                             </div>
                         </div>
                     </div>
@@ -57,8 +65,14 @@ const BalanceSheet = () => {
             </div>
             <div className="p-3">
                 <div className="p-2 bg-light rounded-1 px-3">
-                    <BalanceSheetEntry {...{params, setParams}}/>
-                    <BalanceSheetTables {...{balanceSheetData}}/>
+                    <BalanceSheetEntry {...{ params, setParams, dropDown, setDropDown }} />
+                    {dropDown === "normal" ?
+                        <BalanceSheetTables {...{ balanceSheetData }} />
+                        : dropDown === "group" ?
+                            <GroupBalanceTable groupList={balanceSheetData} />
+                            : dropDown === "detail" &&
+                            <BalanceSheetDetailsTable details={balanceSheetData} />
+                    }
                 </div>
             </div>
         </div>

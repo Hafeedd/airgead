@@ -1,41 +1,16 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { GrRefresh } from "react-icons/gr";
 import searchIcon from "../../../../assets/icons/search.png";
 import { Sticky } from 'semantic-ui-react';
 
 const GroupTrialBalTable = (props) => {
-    const {groupTrialBal} = props
+    const { groupTrialBal } = props
 
-    const listnew = groupTrialBal["ser"]
-    console.log(listnew,"arra")
-    // for(let i=0, )
-    // const newArray = listnew.map((data,i)=>{
-    //     console.log(i)
-    // })
-    // console.log(newArray)
-
-    let newArray = []
-    if (Array.isArray(listnew)) {
-        newArray = listnew.map((data) => {
-            return data // Accessing the 'id' property of each object
-        });
-        console.log(newArray);
-    } else {
-        console.log("listnew is not an array or is undefined.");
-    
-    }
-
-    let accArray = []
-    if (Array.isArray(listnew)) {
-        accArray = listnew.map((data) => {
-            return data.account // Accessing the 'id' property of each object
-        });
-        console.log(accArray,"ppppppppppppppppppppppppppppp");
-    } else {
-        console.log("listnew is not an array or is undefined.");
-    
-    }
-
+    console.log(groupTrialBal)
+    // const [dataList,setDataList] = useState([])
+    var diff_amount = 0;
+    var all_acc_debit_total = 0
+    var all_acc_credit_total = 0
     return (
         <>
             <div className='bg-black mt-3 d-flex justify-content-end rounded-top'>
@@ -58,64 +33,88 @@ const GroupTrialBalTable = (props) => {
             <div style={{ height: '34rem', overflow: 'hidden', overflowY: 'scroll' }}>
                 <table className='table table-hover'>
                     <thead>
-                        <tr className='trial-bal-table-head'>
+                        <tr style={{zIndex:"1000"}} className='trial-bal-table-head'>
                             <td>Sn</td>
                             <td>Acc Code</td>
                             <td>Acc Name</td>
-                            <td>Debit</td>
-                            <td>Credit</td>
+                            <td className='text-center p-0'>Debit</td>
+                            <td className='text-center p-0'>Credit</td>
                         </tr>
                     </thead>
                     <tbody>
-                    {
-                        newArray?.length > 0?
-                            newArray.map((data,i)=>{
-                                return(
-                                    <>
-                                        <tr>
-                                            <td style={{backgroundColor:"lightblue", position:"sticky", top:"36px"}} className='text-start' colSpan={5}>{data?.name||""}</td>
-                                            {/* <td>{data?.account[]?.name}</td> */}
-                                        </tr>
-                                        
-                                   
-                                        {   
-                                            
-                                            accArray?.length > 0?
-                                            accArray[i].map((acc,i)=>{
-                                                console.log(acc,"new")
-                                                return(
-                                                    <>
-                                                        <tr>
-                                                            <td>{i+1}</td>
-                                                            <td className='text-start'>{acc?.code}</td>
-                                                            <td className='text-start'>{acc?.name}</td>
-                                                            <td className='text-success text-start'>{acc?.closing_balance > 0 ? acc?.closing_balance.toFixed(2): ""}</td>
-                                                            <td className='text-danger text-start'>{acc?.closing_balance < 0 ? acc?.closing_balance.toFixed(2): ""}</td>
-                                                            
-                                                        </tr>
-                                                        
-                                                    </>
-                                                )
-                                            }):
-                                            <tr>
-                                                <td>no data</td>
+                        {
+                            groupTrialBal?.ser?.length > 0 ?
+                            groupTrialBal?.ser.map((data, i) => {
+                                    console.log(data)
+                                    var total_debit = 0;
+                                    var total_credit = 0;
+                                    
+                                    return (data?.account?.length>0) && (
+                                        <>
+                                            <tr style={{boxShadow:"0px 0px 10px black"}}>
+                                                <td style={{ backgroundColor: "rgb(106, 60, 78)" , position: "sticky", top: "36px" }} className='text-start text-white' colSpan={5}>{data?.name || ""}</td>
                                             </tr>
-                                        
-                                        }
-                                        <tr>
-                                            <td className={`${data?.total_closing_balance?.toString().includes("-")? "bg-danger text-white text-end": "bg-success text-white text-end" }`} colSpan={5}>
-                                                {data?.total_closing_balance?.toFixed(2)}
-                                            </td>
-                                        </tr>
-                                       
-                                    </>
-                                )
-                            }):
-                            <tr>
-                                <td colSpan={5}>No Data</td>
-                            </tr>
-                    }
-                    </tbody>
+
+
+                                            {
+                                                data.account?.length > 0 ?
+                                                    data.account.map((acc, i) => {
+                                                        total_debit = total_debit + (acc?.closing_balance > 0 ? acc?.closing_balance:0.0)
+                                                        total_credit = total_credit + (acc?.closing_balance < 0 ? acc?.closing_balance:0.0)
+                                                        all_acc_credit_total = all_acc_credit_total + (acc?.closing_balance < 0 ? acc?.closing_balance:0.0)
+                                                        all_acc_debit_total = all_acc_debit_total + (acc?.closing_balance > 0 ? acc?.closing_balance:0.0)
+                                                        return (
+                                                            <>
+                                                                <tr className='group-trial-table-td'>
+                                                                    <td>{i + 1}</td>
+                                                                    <td className='text-start'>{acc?.code}</td>
+                                                                    <td className='text-start'>{acc?.name}</td>
+                                                                    <td className='text-success text-center'>{acc?.closing_balance > 0 ? acc?.closing_balance.toFixed(2) : ""}</td>
+                                                                    <td className='text-danger text-center'>{acc?.closing_balance < 0 ? acc?.closing_balance.toFixed(2) : ""}</td>
+
+                                                                </tr>
+
+                                                            </>
+                                                        )
+                                                    }) :
+                                                    <tr>
+                                                        <td>no data</td>
+                                                    </tr>
+
+                                            }
+                                            <tr className='gp-trial-bal-gp-total'>
+                                                <td >
+
+                                                    <div className={`${data?.total_closing_balance?.toString().includes("-") ? "bg-white text-danger text-center  py-1 rounded font-weight-bold" : "bg-white text-success text-bold font-weight-bold  py-1 text-center rounded"}`}>
+                                                        <span>{data?.total_closing_balance?.toFixed(2)>0? `${Math.abs(data?.total_closing_balance?.toFixed(2))} Debit`: `${Math.abs(data?.total_closing_balance?.toFixed(2))} ,Credit`} </span>
+                                                    </div>
+                                                </td>
+                                                <td  className='p-0' colSpan={2}></td>
+                                                <td><div style={{width:"90%"}} className=' bg-white text-center rounded py-1 '>{total_debit.toFixed(2)} Debit</div></td>
+                                                <td><div style={{width:"80%"}} className=' bg-white text-center rounded py-1'>{Math.abs(total_credit.toFixed(2))} Credit</div></td>
+                                            </tr>
+                                            
+                                            <tr>
+                                                <td className='' colSpan={5}></td>
+                                            </tr>
+                                        </>
+                                    )
+                                }
+                                ) :
+                                <tr>
+                                    <td colSpan={5}>No Data</td>
+                                </tr>
+                        }
+                        <tr className='group-trial-bt-row'>
+                            <td className='text-end' colSpan={3}>
+                                <p className={`${all_acc_debit_total-Math.abs(all_acc_credit_total)?.toString().includes("-")?"bg-danger text-white w-50 text-center rounded py-2 ms-3":"bg-success w-50 text-center rounded py-2 ms-3"}`}>
+                                    Difference Amount: {all_acc_debit_total-Math.abs(all_acc_credit_total)>0?`${Math.abs(all_acc_debit_total-Math.abs(all_acc_credit_total)).toFixed(2)} Debit` : `${Math.abs(all_acc_debit_total-Math.abs(all_acc_credit_total)).toFixed(2)} Credit`}
+                                    </p>
+                            </td>
+                            <td><p className='bg-success py-2 text-white rounded'>{all_acc_debit_total.toFixed(2)} Debit</p></td>
+                            <td><p className='bg-danger py-2 text-white rounded'>{all_acc_credit_total.toFixed(2)} Credit</p></td>
+                        </tr>
+                    </tbody>    
                 </table>
             </div>
         </>

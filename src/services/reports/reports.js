@@ -187,6 +187,23 @@ export const useReportsServices = () => {
     return response?.data;
   };
 
+  const getGroupBalanceSheet = async (params) => {
+    const response = await axiosPrivate.get(
+      "/reports/group/headwise/balancesheet/report/",
+      { params: params }
+    );
+    return response?.data;
+  };
+
+
+  const getTaridProfitLoss = async (params) => {
+    const response = await axiosPrivate.get(
+      "/reports/profit/loss/report/",
+      { params: params }
+    );
+    return response?.data;
+  };
+
   return {
     getStockLedger,
     getAccLedger,
@@ -211,6 +228,8 @@ export const useReportsServices = () => {
     getProductionRegister,
     getTrialBalance,
     getGroupTrialBalance,
-    getBalanceSheet
+    getBalanceSheet,
+    getGroupBalanceSheet,
+    getTaridProfitLoss,
   };
 };

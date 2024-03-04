@@ -1,5 +1,4 @@
 import "./App.css";
-import "./App.css";
 import { BrowserRouter, Outlet, Route, Routes } from "react-router-dom";
 import { Layout } from "./components/layout/Layout";
 import ItemMaster from "./pages/master/item/ItemMaster";
@@ -45,7 +44,7 @@ import CompanyPassword from "./pages/authentication/companyPassword/CompanyPassw
 import TrialBalance from "./pages/reports/trial_balance/TrialBalance";
 import BalanceSheet from "./pages/reports/balanceSheet/BalanceSheet";
 import GroupWiseTrialBalance from "./pages/reports/groupWiseTrialBalance/GroupWiseTrialBalance";
-import GroupBalanceSheet from "./pages/reports/balanceSheetGroup/GroupBalanceSheet";
+import TraidProfitLoss from "./pages/reports/traidProfitLoss/TraidProfitLoss";
 
 function App() {
   return (
@@ -114,7 +113,7 @@ function App() {
             <Route path="/trial-balance" element={<TrialBalance/>}/>
             <Route path="/group-trial-balance" element={<GroupWiseTrialBalance/>}/>
             <Route path="/balance-sheet" element={<BalanceSheet/>}/>
-            <Route path="/group-balance-sheet" element={<GroupBalanceSheet/>}/>
+            <Route path="/traid-profit-loss" element={<TraidProfitLoss/>}/>
 
           </Route>
         </Route>
