@@ -232,7 +232,7 @@ const RawMaterials = (props) => {
                       search={search}
                       onKeyDown={handleKeyDown1}
                       onChange={handleDropdownChangeUnit}
-                      className="purchase-input-text table-drop d-flex align-items-center py-0 form-control custom-dropdown-width "
+                      className="purchase-input-text table-drop d-flex align-items-center py-0 form-control custom-dropdown-width2 "
                       name="fk_unit"
                       placeholder="Select"
                       value={data.fk_unit}
@@ -320,7 +320,7 @@ const RawMaterials = (props) => {
                     search={search}
                     onKeyDown={handleKeyDown1}
                     // onChange={handleDropdownChangeUnit}
-                    className="purchase-input-text table-drop d-flex align-items-center py-0 form-control custom-dropdown-width "
+                    className="purchase-input-text table-drop d-flex align-items-center py-0 form-control custom-dropdown-width2 "
                     name="fk_unit"
                     placeholder="Select"
                     // value={data.fk_unit}

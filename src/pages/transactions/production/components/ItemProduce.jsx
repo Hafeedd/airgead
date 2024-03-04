@@ -31,6 +31,154 @@ const ItemProduce = (props) => {
   const [ref1, setRef1] = useState();
   const [handleKeyDown1, formRef1] = useOnKey(ref1, setRef1);
 
+  const handleCompleteCalculation = (prodItem,temp_quantity)=>{
+    let filteredRawMaterialList = materialList?.filter(
+      (info) =>
+        info.fk_type === prodItem.fk_type && info.fk_item === prodItem.fk_item
+    );
+
+    prodItem = { ...prodItem, fk_unit: filteredRawMaterialList[0]?.fk_unit };
+  
+    let mappedRaw = [];
+    if (rawItems?.length > 0) mappedRaw = [...rawItems];
+    let tempMappedRaw = [];
+
+    if (mappedRaw.length>0 && mappedRaw.filter(x=>x.item_produced_name == prodItem.item_name).length>0) {
+      mappedRaw = mappedRaw.filter((item) => {
+        if (item.item_produced_name !== prodItem.item_name) return true;
+        else return false;
+      });
+    }
+
+    filteredRawMaterialList[0]?.raw_materials?.length > 0 &&
+      filteredRawMaterialList[0]?.raw_materials?.map((data) => {
+        tempMappedRaw.push({
+          initial_qty: data?.qty,
+          fk_item: data?.fk_item,
+          fk_unit: data?.fk_unit,
+          cost: data?.item_details?.cost,
+          value: null,
+          margin: data?.item_details?.margin,
+          mrp_rate: data?.item_details?.mrp_rate,
+          item_produced_name: null,
+          item_name: data?.item_details?.name,
+          godown_rate: null,
+        });
+      });
+
+    tempMappedRaw = tempMappedRaw.map((item) => ({
+      ...item,
+      item_produced_name: filteredRawMaterialList[0]?.item_details.name,
+      ratio: temp_quantity / filteredRawMaterialList[0]?.qty,
+      qty:
+        (temp_quantity / filteredRawMaterialList[0]?.qty) * item.initial_qty,
+      value: Number(
+        (temp_quantity / filteredRawMaterialList[0]?.qty) *
+          item.initial_qty *
+          item.cost
+      ).toFixed(2),
+    }));
+
+    let r_sum = tempMappedRaw.reduce((a, b) => a + +b.value || 0, 0);
+    mappedRaw = [...mappedRaw, ...tempMappedRaw];
+    setRawItems(mappedRaw);
+
+    let mappedByprod = [];
+    if (byProductItems?.length > 0) mappedByprod = [...byProductItems];
+    let tempMappedByprod= [];
+
+    if (mappedByprod.length>0 && mappedByprod.filter(x=>x.item_produced_name == prodItem.item_name).length>0) {
+      mappedByprod = mappedByprod.filter((item) => {
+        if (item.item_produced_name !== prodItem.item_name) return true;
+        else return false;
+      });
+    }
+    filteredRawMaterialList[0]?.by_products?.length > 0 &&
+      filteredRawMaterialList[0]?.by_products?.map((data) => {
+        tempMappedByprod.push({
+          qty: data?.qty,
+          fk_item: data?.fk_item,
+          fk_unit: data?.fk_unit,
+          cost: data?.item_details?.cost,
+          value: data?.qty * data?.item_details?.cost,
+          margin: data?.item_details?.margin,
+          mrp_rate: data?.item_details?.mrp_rate,
+          p_type: null,
+          s_rate: data?.item_details?.retail_rate,
+          item_name: data?.item_details?.name,
+          item_produced_name: null,
+        });
+      });
+      tempMappedByprod = tempMappedByprod.map((item) => ({
+      ...item,
+      item_produced_name: filteredRawMaterialList[0]?.item_details.name,
+    }));
+    mappedByprod = [...mappedByprod, ...tempMappedByprod];
+    setByProductItems(mappedByprod);
+
+    let mappedLabour = [];
+    if (labourDetails?.length > 0) mappedLabour = [...labourDetails];
+    let tempMappedLabour = [];
+
+    if (mappedLabour.length>0 && mappedLabour.filter(x=>x.item_produced_name == prodItem.item_name).length>0) {
+      mappedLabour = mappedLabour.filter((item) => {
+        if (item.item_produced_name !== prodItem.item_name) return true;
+        else return false;
+      });
+    }
+    filteredRawMaterialList[0]?.expense_accounts?.length > 0 &&
+      filteredRawMaterialList[0]?.expense_accounts?.map((data) => {
+        tempMappedLabour.push({
+          fk_debit_account: data?.debit_account_details?.id,
+          debit_name: data?.debit_account_details?.fk_customer?.name,
+          fk_credit_account: data?.credit_account_details?.id,
+          credit_name: data?.credit_account_details?.fk_customer?.name,
+          amount: null,
+          item_produced_name: null,
+          initial_amount: data?.amount,
+        });
+      });
+      tempMappedLabour = tempMappedLabour.map((item) => ({
+      ...item,
+      item_produced_name: filteredRawMaterialList[0]?.item_details.name,
+      amount:
+        (item.initial_amount * temp_quantity) /
+        filteredRawMaterialList[0]?.qty,
+    }));
+    let l_sum = tempMappedLabour.reduce((a, b) => a + +b.amount || 0, 0);
+    mappedLabour = [...mappedLabour, ...tempMappedLabour];
+    setLabourDetails(mappedLabour);
+
+    let total_cost = Number((r_sum + l_sum) / temp_quantity).toFixed(2);
+    let total_value = Number(r_sum + l_sum).toFixed(2);
+    prodItem = {
+      ...prodItem,
+      cost: total_cost !== "NaN" ? total_cost : 0,
+      value: total_value,
+      mrp_rate: filteredRawMaterialList[0]?.item_details.mrp_rate,
+      wholesale_rate: filteredRawMaterialList[0]?.item_details.wholesale_rate,
+      r_sum: r_sum,
+      l_sum: l_sum,
+    };
+    let m = Number(filteredRawMaterialList[0]?.item_details.margin);
+    let sr = Number(filteredRawMaterialList[0]?.item_details.retail_rate);
+    if (sr != "" || null) {
+      prodItem = {
+        ...prodItem,
+        retail_rate: sr,
+        margin: ((sr - Number(prodItem.cost)) / Number(prodItem.cost)) * 100,
+      };
+    }
+    if (m != "" || null) {
+      prodItem = {
+        ...prodItem,
+        retail_rate: Number(prodItem.cost) + Number(prodItem.cost) * (m / 100),
+        margin: m,
+      };
+    }
+    return prodItem
+  }
+
   const handleDropdownChangeItem = (e, data, prodItem, index) => {
     if(fullProdData.filter(x=>x.fk_item == data.value).length>0) return 0
     if (data.value === "") {
@@ -52,8 +200,8 @@ const ItemProduce = (props) => {
       prodItem = { ...prodItem, [data.name]: null };
     } else {
       prodItem = { ...prodItem, [data.name]: data.value };
+      prodItem = handleCompleteCalculation(prodItem, 1)
     }
-
     if (index > -1) {
       let tempProductList = [...fullProdData];
       tempProductList.splice(index, 1, { ...prodItem });
@@ -105,150 +253,152 @@ const ItemProduce = (props) => {
     } else {
       prodItem = { ...prodItem, [e.target.name]: parseFloat(e.target.value) };
     }
-    let filteredRawMaterialList = materialList?.filter(
-      (info) =>
-        info.fk_type === prodItem.fk_type && info.fk_item === prodItem.fk_item
-    );
 
-    prodItem = { ...prodItem, fk_unit: filteredRawMaterialList[0]?.fk_unit };
+    prodItem = handleCompleteCalculation(prodItem, e.target.value)
+    // let filteredRawMaterialList = materialList?.filter(
+    //   (info) =>
+    //     info.fk_type === prodItem.fk_type && info.fk_item === prodItem.fk_item
+    // );
+
+    // prodItem = { ...prodItem, fk_unit: filteredRawMaterialList[0]?.fk_unit };
   
-    let mappedRaw = [];
-    if (rawItems?.length > 0) mappedRaw = [...rawItems];
-    let tempMappedRaw = [];
+    // let mappedRaw = [];
+    // if (rawItems?.length > 0) mappedRaw = [...rawItems];
+    // let tempMappedRaw = [];
 
-    if (mappedRaw.length>0 && mappedRaw.filter(x=>x.item_produced_name == prodItem.item_name).length>0) {
-      mappedRaw = mappedRaw.filter((item) => {
-        if (item.item_produced_name !== prodItem.item_name) return true;
-        else return false;
-      });
-    }
+    // if (mappedRaw.length>0 && mappedRaw.filter(x=>x.item_produced_name == prodItem.item_name).length>0) {
+    //   mappedRaw = mappedRaw.filter((item) => {
+    //     if (item.item_produced_name !== prodItem.item_name) return true;
+    //     else return false;
+    //   });
+    // }
 
-    filteredRawMaterialList[0]?.raw_materials?.length > 0 &&
-      filteredRawMaterialList[0]?.raw_materials?.map((data) => {
-        tempMappedRaw.push({
-          initial_qty: data.qty,
-          fk_item: data.fk_item,
-          fk_unit: data.fk_unit,
-          cost: data.item_details.cost,
-          value: null,
-          margin: data.item_details.margin,
-          mrp_rate: data.item_details.mrp_rate,
-          item_produced_name: null,
-          item_name: data.item_details.name,
-          godown_rate: null,
-        });
-      });
+    // filteredRawMaterialList[0]?.raw_materials?.length > 0 &&
+    //   filteredRawMaterialList[0]?.raw_materials?.map((data) => {
+    //     tempMappedRaw.push({
+    //       initial_qty: data?.qty,
+    //       fk_item: data?.fk_item,
+    //       fk_unit: data?.fk_unit,
+    //       cost: data?.item_details?.cost,
+    //       value: null,
+    //       margin: data?.item_details?.margin,
+    //       mrp_rate: data?.item_details?.mrp_rate,
+    //       item_produced_name: null,
+    //       item_name: data?.item_details?.name,
+    //       godown_rate: null,
+    //     });
+    //   });
 
-    tempMappedRaw = tempMappedRaw.map((item) => ({
-      ...item,
-      item_produced_name: filteredRawMaterialList[0]?.item_details.name,
-      ratio: e.target.value / filteredRawMaterialList[0]?.qty,
-      qty:
-        (e.target.value / filteredRawMaterialList[0]?.qty) * item.initial_qty,
-      value: Number(
-        (e.target.value / filteredRawMaterialList[0]?.qty) *
-          item.initial_qty *
-          item.cost
-      ).toFixed(2),
-    }));
+    // tempMappedRaw = tempMappedRaw.map((item) => ({
+    //   ...item,
+    //   item_produced_name: filteredRawMaterialList[0]?.item_details.name,
+    //   ratio: e.target.value / filteredRawMaterialList[0]?.qty,
+    //   qty:
+    //     (e.target.value / filteredRawMaterialList[0]?.qty) * item.initial_qty,
+    //   value: Number(
+    //     (e.target.value / filteredRawMaterialList[0]?.qty) *
+    //       item.initial_qty *
+    //       item.cost
+    //   ).toFixed(2),
+    // }));
 
-    let r_sum = tempMappedRaw.reduce((a, b) => a + +b.value || 0, 0);
-    mappedRaw = [...mappedRaw, ...tempMappedRaw];
-    setRawItems(mappedRaw);
+    // let r_sum = tempMappedRaw.reduce((a, b) => a + +b.value || 0, 0);
+    // mappedRaw = [...mappedRaw, ...tempMappedRaw];
+    // setRawItems(mappedRaw);
 
-    let mappedByprod = [];
-    if (byProductItems?.length > 0) mappedByprod = [...byProductItems];
-    let tempMappedByprod= [];
+    // let mappedByprod = [];
+    // if (byProductItems?.length > 0) mappedByprod = [...byProductItems];
+    // let tempMappedByprod= [];
 
-    if (mappedByprod.length>0 && mappedByprod.filter(x=>x.item_produced_name == prodItem.item_name).length>0) {
-      mappedByprod = mappedByprod.filter((item) => {
-        if (item.item_produced_name !== prodItem.item_name) return true;
-        else return false;
-      });
-    }
-    filteredRawMaterialList[0]?.by_products?.length > 0 &&
-      filteredRawMaterialList[0]?.by_products?.map((data) => {
-        tempMappedByprod.push({
-          qty: data.qty,
-          fk_item: data.fk_item,
-          fk_unit: data.fk_unit,
-          cost: data.item_details.cost,
-          value: data.qty * data.item_details.cost,
-          margin: data.item_details.margin,
-          mrp_rate: data.item_details.mrp_rate,
-          p_type: null,
-          s_rate: data.item_details.retail_rate,
-          item_name: data.item_details.name,
-          item_produced_name: null,
-        });
-      });
-      tempMappedByprod = tempMappedByprod.map((item) => ({
-      ...item,
-      item_produced_name: filteredRawMaterialList[0]?.item_details.name,
-    }));
-    mappedByprod = [...mappedByprod, ...tempMappedByprod];
-    setByProductItems(mappedByprod);
+    // if (mappedByprod.length>0 && mappedByprod.filter(x=>x.item_produced_name == prodItem.item_name).length>0) {
+    //   mappedByprod = mappedByprod.filter((item) => {
+    //     if (item.item_produced_name !== prodItem.item_name) return true;
+    //     else return false;
+    //   });
+    // }
+    // filteredRawMaterialList[0]?.by_products?.length > 0 &&
+    //   filteredRawMaterialList[0]?.by_products?.map((data) => {
+    //     tempMappedByprod.push({
+    //       qty: data?.qty,
+    //       fk_item: data?.fk_item,
+    //       fk_unit: data?.fk_unit,
+    //       cost: data?.item_details?.cost,
+    //       value: data?.qty * data?.item_details?.cost,
+    //       margin: data?.item_details?.margin,
+    //       mrp_rate: data?.item_details?.mrp_rate,
+    //       p_type: null,
+    //       s_rate: data?.item_details?.retail_rate,
+    //       item_name: data?.item_details?.name,
+    //       item_produced_name: null,
+    //     });
+    //   });
+    //   tempMappedByprod = tempMappedByprod.map((item) => ({
+    //   ...item,
+    //   item_produced_name: filteredRawMaterialList[0]?.item_details.name,
+    // }));
+    // mappedByprod = [...mappedByprod, ...tempMappedByprod];
+    // setByProductItems(mappedByprod);
 
-    let mappedLabour = [];
-    if (labourDetails?.length > 0) mappedLabour = [...labourDetails];
-    let tempMappedLabour = [];
+    // let mappedLabour = [];
+    // if (labourDetails?.length > 0) mappedLabour = [...labourDetails];
+    // let tempMappedLabour = [];
 
-    if (mappedLabour.length>0 && mappedLabour.filter(x=>x.item_produced_name == prodItem.item_name).length>0) {
-      mappedLabour = mappedLabour.filter((item) => {
-        if (item.item_produced_name !== prodItem.item_name) return true;
-        else return false;
-      });
-    }
-    filteredRawMaterialList[0]?.expense_accounts?.length > 0 &&
-      filteredRawMaterialList[0]?.expense_accounts?.map((data) => {
-        tempMappedLabour.push({
-          fk_debit_account: data.debit_account_details.id,
-          debit_name: data.debit_account_details.fk_customer.name,
-          fk_credit_account: data.credit_account_details.id,
-          credit_name: data.credit_account_details.fk_customer.name,
-          amount: null,
-          item_produced_name: null,
-          initial_amount: data.amount,
-        });
-      });
-      tempMappedLabour = tempMappedLabour.map((item) => ({
-      ...item,
-      item_produced_name: filteredRawMaterialList[0]?.item_details.name,
-      amount:
-        (item.initial_amount * e.target.value) /
-        filteredRawMaterialList[0]?.qty,
-    }));
-    let l_sum = tempMappedLabour.reduce((a, b) => a + +b.amount || 0, 0);
-    mappedLabour = [...mappedLabour, ...tempMappedLabour];
-    setLabourDetails(mappedLabour);
+    // if (mappedLabour.length>0 && mappedLabour.filter(x=>x.item_produced_name == prodItem.item_name).length>0) {
+    //   mappedLabour = mappedLabour.filter((item) => {
+    //     if (item.item_produced_name !== prodItem.item_name) return true;
+    //     else return false;
+    //   });
+    // }
+    // filteredRawMaterialList[0]?.expense_accounts?.length > 0 &&
+    //   filteredRawMaterialList[0]?.expense_accounts?.map((data) => {
+    //     tempMappedLabour.push({
+    //       fk_debit_account: data?.debit_account_details?.id,
+    //       debit_name: data?.debit_account_details?.fk_customer?.name,
+    //       fk_credit_account: data?.credit_account_details?.id,
+    //       credit_name: data?.credit_account_details?.fk_customer?.name,
+    //       amount: null,
+    //       item_produced_name: null,
+    //       initial_amount: data?.amount,
+    //     });
+    //   });
+    //   tempMappedLabour = tempMappedLabour.map((item) => ({
+    //   ...item,
+    //   item_produced_name: filteredRawMaterialList[0]?.item_details.name,
+    //   amount:
+    //     (item.initial_amount * e.target.value) /
+    //     filteredRawMaterialList[0]?.qty,
+    // }));
+    // let l_sum = tempMappedLabour.reduce((a, b) => a + +b.amount || 0, 0);
+    // mappedLabour = [...mappedLabour, ...tempMappedLabour];
+    // setLabourDetails(mappedLabour);
 
-    let total_cost = Number((r_sum + l_sum) / e.target.value).toFixed(2);
-    let total_value = Number(r_sum + l_sum).toFixed(2);
-    prodItem = {
-      ...prodItem,
-      cost: total_cost !== "NaN" ? total_cost : 0,
-      value: total_value,
-      mrp_rate: filteredRawMaterialList[0]?.item_details.mrp_rate,
-      wholesale_rate: filteredRawMaterialList[0]?.item_details.wholesale_rate,
-      r_sum: r_sum,
-      l_sum: l_sum,
-    };
-    let m = Number(filteredRawMaterialList[0]?.item_details.margin);
-    let sr = Number(filteredRawMaterialList[0]?.item_details.retail_rate);
-    if (sr != "" || null) {
-      prodItem = {
-        ...prodItem,
-        retail_rate: sr,
-        margin: ((sr - Number(prodItem.cost)) / Number(prodItem.cost)) * 100,
-      };
-    }
-    if (m != "" || null) {
-      prodItem = {
-        ...prodItem,
-        retail_rate: Number(prodItem.cost) + Number(prodItem.cost) * (m / 100),
-        margin: m,
-      };
-    }
+    // let total_cost = Number((r_sum + l_sum) / e.target.value).toFixed(2);
+    // let total_value = Number(r_sum + l_sum).toFixed(2);
+    // prodItem = {
+    //   ...prodItem,
+    //   cost: total_cost !== "NaN" ? total_cost : 0,
+    //   value: total_value,
+    //   mrp_rate: filteredRawMaterialList[0]?.item_details.mrp_rate,
+    //   wholesale_rate: filteredRawMaterialList[0]?.item_details.wholesale_rate,
+    //   r_sum: r_sum,
+    //   l_sum: l_sum,
+    // };
+    // let m = Number(filteredRawMaterialList[0]?.item_details.margin);
+    // let sr = Number(filteredRawMaterialList[0]?.item_details.retail_rate);
+    // if (sr != "" || null) {
+    //   prodItem = {
+    //     ...prodItem,
+    //     retail_rate: sr,
+    //     margin: ((sr - Number(prodItem.cost)) / Number(prodItem.cost)) * 100,
+    //   };
+    // }
+    // if (m != "" || null) {
+    //   prodItem = {
+    //     ...prodItem,
+    //     retail_rate: Number(prodItem.cost) + Number(prodItem.cost) * (m / 100),
+    //     margin: m,
+    //   };
+    // }
     // }
     if (index > -1) {
       let tempProductList = [...fullProdData];
@@ -364,7 +514,7 @@ const ItemProduce = (props) => {
                       onChange={(e, val) =>
                         handleDropdownChangeItem(e, val, data, key)
                       }
-                      className="purchase-input-text table-drop py-0 form-control custom-dropdown-width"
+                      className="purchase-input-text table-drop py-0 form-control custom-dropdown-width2"
                       name="fk_item"                    
                       placeholder="Select"
                       value={data.fk_item || ""}                      
@@ -380,7 +530,7 @@ const ItemProduce = (props) => {
                       onChange={(e, val) =>
                         handleDropdownChangeType(e, val, data, key)
                       }
-                      className="purchase-input-text table-drop d-flex align-items-center py-0 form-control custom-dropdown-width"
+                      className="purchase-input-text table-drop d-flex align-items-center py-0 form-control custom-dropdown-width2"
                       name="fk_type"
                       placeholder="Select"
                       value={data.fk_type || ""}
@@ -405,7 +555,7 @@ const ItemProduce = (props) => {
                       search={search}
                       onKeyDown={handleKeyDown1}
                       onChange={handleDropdownChangeUnit}
-                      className="purchase-input-text table-drop d-flex align-items-center py-0 form-control custom-dropdown-width "
+                      className="purchase-input-text table-drop d-flex align-items-center py-0 form-control custom-dropdown-width2 "
                       name="fk_unit"
                       placeholder="Select"
                       value={data.fk_unit || ""}
@@ -528,7 +678,7 @@ const ItemProduce = (props) => {
                 onChange={(e, val) =>
                   handleDropdownChangeItem(e, val, produceData)
                 }
-                className="purchase-input-text table-drop d-flex align-items-center py-0 form-control custom-dropdown-width  "
+                className="purchase-input-text table-drop d-flex align-items-center py-0 form-control custom-dropdown-width2  "
                 name="fk_item"
                 placeholder="Select"
                 value={produceData.fk_item || ""}
@@ -544,7 +694,7 @@ const ItemProduce = (props) => {
                 onChange={(e, val) =>
                   handleDropdownChangeType(e, val, produceData)
                 }
-                className="purchase-input-text table-drop d-flex align-items-center py-0 form-control custom-dropdown-width"
+                className="purchase-input-text table-drop d-flex align-items-center py-0 form-control custom-dropdown-width2"
                 name="fk_type"
                 placeholder="Select"
                 value={produceData.fk_type || ""}
@@ -571,7 +721,7 @@ const ItemProduce = (props) => {
                 onChange={(e, val) =>
                   handleDropdownChangeType(e, val, produceData)
                 }
-                className="purchase-input-text table-drop d-flex align-items-center py-0 form-control custom-dropdown-width"
+                className="purchase-input-text table-drop d-flex align-items-center py-0 form-control custom-dropdown-width2"
                 name="fk_unit"
                 placeholder="Select"
                 value={produceData.fk_unit || ""}
