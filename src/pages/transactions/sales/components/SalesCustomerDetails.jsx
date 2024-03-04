@@ -140,7 +140,7 @@ const SalesCustomerDetails = (props) => {
               search={search}
               onKeyDown={handleKeyDown}
               onChange={handleChange}
-              className="purchase-select d-flex align-items-center py-0 form-control"
+              className="purchase-select sales-customer d-flex align-items-center py-0 form-control"
               name="fk_customer"
               placeholder="select"
               value={salesAdd?.fk_customer || ""}

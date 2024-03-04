@@ -22,6 +22,7 @@
   border: 1px solid #BEBEBE;
   font-size: 0.875rem;
 }
+
 .form-control.purchase-select {
   text-transform: uppercase;
   height: 1.75rem;
@@ -30,7 +31,12 @@
   border-radius: 0.3125rem;
   border: 1px solid #BEBEBE;
   font-size: 0.875rem;
+  min-width: 0.5rem !important;
 }
+
+/* .form-control.purchase-select.sales-customer {
+} */
+
 .form-select.purchase-input-text {
   text-transform: uppercase;
   height: 1.75rem;
