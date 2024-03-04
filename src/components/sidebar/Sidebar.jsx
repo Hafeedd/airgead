@@ -406,6 +406,14 @@ const Sidebar = () => {
                 Balance Sheet
               </div>
             </span>
+            <span className="SidebarSpan d-flex ms-5 ps-3">
+              <div
+                className="SidebarItemText"
+                onClick={() => navigate("/traid-profit-loss")}
+              >
+                Traid Profit And Loss
+              </div>
+            </span>
           </div>
         </div>
       </div>

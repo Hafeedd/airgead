@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react'
+import './groupWiseTrialBal.css'
 import GroupTrialBalEntry from './components/GroupTrialBalEntry'
 import GroupTrialBalTable from './components/GroupTrialBalTable'
 import { useReportsServices } from '../../../services/reports/reports'
@@ -25,12 +26,12 @@ const GroupWiseTrialBalance = () => {
         <div className="itemList_header row mx-0">
             <div className="page_head ps-4 d-flex justify-content-between">
                 <div>
-                    <div className="fw-600 fs-5">Group Wise Balance Sheet</div>
+                    <div className="fw-600 fs-5">Group Wise Trial Balance</div>
                     <div className="page_head_items mb-2 mt-2">
                         <div
         /* onClick={()=>navigate("/stock-reports")}  */ className={`page_head_customer active`}
                         >
-                            Group Wise Balance Sheet
+                            Group Wise Trial Balance
                         </div>
                     </div>
                 </div>

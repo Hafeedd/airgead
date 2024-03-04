@@ -29,3 +29,18 @@
     color: white;
     text-align: left;
 }
+
+.gp-bal-table-btm {
+    background-color: rgb(134, 98, 170);
+}
+
+.bal-sht-table-group-total td{
+    background-color: rgb(186, 206, 223);
+}
+.bal-sht-table-btm td{
+    background-color: rgb(77, 54, 98);
+    color: white;
+    position: sticky;
+    bottom: 0px;
+}
+
