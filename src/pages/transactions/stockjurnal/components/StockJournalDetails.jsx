@@ -174,13 +174,7 @@ export const StockJournalDetails = (props) => {
             onChange={handleChange}
             required
             name="date"
-            value={
-              stockJAdd.date
-                ? new Date(stockJAdd.date).toISOString().slice(0, 10)
-                : !edit
-                ? new Date().toISOString().slice(0, 10)
-                : ""
-            }
+            value={stockJAdd.date?.slice(0,10)}
             className="purchase-input-text me-2"
             placeholder="Document number"
             type="date"

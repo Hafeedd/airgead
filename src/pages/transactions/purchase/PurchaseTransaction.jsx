@@ -89,7 +89,7 @@ const PurchaseTransaction = ({ returnPage, orderPage }) => {
 
   useEffect(() => {
     getData();
-    handlePurchaseAllReset();
+    // handlePurchaseAllReset();
     if (!returnPage && !orderPage) {
       handleReloadData();
     } else if (returnPage || orderPage) {

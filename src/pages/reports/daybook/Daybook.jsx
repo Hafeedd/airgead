@@ -8,8 +8,8 @@ export const Daybook = () => {
   const [dayBookList, setDayBookList] = useState([])
   const [loading, setLoading] = useState(false)
   const [params, setParams] = useState({
-    from_date:null,
-    to_date:null,
+    from_date:new Date().toISOString().slice(0,10),
+    to_date:new Date().toISOString().slice(0,10),
   })
 
   const {getDayBook} = useReportsServices()
