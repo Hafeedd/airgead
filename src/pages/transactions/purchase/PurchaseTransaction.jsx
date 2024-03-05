@@ -444,8 +444,8 @@ const PurchaseTransaction = ({ returnPage, orderPage }) => {
   };
 
   const handleChange = (e, data) => {
-    let name = e.target.name
-    let value = e.target.value
+    let name = e.target.name;
+    let value = e.target.value;
     if (data && data.name == "fk_bank") {
       let bank_data = data.options.filter((x) => x.value === data.value)[0];
       setPurchaseAdd((data) => ({
@@ -472,29 +472,29 @@ const PurchaseTransaction = ({ returnPage, orderPage }) => {
       }));
     } else if (name == "discount") {
       let discPrice,
-        value = value !== "" ? +value : null;
+        total_value = value !== "" ? +value : null;
 
       let totalAmount =
         (+purchaseAdd.paid_cash || 0) +
         (+purchaseAdd?.bank_amount || 0) +
         (+purchaseAdd?.change_due || 0);
-      discPrice = totalAmount + +purchaseAdd.discount - value;
+      discPrice = totalAmount + +purchaseAdd.discount - total_value;
       setPurchaseAdd((data) => ({
         ...data,
-        [name]: value,
+        [name]: total_value,
         total_amount: discPrice?.toFixed(0),
         paid_cash: discPrice?.toFixed(0),
         change_due: "0.00",
         bank_amount: 0,
       }));
     } else if (name == "bank_amount") {
-      let value = value == "" ? null : +value;
+      let total_value = value == "" ? null : +value;
       let totalAmount = purchaseAdd.total_amount;
       setPurchaseAdd((data) => ({
         ...data,
-        paid_cash: +totalAmount - value,
+        paid_cash: +totalAmount - total_value,
         change_due: "0.00",
-        bank_amount: value,
+        bank_amount: total_value,
       }));
     } else if (name == "paid_cash") {
       if (
@@ -512,24 +512,24 @@ const PurchaseTransaction = ({ returnPage, orderPage }) => {
           timer: 1560,
         });
       } else {
-        let value = value == "" ? null : +value;
+        let total_value = value == "" ? null : +value;
         setPurchaseAdd((data) => ({
           ...data,
           change_due:
             +purchaseAdd.change_due +
               +purchaseAdd.total_amount +
               +purchaseAdd.paid_cash -
-              value -
+              total_value -
               +purchaseAdd.total_amount || "0.00",
-          paid_cash: value,
+          paid_cash: total_value,
         }));
       }
-    }
-    else if (value == "")
+    } else if (value == "")
       setPurchaseAdd((data) => ({ ...data, [name]: null }));
-    else{
-      if(name==="date") value = new Date(value).toISOString()
-      setPurchaseAdd((data) => ({ ...data, [name]: value }));}
+    else {
+      if (name === "date") value = new Date(value).toISOString();
+      setPurchaseAdd((data) => ({ ...data, [name]: value }));
+    }
   };
 
   const handleCloseItemBatch = () => {
@@ -575,11 +575,7 @@ const PurchaseTransaction = ({ returnPage, orderPage }) => {
         });
         return 0;
       }
-      if (
-        orderPage &&
-        ((!purchaseAdd.fk_supplier && purchaseAdd.paid_cash > 0) ||
-          (purchaseAdd.fk_supplier && !purchaseAdd.paid_cash))
-      ) {
+      if (orderPage && !purchaseAdd.fk_supplier && purchaseAdd.paid_cash > 0) {
         Swal.fire({
           title: "Please Select Supplier",
           icon: "warning",

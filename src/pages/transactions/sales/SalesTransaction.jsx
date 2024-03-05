@@ -497,16 +497,16 @@ const SalesTransaction = ({ returnPage, orderPage }) => {
       }));
     } else if (name == "discount") {
       let discPrice,
-        value = value !== "" ? +value : null;
+        total_value = value !== "" ? +value : null;
 
       let totalAmount =
         (+salesAdd.paid_cash || 0) +
         (+salesAdd?.bank_amount || 0) +
         (+salesAdd?.change_due || 0);
-      discPrice = totalAmount + +salesAdd.discount - value;
+      discPrice = totalAmount + +salesAdd.discount - total_value;
       setSalesAdd((data) => ({
         ...data,
-        [name]: value,
+        [name]: total_value,
         total_amount: discPrice?.toFixed(0),
         paid_cash: discPrice?.toFixed(0),
         change_due: "0.00",
@@ -525,31 +525,31 @@ const SalesTransaction = ({ returnPage, orderPage }) => {
           timer: 1560,
         });
       } else {
-        let value = value == "" ? null : value;
+        let total_value = value == "" ? null : value;
         setSalesAdd((data) => ({
           ...data,
           change_due:
             Number(salesAdd.change_due) +
               Number(salesAdd.total_amount) +
               Number(salesAdd.paid_cash) -
-              value -
+              total_value -
               salesAdd.total_amount || "0.00",
-          paid_cash: value,
-          payment_type: value === 0 || !value ? "CREDIT" : "CASH",
+          paid_cash: total_value,
+          payment_type: total_value === 0 || !total_value ? "CREDIT" : "CASH",
         }));
       }
     } else if (name == "bank_amount") {
-      let value = value == "" ? null : +value;
+      let total_value = value == "" ? null : +value;
       let totalAmount = salesAdd.total_amount;
       // (+salesAdd.change_due || 0) +
       // (+salesAdd.paid_cash || 0) +
       // (+salesAdd.bank_amount || 0);
       setSalesAdd((data) => ({
         ...data,
-        paid_cash: +totalAmount - value,
+        paid_cash: +totalAmount - total_value,
         change_due:
           /* (salesAdd.total_amount - (value + +totalAmount - value)) || */ "0.00",
-        bank_amount: value,
+        bank_amount: total_value,
       }));
     } else if (value === "")
       setSalesAdd((data) => ({ ...data, [name]: null }));
