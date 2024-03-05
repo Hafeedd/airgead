@@ -118,14 +118,14 @@ export const StockTable = (props) => {
             <td><div style={{height:'2.9rem'}} width="110" className="text-start d-flex align-items-center">{data?.item_name||"..."}</div></td>
             <td><div className="prple_td margin-r">{data?.opening_stock||'0'}</div></td>
             <td><div className="grn_td">{data?.total_purchased_quantity||'0'}</div></td>
-            <td><div className="grn_td">{data?.total_purchase_quantity||'0'}</div></td>
+            <td><div className="grn_td">{data?.total_sales_return_quantity||'0'}</div></td>
             <td><div className="grn_td margin-r">{data?.total_purchase_quantity||'0'}</div></td>
-            <td><div className="brn_td">{data?.total_purchase_quantity||'0'}</div></td>
+            <td><div className="brn_td">{data?.total_purchase_return_quantity||'0'}</div></td>
             <td><div className="brn_td">{data?.total_purchase_quantity||'0'}</div></td>
             <td><div className="brn_td">{data?.total_sold_quantity||'0'}</div></td>
             <td><div className="brn_td margin-r">{data?.total_purchase_quantity||'0'}</div></td>
             <td><div className="grey_td margin-r">{data?.total_stock_journal_quantity||'0'}</div></td>
-            <td><div className="prple_td" width="70">{closingStock||'0'}</div></td>
+            <td><div className="prple_td" width="70">{data?.closing_stock||'0'}</div></td>
         </tr>)})}
             <AdjustTableHeight/>
         </tbody>
