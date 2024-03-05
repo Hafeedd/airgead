@@ -481,6 +481,8 @@ const SalesTransaction = ({ returnPage, orderPage }) => {
   };
 
   const handleChange = (e, data) => {
+    let name = e.target.name
+    let value = e.target.value
     if (data && data.name == "fk_bank") {
       let bank_data = data.options.filter((x) => x.value === data.value)[0];
       setSalesAdd((data) => ({
@@ -491,29 +493,29 @@ const SalesTransaction = ({ returnPage, orderPage }) => {
     if (e.target.type === "checkbox") {
       setSalesAdd((data) => ({
         ...data,
-        [e.target.name]: !salesAdd[e.target.name],
+        [name]: !salesAdd[name],
       }));
-    } else if (e.target.name == "discount") {
+    } else if (name == "discount") {
       let discPrice,
-        value = e.target.value !== "" ? +e.target.value : null;
+        total_value = value !== "" ? +value : null;
 
       let totalAmount =
         (+salesAdd.paid_cash || 0) +
         (+salesAdd?.bank_amount || 0) +
         (+salesAdd?.change_due || 0);
-      discPrice = totalAmount + +salesAdd.discount - value;
+      discPrice = totalAmount + +salesAdd.discount - total_value;
       setSalesAdd((data) => ({
         ...data,
-        [e.target.name]: value,
+        [name]: total_value,
         total_amount: discPrice?.toFixed(0),
         paid_cash: discPrice?.toFixed(0),
         change_due: "0.00",
         bank_amount: 0,
         payment_type: data.paid_cash > 0 ? "CASH" : "CREDIT",
       }));
-    } else if (e.target.name == "paid_cash") {
+    } else if (name == "paid_cash") {
       if (
-        +e.target.value >
+        +value >
         +salesAdd.paid_cash + +salesAdd.bank_amount + +salesAdd.change_due
       ) {
         Swal.fire({
@@ -523,35 +525,37 @@ const SalesTransaction = ({ returnPage, orderPage }) => {
           timer: 1560,
         });
       } else {
-        let value = e.target.value == "" ? null : e.target.value;
+        let total_value = value == "" ? null : value;
         setSalesAdd((data) => ({
           ...data,
           change_due:
             Number(salesAdd.change_due) +
               Number(salesAdd.total_amount) +
               Number(salesAdd.paid_cash) -
-              value -
+              total_value -
               salesAdd.total_amount || "0.00",
-          paid_cash: value,
-          payment_type: value === 0 || !value ? "CREDIT" : "CASH",
+          paid_cash: total_value,
+          payment_type: total_value === 0 || !total_value ? "CREDIT" : "CASH",
         }));
       }
-    } else if (e.target.name == "bank_amount") {
-      let value = e.target.value == "" ? null : +e.target.value;
+    } else if (name == "bank_amount") {
+      let total_value = value == "" ? null : +value;
       let totalAmount = salesAdd.total_amount;
       // (+salesAdd.change_due || 0) +
       // (+salesAdd.paid_cash || 0) +
       // (+salesAdd.bank_amount || 0);
       setSalesAdd((data) => ({
         ...data,
-        paid_cash: +totalAmount - value,
+        paid_cash: +totalAmount - total_value,
         change_due:
           /* (salesAdd.total_amount - (value + +totalAmount - value)) || */ "0.00",
-        bank_amount: value,
+        bank_amount: total_value,
       }));
-    } else if (e.target.value === "")
-      setSalesAdd((data) => ({ ...data, [e.target.name]: null }));
-    else setSalesAdd((data) => ({ ...data, [e.target.name]: e.target.value }));
+    } else if (value === "")
+      setSalesAdd((data) => ({ ...data, [name]: null }));
+    else{
+      if(name === "date") value = new Date(value).toISOString()
+      setSalesAdd((data) => ({ ...data, [name]: value }));}
   };
 
   const getOfInvoiceData = async () => {
