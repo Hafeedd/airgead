@@ -20,7 +20,7 @@ export const StockJournal = () => {
     code: null,
     narration: null,
     salesman: null,
-    date: new Date().toISOString().slice(0, 10),
+    date: new Date().toISOString(),
     total_items: null,
     total_value: null,
     total_qty: null,

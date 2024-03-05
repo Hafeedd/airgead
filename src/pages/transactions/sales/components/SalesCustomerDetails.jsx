@@ -97,7 +97,6 @@ const SalesCustomerDetails = (props) => {
       if (customer_data?.rate_types) {
         rateType = customer_data?.rate_types;
       } else if (edit?.rate_types) rateType = edit?.rate_types;
-
       setSalesAdd((data) => ({
         ...data,
         ["customer_name"]: customer_data?.description,

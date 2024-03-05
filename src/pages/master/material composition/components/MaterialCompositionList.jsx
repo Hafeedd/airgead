@@ -28,7 +28,6 @@ const MaterialCompositionList = (props) => {
   }
   useEffect(() => {
     if (materialList?.length > 0) setSearchedArrayList(materialList);
-    allMaterialComposition()
   }, [materialList]);
 
   const handleSearch = async (e) => {
@@ -36,7 +35,7 @@ const MaterialCompositionList = (props) => {
       let tempData,
         tempList = materialList;
       if (materialList) {
-        let value = e.target.value.toLocaleLowerCase();
+        let value = e.target.value.toLowerCase();
         if (value !== "") {
           if (materialList.length > 0) {
             tempData = tempList?.filter((x) => {
@@ -59,12 +58,12 @@ const MaterialCompositionList = (props) => {
     } catch {}
   };
   return (
-    <div className="d-flex justify-content-center" style={{ height: "500px" }}>
-      <div style={{ width: "950px" }} className="mt-3">
+    <div className="d-flex justify-content-center">
+      <div style={{ width: "800px" ,height: "440px", overflowY: "scroll"  }} className="mt-3">
         <div className="mx-0 TabHead py-2  text-center rounded-top d-flex justify-content-end ">
-          <div className="col-3 p-1 stock-ledger-search d-flex align-items-center  me-1">
-            <div className="col-1 me-2">
-              <GrRefresh className="bg-light m-1 p-1 rounded-1" size={20} />
+          <div className="col-3 p-1 stock-ledger-search d-flex align-items-center me-3">
+            <div className="col-1 me-3">
+              <GrRefresh className="bg-dark m-1 p-1 rounded-1" size={20} />
             </div>
             <div className="item_seach_bar_cont rounded-2 col-11 col-10">
               <img src={searchIcon} className="search_img me-3 ms-2 py-2" />

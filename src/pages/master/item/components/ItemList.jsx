@@ -88,12 +88,12 @@ const ItemList = (props) => {
             />
           </div>
         </div>
-        <div className="col-2 d-flex">
+        <div className="col-1 col-2 d-flex">
           <div
-            // onClick={getData}
+            onClick={getData}
             className="btn fs-6 btn-sm btn-dark filter-btn"
           >
-            Filter Here
+            Reload
           </div>
         </div>
       </div>

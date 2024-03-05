@@ -61,7 +61,7 @@ export const DaybookEntry = (props) => {
             <Form.Control
               name="from_date"
               onChange={handleChange}
-              value={params.from_date || ""}
+              value={params.from_date?.slice(0,10)}
               className="purchase-input-text me-2 text-start"
               type="date"
             />
@@ -73,7 +73,7 @@ export const DaybookEntry = (props) => {
             </Form.Label>
             <Form.Control
               name="to_date"
-              value={params.to_date || new Date()?.toISOString()?.slice(0, 10)}
+              value={params.to_date?.slice(0,10)}
               onChange={handleChange}
               className="purchase-input-text me-2 text-start"
               type="date"

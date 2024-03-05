@@ -1,15 +1,18 @@
 import React, { useEffect, useState } from "react";
 import { Form } from "react-bootstrap";
 import useOnKey from "../../../../hooks/onKeyFunct/onKeyFunct";
+import { Dropdown } from "semantic-ui-react";
 
 const SalesInvoiceDetails = (props) => {
   const {
+    handlePurchOrderSelect,
     orderPage,
     returnPage,
     tableItemRef,
     salesAdd,
-    setSalesAdd,
     billType,
+    setSalesAdd,
+    orderDocList,
     codeWithBillTypeList,
     handleChange,
     edit,
@@ -20,7 +23,7 @@ const SalesInvoiceDetails = (props) => {
   const [handleKeyDown, formRef] = useOnKey(ref, setRef, tableItemRef);
 
   useEffect(() => {
-    if (codeWithBillTypeList?.length > 0 && (!returnPage && !orderPage))
+    if (codeWithBillTypeList?.length > 0 && !returnPage && !orderPage)
       handleBillTypeSelection();
   }, [salesAdd?.fk_bill_type, codeWithBillTypeList]);
 
@@ -92,20 +95,34 @@ const SalesInvoiceDetails = (props) => {
       <span className="col-2" />
       {/* Row 2 -------------------------------------------------------------------------------------------------------- */}
       <Form.Group className="col-5 mx-0 d-flex align-items-center mt-1">
-            <Form.Label className="col-3 purchase-input-label">
-              {(!returnPage&&!orderPage)?"Order No":"Date"}
-            </Form.Label>
-            <Form.Control
-              onChange={handleChange}
-              onKeyDown={handleKeyDown}
-              name={(!returnPage&&!orderPage)?"order_no":"date"}
-              value={(!returnPage&&!orderPage)?salesAdd?.order_no||"":salesAdd?.date||""}
-              className="purchase-input-text"
-              type={(!returnPage&&!orderPage)?"text":"date"}
-            />
-         
+        <Form.Label className="col-3 purchase-input-label">
+          {!returnPage && !orderPage ? "Order No" : "Date"}
+        </Form.Label>
+        {returnPage || orderPage ? (
+          <Form.Control
+            onChange={handleChange}
+            onKeyDown={handleKeyDown}
+            name="date"
+            value={salesAdd?.date || ""}
+            className="purchase-input-text"
+            type={"date"}
+          />
+        ) : (
+          <Dropdown
+            clearable
+            selection
+            search={true}
+            onKeyDown={handleKeyDown}
+            onChange={handlePurchOrderSelect}
+            className="purchase-select d-flex align-items-center py-0 form-control"
+            name="order_no"
+            value={salesAdd?.order_no || ""}
+            placeholder="Select"
+            options={orderDocList}
+          />
+        )}
       </Form.Group>
-      <Form.Group className="col-5 mx-0 d-flex align-items-center mt-1">        
+      <Form.Group className="col-5 mx-0 d-flex align-items-center mt-1">
         <Form.Label className="col-3 purchase-input-label">
           Rate Type
         </Form.Label>
@@ -141,22 +158,22 @@ const SalesInvoiceDetails = (props) => {
       </div>
       {/* Row 3 -------------------------------------------------------------------------------------------------------- */}
       <Form.Group className="col-5 mx-0 d-flex align-items-center mt-1">
-      {!returnPage && !orderPage &&
+        {!returnPage && !orderPage && (
           <>
-        <Form.Label className="col-3 purchase-input-label">Date</Form.Label>
-        <Form.Control
-          onChange={handleChange}
-          onKeyDown={(e) => {
-            e.preventDefault();
-            handleKeyDown(e);
-          }}
-          className="purchase-input-text"
-          name="date"
-          type="date"
-          value={salesAdd?.date?.slice(0, 10)}
-        />
-         </>
-        }
+            <Form.Label className="col-3 purchase-input-label">Date</Form.Label>
+            <Form.Control
+              onChange={handleChange}
+              onKeyDown={(e) => {
+                e.preventDefault();
+                handleKeyDown(e);
+              }}
+              className="purchase-input-text"
+              name="date"
+              type="date"
+              value={salesAdd?.date?.slice(0, 10)}
+            />
+          </>
+        )}
       </Form.Group>
       <Form.Group className="col-5 mx-0 d-flex align-items-center mt-1">
         <Form.Label className="col-3 purchase-input-label">Salesman</Form.Label>
@@ -185,7 +202,7 @@ const SalesInvoiceDetails = (props) => {
           Reverse Charge
         </label>
       </div>
-      <span className="col-12 mt-3" />
+      {/* <span className="col-12 mt-3" /> */}
     </div>
   );
 };

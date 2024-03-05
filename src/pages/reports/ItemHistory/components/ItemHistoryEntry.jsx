@@ -11,11 +11,21 @@ export const ItemHistoryEntry = (props) => {
   const handleChange = (e,data) => {
     if (data && data?.name == "item") {
         let item_data = data.options.filter((x) => x.value === data.value)[0];
-        setItemId(item_data.value)
+        setItemId(item_data?.value)
     }
     if (e.target.value == "") {
       setParams({ ...params, [e.target.name]: null });
     } else setParams({ ...params, [e.target.name]: e.target.value });
+  };
+
+  const search = (options, searchValue) => {
+    searchValue = searchValue.toString().toUpperCase();
+    return options.filter((option) => {
+      return (
+        option?.text.toString().includes(searchValue) ||
+        option.description?.toString()?.includes(searchValue)
+      );
+    });
   };
 
   return (
@@ -92,7 +102,7 @@ export const ItemHistoryEntry = (props) => {
             clearable
             selection
             required
-            // search={search}
+            search={search}
             // onKeyDown={handleKeyDown}
             onChange={handleChange}
             className="purchase-input-text table-drop d-flex align-items-center py-0 form-control"

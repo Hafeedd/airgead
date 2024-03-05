@@ -15,8 +15,8 @@ import Swal from "sweetalert2";
 import { Modal } from "react-bootstrap";
 import useProductionTransactionServices from "../../../services/transactions/productionTransaction";
 import { StockJournalEdit } from "../stockjurnal/components/StockJournalEdit";
-const Initial_data =
-  {qty: null,
+const Initial_data = {
+  qty: null,
   fk_item: null,
   fk_type: null,
   fk_unit: null,
@@ -29,7 +29,8 @@ const Initial_data =
   super_wholesale_rate: null,
   quotation_rate: null,
   godown: null,
-  batch_no: null,}
+  batch_no: null,
+};
 
 const raw_data = {
   qty: null,
@@ -65,8 +66,6 @@ const labour_data = {
   item_produced_name: null,
 };
 const ProductionTransaction = () => {
-
-  const location = useLocation();
   const [materialList, setMaterialList] = useState();
   const [items, setItems] = useState();
   const [units, setUnits] = useState();
@@ -87,119 +86,137 @@ const ProductionTransaction = () => {
   const [show, setShow] = useState(false);
   const [listProduction, setListProduction] = useState([]);
   const [selectedStaffAccount, setSelectedStaffAccount] = useState("");
-  const [edit,setEdit]=useState()
+  const [edit, setEdit] = useState();
   const { getMaterialComposition } = useProductionServices();
   const { getStaff } = useStaffServices();
   const { getItemList, getProperty, getCode } = useItemServices();
   const { getAccountList } = useAccountServices();
-  const { postProductionData, getProductionDaybookPart ,getProductionDetails} =useProductionTransactionServices();
+  const { postProductionData, getProductionDaybookPart, getProductionDetails, putProductionData } = useProductionTransactionServices();
   const [productionList, setProductionList] = useState();
   const [isByOpen, setIsByOpen] = useState(false);
   const [isLabOpen, setIsLabOpen] = useState(true);
+  // const [entryList, setEntryList] = useState([])
 
-  const getProductData = async () => {
-    const response = await getProductionDaybookPart();
-    setProductionList(response.data);
-  };
-  
-  const getDocNumber = async () => {
-    const response = await getCode();
-    let data = response.data.filter((code) => code.types === "PRODUCTION_CODE");
-    setCode(data[0].next_code);
-  };
-  
-  const getAllMaterialCompositions = async () => {
-    const response = await getMaterialComposition();
-    setMaterialList(response.data);
-  };
+  // const getEntryList=(data)=>{
+  //   let tempList = [];
+  //   data?.map((item) => {
+  //   let a = {
+  //     text: item.item_details.name,
+  //     value: item.fk_item,
+  //   };
+  //   tempList.push(a);
+  //   })
+  //   setEntryList(tempList)
+  // } 
 
-  const getAllStaffDetails = async () => {
-    const response = await getStaff();
-    const data = response.data;
-    let tempList = [];
-    data.map((item) => {
-      let a = {
-        key: item.types,
-        text: item.name,
-        value: item.id,
-      };
-      tempList.push(a);
-    });
-    setStaffDetails(tempList);
-  };
+  const location = useLocation();
 
-  const getItems = async () => {
-    const response = await getItemList();
-    let data = response.data.filter((property) => property.types === "PRODUCT");
-    let tempList = [];
-    data.map((item) => {
-      let a = {
-        key: item.types,
-        text: item.name,
-        value: item.id,
-      };
-      tempList.push(a);
-    });
-    setItems(tempList);
-  };
+  useEffect(() => {
+    getData();
+  }, []);
 
-  const getTypes = async () => {
-    const response = await getProperty();
-    let data = response.data.filter(
-      (property) => property.property_type === "composition_type"
-    );
-    let tempList = [];
-    data.map((item) => {
-      let a = {
-        ...item,
-        key: item.property_type,
-        text: item.property_value,
-        value: item.id,
-      };
-      tempList.push(a);
-    });
-    setTypes(tempList);
-  };
+  useEffect(() => {
+    if (edit) {
+      getSelectedData();
+    }
+  }, [edit]);
 
-  const getUnits = async () => {
-    const response = await getProperty();
-    let data = response.data.filter(
-      (property) => property.property_type === "unit"
-    );
-    let tempList = [];
-    data.map((item) => {
-      let a = {
-        ...item,
-        key: item.property_type,
-        text: item.property_value,
-        value: item.id,
-      };
-      tempList.push(a);
-    });
-    setUnits(tempList);
-  };
-
-  const getAllAccount = async () => {
-    const response = await getAccountList();
-    let tempList = [];
-    if (response?.success) {
-      response.data.map((item) => {
-        let a;
-        if (item.name && item.code) {
-          // && item.bank_account === true
-          a = {
-            key: item.code,
+  const getData = async () => {
+    const filter1 = (data, setState) => {
+      let tempList = [];
+      data?.map((item) => {
+        let a = {
+          key: item.types,
+          text: item.name,
+          value: item.id,
+        };
+        tempList.push(a);
+      });
+      setState(tempList);
+    };
+    const filter2 = (data, setState, filterProperty) => {
+      let tempList = [];
+      data.map((item) => {
+        if (item.property_type == filterProperty) {
+          let a = {
+            ...item,
+            key: item.property_type,
+            text: item.property_value,
             value: item.id,
-            text: item.name,
-            description: item.code,
           };
           tempList.push(a);
         }
       });
-      setAccDetails(tempList);
+      setState(tempList);
+    };
+    try {
+      let res1, res2, res3, res4, res5, res6, res7, data;
+      res1 = await getProductionDaybookPart();
+      if (res1.success) setProductionList(res1?.data);
+      res2 = await getCode();
+      if (res2?.success) {
+        data = res2.data.filter((code) => code.types === "PRODUCTION_CODE");
+        setCode(data[0].next_code);
+      }
+      res3 = await getStaff();
+      if (res3?.success) {
+        filter1(res3.data, setStaffDetails);
+      }
+      res4 = await getItemList();
+      if (res4?.success) {
+        filter1(res4?.data, setItems);
+      }
+      res5 = await getProperty();
+      if (res5?.success) {
+        filter2(res5.data, setTypes, "composition_type");
+        filter2(res5.data, setUnits, "unit");
+      }
+      res6 = await getAccountList();
+      let tempList = [];
+      if (res6?.success) {
+        res6.data.map((item) => {
+          let a;
+          if (item.name && item.code) {
+            // && item.bank_account === true
+            a = {
+              key: item.code,
+              value: item.id,
+              text: item.name,
+              description: item.code,
+            };
+            tempList.push(a);
+          }
+        });
+        setAccDetails(tempList);
+      }
+      res7 = await getMaterialComposition();
+      if (res7?.success) {
+        setMaterialList(res7.data);
+      }
+    } catch (err) {
+      console.log(err);
     }
-    return response.data;
   };
+  //   const response = await getAccountList();
+  //   let tempList = [];
+  //   if (response?.success) {
+  //     response.data.map((item) => {
+  //       let a;
+  //       if (item.name && item.code) {
+  //         // && item.bank_account === true
+  //         a = {
+  //           key: item.code,
+  //           value: item.id,
+  //           text: item.name,
+  //           description: item.code,
+  //         };
+  //         tempList.push(a);
+  //       }
+  //     });
+  //     setAccDetails(tempList);
+  //   }
+  //   return response.data;
+  // };
 
   const search = (options, searchValue) => {
     searchValue = searchValue.toUpperCase();
@@ -211,71 +228,76 @@ const ProductionTransaction = () => {
     });
   };
 
-  const getSelectedData = async (id) =>{
-    const response = await getProductionDetails(id=edit?.id)
-    let d=response?.data
-    console.log(d,"selected")
+  const getSelectedData = async () => {
+    const response = await getProductionDetails(edit?.id);
+    let d = response?.data;
     if (response?.success) {
-      setDate(d.date)
-      setCode(d.code)
-      setNarration(d.narration)
-      setSelectedStaffAccount(d.checked_by)
-      let tempList =[]
-      tempList=d.produced_items
+      setDate(d.date);
+      setCode(d.daybook_part.voucher_number);
+      setNarration(d.daybook_part.narration);
+      setSelectedStaffAccount(d.checked_by);
+      let tempList = [];
+      tempList = d.produced_items;
       const tempRawOnly = tempList.flatMap((data) => data.raw_materials);
       const tempByproductOnly = tempList.flatMap((data) => data.by_products);
       const tempLabourOnly = tempList.flatMap((data) => data.expense_accounts);
-      const tempProductionItem =[]
-      tempList.map((data)=>{
+      const tempProductionItem = [];
+      tempList.map((data) => {
         tempProductionItem.push({
-          id:data.id,
+          id: data.id,
           initial_qty: data.qty,
+          value: data.value,
+          retail_rate: data.retail_rate,
+          wholesale_rate: data.wholesale_rate,
+          batch_no: data.batch_no,
+          fk_type: data.fk_type,
           fk_item: data.fk_item,
+          qty: data.qty,
           fk_unit: data.fk_unit,
           cost: data.item_details.cost,
-          value:data.value,
           margin: data.item_details.margin,
           mrp_rate: data.item_details.mrp_rate,
           item_produced_name: data.item_details.name,
           item_name: data.item_details.name,
           godown_rate: null,
-          qty:data.qty,
-          retail_rate:data.retail_rate,
-          wholesale_rate:data.wholesale_rate,
-          batch_no:data.batch_no,
-          fk_type:data.fk_type
-        })
-      })
-      const tempRaw = []
-      const tempByproduct = []
-      const tempLabour =[]
+        });
+      });
+      const tempRaw = [];
+      const tempByproduct = [];
+      const tempLabour = [];
 
-      tempRawOnly.map((data)=>{
-        let choosenItem = tempList.filter(item=> item.id === data.fk_production_item)
-        let itemName=choosenItem[0].item_details.name
+      tempRawOnly.map((data) => {
+        let choosenItem = tempList.filter(
+          (item) => item.id === data.fk_production_item
+        );
+        let itemName = choosenItem[0].item_details.name;
         tempRaw.push({
+          id:data.id,
           initial_qty: data.qty,
-            fk_item: data.fk_item,
-            fk_unit: data.fk_unit,
-            cost: data.item_details.cost,
-            value:data.value,
-            margin: data.item_details.margin,
-            mrp_rate: data.item_details.mrp_rate,
-            item_produced_name:itemName,
-            item_name: data.item_details.name,
-            godown_rate: null,
-            qty:data.qty
-        })
-      })
+          fk_item: data.fk_item,
+          fk_unit: data.fk_unit,
+          cost: data.cost,
+          value: data.value,
+          margin: data.item_details.margin,
+          mrp_rate: data.item_details.mrp_rate,
+          item_produced_name: itemName,
+          item_name: data.item_details.name,
+          godown_rate: null,
+          qty: data.qty,
+        });
+      });
 
-      tempByproductOnly.map((data)=>{
-        let choosenItem = tempList.filter(item=> item.id === data.fk_production_item)
-        let itemName=choosenItem[0].item_details.name
+      tempByproductOnly.map((data) => {
+        let choosenItem = tempList.filter(
+          (item) => item.id === data.fk_production_item
+        );
+        let itemName = choosenItem[0].item_details.name;
         tempByproduct.push({
+          id:data.id,
           qty: data.qty,
           fk_item: data.fk_item,
           fk_unit: data.fk_unit,
-          cost: data.item_details.cost,
+          cost: data.cost,
           value: data.value,
           margin: data.item_details.margin,
           mrp_rate: data.item_details.mrp_rate,
@@ -283,65 +305,96 @@ const ProductionTransaction = () => {
           s_rate: data.item_details.retail_rate,
           item_name: data.item_details.name,
           item_produced_name: itemName,
-        })
-      })
+        });
+      });
 
-      tempLabourOnly.map((data)=>{
-        let choosenItem = tempList.filter(item=> item.id === data.fk_production_item)
-        let itemName=choosenItem[0].item_details.name
+      tempLabourOnly.map((data) => {
+        let choosenItem = tempList.filter(
+          (item) => item.id === data.fk_production_item
+        );
+        let itemName = choosenItem[0].item_details.name;
         tempLabour.push({
+          id:data.id,
           fk_debit_account: data.fk_debit_account,
-          debit_name:data.debit_name,
+          debit_name: data.debit_name,
           fk_credit_account: data.fk_credit_account,
-          credit_name:data.credit_name,
+          credit_name: data.credit_name,
           amount: data.amount,
           item_produced_name: itemName,
-          initial_amount:data.amount,
-        })
-      })
+          initial_amount: data.amount,
+        });
+      });
 
-      setRawItems(tempRaw)
-      setFullProdData(tempProductionItem)
-      setFullByprodData(tempByproduct)
-      setFullLabourData(tempLabour)
+      setRawItems(tempRaw);
+      setFullProdData(tempProductionItem);
+      setByProductItems(tempByproduct);
+      setLabourDetails(tempLabour);
     }
-  }
-
-  useEffect(()=>{
-    if (edit) {
-      getSelectedData();
-    }
-  },[edit])
-
+  };
 
   const handleDropdownStaffAccount = (event, data) => {
     setSelectedStaffAccount(data.value);
   };
 
   const handleResetAll = () => {
-    setDate(new Date().toISOString().slice(0, 10))
-    setCode('')
-    setNarration('')
-    setSelectedStaffAccount('')
-    setRawItems([])
-    setByProductItems([])
-    setLabourDetails('')
-    setProduceData('')
-    setFullRawData([])
-    setFullByprodData([])
-    setFullLabourData([])
-    setFullProdData([])
+    setDate(new Date().toISOString().slice(0, 10));
+    setCode("");
+    setNarration("Production");
+    setSelectedStaffAccount("");
+    setRawItems([]);
+    setByProductItems([]);
+    setLabourDetails("");
+    setProduceData("");
+    setFullRawData([]);
+    setFullByprodData([]);
+    setFullLabourData([]);
+    setFullProdData([]);
   };
 
   const handleFinalSubmit = async () => {
-    let tempItemList = []
-    if(listProduction?.length<0 && Object.values(produceData).filter(x=>x).length>4)
-      tempItemList = [produceData]
-    else if(listProduction?.length>0)
-      tempItemList = [...listProduction]
-    else {
-      Swal.fire('No Item Added . Please Add An Item','','error')
-    }
+    let listProd = [];
+    let tempFullProdData = [...fullProdData];
+    if (fullProdData?.length > 0 || Object.values(produceData).filter(x=>x).length > 4) {
+      // console.log(fullProdData,"fullProdData")
+      // console.log(produceData,"produceData")
+      if(fullProdData.length < 1){
+        tempFullProdData = [produceData]
+        console.log(fullProdData)
+      }
+      tempFullProdData.forEach((prodData) => {
+        listProd.push({
+          ...prodData,
+          raw_materials: rawItems.filter(
+            (rawData) =>
+              rawData.item_produced_name === prodData.item_name
+          ),
+          expense_accounts: labourDetails.filter(
+            (lobourData) =>
+              lobourData.item_produced_name === prodData.item_name
+          ),
+          by_products: byProductItems.filter(
+            (byProductData) =>
+              byProductData.item_produced_name === prodData.item_name
+          )
+        })
+      });
+    
+    // let tempProdList = [...listProduction];
+    // if (
+    //   listProduction?.length < 1 &&
+    //   Object.values(produceData).filter((x) => x).length > 4
+    // )
+    //   tempProdList = [
+    //     {
+    //       ...produceData,
+    //       raw_materials: [...rawItems],
+    //       by_products: [...byProductItems],
+    //       expense_accounts: [...labourDetails],
+    //     },
+    //   ];
+    // else {
+    //   Swal.fire("No Item Added . Please Add An Item", "", "error");
+    // }
     let submitData = {
       voucher_number: code,
       date: date,
@@ -350,27 +403,31 @@ const ProductionTransaction = () => {
       total_sales_value: 0,
       total_cost: 0,
       total_margin: 0,
-      produced_items: listProduction,
+      produced_items: listProd,
     };
-    let response = await postProductionData(submitData);
-    if (!response?.success) {
-      Swal.fire("Error", "Oops Something went wrong");
-    } else {
-      handleResetAll();
-      Swal.fire("Success", "Successfully submitted");
+    if (!edit){
+      let response = await postProductionData(submitData);
+      if (!response?.success) {
+        Swal.fire("Error", "Oops Something went wrong");
+      } else {
+        handleResetAll();
+        getData()
+        Swal.fire("Success", "Successfully submitted");
+      }
+    }else{
+      let response = await putProductionData(submitData,edit.id);
+      if (!response?.success) {
+        Swal.fire("Error", "Oops Something went wrong");
+      } else {
+        handleResetAll();
+        getData()
+        Swal.fire("Success", "Updated Successfully");
+      }
     }
+  }else {
+    Swal.fire("No Item Added . Please Add An Item", "", "error");
+  }
   };
-
-  useEffect(() => {
-    getDocNumber();
-    getItems();
-    getUnits();
-    getTypes();
-    getAllAccount();
-    getAllMaterialCompositions();
-    getAllStaffDetails();
-    getProductData();
-  }, []);
 
   return (
     <div className="item_add">
@@ -404,11 +461,10 @@ const ProductionTransaction = () => {
             </div>
             <div className="col-1 d-flex mx-0">
               <button
-              onClick={() => setShow(true)}
-               className="bg-dark text-light border border-dark rounded w-25">
-                <LuClipboardEdit
-                  className="my-1"                  
-                />
+                onClick={() => setShow(true)}
+                className="bg-dark text-light border border-dark rounded w-25"
+              >
+                <LuClipboardEdit className="my-1" />
               </button>
             </div>
             <div className="col-2 col-3 d-flex mx-0">
@@ -445,49 +501,54 @@ const ProductionTransaction = () => {
               labourDetails,
               listProduction,
               setListProduction,
+              // getEntryList,
             }}
           />
-         
-            <RawMaterials
-              {...{
-                rawItems,
-                setRawItems,
-                fullProdData,
-                produceData,
-                setFullProdData,
-                units,
-                fullRawData,
-                setFullRawData,
-                setProduceData,
-              }}
-            />
-            <LabourAndExpense
+
+          <RawMaterials
             {...{
+              rawItems,
+              setRawItems,
+              fullProdData,
+              produceData,
+              setFullProdData,
+              units,
+              fullRawData,
+              setFullRawData,
+              setProduceData,
+              labourDetails,
+              setLabourDetails,
+            }}
+          />
+          <LabourAndExpense
+            {...{
+              setFullProdData,
+              produceData,
+              fullProdData,
+              rawItems,
               labourDetails,
               setLabourDetails,
               accDetails,
               fullLabourData,
               setFullLabourData,
               setProduceData,
-              isLabOpen, 
+              isLabOpen,
               setIsLabOpen,
-              setIsByOpen
+              setIsByOpen,
             }}
           />
-            <ByProductDetails
-              {...{
-                byProductItems,
-                setByProductItems,
-                units,
-                fullByprodData,
-                setFullByprodData,
-                isByOpen,
-                setIsByOpen,
-                setIsLabOpen
-              }}
-            />
-          
-          
+          <ByProductDetails
+            {...{
+              byProductItems,
+              setByProductItems,
+              units,
+              fullByprodData,
+              setFullByprodData,
+              isByOpen,
+              setIsByOpen,
+              setIsLabOpen,
+            }}
+          />
 
           <div className="col-12 d-flex justify-content-end mb-1 mt-2">
             <div className="col-4 d-flex pe-3">
@@ -516,14 +577,17 @@ const ProductionTransaction = () => {
               />
             </div>
             <div className="col-4 d-flex justify-content-end">
-              <button onClick={handleResetAll} className="col-4 col-5 mx-1 rounded border border-dark bg-dark text-light py-1">
+              <button
+                onClick={handleResetAll}
+                className="col-4 col-5 mx-1 rounded border border-dark bg-dark text-light py-1"
+              >
                 Clear
               </button>
               <button
                 className="col-4  col-5 rounded border border-dark bg-dark text-light py-1"
                 onClick={handleFinalSubmit}
               >
-                Save
+                {edit?"Update":"Save"}
               </button>
             </div>
           </div>
@@ -533,17 +597,15 @@ const ProductionTransaction = () => {
         <Modal.Body className="p-0 rounded-3">
           <StockJournalEdit
             title={"Production List"}
-            list = {productionList}
-            setShow = {setShow}
+            list={productionList}
+            setShow={setShow}
             from={"production"}
-            handleClearAll ={handleResetAll}
-            getData={getProductData}
-            {
-              ...{
-                edit,
-                setEdit,
-              }
-            }
+            handleClearAll={handleResetAll}
+            getData={getData}
+            {...{
+              edit,
+              setEdit,
+            }}
             productionPage={true}
           />
         </Modal.Body>

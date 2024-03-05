@@ -7,7 +7,7 @@ import Swal from "sweetalert2";
 import StaffProfEducTable from ".//StaffProfEducTable";
 
 export const AddStaff = (props) => {
-  const {setEdit, edit, getMasetData} = props
+  const { setEdit, edit, getMasetData } = props;
 
   const [ref, setRef] = useState(null);
   const [showDropdown, setShowDropdown] = useState();
@@ -31,22 +31,22 @@ export const AddStaff = (props) => {
   ];
 
   const [staffEducTable, setStaffEducTable] = useState({
-    id:null,
-    course:null,
-    conducted:null,
-    institution:null,
-    score:null,
-    year_pass:null,
-  })
- 
+    id: null,
+    course: null,
+    conducted: null,
+    institution: null,
+    score: null,
+    year_pass: null,
+  });
+
   const [staffProfTable, setStaffProfTable] = useState({
-    id:null,
-    profession:null,
-    department:null,
-    experience:null,
-    from_date:null,
-    to_date:null,
-  })
+    id: null,
+    profession: null,
+    department: null,
+    experience: null,
+    from_date: null,
+    to_date: null,
+  });
 
   const [staffAdd, setStaffAdd] = useState({
     code: null,
@@ -76,81 +76,92 @@ export const AddStaff = (props) => {
 
   //education:[{id:value}],profession:[{id:value}]
 
-  const { getProperty, postProperty, getCode} = useItemServices();
-  const {postStaff, putStaff} = useStaffServices()
+  const { getProperty, postProperty, getCode } = useItemServices();
+  const { postStaff, putStaff } = useStaffServices();
 
-  const [ handleKeyDown, formRef ] = useOnKey(ref, setRef);
+  const [handleKeyDown, formRef] = useOnKey(ref, setRef);
 
   useEffect(() => {
     getData();
   }, []);
 
-  useEffect(()=>{
-    if(edit){
-      const {education,profession,fk_designation,fk_staff_grade, ...others} = edit 
-      setStaffAdd({...others,designation:fk_designation,staff_grade:fk_staff_grade})
-      if(profession?.length>0){
-        setstaffProfList(profession)
+  useEffect(() => {
+    if (edit) {
+      const {
+        education,
+        profession,
+        fk_designation,
+        fk_staff_grade,
+        ...others
+      } = edit;
+      setStaffAdd({
+        ...others,
+        designation: fk_designation,
+        staff_grade: fk_staff_grade,
+      });
+      if (profession?.length > 0) {
+        setstaffProfList(profession);
       }
-      if(education?.length>0){
-        setstaffEducList(education)
+      if (education?.length > 0) {
+        setstaffEducList(education);
       }
-    }else{
-      handleClearAll()
+    } else {
+      handleClearAll();
     }
-  },[edit])
+  }, [edit]);
 
-  const handleToUpperCase = (data) =>{
-    let keysOfData , tempData = {...data}
-    if(typeof data == 'object')
-        keysOfData = Object.keys(data)
-    if(!keysOfData?.length>0) return 0
-    keysOfData.map(item=>{
-        if(typeof data[item] == 'string' && !item.match(/email/)){
-        let itemTemp = data[item]?.toUpperCase()
-        tempData = {...tempData,[item]:itemTemp}}
-    })
-    return tempData
-}
-
-function removeNullValues(obj) {
-  return Object.keys(obj).reduce((acc, key) => {
-    if (obj[key] !== null) {
-      acc[key] = obj[key];
-    }
-    return acc;
-  }, {});
-}
-
-  const handleSubmit = async (e) =>{
-    e.preventDefault()
-    try{
-      let submitData = {...staffAdd,profession:[],education:[]}
-      if(profIdList?.length>0)
-      submitData= {...submitData,profession:profIdList}
-      if(educIdList?.length>0)
-      submitData= {...submitData,education:educIdList}
-
-      const dataAfterNullRemove = removeNullValues(submitData)
-    let data = handleToUpperCase(dataAfterNullRemove)
-    let response
-    if(!edit){
-       response = await postStaff(data)
-    }else{
-      response = await putStaff(edit.id,data)
-    }
-      if(response.success){
-        Swal.fire('Staff created successfully','','success')
-        handleClearAll()
-        getData()
-        getMasetData()
-      }else{
-        Swal.fire('Failed to add staff','','error')
+  const handleToUpperCase = (data) => {
+    let keysOfData,
+      tempData = { ...data };
+    if (typeof data == "object") keysOfData = Object.keys(data);
+    if (!keysOfData?.length > 0) return 0;
+    keysOfData.map((item) => {
+      if (typeof data[item] == "string" && !item.match(/email/)) {
+        let itemTemp = data[item]?.toUpperCase();
+        tempData = { ...tempData, [item]: itemTemp };
       }
-    }catch(err){
-      Swal.fire('Failed to add staff','','error')
-    }
+    });
+    return tempData;
+  };
+
+  function removeNullValues(obj) {
+    return Object.keys(obj).reduce((acc, key) => {
+      if (obj[key] !== null) {
+        acc[key] = obj[key];
+      }
+      return acc;
+    }, {});
   }
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      let submitData = { ...staffAdd, profession: [], education: [] };
+      if (profIdList?.length > 0)
+        submitData = { ...submitData, profession: profIdList };
+      if (educIdList?.length > 0)
+        submitData = { ...submitData, education: educIdList };
+
+      const dataAfterNullRemove = removeNullValues(submitData);
+      let data = handleToUpperCase(dataAfterNullRemove);
+      let response;
+      if (!edit) {
+        response = await postStaff(data);
+      } else {
+        response = await putStaff(edit.id, data);
+      }
+      if (response.success) {
+        Swal.fire("Staff created successfully", "", "success");
+        handleClearAll();
+        getData();
+        getMasetData();
+      } else {
+        Swal.fire("Failed to add staff", "", "error");
+      }
+    } catch (err) {
+      Swal.fire("Failed to add staff", "", "error");
+    }
+  };
 
   const addNewOption = async (e, data, state) => {
     e.preventDefault();
@@ -187,7 +198,8 @@ function removeNullValues(obj) {
       const keys = Object.keys(listItem);
       data.map((x) => {
         if (keys.indexOf(x.property_type) > -1) {
-          if (!list[x.property_type]?.length > 0) list[x.property_type] = [{value:null,text:"SELECT"}];
+          if (!list[x.property_type]?.length > 0)
+            list[x.property_type] = [{ value: null, text: "SELECT" }];
           list[x?.property_type].push({
             value: x["id"],
             text: x["property_value"],
@@ -199,67 +211,70 @@ function removeNullValues(obj) {
       let res = await getProperty();
       if (res.success) miniFunct(res?.data);
       setListItem(list);
-    if(!edit){
-        let res2 = await getCode() 
-        if(res2?.success){
-            let cod = res2?.data?.filter(x=>x.sub_id === "STF")
-            setStaffAdd(data=>({...data,['code']:cod[0].sub_id+cod[0]?.next_value}))
+      if (!edit) {
+        let res2 = await getCode();
+        if (res2?.success) {
+          let cod = res2?.data?.filter((x) => x.sub_id === "STF");
+          setStaffAdd((data) => ({
+            ...data,
+            ["code"]: cod[0].sub_id + cod[0]?.next_value,
+          }));
         }
-    }
+      }
     } catch (err) {}
   };
 
-  const handleClearAll = () =>{
+  const handleClearAll = () => {
     setStaffAdd({
-    code: null,
-    name: null,
-    address: null,
-    mobile: null,
-    email: null,
-    gender: "MALE",
-    op_balance: null,
-    type: "TO_RECEIVE",
-    blood_gp: "A+",
-    join_date: null,
-    dob: null,
-    remarks: null,
-    blocked: null,
-    image: null,
-    destination: null,
-    staff_grade: null,
-    salary: null,
-    salary_date: null,
-    allowed_leave: null,
-    leave_cut: null,
-    pf: null,
-    esi: null,
-    insurance: null,
-    })
+      code: null,
+      name: null,
+      address: null,
+      mobile: null,
+      email: null,
+      gender: "MALE",
+      op_balance: null,
+      type: "TO_RECEIVE",
+      blood_gp: "A+",
+      join_date: null,
+      dob: null,
+      remarks: null,
+      blocked: null,
+      image: null,
+      destination: null,
+      staff_grade: null,
+      salary: null,
+      salary_date: null,
+      allowed_leave: null,
+      leave_cut: null,
+      pf: null,
+      esi: null,
+      insurance: null,
+    });
     setStaffEducTable({
-      id:null,
-      course:null,
-      conducted:null,
-      institution:null,
-      score:null,
-      year_pass:null,
-    })
-    setEdit()
-    setEducIdList([])
-    setProfIdList([])
-    setstaffEducList([])
-    setstaffProfList([])
-    getData()
-  }
+      id: null,
+      course: null,
+      conducted: null,
+      institution: null,
+      score: null,
+      year_pass: null,
+    });
+    setEdit();
+    setEducIdList([]);
+    setProfIdList([]);
+    setstaffEducList([]);
+    setstaffProfList([]);
+    getData();
+  };
 
   return (
     <div className="supplier-add-cont">
-        Add New Staff
-        <form
-          onSubmit={handleSubmit}
-          ref={formRef}
-          className="item_add_form pt-1 mt-1"
-        >
-          <div className="d-flex">
+      Add New Staff
+      <form
+        onSubmit={handleSubmit}
+        ref={formRef}
+        className="item_add_form pt-1 mt-1"
+      >
+        <div className="d-flex">
           <div className="supplier-add-form-part1 col-7 row mx-0 px-0 pb-4">
             <div className="d-flex align-items-center ps-0 row mx-0 sup-input-cont">
               <div className="col-6 row mx-0 ps-0 pe-1">
@@ -279,10 +294,12 @@ function removeNullValues(obj) {
                 <div className="mx-0 px-0 col-3">Gender</div>
                 <div className="mx-0 px-0 col-8">
                   <select
-                  onChange={handleChange}
-                  onKeyDown={handleKeyDown}
-                  name="gender" className="item_input ms-0"
-                  value={staffAdd.gender || ""}>
+                    onChange={handleChange}
+                    onKeyDown={handleKeyDown}
+                    name="gender"
+                    className="item_input ms-0"
+                    value={staffAdd.gender || ""}
+                  >
                     <option value="MALE">MALE</option>
                     <option value="FEMALE">FEMALE</option>
                     <option value="OTHER">OTHER</option>
@@ -442,7 +459,7 @@ function removeNullValues(obj) {
                   onKeyDown={handleKeyDown}
                   id="repeat"
                   name="repeat"
-                  checked={staffAdd.repeat||false}
+                  checked={staffAdd.repeat || false}
                   className="me-2"
                 />
                 <label className="pb-1" htmlFor="repeat">
@@ -456,7 +473,7 @@ function removeNullValues(obj) {
                   onKeyDown={handleKeyDown}
                   id="blocked"
                   name="blocked"
-                  value={staffAdd.blocked||''}
+                  value={staffAdd.blocked || ""}
                   className="me-2"
                 />
                 <label className="pb-1" htmlFor="blocked">
@@ -504,83 +521,97 @@ function removeNullValues(obj) {
             </div>
             <div className="d-flex align-items-center ps-0 row mx-0 sup-input-cont">
               <div className="col-12 row mx-0 px-0 ps-0 align-items-center">
-                <div className="mx-0 col-2 px-0 col-3 staff-text">Salary</div>
-                <div className="mx-0 px-0 col-3 col-4 me-3">
-                  <input
-                    type="number"
-                    name="salary"
-                    value={staffAdd.salary||''}
-                    className="item_input"
-                    onChange={handleChange}
-                    onKeyDown={handleKeyDown}
-                  />
-                </div>
-                <div className="mx-0 px-0 col-2 staff-text me-1">Leave Cut</div>
-                <div className="mx-0 px-0 col-3 col-4">
-                  <input
-                    type="number"
-                    name="leave_cut"
-                    value={staffAdd.leave_cut||''}
-                    className="item_input"
-                    onChange={handleChange}
-                    onKeyDown={handleKeyDown}
-                  />
-                </div>
-              </div>
-            </div>
-            <div className="d-flex align-items-center ps-0 row mx-0 sup-input-cont">
-              <div className="col-12 row mx-0 px-0 ps-0 align-items-center">
-                <div className="mx-0 col-2 px-0 col-3 staff-text">
-                  Alwd Leave
-                </div>
-                <div className="mx-0 px-0 col-3 col-4 me-3">
-                  <input
-                    type="number"
-                    name="allowed_leave"
-                    value={staffAdd.allowed_leave||''}
-                    className="item_input"
-                    onChange={handleChange}
-                    onKeyDown={handleKeyDown}
-                  />
-                </div>
-                <div className="mx-0 px-0 col-2 staff-text me-1">LIC Cut</div>
-                <div className="mx-0 px-0 col-3 col-4">
-                  <input
-                    type="number"
-                    name="insurance"
-                    value={staffAdd.insurance||''}
-                    className="item_input"
-                    onChange={handleChange}
-                    onKeyDown={handleKeyDown}
-                  />
-                </div>
-              </div>
-            </div>
-            <div className="d-flex align-items-center ps-0 row mx-0 sup-input-cont">
-              <div className="col-12 row mx-0 px-0 ps-0 align-items-center">
-                <div className="mx-0 col-2 px-0 col-3 staff-text">PF Cut</div>
-                <div className="mx-0 px-0 col-3 col-4 me-3">
-                  <input
-                    type="number"
-                    name="pf"
-                    value={staffAdd.pf||''}
-                    className="item_input"
-                    onChange={handleChange}
-                    onKeyDown={handleKeyDown}
-                  />
-                </div>
-                <div className="mx-0 px-0 col-2 staff-text me-1">ESI Cut</div>
-                <div className="mx-0 px-0 col-3 col-4">
+                <div className="col-6 row mx-0 px-0">
+                  <div className="mx-0 col-5 px-0 staff-text">Salary</div>
+                  <div className="mx-0 px-0 col-6">
                     <input
                       type="number"
-                      name="esi"
-                      value={staffAdd.esi||''}
+                      name="salary"
+                      value={staffAdd.salary || ""}
                       className="item_input"
                       onChange={handleChange}
                       onKeyDown={handleKeyDown}
                     />
+                  </div>
+                </div>
+                <div className="col-6 row mx-0 px-0">
+                  <div className="mx-0 px-0 col-5 staff-text me-1">
+                    Leave Cut
+                  </div>
+                  <div className="mx-0 px-0 col-6 col-7">
+                    <input
+                      type="number"
+                      name="leave_cut"
+                      value={staffAdd.leave_cut || ""}
+                      className="item_input"
+                      onChange={handleChange}
+                      onKeyDown={handleKeyDown}
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div className="d-flex align-items-center ps-0 row mx-0 sup-input-cont">
+              <div className="col-12 row mx-0 px-0 ps-0 align-items-center">
+              <div className="col-6 row mx-0 px-0">
+                <div className="mx-0 col-5 px-0 staff-text">
+                  Alwd Leave
+                </div>
+                <div className="mx-0 px-0 col-6 me-3">
+                  <input
+                    type="number"
+                    name="allowed_leave"
+                    value={staffAdd.allowed_leave || ""}
+                    className="item_input"
+                    onChange={handleChange}
+                    onKeyDown={handleKeyDown}
+                  />
                 </div>
                 </div>
+                <div className="col-6 row mx-0 px-0">
+                <div className="mx-0 px-0 col-5 staff-text me-1">LIC Cut</div>
+                <div className="mx-0 px-0 col-6 col-7">
+                  <input
+                    type="number"
+                    name="insurance"
+                    value={staffAdd.insurance || ""}
+                    className="item_input"
+                    onChange={handleChange}
+                    onKeyDown={handleKeyDown}
+                  />
+                </div>
+                </div>
+              </div>
+            </div>
+            <div className="d-flex align-items-center ps-0 row mx-0 sup-input-cont">
+              <div className="col-12 row mx-0 px-0 ps-0 align-items-center">
+              <div className="col-6 row mx-0 px-0">
+                <div className="mx-0 col-5 px-0 staff-text">PF Cut</div>
+                <div className="mx-0 px-0 col-6 me-3">
+                  <input
+                    type="number"
+                    name="pf"
+                    value={staffAdd.pf || ""}
+                    className="item_input"
+                    onChange={handleChange}
+                    onKeyDown={handleKeyDown}
+                  />
+                </div>
+                </div>
+                <div className="col-6 row mx-0 px-0">
+                <div className="mx-0 px-0 col-5 staff-text me-1">ESI Cut</div>
+                <div className="mx-0 px-0 col-6 col-7">
+                  <input
+                    type="number"
+                    name="esi"
+                    value={staffAdd.esi || ""}
+                    className="item_input"
+                    onChange={handleChange}
+                    onKeyDown={handleKeyDown}
+                  />
+                </div>
+              </div>
+              </div>
             </div>
             <div className="d-flex align-items-center ps-0 row mx-0 sup-input-cont">
               <div className="col-12 row mx-0 px-0 ps-0 align-items-center">
@@ -590,7 +621,7 @@ function removeNullValues(obj) {
                     onChange={handleChange}
                     onKeyDown={handleKeyDown}
                     name="remarks"
-                    value={staffAdd.remarks||''}
+                    value={staffAdd.remarks || ""}
                     className="item_input ms-0 h-100"
                     rows={3}
                   />
@@ -598,17 +629,29 @@ function removeNullValues(obj) {
               </div>
             </div>
           </div>
-          </div>
-        <StaffProfEducTable {...{
-          staffTableTab,setStaffTableTab,
-          staffEducTable,setStaffEducTable,
-          staffProfTable,setStaffProfTable,
-          staffEducList, setstaffEducList,
-          staffProfList, setstaffProfList,
-          educIdList, setEducIdList,
-          profIdList, setProfIdList,
-          handleSubmit,edit,handleClearAll}}/>
-        </form>
         </div>
-  )
-}
+        <StaffProfEducTable
+          {...{
+            staffTableTab,
+            setStaffTableTab,
+            staffEducTable,
+            setStaffEducTable,
+            staffProfTable,
+            setStaffProfTable,
+            staffEducList,
+            setstaffEducList,
+            staffProfList,
+            setstaffProfList,
+            educIdList,
+            setEducIdList,
+            profIdList,
+            setProfIdList,
+            handleSubmit,
+            edit,
+            handleClearAll,
+          }}
+        />
+      </form>
+    </div>
+  );
+};

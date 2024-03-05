@@ -37,6 +37,7 @@ const SalesTransaction = ({ returnPage, orderPage }) => {
   const [salesOnlyList, setSalesOnlyList] = useState([]);
   const [salesList, setSalesList] = useState([]);
   const [billType, setBillType] = useState([]);
+  const [orderDocList, setOrderDocList] = useState([]);
   const [codeWithBillTypeList, setCodeWithBillTypeList] = useState([]);
   const [showPrint, setShowPrint] = useState(false);
   const [bankSelect, setBankSelect] = useState(false);
@@ -58,12 +59,26 @@ const SalesTransaction = ({ returnPage, orderPage }) => {
 
   const { getProperty } = useItemServices();
   const { getCustomer } = useCustomerServices();
-  const { getSalesList,getSalesWithId, postSales, putSales, getAllUserAc, getCodeWithBillType } =
-    useSalesServices();
-  const { getSalesReturnList,getSalesReturnWihtId, postSalesReturn, putSalesReturn } =
-    useSalesReturnServices();
-  const { getSalesOrderList,getSalesOrderWithId, postSalesOrder, putSalesOrder } =
-    useSalesOrderServices();
+  const {
+    getSalesList,
+    getSalesWithId,
+    postSales,
+    putSales,
+    getAllUserAc,
+    getCodeWithBillType,
+  } = useSalesServices();
+  const {
+    getSalesReturnList,
+    getSalesReturnWihtId,
+    postSalesReturn,
+    putSalesReturn,
+  } = useSalesReturnServices();
+  const {
+    getSalesOrderList,
+    getSalesOrderWithId,
+    postSalesOrder,
+    putSalesOrder,
+  } = useSalesOrderServices();
 
   const { getCode } = useItemServices();
 
@@ -133,25 +148,36 @@ const SalesTransaction = ({ returnPage, orderPage }) => {
       localStorage.setItem("salesData", JSON.stringify(allSaleState));
   };
 
-  const handleSetEdit = async (data) => {
-    try{
+  const handlePurchOrderSelect = async (e,data) => {
+    if (returnPage || orderPage) return 0;        
+        handleSetEdit({id:data.value},true);
+  };
+
+  const handleSetEdit = async (data,orderGet) => {
+    try {
       let salesData;
-      if (!returnPage && !orderPage)
-        salesData = await getSalesWithId(data.id);
+      if (!returnPage && !orderPage && !orderGet) salesData = await getSalesWithId(data.id);
       if (returnPage) salesData = await getSalesReturnWihtId(data.id);
-      if (orderPage) salesData = await getSalesOrderWithId(data.id);
+      if (orderPage || orderGet) salesData = await getSalesOrderWithId(data.id);
 
       if (salesData) {
         let { sales_item, updated_at, ...others } = salesData.data;
         let tempData = { ...others, change_due: others.change_due || "0.00" };
+        if (orderGet){ 
+          tempData = {...tempData,order_no:others?.id}
+          delete tempData.documents_no
+        }
         setSalesAdd((data) => ({ ...data, ...tempData }));
         if (sales_item) {
           setTableItemList([...sales_item]);
           handleSalesAddCalc(sales_item, true, tempData);
         }
+        if (orderGet){
+          setEdit(false)
+          handleGetCode()}
       } else handleGetCode();
-    }catch(err){
-      console.log(err)
+    } catch (err) {
+      console.log(err);
     }
   };
 
@@ -431,12 +457,18 @@ const SalesTransaction = ({ returnPage, orderPage }) => {
       }
       if (orderPage) {
         response2 = await getSalesOrderList();
-      } else response2 = await getSalesList();
+      } else {
+        response2 = await getSalesList();
+        response1 = await getSalesOrderList();
+      }
       if (response1?.success && response2?.success && returnPage) {
         setSalesOnlyList(response2?.data);
         setSalesList(response1?.data);
       } else if (response2?.success) {
         setSalesList(response2?.data);
+        if(response1?.success){
+          setOrderDocList(()=>response1?.data.map(order=>({...order,text:order.documents_no,value:order.id})))
+        }
       }
       return response2?.data;
     } catch (err) {
@@ -573,13 +605,12 @@ const SalesTransaction = ({ returnPage, orderPage }) => {
       }
       if (
         orderPage &&
-        ((!salesAdd.fk_customer && salesAdd.paid_cash > 0) ||
-          (salesAdd.fk_customer && !salesAdd.paid_cash))
+        ((!salesAdd.fk_customer && salesAdd.paid_cash > 0))
       ) {
         Swal.fire({
           title: "Please Select Customer",
           icon: "warning",
-          text: "Please select customer or empty paid cash",
+          text: "Please select customer or add amount in paid cash",
           showConfirmButton: false,
           timer: 1500,
         });
@@ -606,6 +637,7 @@ const SalesTransaction = ({ returnPage, orderPage }) => {
       if (response?.success) {
         getData();
         setShowPrint(true);
+        handleGetCode()
         Swal.fire(
           `Sales ${
             returnPage ? "return" : orderPage ? "order" : ""
@@ -716,14 +748,14 @@ const SalesTransaction = ({ returnPage, orderPage }) => {
           <div className="col-3 mx-0 px-0 ps-2 row">
             <div className="col-12 sales-supplier-container px-0 py-3 row mx-0 mt-1">
               <div className="col-11 row mx-0 mb-1 align-items-center">
-                <div className="col-5">Op Balance</div>
+                <div className="col-7">Op Balance</div>
                 <div className="col-1">:</div>
-                <div className="col-5">{cstClsOpn.opening || 0}</div>
+                <div className="col-3">{cstClsOpn.opening || 0}</div>
               </div>
               <div className="col-11 row mx-0 align-items-center">
-                <div className="col-5">Cl Balance</div>
+                <div className="col-7">Cl Balance</div>
                 <div className="col-1">:</div>
-                <div className="col-5">{cstClsOpn.closing || 0}</div>
+                <div className="col-3">{cstClsOpn.closing || 0}</div>
               </div>
             </div>
             <div className="col-12 gap-2 d-flex align-items-end justify-content-start px-0 mx-0 mt-1">
@@ -761,6 +793,8 @@ const SalesTransaction = ({ returnPage, orderPage }) => {
           <div className={`col-9 ${pageHeadItem !== 1 && "d-none"}`}>
             <SalesInvoiceDetails
               {...{
+                handlePurchOrderSelect,
+                orderDocList,
                 returnPage,
                 orderPage,
                 tableItemRef,
