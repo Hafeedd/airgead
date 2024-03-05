@@ -23,7 +23,7 @@ const PaymentTransaction = ({ method }) => {
     cash_bank_account: null,
     amount: 0,
     amount_word: null,
-    date: null,
+    date: new Date().toISOString(),
     project: null,
     cheque_no: null,
     draw_no: null,
@@ -284,6 +284,8 @@ const PaymentTransaction = ({ method }) => {
   };
 
   const handleChange = (e, data) => {
+    let name = e.target.name
+    let value = e.target.value
     if (data) {
       let payment_data = data.options.filter((x) => x.value === data.value)[0];
       setPaymentAdd((data) => ({
@@ -297,7 +299,7 @@ const PaymentTransaction = ({ method }) => {
     }
 
     if (e.target.type === "number") {
-      var temp_value = e.target.value;
+      var temp_value = value;
 
       if (isNaN(parseInt(temp_value))) {
         Swal.fire({
@@ -308,12 +310,12 @@ const PaymentTransaction = ({ method }) => {
           toast: true,
         });
         temp_value = "";
-      } else if (parseInt(e.target.value) < 0) {
+      } else if (parseInt(value) < 0) {
         temp_value = "";
       }
 
-      if (e.target.name === "amount") {
-        if (e.target.value > 99999999999999) {
+      if (name === "amount") {
+        if (value > 99999999999999) {
           Swal.fire({
             icon: "info",
             text: "Max Amount Limit Reached!!!",
@@ -330,20 +332,21 @@ const PaymentTransaction = ({ method }) => {
           setPaymentAdd((data) => ({ ...data, amount_word: temp }));
         }
       } else {
-        setPaymentAdd((data) => ({ ...data, [e.target.name]: temp_value }));
+        setPaymentAdd((data) => ({ ...data, [name]: temp_value }));
       }
     } else if (e.target.type === "checkbox")
-      setPaymentAdd((data) => ({ ...data, [e.target.name]: e.target.checked }));
-    else if (e.target.value === "")
-      setPaymentAdd((data) => ({ ...data, [e.target.name]: null }));
-    // else if (e.target.name === "method") {
-    //   navigate(`/${e.target.value.toLowerCase()}-transaction`);
+      setPaymentAdd((data) => ({ ...data, [name]: e.target.checked }));
+    else if (value === "")
+      setPaymentAdd((data) => ({ ...data, [name]: null }));
+    // else if (name === "method") {
+    //   navigate(`/${value.toLowerCase()}-transaction`);
     // }
-    else
-      setPaymentAdd((data) => ({ ...data, [e.target.name]: e.target.value }));
+    else{
+      if(name === "date") value = new Date(value).toISOString()
+      setPaymentAdd((data) => ({ ...data, [name]: value }));}
 
-    if (e.target.name === "tax_type") {
-      if (e.target.value === "GST") {
+    if (name === "tax_type") {
+      if (value === "GST") {
         setPaymentAdd((data) => ({ ...data, tax_amount: null }));
       } else {
         setPaymentAdd((data) => ({ ...data, cgst: null, sgst: null }));

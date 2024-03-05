@@ -171,26 +171,27 @@ const PurchaseTransaction = ({ returnPage, orderPage }) => {
     setPurchaseAdd((data) => ({ ...data, payment_type: paymentType }));
   }, [purchaseAdd.change_due]);
 
-  const filterOutNullValues = (items) =>{
-   items.forEach((item,i) => {
-      for (const [key,value] of Object.entries(item)) {
+  const filterOutNullValues = (items) => {
+    items.forEach((item, i) => {
+      for (const [key, value] of Object.entries(item)) {
         if (value === 0 || value === null || value === undefined) {
-          delete items[i][key]
+          delete items[i][key];
         }
       }
-    })
-    return items
-  }
+    });
+    return items;
+  };
 
   const handleSetEdit = async (state, orderGet) => {
     //orderGet is true when the order is selected from order list else false
-     
+
     try {
       let purchaseData;
       if (!returnPage && !orderPage && !orderGet)
         purchaseData = await getPurchaseWithId(state.id);
       if (returnPage) purchaseData = await getPurchaseReturnWithId(state.id);
-      if (orderPage || orderGet) purchaseData = await getPurchaseOrderWithId(state.id);
+      if (orderPage || orderGet)
+        purchaseData = await getPurchaseOrderWithId(state.id);
 
       if (purchaseData?.data) {
         let { items, updated_at, ...others } = purchaseData.data;
@@ -198,24 +199,25 @@ const PurchaseTransaction = ({ returnPage, orderPage }) => {
           ...others,
           change_due: others.change_due || "0.00",
         };
-        if(orderGet){
-        tempData = {...tempData,order_no:others.id}
-          delete tempData.documents_no
-      }
+        if (orderGet) {
+          tempData = { ...tempData, order_no: others.id };
+          delete tempData.documents_no;
+        }
         setPurchaseAdd((data) => ({ ...data, ...tempData }));
         if (items) {
-          items = filterOutNullValues(items)
+          items = filterOutNullValues(items);
           setTableItemList([...items]);
           handlePurchAllCalc(items, true, tempData);
         }
-      }else{
-        handlePurchaseAllReset()
+      } else {
+        handlePurchaseAllReset();
       }
-      if (orderGet){
-        setEdit(false)
-        handleGetCode()}
+      if (orderGet) {
+        setEdit(false);
+        handleGetCode();
+      }
     } catch (err) {
-      console.log(err)
+      console.log(err);
     }
   };
 
@@ -418,7 +420,7 @@ const PurchaseTransaction = ({ returnPage, orderPage }) => {
 
   const handlePurchOrderSelect = async (id) => {
     if (returnPage || orderPage) return 0;
-        handleSetEdit({id:id},true);
+    handleSetEdit({ id: id }, true);
   };
 
   const handleTableItemReset = () => {
@@ -442,6 +444,8 @@ const PurchaseTransaction = ({ returnPage, orderPage }) => {
   };
 
   const handleChange = (e, data) => {
+    let name = e.target.name
+    let value = e.target.value
     if (data && data.name == "fk_bank") {
       let bank_data = data.options.filter((x) => x.value === data.value)[0];
       setPurchaseAdd((data) => ({
@@ -464,11 +468,11 @@ const PurchaseTransaction = ({ returnPage, orderPage }) => {
     } else if (e.target.type === "checkbox") {
       setPurchaseAdd((data) => ({
         ...data,
-        [e.target.name]: !data[e.target.name],
+        [name]: !data[name],
       }));
-    } else if (e.target.name == "discount") {
+    } else if (name == "discount") {
       let discPrice,
-        value = e.target.value !== "" ? +e.target.value : null;
+        value = value !== "" ? +value : null;
 
       let totalAmount =
         (+purchaseAdd.paid_cash || 0) +
@@ -477,14 +481,14 @@ const PurchaseTransaction = ({ returnPage, orderPage }) => {
       discPrice = totalAmount + +purchaseAdd.discount - value;
       setPurchaseAdd((data) => ({
         ...data,
-        [e.target.name]: value,
+        [name]: value,
         total_amount: discPrice?.toFixed(0),
         paid_cash: discPrice?.toFixed(0),
         change_due: "0.00",
         bank_amount: 0,
       }));
-    } else if (e.target.name == "bank_amount") {
-      let value = e.target.value == "" ? null : +e.target.value;
+    } else if (name == "bank_amount") {
+      let value = value == "" ? null : +value;
       let totalAmount = purchaseAdd.total_amount;
       setPurchaseAdd((data) => ({
         ...data,
@@ -492,9 +496,9 @@ const PurchaseTransaction = ({ returnPage, orderPage }) => {
         change_due: "0.00",
         bank_amount: value,
       }));
-    } else if (e.target.name == "paid_cash") {
+    } else if (name == "paid_cash") {
       if (
-        +e.target.value >
+        +value >
         +(
           +purchaseAdd.paid_cash +
           +purchaseAdd.bank_amount +
@@ -508,7 +512,7 @@ const PurchaseTransaction = ({ returnPage, orderPage }) => {
           timer: 1560,
         });
       } else {
-        let value = e.target.value == "" ? null : +e.target.value;
+        let value = value == "" ? null : +value;
         setPurchaseAdd((data) => ({
           ...data,
           change_due:
@@ -520,10 +524,12 @@ const PurchaseTransaction = ({ returnPage, orderPage }) => {
           paid_cash: value,
         }));
       }
-    } else if (e.target.value == "")
-      setPurchaseAdd((data) => ({ ...data, [e.target.name]: null }));
-    else
-      setPurchaseAdd((data) => ({ ...data, [e.target.name]: e.target.value }));
+    }
+    else if (value == "")
+      setPurchaseAdd((data) => ({ ...data, [name]: null }));
+    else{
+      if(name==="date") value = new Date(value).toISOString()
+      setPurchaseAdd((data) => ({ ...data, [name]: value }));}
   };
 
   const handleCloseItemBatch = () => {

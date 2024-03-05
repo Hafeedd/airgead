@@ -34,7 +34,7 @@ export const StockJournalDetails = (props) => {
 
   const [ref, setRef] = useState(null);
 
-  const [ handleKeyDown, formRef ] = useOnKey(ref, setRef);
+  const [handleKeyDown, formRef] = useOnKey(ref, setRef);
 
   const AdjustTableHeight = () => {
     let a = [];
@@ -49,11 +49,12 @@ export const StockJournalDetails = (props) => {
   };
 
   const handleKeyWithSubmit = (e) => {
-    if (e.type == "keydown") if (e.key == "Enter") {
-    handleAddToTableList();
-    e.preventDefault();
-    handleKeyDown(e);
-  }
+    if (e.type == "keydown")
+      if (e.key == "Enter") {
+        handleAddToTableList();
+        e.preventDefault();
+        handleKeyDown(e);
+      }
   };
 
   // const handleTrashButton = async () => {
@@ -81,6 +82,8 @@ export const StockJournalDetails = (props) => {
   };
 
   const handleChange = (e, data) => {
+    let value = e.target?.value;
+    let name = e.target?.name;
     if (data && data?.name == "code") {
       let item_data = data.options.filter((x) => x.value === data.value)[0];
       setStockJAdd((data) => ({
@@ -88,11 +91,10 @@ export const StockJournalDetails = (props) => {
         ["code"]: item_data?.value,
         unit: item_data?.unit,
       }));
-    } else if (e.target.value === "")
-      setStockJAdd({ ...stockJAdd, [e.target.name]: null });
-    else setStockJAdd((data) => ({ ...data, [e.target.name]: e.target.value }));
-    if(e.target.name === "date"){
-      setStockJAdd((data) => ({ ...data, date: new Date(e.target.value).toISOString() }));
+    } else if (value === "") setStockJAdd({ ...stockJAdd, [name]: null });
+    else {
+      if (name === "date") value = new Date(e.target.value).toISOString()
+        setStockJAdd((data) => ({ ...data, [name]: value }));
     }
   };
 
@@ -176,7 +178,7 @@ export const StockJournalDetails = (props) => {
             onChange={handleChange}
             required
             name="date"
-            value={stockJAdd.date?.slice(0,10)}
+            value={stockJAdd?.date && stockJAdd?.date?.slice(0, 10)}
             className="purchase-input-text me-2"
             placeholder="Document number"
             type="date"
@@ -267,11 +269,9 @@ export const StockJournalDetails = (props) => {
             <th width={"80"}></th>
           </thead>
           <tbody>
-
             {/* list part ----------------------------------------------------------start */}
             {stockTableItemList?.length > 0 &&
               stockTableItemList?.map((data, i) => {
-
                 const handleEdit = (e, dropDownData) => {
                   let tempData = { ...data };
                   if (dropDownData) {
@@ -285,17 +285,17 @@ export const StockJournalDetails = (props) => {
                     };
                   } else if (e.target.value == "")
                     tempData = { ...tempData, [e.target.name]: null };
-                    else tempData = { ...data, [e.target.name]: e.target.value };                  
+                  else tempData = { ...data, [e.target.name]: e.target.value };
                   let tempTable = stockTableItemList || [];
                   tempTable.splice(i, 1, tempData);
                   setStockTableItemList([...tempTable]);
                 };
 
-                const handleRemove = () =>{
-                  let tempList = stockTableItemList||[]
-                  tempList.splice(i,1)
-                  setStockTableItemList([...tempList])
-                }
+                const handleRemove = () => {
+                  let tempList = stockTableItemList || [];
+                  tempList.splice(i, 1);
+                  setStockTableItemList([...tempList]);
+                };
 
                 return (
                   <tr key={i}>
@@ -455,18 +455,17 @@ export const StockJournalDetails = (props) => {
               )}
               {!tableEdit && <td className="align-middle"></td>} */}
               <td className="text-center">
-              <button
-                className="btn-focus border-0 btn-sm rounded-1 bg-dark text-light fs-5"
-                onClick={handleAddToTableList}
-                onKeyDown={handleKeyWithSubmit}
-              >
-                +
-              </button>
+                <button
+                  className="btn-focus border-0 btn-sm rounded-1 bg-dark text-light fs-5"
+                  onClick={handleAddToTableList}
+                  onKeyDown={handleKeyWithSubmit}
+                >
+                  +
+                </button>
               </td>
             </tr>
             {/* entry part ---------------------------------------------------------end */}
 
-           
             <AdjustTableHeight />
             <tr>
               <td className="p-2 text-start">
