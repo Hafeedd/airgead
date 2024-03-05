@@ -8,7 +8,6 @@ import { Dropdown } from "semantic-ui-react";
 import { useState } from "react";
 import Swal from "sweetalert2";
 import useOnKey from "../../../../hooks/onKeyFunct/onKeyFunct";
-import editIcon from "../../../../assets/icons/edit-black.svg";
 import delteIcon from "../../../../assets/icons/delete.svg";
 
 export const StockJournalDetails = (props) => {
@@ -92,6 +91,9 @@ export const StockJournalDetails = (props) => {
     } else if (e.target.value === "")
       setStockJAdd({ ...stockJAdd, [e.target.name]: null });
     else setStockJAdd((data) => ({ ...data, [e.target.name]: e.target.value }));
+    if(e.target.name === "date"){
+      setStockJAdd((data) => ({ ...data, date: new Date(e.target.value).toISOString() }));
+    }
   };
 
   const search = (options, searchValue) => {
@@ -518,6 +520,7 @@ export const StockJournalDetails = (props) => {
         <Form.Control
           onChange={handleChange}
           required
+          from="stockJournal"
           name="narration"
           value={stockJAdd.narration || ""}
           className="purchase-input-text me-2"
