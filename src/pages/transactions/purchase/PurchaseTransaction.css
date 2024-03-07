@@ -657,3 +657,9 @@ td.n_clr {
   color: #2c68d2;
   border: 1px solid #2c68d2;
 }
+
+.purchase-edit-popup{
+  background: #3c8748;
+  padding: 1rem;
+  color: white;
+}

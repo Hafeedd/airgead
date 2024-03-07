@@ -316,7 +316,7 @@ export const StockJournalEdit = (props) => {
                     <>
                       <tr className="first-child" key={i1}>
                         <td>
-                          {new Date(data?.created_at).toLocaleDateString()}
+                          {new Date(data?.date).toLocaleDateString()}
                         </td>
                         <td className="text-start ps-4" colSpan={6}>
                           {data.documents_no}
@@ -332,7 +332,6 @@ export const StockJournalEdit = (props) => {
                             let index = tempListItemSelected.findIndex(
                               (x) => x.id === item.id
                             );
-                            console.log(index);
                             tempListItemSelected.splice(index, 1);
                             setSelectedItemList([...tempListItemSelected]);
                           }

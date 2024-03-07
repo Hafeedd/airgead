@@ -69,8 +69,13 @@ const PurchaseTransaction = ({ returnPage, orderPage }) => {
   const { getCode } = useItemServices();
 
   const { getAccountList } = useAccountServices();
-  const { postPurchase, putPurchase, getPurchaseList, getPurchaseWithId } =
-    usePurchaseServices();
+  const {
+    getPurchase,
+    postPurchase,
+    putPurchase,
+    getPurchaseList,
+    getPurchaseWithId,
+  } = usePurchaseServices();
   const {
     postPurchaseReturn,
     getPurchaseReturnList,
@@ -89,10 +94,11 @@ const PurchaseTransaction = ({ returnPage, orderPage }) => {
 
   useEffect(() => {
     getData();
-    // handlePurchaseAllReset();
     if (!returnPage && !orderPage) {
+      setPurchaseOrReturnList([])
       handleReloadData();
     } else if (returnPage || orderPage) {
+      // setPurchaseOrReturnList([])
       handleGetCode(true);
     }
 
@@ -384,7 +390,7 @@ const PurchaseTransaction = ({ returnPage, orderPage }) => {
       setSupplierList(suppList);
 
       if (returnPage) {
-        response4 = await getPurchaseList();
+        response4 = await getPurchase();
         response1 = await getPurchaseReturnList();
       } else if (orderPage) {
         response1 = await getPurchaseOrderList();
@@ -432,7 +438,7 @@ const PurchaseTransaction = ({ returnPage, orderPage }) => {
     setPurchaseEditModal(true);
   };
 
-  const handlePurchaseAllReset = (resetLocal) => {
+  const handlePurchaseAllReset = (resetLocal) => {    
     setPurchaseAdd(initialPurchaseAdd);
     setTableItemList([]);
     setTableItemBatchList([]);
@@ -892,14 +898,14 @@ const PurchaseTransaction = ({ returnPage, orderPage }) => {
         show={purchaseEditModal}
         size="lg"
         centered
-        contentClassName="purchase-table-container"
         onHide={() => setPurchaseEditModal(false)}
       >
         <PurchaseEditList
-          closeEditModal={setPurchaseEditModal}
+          setShow={setPurchaseEditModal}
+          title={"Purchase Edit Table"}
+          list={purchaseOrReturnList}
           {...{
             handleSetEdit,
-            purchaseOrReturnList,
             setEdit,
             edit,
             getData,
@@ -967,3 +973,4 @@ const PurchaseTransaction = ({ returnPage, orderPage }) => {
 };
 
 export default PurchaseTransaction;
+
