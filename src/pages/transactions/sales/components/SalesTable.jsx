@@ -113,13 +113,13 @@ const SalesTable = (props) => {
       (x) => x.saleShow && x.visible
     ).length;
     tempTableTr.push(
-      <tr className="border-0">
+      <tr key={0} className="border-0">
         <td className="border-0" colSpan={lengthOfTh + 2}></td>
       </tr>
     );
     for (let i = 0; i < 7 - tableItemList.length || 0; i++) {
       tempTableTr.push(
-        <tr className="border-0" key={i}>
+        <tr className="border-0" key={i+1}>
           <td className="border-0" colSpan={lengthOfTh + 2}></td>
         </tr>
       );
@@ -174,9 +174,9 @@ const SalesTable = (props) => {
     handleTableItemReset();
   };
 
-  const handleChangeTableItem = (e, data, state, totableItem) => {
-    // totableItem is used to check if the state to be set to tableItem or tableItemList
-    // if totableItem is not true then it contains the index of tableItemList
+  const handleChangeTableItem = (e, data, state, toTableItem) => {
+    // toTableItem is used to check if the state to be set to tableItem or tableItemList
+    // if toTableItem is not true then it contains the index of tableItemList
 
     let tempItem = { ...state };
     if (data?.value) {
@@ -238,11 +238,12 @@ const SalesTable = (props) => {
     } else {
       tempItem = { ...tempItem, [e.target.name]: e.target.value };
     }
+    
     const calculatedData = handleAmountCalculation(tempItem, e, data);
-    if (totableItem === true) setTableItem(calculatedData);
+    if (toTableItem === true) setTableItem(calculatedData);
     else {
       let tempList = [...tableItemList];
-      tempList.splice(totableItem, 1, { ...calculatedData, edited: true });
+      tempList.splice(toTableItem, 1, { ...calculatedData, edited: true });
       setTableItemList([...tempList]);
       handleSalesAddCalc(tempList, false, false);
     }
@@ -258,7 +259,8 @@ const SalesTable = (props) => {
       name !== "tax_gst" &&
       name !== "rate" &&
       name !== "discount_1_percentage" &&
-      data?.name !== "name"
+      data?.name !== "name" && 
+      name !== "quantity"
     ) {
       if (tempItem.gross && tempItem.tax_gst) {
         value = {
@@ -405,13 +407,13 @@ const SalesTable = (props) => {
     } else {
       tempItem = {
         ...tempItem,
-        value: 0,
         sgst: 0,
         cgst_or_igst: 0,
         total: 0,
-        rate: 0,
         discount_1_amount: 0,
-        gross: 0,
+        // value: 0,
+        // rate: 0,
+        // gross: 0,
       };
     }
 
@@ -490,11 +492,11 @@ const SalesTable = (props) => {
                 tableHeadList.map((item, i) => {
                   if (item.visible && item.saleShow)
                     return i === 0 ? (
-                      <th width="200" className="text-start" colSpan={1}>
+                      <th key={i} width="200" className="text-start" colSpan={1}>
                         {item.title}
                       </th>
                     ) : (
-                      <th>{item.title}</th>
+                      <th key={i}>{item.title}</th>
                     );
                   else return null;
                 })}
@@ -637,6 +639,7 @@ const SalesTable = (props) => {
                   if (item.visible && item.saleShow)
                     return item.state === "item_name" ? (
                       <td
+                        key={i}
                         className="purchase_search_drop_td text-start ps-3 pe-3"
                         colSpan={1}
                       >
@@ -669,7 +672,7 @@ const SalesTable = (props) => {
                         />
                       </td>
                     ) : item.state === "unit" ? (
-                      <td colSpan={i === 0 ? 2 : 1}>
+                      <td key={i} colSpan={i === 0 ? 2 : 1}>
                         <select
                           onKeyDown={handleKeyDown}
                           name={"fk_unit"}
@@ -698,7 +701,7 @@ const SalesTable = (props) => {
                         </select>
                       </td>
                     ) : (
-                      <td colSpan={i === 0 ? 2 : 1}>
+                      <td key={i} colSpan={i === 0 ? 2 : 1}>
                         <input
                           onKeyDown={handleKeyDown}
                           // name={item.state}
@@ -767,13 +770,13 @@ const SalesTable = (props) => {
                   if (i > 0 && item.saleShow)
                     return item.state === "discount_1_amount" &&
                       item.visible ? (
-                      <td className="item">
+                      <td key={i} className="item">
                         <div className="purch-green-table-item">
                           {salesAdd.total_disc?.toFixed(2) || 0}
                         </div>
                       </td>
                     ) : item.state === "value" && item.visible ? (
-                      <td className="item">
+                      <td key={i} className="item">
                         <div className="purch-green-table-item">
                           {salesAdd.total_value || 0}
                         </div>
@@ -781,19 +784,19 @@ const SalesTable = (props) => {
                     ) : (item.state === "cgst_or_igst" ||
                         item.state === "sgst") &&
                       item.visible ? (
-                      <td className="item">
+                      <td key={i} className="item">
                         <div className="purch-green-table-item">
                           {salesAdd.total_scGst || 0}
                         </div>
                       </td>
                     ) : item.state === "total" && item.visible ? (
-                      <td className="item">
+                      <td key={i} className="item">
                         <div className="purch-green-table-item">
                           {salesAdd.total_total || 0}
                         </div>
                       </td>
                     ) : (
-                      item.visible && <td>{/* {item.state} */}</td>
+                      item.visible && <td key={i}>{/* {item.state} */}</td>
                     );
                   else return null;
                 })}

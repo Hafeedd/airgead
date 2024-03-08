@@ -66,7 +66,7 @@ const AccountMaster = () => {
               }}
               className="btn btn-primary add-btn px-2 py-1 w-auto"
             >
-              + &nbsp; Add Customer
+              + &nbsp; Add Account
             </div>
           </div>
         </div>

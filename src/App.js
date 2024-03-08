@@ -52,9 +52,9 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
-      <Route path="/login-page" element={<Login/>}/>
-      <Route path="/register-page" element={<Register/>}/>
-      <Route path="/verification-page" element={<Verification/>}/>
+      <Route path="/login" element={<Login/>}/>
+      <Route path="/register" element={<Register/>}/>
+      <Route path="/verification" element={<Verification/>}/>
       <Route path="/company-list" element={<CompanyList/>}/>
       <Route path="/company-password" element={<CompanyPassword/>}/>
 

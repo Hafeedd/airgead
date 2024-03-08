@@ -16,6 +16,7 @@ const SalesInvoiceDetails = (props) => {
     codeWithBillTypeList,
     handleChange,
     edit,
+    setSalesEditModal,
   } = props;
 
   const [ref, setRef] = useState(null);
@@ -35,7 +36,7 @@ const SalesInvoiceDetails = (props) => {
         (edit?.fk_bill_type && !salesAdd?.fk_bill_type))
     ) {
       setSalesAdd((data) => ({ ...data, documents_no: edit?.documents_no }));
-    } else if (salesAdd?.fk_bill_type && codeWithBillTypeList?.length > 0) {
+    } else if (salesAdd?.fk_bill_type) {
       tempCode = codeWithBillTypeList?.filter(
         (x) => x.fk_bill_type == salesAdd?.fk_bill_type
       )[0];
@@ -103,23 +104,31 @@ const SalesInvoiceDetails = (props) => {
             onChange={handleChange}
             onKeyDown={handleKeyDown}
             name="date"
-            value={salesAdd?.date || ""}
+            value={salesAdd?.date?.slice(0, 10) || ""}
             className="purchase-input-text"
             type={"date"}
           />
         ) : (
-          <Dropdown
-            clearable
-            selection
-            search={true}
-            onKeyDown={handleKeyDown}
-            onChange={handlePurchOrderSelect}
-            className="purchase-select d-flex align-items-center py-0 form-control"
-            name="order_no"
-            value={salesAdd?.order_no || ""}
-            placeholder="Select"
-            options={orderDocList}
-          />
+          <div className="d-flex align-items-center w-100 gap-2">
+            <Dropdown
+              clearable
+              selection
+              search={true}
+              onKeyDown={handleKeyDown}
+              onChange={handlePurchOrderSelect}
+              className="purchase-select d-flex align-items-center py-0 form-control"
+              name="order_no"
+              value={salesAdd?.order_no || ""}
+              placeholder="Select"
+              options={orderDocList}
+            />
+            <div
+              onClick={() => setSalesEditModal("order")}
+              className="btn btn-sm btn-dark p-0 px-2 h-100"
+            >
+              O
+            </div>
+          </div>
         )}
       </Form.Group>
       <Form.Group className="col-5 mx-0 d-flex align-items-center mt-1">

@@ -46,15 +46,15 @@ const SalesPrintingDetails = () => {
             <div className="col-7 d-flex align-items-center row mx-0 my-1">
                 <div className='mx-0 pe-0 col-4 d-flex align-items-center justify-content-start'>
                     <input type='checkbox' name='Repeat' value='Repeat' />
-                    <label for='Repeat' className='ps-2'>Preview</label>
+                    <label htmlFor='Repeat' className='ps-2'>Preview</label>
                 </div>
                 <div className='mx-0 px-0 col-3 d-flex align-items-center justify-content-end'>
                     <input type='checkbox' name='Blocked' value='Blocked' />
-                    <label for='Blocked' className='ps-2'>Print</label>
+                    <label htmlFor='Blocked' className='ps-2'>Print</label>
                 </div>
                 <div className='mx-0 px-0 col-5 d-flex align-items-center justify-content-end'>
                     <input type='checkbox' name='Blocked' value='Blocked' />
-                    <label for='Blocked' className='ps-2'>Print Barcode</label>
+                    <label htmlFor='Blocked' className='ps-2'>Print Barcode</label>
                 </div>
             </div>
             <span className="col-12 mt-3" />
