@@ -1,6 +1,6 @@
 import "./accountLedger.css";
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router";
+import { useLocation, useNavigate } from "react-router";
 import { useReportsServices } from "../../../services/reports/reports";
 import { ReportDetails } from "../stockLedger/components/ReportDetails";
 import { AccountsTable } from "./components/AccountsTable";
@@ -20,14 +20,18 @@ export const AccountLedger = () => {
     to_date: new Date().toISOString().slice(0, 10),
   });
 
+  const location = useLocation()
+
   const { getAccLedger } = useReportsServices();
   const { getAccountList } = useAccountServices();
 
   useEffect(() => {
-    getData();
-  }, [paramsToReport]);
+    if(location?.state?.code)
+    getData(location?.state?.code);
+    else getData()
+  }, [paramsToReport,location.pathname]);
 
-  const getData = async () => {
+  const getData = async (codeParams) => {
     try {
       const response2 = await getAccountList()
         if(response2.success){
@@ -36,6 +40,9 @@ export const AccountLedger = () => {
         let code = {code:[response2.data[0].code]}
         if(accChooseList?.length>0){
            code = {code:accChooseList}
+        }
+        if(codeParams){
+          code = {code:[codeParams]}
         }
         if(selectAllAcc){
           code = {code:[]}
