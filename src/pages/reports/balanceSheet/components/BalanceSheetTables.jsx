@@ -153,7 +153,7 @@ const BalanceSheetTables = (props) => {
                                 <td className='bg-danger text-white' colSpan={2}>LOSS:{tableValue.total_asset - tableValue.total_liability}</td>
                             </tr> */}
                             <tr style={{ position: "sticky", bottom: "0" }}>
-                                <td className='bg-primary text-white' colSpan={2}>TOTAL ASSET: {(tableValue.total_asset - (tableValue.diff_amount < 0 ? tableValue.diff_amount:0.0)) | "0.0"}</td>
+                                <td className='bg-primary text-white' colSpan={2}>TOTAL ASSET: {(+tableValue.total_asset - (+tableValue.diff_amount < 0 ? +tableValue.diff_amount:0.0)).toFixed(2)}</td>
                             </tr>
 
 
@@ -193,7 +193,7 @@ const BalanceSheetTables = (props) => {
                             </tr>
 
                             <tr style={{ position: "sticky", bottom: "0" }}>
-                                <td className='bg-primary text-white' colSpan={2}>TOTAL LIABILITY: {tableValue.total_liability - (tableValue.diff_amount > 0 ? tableValue.diff_amount:0.0) | "0.00"}</td>
+                                <td className='bg-primary text-white' colSpan={2}>TOTAL LIABILITY: {(+tableValue.total_liability - (+tableValue.diff_amount > 0 ? +tableValue.diff_amount:0.0)).toFixed(2)}</td>
                             </tr>
 
                         </tbody>

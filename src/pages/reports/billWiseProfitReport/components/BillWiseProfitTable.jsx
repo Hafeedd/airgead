@@ -76,10 +76,10 @@ const BillWiseProfitTable = (props) => {
                                 <tr className='' style={{ backgroundColor: "#CECECE" }}>
                                 <td></td>
                                 <td></td>
-                                <td>{billWiseProfit[0]?.grand_total?.total_sales.toFixed(2)}</td>
+                                <td>{billWiseProfit[0]?.grand_total?.total_sales?.toFixed(2)}</td>
                                 <td>0</td>
-                                <td>{billWiseProfit[0]?.grand_total?.total_cost.toFixed(2)}</td>
-                                <td>{billWiseProfit[0]?.grand_total?.total_profit.toFixed(2)}</td>
+                                <td>{billWiseProfit[0]?.grand_total?.total_cost?.toFixed(2)}</td>
+                                <td>{billWiseProfit[0]?.grand_total?.total_profit?.toFixed(2)}</td>
                                 <td></td>
                                 </tr>
                                 

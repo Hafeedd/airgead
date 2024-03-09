@@ -4,6 +4,8 @@ import { GrRefresh } from "react-icons/gr";
 import useAccountServices from '../../../../services/master/accountServices';
 import { Dropdown } from "semantic-ui-react";
 import { Navigate, useNavigate } from 'react-router';
+import { LuView } from "react-icons/lu";
+import { FaEdit } from "react-icons/fa";
 
 const ChartOfAccTable = (props) => {
     const { getAccountGroup } = useAccountServices();
@@ -30,6 +32,7 @@ const ChartOfAccTable = (props) => {
                         
                     });
                 })
+                tempListForDrop.push({value:'null',text:"Null"})
                 setAccountGroupListForDrop([...tempListForDrop]);
             }
         }
@@ -140,6 +143,7 @@ const ChartOfAccTable = (props) => {
                             <th>A/c Type</th>
                             <th>A/c Group</th>
                             <th>Closing Balance</th>
+                            <th></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -148,13 +152,17 @@ const ChartOfAccTable = (props) => {
                             accountChart?.map((data, i) => {
                                 return (
                                     <>
-                                        <tr onDoubleClick={()=> navigate("/account-reports",{state:{code:data.code}})} className='chart-acc-table-data'>
+                                        <tr  className='chart-acc-table-data'>
                                             <td>{i + 1}</td>
                                             <td>{data.code}</td>
                                             <td>{data.name}</td>
                                             <td>{data.account_type_one}</td>
                                             <td>{data.fk_account_group__name}</td>
                                             <td>{data.closing_balance.toFixed(2)}</td>
+                                            <td className='d-flex justify-content-between text-align-center'>
+                                                <span onClick={()=> navigate("/account-reports",{state:{code:data.code}})} className='p-0 m-0 icon-hover'><LuView size={"18px"} /></span>
+                                                <span onClick={()=> navigate("/account-add",{state:{account:data}})} className='icon-hover'><FaEdit size={"18px"}/></span>
+                                            </td>
                                         </tr>
                                     </>
                                 )

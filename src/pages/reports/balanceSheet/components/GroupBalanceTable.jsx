@@ -21,12 +21,12 @@ const GroupBalanceTable = (props) => {
     // })
 
     // useEffect(()=>{
-    //     if(newValue?.account_details?.length>0){
-    //         const totalAsset = newValue.ser.account.reduce((a,b)=>b.acc_group === "ASSET" ? a+b.closing_balance:a,0)
-    //         const totalLiab = newValue.account_details.reduce((a,b)=>b.acc_group === "LIABILITY" ? a+b.closing_balance:a,0)
+    //     if(groupList?.account_details?.length>0){
+    //         const totalAsset = groupList.ser.account.reduce((a,b)=>b.acc_group === "ASSET" ? a+b.closing_balance:a,0)
+    //         const totalLiab = groupList.account_details.reduce((a,b)=>b.acc_group === "LIABILITY" ? a+b.closing_balance:a,0)
     //         setTableValue(data=>({...data,total_asset:totalAsset?.toFixed(2),total_liability:totalLiab?.toFixed(2)}))
     //     }
-    // },[newValue])
+    // },[groupList])
 
     useEffect(() => {
 
@@ -45,7 +45,7 @@ const GroupBalanceTable = (props) => {
         if (data.target.name == "stock-value") {
             setStockValue(data.target.value)
         }
-        if (data.target.name == "btnOk"){
+        if (data.target.name == "btnOk") {
             setNewValue(groupList)
         }
     }
@@ -98,11 +98,11 @@ const GroupBalanceTable = (props) => {
                             </tr>
                         </thead>
                         <tbody>
-                            
+
                             {
                                 newValue?.ser?.length > 0 &&
                                 newValue?.ser.map((data) => {
-                                    
+
                                     var total_amt = 0;
                                     total_asset = total_asset + total_amt
                                     return (data?.account_type == "ASSET" && data?.account?.length > 0) && (
@@ -114,28 +114,31 @@ const GroupBalanceTable = (props) => {
                                             {
                                                 data?.account?.map((acc) => {
                                                     total_amt = total_amt + acc?.closing_balance;
-                                                    
+
                                                     total_asset = total_asset + acc?.closing_balance;
                                                     return (<tr>
                                                         <td className='text-start'>{acc?.name || ''}</td>
                                                         {/* <td className='text-start'>{acc?.closing_balance?.toFixed(2) || 0.0}</td> */}
-                                                        <td className='text-start'>{newValue?.closing_stock_account_name == acc?.name ? value.toFixed(2) : acc?.closing_balance?.toFixed(2) }</td>
+                                                        <td className='text-start'>{newValue?.closing_stock_account_name == acc?.name ? value.toFixed(2) : acc?.closing_balance?.toFixed(2)}</td>
                                                     </tr>
                                                     )
                                                 })
 
                                             }
                                             <tr>
-                                                <td style={{ backgroundColor: "linen" }} className='gp-bal-table-btm' colSpan={2}>Total Amount: {data?.name == "CURRENT ASSET"?(total_amt+value).toFixed(2) : total_amt.toFixed(2)}</td>
+                                                <td style={{ backgroundColor: "linen" }} className='gp-bal-table-btm' colSpan={2}>Total Amount: {data?.name == "CURRENT ASSET" ? (total_amt + value).toFixed(2) : total_amt.toFixed(2)}</td>
                                             </tr>
                                         </>
                                     )
-                                   
+
 
                                 })
                             }
                             <tr>
-                                <td colSpan={2} className='bg-danger text-white'>LOSS: {(Math.abs(total_asset+value) - total_liability)<0?(Math.abs(total_asset+value) - total_liability).toFixed(2):0.0}</td>
+                                <td colSpan={2} className='bg-danger text-white'>LOSS: {(Math.abs(total_asset + value) - total_liability) < 0 ? (Math.abs(total_asset + value) - total_liability).toFixed(2) : 0.0}</td>
+                            </tr>
+                            <tr>
+                                <td style={{position:"sticky",bottom:"0"}} colSpan={2}>TOTAL ASSET: {newValue?.ser?.length > 0?(total_asset+(Math.abs(total_asset + value) - total_asset)).toFixed(2):"0.00"}</td>
                             </tr>
                         </tbody>
                     </table>
@@ -177,33 +180,29 @@ const GroupBalanceTable = (props) => {
                                                 <tr>
                                                     <td style={{ backgroundColor: "linen" }} colSpan={2}>Total Amount: {total_amt.toFixed(2)}</td>
                                                 </tr>
+
+
+
                                             </>
                                         )
                                     }) :
                                     console.log("no data")
 
+
+
                             }
                             <tr>
-                                <td className='bg-success text-white' colSpan={2}>Profit : {(Math.abs(total_asset+value) - total_liability)>0?(Math.abs(total_asset+value) - total_liability):0.0}</td>
+                                <td className='bg-success text-white' colSpan={2}>Profit : {newValue?.ser?.length > 0? ((Math.abs(total_asset + value) - total_liability) > 0 ? (Math.abs(total_asset + value) - total_liability).toFixed(2) : 0.0):"0.00"}</td>
+                            </tr>
+                            <tr>
+                                <td style={{position:"sticky",bottom:"0"}} colSpan={2}>TOTAL LIABILITY: {newValue?.ser?.length > 0?(total_liability+(Math.abs(total_asset + value) - total_liability)).toFixed(2):"0.00"}</td>
                             </tr>
 
                         </tbody>
 
                     </table>
                 </div>
-                <div style={{ backgroundColor: "dodgerblue", }} className='d-flex rounded py-2 '>
-                    <div className="col-2">
-                        <span className='bg-white p-1 px-2 rounded'>Difference Amount:{(Math.abs(total_asset+value) - total_liability).toFixed(2)}</span>
-                    </div>
-                    <div className="col-3 text-end">
-                        {/* <span className='bg-white p-1 px-2 me-3 rounded'>Asset Total: {total_asset?(value+(Math.abs(total_asset))).toFixed(2):"0.00"}</span> */}
-                        <span className='bg-white p-1 px-2 me-3 rounded'>Asset Total: {total_asset+value|0.0}</span>
-                    </div>
-                    <div className="col-4"></div>
-                    <div className="col-3 text-end">
-                        <span className='bg-white p-1 px-2 ms-5 rounded'>Liability Total: {total_liability.toFixed(2)}</span>
-                    </div>
-                </div>
+             
             </div>
 
         </>
