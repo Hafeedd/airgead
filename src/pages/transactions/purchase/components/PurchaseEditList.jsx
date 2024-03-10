@@ -47,7 +47,7 @@ const PurchaseEditList = (props) => {
           } else return false;
         });
         setSearchedList([...tempList]);
-      }else setSearchedList([])
+      } else setSearchedList([])
     }
   };
 
@@ -55,37 +55,36 @@ const PurchaseEditList = (props) => {
     let tempData;
     // console.log(searchedList)
     // if (searchedList?.length > 0) {
-      let value = e.target.value;
-      if (value !== "") {
-        const tmepList = [...list];
-        if (tmepList?.length > 0) {
-          tempData = tmepList?.filter((x) => {
-            let searchInString = `${
-              x.documents_no +
-              " " +
-              x.bill_date +
-              " " +
-              x.supplier_name +
-              " " +
-              x.total_amount
+    let value = e.target.value;
+    if (value !== "") {
+      const tmepList = [...list];
+      if (tmepList?.length > 0) {
+        tempData = tmepList?.filter((x) => {
+          let searchInString = `${x.documents_no +
+            " " +
+            x.bill_date +
+            " " +
+            x.supplier_name +
+            " " +
+            x.total_amount
             }`;
-            let search = searchInString?.includes(value);
-            if (search) {
-              return true
-            }
-          });
-          handleDateFilter(tempData)
-        }
-      } else {
-        handleDateFilter(list);
+          let search = searchInString?.includes(value);
+          if (search) {
+            return true
+          }
+        });
+        handleDateFilter(tempData)
       }
+    } else {
+      handleDateFilter(list);
+    }
     // }
   };
 
   const handleEditClick = (data) => {
     setEdit(data);
-    if(show === "order")
-      handleSetEdit(data,true);
+    if (show === "order")
+      handleSetEdit(data, true);
     else
       handleSetEdit(data);
     setShow(false);
@@ -99,7 +98,7 @@ const PurchaseEditList = (props) => {
       if (response?.success) {
         Swal.fire({
           title: "Success",
-          text: "Account deleted successfully",
+          text: `${from === "sales" ? "Sales" : from === "purch" ? "Purchase" : "Account"} deleted successfully`,
           icon: "success",
           timer: 1000,
           showConfirmButton: false,
@@ -110,7 +109,7 @@ const PurchaseEditList = (props) => {
           title: "Warning",
           text:
             response?.message ||
-            "Failed to delete account. There may be transaction done with this account.",
+            `Failed to delete ${from === "sales" ? "sale" : from === "purch" ? "purchase" : "account"}. There may be transaction done with this account.`,
           icon: "info",
           // timer: 1000,
           // showConfirmButton: false,
@@ -122,7 +121,7 @@ const PurchaseEditList = (props) => {
         title: "Warning",
         text:
           err?.response?.data?.message ||
-          "Failed to delete account. There may be transaction done with this account.",
+          `Failed to delete ${from === "sales" ? "sale" : from === "purch" ? "purchase" : "account"}. There may be transaction done with this account.`,
         icon: "info",
       });
     }
@@ -205,9 +204,8 @@ const PurchaseEditList = (props) => {
                 const handleDelete = async (e) => {
                   Swal.fire({
                     title: "Delete",
-                    text: `Are you sure, you want to delete ${
-                      from == "sales" ? "sale" : "purchase"
-                    } ${data.documents_no}?`,
+                    text: `Are you sure, you want to delete ${from == "sales" ? "sale" : "purchase"
+                      } ${data.documents_no}?`,
                     icon: "question",
                     showDenyButton: true,
                     showCancelButton: false,
@@ -229,7 +227,7 @@ const PurchaseEditList = (props) => {
                 };
 
                 return (
-                  <tr key={i}>
+                  <tr key={i} onClick={() => { if (show === "order") handleEditClick(data) }}>
                     <td className="text-start ps-3">{data?.documents_no}</td>
                     <td className="">
                       {new Date(data?.date)
@@ -247,7 +245,7 @@ const PurchaseEditList = (props) => {
                     <td className="">{data?.total_amount}</td>
                     <td className=""></td>
                     <td className="">
-                      <div className="d-flex gap-3 pe-3 justify-content-end">
+                      {show !== "order" && <div className="d-flex gap-3 pe-3 justify-content-end">
                         <img
                           src={deleteBtn}
                           alt="deleteBtn"
@@ -258,7 +256,7 @@ const PurchaseEditList = (props) => {
                           alt="editBtn"
                           onClick={() => handleEditClick(data)}
                         />
-                      </div>
+                      </div>}
                     </td>
                   </tr>
                 );
@@ -276,7 +274,7 @@ const PurchaseEditList = (props) => {
       <div
         className="col-12 row pe-3 my-0 mt-3 w-100 justify-content-end pb-2 mx-0 align-items-end position-sticky"
         style={{ bottom: "5px", MinHeight: "inherit" }}
-        // style={{ MinHeight: "inherit" }}
+      // style={{ MinHeight: "inherit" }}
       >
         <div className="mx-0 px-1 pe-0 col-1 col-2 pb-0 ">
           <button

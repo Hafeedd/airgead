@@ -28,13 +28,6 @@ const PaymentDetail = ({
 
   const { getAccOpClBalance } = useBaseServices();
 
-  // const cash_type_list = [
-  //     {text:"Cash Inhand",value:"INHAND"},
-  //     {text:"UPI",value:"UPI"},
-  //     {text:"Cheque",value:"CHEQUE"},
-  //     {text:"Bank Transfer",value:"TRANSFER"},
-  // ]
-
   useEffect(() => {
     if (paymentAdd?.cash_bank_account_name !== "CASH IN BANK") {
       setPaymentNav(2);
@@ -50,9 +43,8 @@ const PaymentDetail = ({
 
   const getBalance = async () => {
     try{
-      let id = accountList.filter(x=>x.code == paymentAdd.account_code)[0].id
-      const res = await getAccOpClBalance(paymentAdd.accuont_code);
-      console.log(res);
+      let id = accountList.filter(x=>x.code == paymentAdd.account_code)[0]?.id
+      const res = await getAccOpClBalance(id);
       if (res.success) {
         let bal = res?.data[0];
         setPaymentAdd((data) => ({

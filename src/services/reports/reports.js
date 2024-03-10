@@ -1,16 +1,16 @@
-import axios, { axiosPrivate } from "../../api/axios";
+import axios from "../../api/axios";
 // // import useStaffServices from "../master/staffServices"
 
 export const useReportsServices = () => {
   const getStockLedger = async (params) => {
-    const response = await axiosPrivate.get("/reports/stock_ledger/view/", {
+    const response = await axios.get("/reports/stock_ledger/view/", {
       params: { ...params },
     });
     return response.data;
   };
 
   const getAccLedger = async (params, data) => {
-    const response = await axiosPrivate.post(
+    const response = await axios.post(
       "/reports/ledger_report/view/",
       data,
       { params: params }
@@ -19,7 +19,7 @@ export const useReportsServices = () => {
   };
 
   const getOutstanding = async (params) => {
-    const response = await axiosPrivate.get(
+    const response = await axios.get(
       "/reports/user/outstanding_report/",
       { params: params }
     );
@@ -27,14 +27,14 @@ export const useReportsServices = () => {
   };
 
   const getSalesBook = async (params) => {
-    const response = await axiosPrivate.get("/reports/sales_report/view/", {
+    const response = await axios.get("/reports/sales_report/view/", {
       params: params,
     });
     return response?.data;
   };
 
   const getSaleRegister = async (params) => {
-    const response = await axiosPrivate.get(
+    const response = await axios.get(
       "/reports/sales_register/report/view/",
       { params: params }
     );
@@ -42,28 +42,28 @@ export const useReportsServices = () => {
   };
 
   const getDayBook = async (params) => {
-    const response = await axiosPrivate.get("/reports/daybook_report/view/", {
+    const response = await axios.get("/reports/daybook_report/view/", {
       params: params,
     });
     return response?.data;
   };
 
   const getTaxReport = async (params) => {
-    const response = await axiosPrivate.get("/reports/tax_report/report/", {
+    const response = await axios.get("/reports/tax_report/report/", {
       params: params,
     });
     return response?.data;
   };
 
   const getCashBook = async (params) => {
-    const response = await axiosPrivate.get("/reports/cashbook/report/", {
+    const response = await axios.get("/reports/cashbook/report/", {
       params: params,
     });
     return response?.data;
   };
 
   const getStaffAttendance = async (params) => {
-    const response = await axiosPrivate.get(
+    const response = await axios.get(
       "/reports/staff_attendance/report/",
       { params: params }
     );
@@ -71,7 +71,7 @@ export const useReportsServices = () => {
   };
 
   const getStaffSalary = async (params) => {
-    const response = await axiosPrivate.get(
+    const response = await axios.get(
       "/reports/staff/staff_salary/payroll/report/",
       { params: params }
     );
@@ -79,7 +79,7 @@ export const useReportsServices = () => {
   };
 
   const getItemWiseProfit = async (params) => {
-    const response = await axiosPrivate.get(
+    const response = await axios.get(
       "/reports/item_wise/profit/report/",
       { params: params }
     );
@@ -87,14 +87,14 @@ export const useReportsServices = () => {
   };
 
   const getPurchaseBook = async (params) => {
-    const response = await axiosPrivate.get("/reports/purchase_report/view/", {
+    const response = await axios.get("/reports/purchase_report/view/", {
       params: params,
     });
     return response?.data;
   };
 
   const getPurchaseRegister = async (params) => {
-    const response = await axiosPrivate.get(
+    const response = await axios.get(
       "/reports/purchase_register/report/view/",
       { params: params }
     );
@@ -102,14 +102,14 @@ export const useReportsServices = () => {
   };
 
   const getStockJournalReport = async (params) => {
-    const response = await axiosPrivate.get("/reports/stock_journal/report/", {
+    const response = await axios.get("/reports/stock_journal/report/", {
       params: params,
     });
     return response?.data;
   };
 
   const getBarcodeRegReport = async (params) => {
-    const response = await axiosPrivate.get(
+    const response = await axios.get(
       "/reports/barcode/register/report/",
       { params: params }
     );
@@ -117,7 +117,7 @@ export const useReportsServices = () => {
   };
 
   const getItemHistory = async (id, params) => {
-    const response = await axiosPrivate.get(
+    const response = await axios.get(
       `/reports/item/item_report/${id}/`,
       { params: params }
     );
@@ -125,7 +125,7 @@ export const useReportsServices = () => {
   };
 
   const getBillWiseProfit = async (params) => {
-    const response = await axiosPrivate.get(
+    const response = await axios.get(
       "/reports/bill_wise/profit/report/",
       { params: params }
     );
@@ -133,14 +133,14 @@ export const useReportsServices = () => {
   };
 
   const getStockValueReport = async (params) => {
-    const response = await axiosPrivate.get("reports/stoke/value/report/", {
+    const response = await axios.get("reports/stoke/value/report/", {
       params: params,
     });
     return response?.data;
   };
 
   const getBillWiseLedger = async (params) => {
-    const response = await axiosPrivate.get(
+    const response = await axios.get(
       "/reports/billwise_ledger/report/",
       { params: params }
     );
@@ -148,7 +148,7 @@ export const useReportsServices = () => {
   };
 
   const getConsolidateCashbook = async (params) => {
-    const response = await axiosPrivate.get(
+    const response = await axios.get(
       "/reports/consolidated/cashbook/report/",
       { params: params }
     );
@@ -156,7 +156,7 @@ export const useReportsServices = () => {
   };
 
   const getProductionRegister = async (params) => {
-    const response = await axiosPrivate.get(
+    const response = await axios.get(
       "production/production/production_register/",
       { params: params }
     );
@@ -164,7 +164,7 @@ export const useReportsServices = () => {
   };
 
   const getTrialBalance = async (params) => {
-    const response = await axiosPrivate.get(
+    const response = await axios.get(
       "/reports/trial_balance/report/",
       { params: params }
     );
@@ -172,7 +172,7 @@ export const useReportsServices = () => {
   };
 
   const getGroupTrialBalance = async (params) => {
-    const response = await axiosPrivate.get(
+    const response = await axios.get(
       "/reports/group/headwise/balancesheet/report/",
       { params: params }
     );
@@ -180,7 +180,7 @@ export const useReportsServices = () => {
   };
 
   const getBalanceSheet = async (params) => {
-    const response = await axiosPrivate.get(
+    const response = await axios.get(
       "/reports/balance_sheet/report/",
       { params: params }
     );
@@ -188,7 +188,7 @@ export const useReportsServices = () => {
   };
 
   const getGroupBalanceSheet = async (params) => {
-    const response = await axiosPrivate.get(
+    const response = await axios.get(
       "/reports/group/headwise/balancesheet/report/",
       { params: params }
     );
@@ -197,7 +197,7 @@ export const useReportsServices = () => {
 
 
   const getTaridProfitLoss = async (params) => {
-    const response = await axiosPrivate.get(
+    const response = await axios.get(
       "/reports/profit/loss/report/",
       { params: params }
     );

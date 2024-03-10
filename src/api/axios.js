@@ -1,5 +1,6 @@
 import axios from 'axios'
 
+// const BASE_URL = 'https://accounts-auth-api.foxa.in/api/v1/' // server api for authentication testing
 const BASE_URL = 'https://accounts-api.foxa.in/api/v1/' // normal server api 
 // const BASE_URL = 'http://localhost:8000/api/v1/'
 // const BASE_URL = 'https://192.168.29.163/api/v1/' // benison api (can be changed)
@@ -17,5 +18,5 @@ export const axiosPrivate=axios.create({
     headers:{
         'Content-Type': "application/json",
     },
-    withCredentials:false
+    withCredentials:true
 });

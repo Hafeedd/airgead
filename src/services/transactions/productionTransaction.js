@@ -1,23 +1,23 @@
-import {axiosPrivate} from '../../api/axios'
+import axios from '../../api/axios'
 
 const useProductionTransactionServices = ()=>{
     const postProductionData = async(data)=>{
-        const response = await axiosPrivate.post('production/',data)
+        const response = await axios.post('production/',data)
         return response.data
     }
 
     const putProductionData = async(data,id)=>{
-        const response = await axiosPrivate.put(`/production/${id}/`,data)
+        const response = await axios.put(`/production/${id}/`,data)
         return response.data
     }
 
     const getProductionDaybookPart = async(params)=>{
-        const response = await axiosPrivate.get('/production/production_daybook_part_list/',{params:{...params}})
+        const response = await axios.get('/production/production_daybook_part_list/',{params:{...params}})
         return response?.data
     }
     
     const getProductionDetails = async(id)=>{
-        const response = await axiosPrivate.get(`/production/${id}/`)
+        const response = await axios.get(`/production/${id}/`)
         return response?.data
     }
     return{
