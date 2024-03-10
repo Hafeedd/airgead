@@ -4,10 +4,10 @@ import searchIcon from "../../../../assets/icons/search.png";
 
 const BalanceSheetDetailsTable = (props) => {
     const { details } = props
-
     const [stockValue, setStockValue] = useState()
     const [value, setValue] = useState(0.00)
     const [newValue, setNewValue] = useState()
+   
 
     // const [totalDebit, setTotalDebit] = useState()
     var totalDebit = 0.0
@@ -24,7 +24,7 @@ const BalanceSheetDetailsTable = (props) => {
         else {
             setValue(details?.closing_stock_value)
         }
-    }, [stockValue, details])
+    }, [stockValue, details,newValue])
 
     const handleChange = (data) => {
         if (data.target.name == "stock-value") {
@@ -34,7 +34,6 @@ const BalanceSheetDetailsTable = (props) => {
             setNewValue(details)
         }
     }
-
     return (
         <>
             <div className='bg-black mt-3 d-flex justify-content-between rounded-top border-bottom border-2'>
@@ -85,22 +84,11 @@ const BalanceSheetDetailsTable = (props) => {
                         </tr>
                     </thead>
                     <tbody>
-                        {
-                            newValue?.ser?.length > 0 && (
-                                <>
-                                    <tr >
-                                        <td></td>
-                                        <td className='text-start'>STOCK VALUE BALANCE</td>
-                                        <td className='text-start'>{value>0 ? value.toFixed(2):0.0}</td>
-                                        <td className='text-start'>{value<0 ? value.toFixed(2):0.0}</td>
-                                    </tr>
-                                </>
-                            )
-
-                        }
+                       
                         {
                             newValue?.ser?.length > 0 &&
                             newValue?.ser.map((data) => {
+                                console.log("halllo")
                                 var total_debit = 0;
                                 var total_credit = 0;
                                 totalDebit = totalDebit + parseInt(data?.account?.reduce((a, b) => b.closing_balance > 0 ? a + b.closing_balance : a + 0, 0).toFixed(2))
@@ -113,15 +101,14 @@ const BalanceSheetDetailsTable = (props) => {
                                         </tr>
                                         {
                                             data?.account?.map((acc) => {
-                                                console.log(acc?.total_closing_balance)
                                                 total_debit = total_debit + (acc?.closing_balance > 0 ? acc?.closing_balance.toFixed(2) : 0.0)
                                                 total_credit = total_credit + (acc?.closing_balance < 0 ? acc?.closing_balance.toFixed(2) : 0.0)
                                                 return (
                                                     <tr>
                                                         <td className='text-start'>{acc?.code || ''}</td>
                                                         <td className='text-start'>{acc?.name || ''}</td>
-                                                        <td className='text-start'>{acc?.closing_balance > 0 ? acc?.closing_balance.toFixed(2) : ""}</td>
-                                                        <td className='text-start'>{acc?.closing_balance < 0 ? acc?.closing_balance.toFixed(2) : ""}</td>
+                                                        <td className='text-start'>{newValue?.closing_stock_account_name == acc?.name ? value >0? value.toFixed(2):"" : acc?.closing_balance > 0 ? acc?.closing_balance.toFixed(2) : ""}</td>
+                                                        <td className='text-start'>{newValue?.closing_stock_account_name == acc?.name ? value <0? value.toFixed(2):"" :acc?.closing_balance < 0 ? acc?.closing_balance.toFixed(2) : ""}</td>
 
                                                     </tr>
                                                 )
@@ -131,8 +118,8 @@ const BalanceSheetDetailsTable = (props) => {
                                         }
                                         <tr className='bal-sht-table-group-total'>
                                             <td colSpan={2}></td>
-                                            <td className='text-start'>Total Debit: {data?.account?.reduce((a, b) => b.closing_balance > 0 ? a + b.closing_balance : a + 0, 0).toFixed(2)}</td>
-                                            <td className='text-start'>Total Credit: {data?.account?.reduce((a, b) => b.closing_balance < 0 ? a + b.closing_balance : a + 0, 0).toFixed(2)}</td>
+                                            <td className='text-start'>Total Debit: {(+(data?.account?.reduce((a, b) => b.closing_balance > 0 ? a + b.closing_balance : a + 0, 0))+(data?.name == "CURRENT ASSET"? value >0? value : 0.0 :0.0)).toFixed(2)}</td>
+                                            <td className='text-start'>Total Credit: {(+data?.account?.reduce((a, b) => b.closing_balance < 0 ? a + b.closing_balance : a + 0, 0)+(data?.name == "CURRENT ASSET"? value <0? value : 0.0 :0.0)).toFixed(2)}</td>
                                         </tr>
                                         <tr><td className='p-1 m-0' colSpan={4}></td></tr>
 
@@ -142,14 +129,14 @@ const BalanceSheetDetailsTable = (props) => {
                             })
                         }
                         <tr>
-                            <td className='bg-dark text-white' colSpan={4}>
-                                {(totalDebit - Math.abs(totalCredit)) > 0 ? "PROFIT " + (totalDebit - Math.abs(totalCredit)) : "LOSS " + (totalDebit - Math.abs(totalCredit))}
+                            <td className='bg-dark text-white text-start' colSpan={4}>
+                                {newValue ?((totalDebit+ (value >0? value:0)) - (Math.abs(totalCredit) + (value <0? value:0))) > 0 ? "PROFIT " + ((totalDebit+ (value >0? value:0)) - (Math.abs(totalCredit) + (value <0? value:0))).toFixed(2) : "LOSS " + ((totalDebit+ (value >0? value:0)) - (Math.abs(totalCredit) + (value <0? value:0))).toFixed(2) :"0.00"}
                             </td>
                         </tr>
                         <tr className='bal-sht-table-btm'>
                             <td colSpan={2}></td>
-                            <td className='text-start'>All A/c Total Debit: {totalDebit.toFixed(2)+value>0?value:0}</td>
-                            <td className='text-start'>All A/c Total Credit: {Math.abs(totalCredit.toFixed(2))+value<0?value:0}</td>
+                            <td className='text-start'>All A/c Total Debit: {newValue?(totalDebit+ (value >0? value:0)).toFixed(2):"0.00"}</td>
+                            <td className='text-start'>All A/c Total Credit: {newValue?(Math.abs(totalCredit) + (value <0? value:0)).toFixed(2):"0.00"}</td>
                         </tr>
 
                     </tbody>

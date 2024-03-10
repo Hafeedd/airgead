@@ -204,6 +204,14 @@ export const useReportsServices = () => {
     return response?.data;
   };
 
+  const getChartOfAccount = async (params) => {
+    const response = await axios.get(
+      "/reports/chart/account/",
+      { params: params }
+    );
+    return response?.data;
+  };
+
   return {
     getStockLedger,
     getAccLedger,
@@ -231,5 +239,6 @@ export const useReportsServices = () => {
     getBalanceSheet,
     getGroupBalanceSheet,
     getTaridProfitLoss,
+    getChartOfAccount
   };
 };

@@ -41,6 +41,7 @@ import TrialBalance from "./pages/reports/trial_balance/TrialBalance";
 import BalanceSheet from "./pages/reports/balanceSheet/BalanceSheet";
 import GroupWiseTrialBalance from "./pages/reports/groupWiseTrialBalance/GroupWiseTrialBalance";
 import TraidProfitLoss from "./pages/reports/traidProfitLoss/TraidProfitLoss";
+import ChartOfAccount from "./pages/reports/chartOfAccount/ChartOfAccount";
 import LoginMainPage from "./pages/authentication/LoginMainPage";
 
 function App() {
@@ -110,6 +111,8 @@ function App() {
             <Route path="/group-trial-balance" element={<GroupWiseTrialBalance/>}/>
             <Route path="/balance-sheet" element={<BalanceSheet/>}/>
             <Route path="/traid-profit-loss" element={<TraidProfitLoss/>}/>
+
+            <Route path="/chart-of/account" element={<ChartOfAccount/>}/>
 
           </Route>
         </Route>

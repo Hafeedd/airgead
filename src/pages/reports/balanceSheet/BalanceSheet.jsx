@@ -26,13 +26,13 @@ const BalanceSheet = () => {
     const getData = async () => {
         try {
             const date = {
-                [dropDown==="group"?'date':'to_date']: params?.to_date?.split('-')?.reverse()?.join('-') || new Date()?.toISOString()?.slice(0, 10).split('-')?.reverse()?.join('-')
+                [dropDown==="normal"?'to_date':'date']: params?.to_date?.split('-')?.reverse()?.join('-') || new Date()?.toISOString()?.slice(0, 10).split('-')?.reverse()?.join('-')
             }
             let response
 
             if (dropDown === "normal")
                 response = await getBalanceSheet(date)
-            else if (dropDown === "group"|| dropdown === "detail")
+            else if (dropDown === "group"|| dropDown === "detail")
                 response = await getGroupBalanceSheet(date)
             // else if (dropDown === "details")
             //     response = await getBalanceSheet(date)

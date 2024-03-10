@@ -22,8 +22,9 @@ const TraidProfitLossTable = (props) => {
             const diffAmount = totalIncome - totalExpense
             setTableValue(data => ({ ...data, total_income: totalIncome?.toFixed(2), total_expense: totalExpense?.toFixed(2), diff_amount: diffAmount?.toFixed(2) }))
         }
+        
     }, [newValue, value, params])
-
+    console.log(tableValue)
     useEffect(() => {
         setOpeningStockBal(profitLossData?.opening_stock)
         if (stockValue == "fifo") {
@@ -100,15 +101,7 @@ const TraidProfitLossTable = (props) => {
                             </tr>
                         </thead>
                         <tbody>
-                            {
-                                newValue?.account_details?.length > 0 ? (
-                                    <tr>
-                                        <td className='text-start'>CLOSING STOCK</td>
-                                        <td className='text-start'>{value > 0 ? value.toFixed(2) : "0.00"}</td>
-                                    </tr>
-                                ) : ""
-
-                            }
+                           
                             {
                                 newValue?.account_details?.length > 0 &&
                                 newValue?.account_details?.map((data) => {
@@ -116,7 +109,7 @@ const TraidProfitLossTable = (props) => {
                                         <>
                                             <tr>
                                                 <td className='text-start '>{data?.account_name}</td>
-                                                <td className='text-start'>{data?.closing_balance.toFixed(2)}</td>
+                                                <td className='text-start'>{newValue?.closing_stock_account_name ==  data?.account_name? value.toFixed(2) : data?.closing_balance.toFixed(2)}</td>
 
                                             </tr>
                                         </>
@@ -129,7 +122,7 @@ const TraidProfitLossTable = (props) => {
                             </tr>
 
                             <tr style={{ position: "sticky", bottom: "0" }}>
-                                <td className='bg-primary text-white' colSpan={2}>TOTAL INCOME: {(tableValue.total_income - (tableValue.diff_amount < 0 ? tableValue.diff_amount:0.0)) | "0.0"}</td>
+                                <td className='bg-primary text-white' colSpan={2}>TOTAL INCOME: {((+tableValue?.total_income) + (+tableValue.diff_amount < 0 ? +tableValue.diff_amount:0.0)).toFixed(2)}</td>
                             </tr>
 
                         </tbody>
@@ -146,16 +139,6 @@ const TraidProfitLossTable = (props) => {
                             </tr>
                         </thead>
                         <tbody>
-
-                            {
-                                newValue?.account_details?.length > 0 ? (
-                                    <tr>
-                                        <td className='text-start'>CLOSING STOCK</td>
-                                        <td className='text-start'>{value < 0 ? value.toFixed(2) : "0.00"}</td>
-                                    </tr>
-                                ) : ""
-
-                            }
 
                             {
                                 newValue?.account_details?.length > 0 &&
@@ -178,7 +161,7 @@ const TraidProfitLossTable = (props) => {
                             </tr>
 
                             <tr style={{ position: "sticky", bottom: "0" }}>
-                                <td className='bg-primary text-white' colSpan={2}>TOTAL EXPANSE: {tableValue.total_expense - (tableValue.diff_amount > 0 ? tableValue.diff_amount:0.0) | "0.00"}</td>
+                                <td className='bg-primary text-white' colSpan={2}>TOTAL EXPANSE: {+tableValue.total_expense + (tableValue.diff_amount > 0 ? Math.abs(+tableValue?.diff_amount) :0)}</td>
                             </tr>
                         </tbody>
 
