@@ -47,7 +47,7 @@ const PurchaseTransaction = ({ returnPage, orderPage }) => {
   const [bankSelect, setBankSelect] = useState(false);
   const [tableHeadList, setTableHeadList] = useState(
     initialPurchaseTableStatePositionLocal ||
-      initialPurchaseSalesTableStatePosition
+    initialPurchaseSalesTableStatePosition
   );
 
   const [purchaseOnlyList, setPurchaseOnlyList] = useState([]);
@@ -96,9 +96,12 @@ const PurchaseTransaction = ({ returnPage, orderPage }) => {
     getData();
     if (!returnPage && !orderPage) {
       setPurchaseOrReturnList([])
+      setPurchaseOnlyList([])
       handleReloadData();
     } else if (returnPage || orderPage) {
-      // setPurchaseOrReturnList([])
+      setPurchaseOrReturnList([])
+      setPurchaseOnlyList([])
+      handlePurchaseAllReset()
       handleGetCode(true);
     }
 
@@ -109,7 +112,7 @@ const PurchaseTransaction = ({ returnPage, orderPage }) => {
         ["fk_supplier"]: supplier.id,
         ["supplier_name"]: supplier.name,
       }));
-      navigate(null, { replace: true, state: { id: null, name: null } });
+      navigate(null, { replace: true, state: null });
     }
   }, [location.pathname]);
 
@@ -148,13 +151,16 @@ const PurchaseTransaction = ({ returnPage, orderPage }) => {
     if (data?.edit) {
       setEdit({ ...data.edit });
       handleSetEdit(data?.edit);
-    } else if (data?.created_at) {
-      let { items, updated_at, edit, tablekeys, ...others } = data;
+    } else if (data?.date) {
+      let { items, fk_supplier, supplier_name, updated_at, edit, tablekeys, ...others } = data;
       let tempData = {
         ...others,
         change_due: others.change_due || "0.00",
       };
-      setPurchaseAdd((data) => ({ ...data, ...tempData }));
+      if (location?.state?.id < 0) {
+        tempData = { ...tempData, fk_supplier: fk_supplier }
+      }
+      setPurchaseAdd((data) => ({ ...data, ...tempData, supplier_name: supplier_name }));
       if (items) {
         setTableItemList([...items]);
         handlePurchAllCalc(items, true, tempData);
@@ -190,7 +196,6 @@ const PurchaseTransaction = ({ returnPage, orderPage }) => {
 
   const handleSetEdit = async (state, orderGet) => {
     //orderGet is true when the order is selected from order list else false
-
     try {
       let purchaseData;
       if (!returnPage && !orderPage && !orderGet)
@@ -200,7 +205,8 @@ const PurchaseTransaction = ({ returnPage, orderPage }) => {
         purchaseData = await getPurchaseOrderWithId(state.id);
 
       if (purchaseData?.data) {
-        let { items, updated_at, ...others } = purchaseData.data;
+
+        let { fk_supplier, items, updated_at, ...others } = purchaseData.data;
         let tempData = {
           ...others,
           change_due: others.change_due || "0.00",
@@ -208,6 +214,14 @@ const PurchaseTransaction = ({ returnPage, orderPage }) => {
         if (orderGet) {
           tempData = { ...tempData, order_no: others.id };
           delete tempData.documents_no;
+        }
+        
+        if (location?.state?.id) {
+          tempData = { ...tempData, supplier_name: location?.state?.name, fk_supplier: location?.state?.id }
+        }
+        else if(fk_supplier>=0) {
+          let supplierName = supplierList?.filter(x => x.value === fk_supplier)[0]?.name
+          tempData = { ...tempData, supplier_name: supplierName, fk_supplier: fk_supplier }
         }
         setPurchaseAdd((data) => ({ ...data, ...tempData }));
         if (items) {
@@ -223,7 +237,7 @@ const PurchaseTransaction = ({ returnPage, orderPage }) => {
         handleGetCode();
       }
     } catch (err) {
-      console.log(err);
+      // console.log(purchaseOrReturnList);
     }
   };
 
@@ -338,7 +352,7 @@ const PurchaseTransaction = ({ returnPage, orderPage }) => {
           setPurchaseAdd((data) => ({ ...data, documents_no: code }));
         }
       }
-    } catch (err) {}
+    } catch (err) { }
   };
 
   const getData = async () => {
@@ -418,7 +432,7 @@ const PurchaseTransaction = ({ returnPage, orderPage }) => {
 
         setBankList([...bankList]);
       }
-      return { suppList, bankList };
+      // return { suppList, bankList };
     } catch (err) {
       console.log(err);
     }
@@ -438,7 +452,7 @@ const PurchaseTransaction = ({ returnPage, orderPage }) => {
     setPurchaseEditModal(true);
   };
 
-  const handlePurchaseAllReset = (resetLocal) => {    
+  const handlePurchaseAllReset = (resetLocal) => {
     setPurchaseAdd(initialPurchaseAdd);
     setTableItemList([]);
     setTableItemBatchList([]);
@@ -523,10 +537,10 @@ const PurchaseTransaction = ({ returnPage, orderPage }) => {
           ...data,
           change_due:
             +purchaseAdd.change_due +
-              +purchaseAdd.total_amount +
-              +purchaseAdd.paid_cash -
-              total_value -
-              +purchaseAdd.total_amount || "0.00",
+            +purchaseAdd.total_amount +
+            +purchaseAdd.paid_cash -
+            total_value -
+            +purchaseAdd.total_amount || "0.00",
           paid_cash: total_value,
         }));
       }
@@ -616,8 +630,7 @@ const PurchaseTransaction = ({ returnPage, orderPage }) => {
         handleGetCode(true);
         getData();
         Swal.fire(
-          `Purchase  ${
-            returnPage ? "return" : orderPage ? "order" : ""
+          `Purchase  ${returnPage ? "return" : orderPage ? "order" : ""
           } added successfully`,
           "",
           "success"
@@ -738,17 +751,16 @@ const PurchaseTransaction = ({ returnPage, orderPage }) => {
   //   }
   // };
 
-  const handleBatchSubmit = (tempItems) => {};
+  const handleBatchSubmit = (tempItems) => { };
 
   return (
     <div className="item_add">
       <div className={`itemList_header row mx-0 mb-3`}>
         <div
-          className={`page_head ps-4 d-flex pe-0 ${
-            returnPage
-              ? " purchase-return active-header2"
-              : orderPage && " purchase-order active-header2"
-          }`}
+          className={`page_head ps-4 d-flex pe-0 ${returnPage
+            ? " purchase-return active-header2"
+            : orderPage && " purchase-order active-header2"
+            }`}
         >
           <div className="col-6 col-7">
             <div className="fw-600 fs-5">
@@ -901,6 +913,7 @@ const PurchaseTransaction = ({ returnPage, orderPage }) => {
         onHide={() => setPurchaseEditModal(false)}
       >
         <PurchaseEditList
+          from="purch"
           setShow={setPurchaseEditModal}
           title={"Purchase Edit Table"}
           list={purchaseOrReturnList}

@@ -37,26 +37,19 @@ import StaffSalaryAttendance from './pages/reports/staffSalaryAttendance/StaffSa
 import MaterialComposition from './pages/master/material composition/MaterialComposition';
 import ProductionReport from "./pages/reports/productionReport/ProductionReport";
 import ProductionTransaction from "./pages/transactions/production/ProductionTransaction";
-import Login from "./pages/authentication/login/Login";
-import Register from "./pages/authentication/register/Register";
-import Verification from "./pages/authentication/verification/Verification";
-import CompanyList from "./pages/authentication/companyList/CompanyList";
-import CompanyPassword from "./pages/authentication/companyPassword/CompanyPassword";
 import TrialBalance from "./pages/reports/trial_balance/TrialBalance";
 import BalanceSheet from "./pages/reports/balanceSheet/BalanceSheet";
 import GroupWiseTrialBalance from "./pages/reports/groupWiseTrialBalance/GroupWiseTrialBalance";
 import TraidProfitLoss from "./pages/reports/traidProfitLoss/TraidProfitLoss";
+import LoginMainPage from "./pages/authentication/LoginMainPage";
 import ChartOfAccount from "./pages/reports/chartOfAccount/ChartOfAccount";
 
 function App() {
   return (
     <BrowserRouter>
       <Routes>
-      <Route path="/login" element={<Login/>}/>
-      <Route path="/register" element={<Register/>}/>
-      <Route path="/verification" element={<Verification/>}/>
-      <Route path="/company-list" element={<CompanyList/>}/>
-      <Route path="/company-password" element={<CompanyPassword/>}/>
+      <Route path="/login" element={<LoginMainPage/>}/>
+      <Route path="/register" element={<LoginMainPage/>}/>
 
         <Route path="/" element={<Layout />}>
           <Route element={<Outlet />}>

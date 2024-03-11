@@ -126,12 +126,15 @@ const SalesTransaction = ({ returnPage, orderPage }) => {
     if (data?.edit) {
       setEdit({ ...data.edit });
       handleSetEdit(data?.edit);
-    } else if (data?.created_at) {
-      let { items, updated_at, edit, tablekeys, ...others } = data;
+    } else if (data?.date) {
+      let { items,fk_customer,cusotmer_name, updated_at, edit, tablekeys, ...others } = data;
       let tempData = {
         ...others,
         change_due: others.change_due || "0.00",
       };
+      if(location?.state?.id<0){
+        tempData = {...tempData,fk_customer:fk_customer,cusotmer_name:cusotmer_name}
+      }
       setSalesAdd((data) => ({ ...data, ...tempData }));
       if (items) {
         setTableItemList([...items]);
@@ -164,11 +167,19 @@ const SalesTransaction = ({ returnPage, orderPage }) => {
       if (orderPage || orderGet) salesData = await getSalesOrderWithId(data.id);
 
       if (salesData) {
-        let { sales_item, updated_at, ...others } = salesData.data;
+        let { sales_item, updated_at,fk_customer, ...others } = salesData.data;
         let tempData = { ...others, change_due: others.change_due || "0.00" };
         if (orderGet) {
           tempData = { ...tempData, order_no: others?.id };
           delete tempData.documents_no;
+        }
+        
+        if(location?.state?.id){
+          tempData = {...tempData, customer_name:location?.state?.name, fk_customer:location?.state?.id}
+        }
+        else if(fk_customer>=0){
+          let customerName = customerList?.filter(x=>x.value === fk_customer)[0]?.name
+          tempData = {...tempData,cusotmer_name:customerName,fk_customer:fk_customer}
         }
         setSalesAdd((data) => ({ ...data, ...tempData }));
         setEdit((data) => ({ ...data, ...tempData }));

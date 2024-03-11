@@ -1,31 +1,31 @@
-import { axiosPrivate } from "../../api/axios"
+import axios from "../../api/axios"
 
 const usePaymentRecieptServices = () =>{
     // post 
 
     const postPaymentReciept = async (data) => {
-        const response = await axiosPrivate.post('/transactions/receipt/created/',data)
+        const response = await axios.post('/transactions/receipt/created/',data)
         return response.data
     }
 
     //put 
     
     const putPaymentReciept = async (id,data) => {
-        const response = await axiosPrivate.put('transactions/receipt/updated/'+id+'/',data)
+        const response = await axios.put('transactions/receipt/updated/'+id+'/',data)
         return response.data
     }
   
     //delete 
     
     const delPaymentReciept = async (id) => {
-        const response = await axiosPrivate.delete('transactions/receipt/updated/'+id+'/')
+        const response = await axios.delete('transactions/receipt/updated/'+id+'/')
         return response.data
     }
 
     //get 
 
     const getPaymentReciept = async (params) => {
-        const response = await axiosPrivate.get('/transactions/receipt/created/',{...params})
+        const response = await axios.get('/transactions/receipt/created/',{...params})
         return response.data
     }
 

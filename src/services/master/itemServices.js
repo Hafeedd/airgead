@@ -1,23 +1,23 @@
-import { axiosPrivate } from "../../api/axios";
+import axios from "../../api/axios";
 
 const useItemServices = () => {
   // api for adding new options and post req -----------------------------------------------
 
   // item add
   const postItemAdd = async (data) => {
-    const response = await axiosPrivate.post("master/item/created/", data);
+    const response = await axios.post("master/item/created/", data);
     return response.data;
   };
 
   // get properties
   const getProperty = async () => {
-    const response = await axiosPrivate.get("master/property_type/created/");
+    const response = await axios.get("master/property_type/created/");
     return response.data;
   };
 
   // post properties
   const postProperty = async (data) => {
-    const response = await axiosPrivate.post(
+    const response = await axios.post(
       "master/property_type/created/",
       { property_value: data.property_value },
       { params: { property_type: data.property_type } }
@@ -27,7 +27,7 @@ const useItemServices = () => {
 
   // put properties
   const putProperty = async (data, id) => {
-    const response = await axiosPrivate.put(
+    const response = await axios.put(
       "master/property_type/updated/" + id + "/",
       data
     );
@@ -36,7 +36,7 @@ const useItemServices = () => {
 
   // second name
   const postSecondName = async (data) => {
-    const response = await axiosPrivate.post(
+    const response = await axios.post(
       "master/second_name/created/",
       data
     );
@@ -45,19 +45,19 @@ const useItemServices = () => {
 
   //  type
   const postType = async (data) => {
-    const response = await axiosPrivate.post("master/types/created/", data);
+    const response = await axios.post("master/types/created/", data);
     return response.data;
   };
 
   // category
   const postCategory = async (data) => {
-    const response = await axiosPrivate.post("master/category/created/", data);
+    const response = await axios.post("master/category/created/", data);
     return response.data;
   };
 
   // subCategory
   const postSubCategory = async (data) => {
-    const response = await axiosPrivate.post(
+    const response = await axios.post(
       "master/sub_category/created/",
       data
     );
@@ -66,49 +66,49 @@ const useItemServices = () => {
 
   // Company
   const postCompany = async (data) => {
-    const response = await axiosPrivate.post("master/company/created/", data);
+    const response = await axios.post("master/company/created/", data);
     return response.data;
   };
 
   // size
   const postSize = async (data) => {
-    const response = await axiosPrivate.post("master/size/created/", data);
+    const response = await axios.post("master/size/created/", data);
     return response.data;
   };
 
   // color
   const postColor = async (data) => {
-    const response = await axiosPrivate.post("master/color/created/", data);
+    const response = await axios.post("master/color/created/", data);
     return response.data;
   };
 
   // group
   const postGroup = async (data) => {
-    const response = await axiosPrivate.post("master/group/created/", data);
+    const response = await axios.post("master/group/created/", data);
     return response.data;
   };
 
   // tax group
   const postTaxGroup = async (data) => {
-    const response = await axiosPrivate.post("master/tax_group/created/", data);
+    const response = await axios.post("master/tax_group/created/", data);
     return response.data;
   };
 
   // rack
   const postRack = async (data) => {
-    const response = await axiosPrivate.post("master/rack/created/", data);
+    const response = await axios.post("master/rack/created/", data);
     return response.data;
   };
 
   // unit
   const postUnit = async (data) => {
-    const response = await axiosPrivate.post("master/unit/created/", data);
+    const response = await axios.post("master/unit/created/", data);
     return response.data;
   };
 
   // code
   const postBarcode = async (id, data) => {
-    const response = await axiosPrivate.post(
+    const response = await axios.post(
       "master/barcode/created/" + id + "/",
       data
     );
@@ -117,7 +117,7 @@ const useItemServices = () => {
 
   // unit adding
   const postUnitConvertion = async (id, data) => {
-    const response = await axiosPrivate.post(
+    const response = await axios.post(
       "master/unit_conversion/created/" + id + "/",
       data
     );
@@ -126,7 +126,7 @@ const useItemServices = () => {
 
   //code
   const getCode = async () => {
-    const response = await axiosPrivate.get("master/code/created/");
+    const response = await axios.get("master/code/created/");
     return response.data;
   };
 
@@ -134,79 +134,79 @@ const useItemServices = () => {
 
   // second name
   const getSecondName = async () => {
-    const response = await axiosPrivate.get("master/second_name/created/");
+    const response = await axios.get("master/second_name/created/");
     return response.data;
   };
 
   // type
   const getType = async () => {
-    const response = await axiosPrivate.get("master/types/created/");
+    const response = await axios.get("master/types/created/");
     return response.data;
   };
 
   // category
   const getCategory = async () => {
-    const response = await axiosPrivate.get("master/category/created/");
+    const response = await axios.get("master/category/created/");
     return response.data;
   };
 
   // sub category
   const getSubCategory = async () => {
-    const response = await axiosPrivate.get("master/sub_category/created/");
+    const response = await axios.get("master/sub_category/created/");
     return response.data;
   };
 
   // company
   const getCompany = async () => {
-    const response = await axiosPrivate.get("master/company/created/");
+    const response = await axios.get("master/company/created/");
     return response.data;
   };
 
   // size
   const getSize = async () => {
-    const response = await axiosPrivate.get("master/size/created/");
+    const response = await axios.get("master/size/created/");
     return response.data;
   };
 
   // color
   const getColor = async () => {
-    const response = await axiosPrivate.get("master/color/created/");
+    const response = await axios.get("master/color/created/");
     return response.data;
   };
 
   // group
   const getGroup = async () => {
-    const response = await axiosPrivate.get("master/group/created/");
+    const response = await axios.get("master/group/created/");
     return response.data;
   };
 
   // tax group
   const getTaxGroup = async () => {
-    const response = await axiosPrivate.get("master/tax_group/created/");
+    const response = await axios.get("master/tax_group/created/");
     return response.data;
   };
 
   // rack
   const getRack = async () => {
-    const response = await axiosPrivate.get("master/rack/created/");
+    const response = await axios.get("master/rack/created/");
     return response.data;
   };
 
   // unit
   const getUnit = async () => {
-    const response = await axiosPrivate.get("master/unit/created/");
+    const response = await axios.get("master/unit/created/");
     return response.data;
   };
 
   // barcode
   const getBarcode = async () => {
-    const response = await axiosPrivate.get("master/barcode/created/");
+    const response = await axios.get("master/barcode/created/");
     return response.data;
   };
 
   // item list
   const getItemList = async (data) => {
-    const response = await axiosPrivate.get("master/item/created/", {
+    const response = await axios.get("master/item/created/", {
       params: { data },
     });
     return response.data;
@@ -214,7 +214,7 @@ const useItemServices = () => {
 
   // item name only list
   const getItemNameList = async () => {
-    const response = await axiosPrivate.get("master/item_list/created/");
+    const response = await axios.get("master/item_list/created/");
     return response.data;
   };
 
@@ -222,7 +222,7 @@ const useItemServices = () => {
 
   // barcode
   const putBarcode = async (id, data) => {
-    const response = await axiosPrivate.put(
+    const response = await axios.put(
       "master/barcode/updated/" + id + "/",
       data
     );
@@ -231,7 +231,7 @@ const useItemServices = () => {
 
   // unit update
   const putUnitConvertion = async (id, data) => {
-    const response = await axiosPrivate.put(
+    const response = await axios.put(
       "master/unit_conversion/updated/" + id + "/",
       data
     );
@@ -240,7 +240,7 @@ const useItemServices = () => {
 
   //item
   const putItemAdd = async (id, data) => {
-    const response = await axiosPrivate.put(
+    const response = await axios.put(
       "master/item/updated/" + id + "/",
       data
     );
@@ -251,7 +251,7 @@ const useItemServices = () => {
 
   // item delete
   const deleteItem = async (id) => {
-    const response = await axiosPrivate.delete(
+    const response = await axios.delete(
       "master/item/updated/" + id + "/"
     );
     return response.data;
@@ -259,7 +259,7 @@ const useItemServices = () => {
 
   // item delete
   const deleteItemList = async (id) => {
-    const response = await axiosPrivate.delete(
+    const response = await axios.delete(
       "master/item/updated/" + id + "/"
     );
     return response.data;
@@ -267,7 +267,7 @@ const useItemServices = () => {
 
   // unit update
   const deleteUnitConvertion = async (id) => {
-    const response = await axiosPrivate.delete(
+    const response = await axios.delete(
       "master/unit_conversion/updated/" + id + "/"
     );
     return response.data;

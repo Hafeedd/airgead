@@ -451,17 +451,17 @@ const SalesTable = (props) => {
           setEdit(salesList[ind + 1]);
           handleSetEdit(salesList[ind + 1]);
         } else {
-          Swal.fire("No more purchase to edit", "go for next", "warning");
+          Swal.fire("No more sales to edit", "go for next", "warning");
         }
       }
     } else {
-      Swal.fire("No more purchase to edit", "go for next", "warning");
+      Swal.fire("No more sales to edit", "go for next", "warning");
     }
   };
 
   const handleNext = () => {
     if (!edit || salesList?.length < 1) {
-      Swal.fire("No more purchase to edit", "go for prev", "warning");
+      Swal.fire("No more sales to edit", "go for prev", "warning");
     } else if (edit?.id == salesList[0]?.id) {
       handleSalesAllReset();
       handleSetEdit(true);
@@ -473,7 +473,7 @@ const SalesTable = (props) => {
         setEdit(salesList[ind - 1]);
         handleSetEdit(salesList[ind - 1]);
       } else {
-        Swal.fire("No more purchase to edit", "go for prev", "warning");
+        Swal.fire("No more sales to edit", "go for prev", "warning");
       }
     }
   };

@@ -43,13 +43,13 @@ const GroupTrialBalTable = (props) => {
                     </thead>
                     <tbody>
                         {
-                            groupTrialBal?.ser?.length > 0 ?
-                            groupTrialBal?.ser.map((data, i) => {
-                                    console.log(data)
+                            groupTrialBal?.length > 0 ?
+                            groupTrialBal?.map((data, i) => {
+                                    console.log(data.name)
                                     var total_debit = 0;
                                     var total_credit = 0;
                                     
-                                    return (data?.account?.length>0) && (
+                                    return (data?.accounts?.length>0) && (
                                         <>
                                             <tr style={{boxShadow:"0px 0px 10px black"}}>
                                                 <td style={{ backgroundColor: "rgb(106, 60, 78)" , position: "sticky", top: "36px" }} className='text-start text-white' colSpan={5}>{data?.name || ""}</td>
@@ -57,8 +57,8 @@ const GroupTrialBalTable = (props) => {
 
 
                                             {
-                                                data.account?.length > 0 ?
-                                                    data.account.map((acc, i) => {
+                                                data.accounts?.length > 0 ?
+                                                    data.accounts.map((acc, i) => {
                                                         total_debit = total_debit + (acc?.closing_balance > 0 ? acc?.closing_balance:0.0)
                                                         total_credit = total_credit + (acc?.closing_balance < 0 ? acc?.closing_balance:0.0)
                                                         all_acc_credit_total = all_acc_credit_total + (acc?.closing_balance < 0 ? acc?.closing_balance:0.0)
@@ -86,7 +86,7 @@ const GroupTrialBalTable = (props) => {
                                                 <td >
 
                                                     <div className={`${data?.total_closing_balance?.toString().includes("-") ? "bg-white text-danger text-center  py-1 rounded font-weight-bold" : "bg-white text-success text-bold font-weight-bold  py-1 text-center rounded"}`}>
-                                                        <span>{data?.total_closing_balance?.toFixed(2)>0? `${Math.abs(data?.total_closing_balance?.toFixed(2))} Debit`: `${Math.abs(data?.total_closing_balance?.toFixed(2))} ,Credit`} </span>
+                                                        <span>{(total_debit- Math.abs(total_credit))>0? `${((total_debit- Math.abs(total_credit)).toFixed(2))} Debit`: `${((total_debit- Math.abs(total_credit)).toFixed(2))} Credit`} </span>
                                                     </div>
                                                 </td>
                                                 <td  className='p-0' colSpan={2}></td>

@@ -198,8 +198,10 @@ const PaymentTransaction = ({ method }) => {
   const formatList = (data) => {
     if (!data) return 0;
     let tempList = [];
+    console.log(data)
     data.map((item) => {
       let tempData = {};
+      console.log(item.daybook[1])
       tempData = {
         id: item.id,
         voucher_number: item.voucher_number,
@@ -208,7 +210,7 @@ const PaymentTransaction = ({ method }) => {
         account_code: item?.daybook[0]?.account_code,
         narration: item?.narration,
         cash_bank_account_name: item?.daybook[1]?.account?.name,
-        cash_bank_account: item?.daybook[1]?.cash_bank_account,
+        cash_bank_account: item?.daybook[1]?.account?.code,
         amount: item?.daybook[0]?.amount,
         amount_word: null,
         date: item?.daybook[0]?.date || item?.daybook[0]?.created_at,
@@ -282,6 +284,8 @@ const PaymentTransaction = ({ method }) => {
     });
     return tempData;
   };
+
+
 
   const handleChange = (e, data) => {
     let name = e.target.name
@@ -380,16 +384,6 @@ const PaymentTransaction = ({ method }) => {
         Swal.fire(response.message, "Failed! please try again", "error");
       }
     } catch (err) {
-      // let data = err?.response?.data?.error
-      // let index = Object.keys(data)[0]
-      // let error = data[index][0]
-      // Swal.fire({
-      //     title:index.toUpperCase(),
-      //     text:error,
-      //     icon:'error',
-      //     timer:1000,
-      //     showConfirmButton:false
-      // })
       Swal.fire(
         `Failed to add ${
           paymentAdd?.method === "Payment" ? "Payment" : "Reciept"

@@ -243,7 +243,7 @@ const PurchaseInvoiceDetails = (props) => {
           selection
           search={true}
           onKeyDown={handleKeyDown}
-          onChange={handleChange}
+          // onChange={handleChange}
           className="purchase-select d-flex align-items-center py-0 form-control"
           name="order_no"
           value={purchaseAdd.order_no || ""}

@@ -75,6 +75,7 @@ const PurchaseTable = (props) => {
         discount_1_percentage: discount_1_percentage || 0,
         tax_gst: tax_gst || 0,
         fk_units: fk_unit,
+        unit: fk_unit,
         // quantity: itemData ? 1 : 0,
         item_name: item?.name,
         cgst_or_igst: item?.tax_gst / 2 || 0,

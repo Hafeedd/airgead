@@ -1,4 +1,4 @@
-import { axiosPrivate } from "../../api/axios"
+import axios from "../../api/axios"
 
 const usePurchaseOrderServices = () => {
 
@@ -6,7 +6,7 @@ const usePurchaseOrderServices = () => {
 
     // post full purchase data 
     const postPurchaseOrder = async (data) =>{
-        const response = await axiosPrivate.post('purchase/purchase_order/created/',data)
+        const response = await axios.post('purchase/purchase_order/created/',data)
         return response.data
     }
 
@@ -14,7 +14,7 @@ const usePurchaseOrderServices = () => {
 
     // update full purchase data
     const putPurchaseOrder = async (id,data) =>{
-        const response = await axiosPrivate.put('purchase/purchase_order/updated/'+id+'/',data)
+        const response = await axios.put('purchase/purchase_order/updated/'+id+'/',data)
         return response.data
     }
 
@@ -22,13 +22,13 @@ const usePurchaseOrderServices = () => {
 
     // get all purchase data
     const getPurchaseOrderList = async () =>{
-        const response = await axiosPrivate.get('purchase/purchase_order/code/')
+        const response = await axios.get('purchase/purchase_order/code/')
         return response.data
     }
     
     // get all purchase data with id
     const getPurchaseOrderWithId = async (id) =>{
-        const response = await axiosPrivate.get('purchase/purchase_order/updated/'+id+'/')
+        const response = await axios.get('purchase/purchase_order/updated/'+id+'/')
         return response.data
     }
 
@@ -36,7 +36,7 @@ const usePurchaseOrderServices = () => {
 
     // delete purchaseOrder data
     const deletePurchaseOrder = async (id) =>{
-        const response = await axiosPrivate.delete('purchase_order/updated/'+id+"/")
+        const response = await axios.delete('purchase_order/updated/'+id+"/")
         return response.data
     }
  
