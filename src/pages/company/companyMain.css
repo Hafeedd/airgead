@@ -4,3 +4,22 @@
     border-radius: 0.5rem;
     box-shadow: 0px 0px 2px 5px rgb(227, 227, 227);
 }
+
+.item_seach_bar_cont.admin{
+    background: #F2F2F2 !important;
+    height: 3rem;
+}
+.item_seach_bar_cont.admin .item_search_bar{
+    background: transparent;
+    color: black;
+}
+
+.company-add-btn,.company-add-btn:hover{
+    display: flex;
+    gap: 0.6rem;
+    align-items: center;
+    justify-content: center;
+    background: #400A86;
+    color: white;
+    width: fit-content;
+}
