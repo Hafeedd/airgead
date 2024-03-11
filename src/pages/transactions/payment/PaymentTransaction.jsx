@@ -203,7 +203,7 @@ const PaymentTransaction = ({ method }) => {
       tempData = {
         id: item.id,
         voucher_number: item.voucher_number,
-        account_id: item?.daybook?.fk_account_master,
+        account_id: item?.daybook[0]?.fk_account_master,
         account_name: item?.daybook[0]?.account_name,
         account_code: item?.daybook[0]?.account_code,
         narration: item?.narration,
