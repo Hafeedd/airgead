@@ -1,7 +1,8 @@
-import axios from "../../api/axios";
-// // import useStaffServices from "../master/staffServices"
+import useAxiosPrivate from "../../hooks/axios/useAxiosPrivate"
 
 export const useReportsServices = () => {
+  const axios = useAxiosPrivate()
+  
   const getStockLedger = async (params) => {
     const response = await axios.get("/reports/stock_ledger/view/", {
       params: { ...params },
@@ -173,7 +174,7 @@ export const useReportsServices = () => {
 
   const getGroupTrialBalance = async (params) => {
     const response = await axios.get(
-      "/reports/group/headwise/balancesheet/report/",
+      "/reports/groupwise/trialbalance/report/",
       { params: params }
     );
     return response?.data;

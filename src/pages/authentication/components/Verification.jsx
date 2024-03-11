@@ -22,7 +22,7 @@ export const Verification = (props) => {
                     value={otp}
                     name="otp"
                     onChange={handleOtpChange}
-                    numInputs={4}
+                    numInputs={5}
                     isInputNum={true}
                     shouldAutoFocus={true}
                     renderInput={(props) => <input {...props} />}

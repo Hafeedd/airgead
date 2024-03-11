@@ -1,6 +1,7 @@
-import axios from "../../api/axios"
+import useAxiosPrivate from "../../hooks/axios/useAxiosPrivate"
 
 const useAccJournalServices = () =>{
+    const axios = useAxiosPrivate()
     
     // post account journal
     const postAccJournal = async (data) =>{

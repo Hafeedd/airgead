@@ -9,16 +9,21 @@ import { Login } from './components/Login'
 import { Verification } from './components/Verification'
 import { useAuthServices } from '../../services/auth/authServices'
 import Swal from 'sweetalert2'
+import { useDispatch } from 'react-redux'
+import { login } from '../../redux/authSlice'
 
 const LoginMainPage = () => {
   const [token, setToken] = useState(false)
   const [otp, setOtp] = useState('')
+  const [loading, setLoading] = useState(false)
   const [user, setUser] = useState({
     username: null,
     password: null,
   })
 
-  const { login } = useAuthServices()
+  const dispatch = useDispatch()
+
+  const { loginAuth } = useAuthServices()
 
   const navigate = useNavigate()
   const location = useLocation()
@@ -40,24 +45,30 @@ const LoginMainPage = () => {
   const handleSubmit = async (e) => {
     e.preventDefault()
     try {
+      setLoading(true)
       let resp
-      if(token){
-        resp = await login({otp:otp},{t:token})
+      if (token) {
+        resp = await loginAuth({ otp: otp }, { t: token })
       }
       else
-      resp = await login(user)
+        resp = await loginAuth(user)
       if (resp.success) {
-        if(token){
+        if (token) {
           setToken(false)
-          
+          let data = resp.data
+          const {username,mobile,image,email, fk_role} = data
+          dispatch(login({ token: data.token, userDetails: { ...{ username, mobile, image, email, fk_role } } }))
           navigate("/")
         }
         setToken(resp.data.verification_token)
       }
+      setLoading(false)
     } catch (err) {
-      Swal.fire('Error', 
-      err?.response?.data?.message || 
-      'Something went wrong. Please try again later.', 'error')
+      setLoading(false)
+      console.log(err)
+      Swal.fire('Error',
+        err?.response?.data?.message ||
+        'Something went wrong. Please try again later.', 'error')
     }
   }
 
@@ -73,7 +84,7 @@ const LoginMainPage = () => {
       <div className="col d-flex justify-content-center align-items-center">
         <img style={{ position: "fixed", zIndex: -1 }} src={vitezLogoWatermark} alt="" />
         {location.pathname === "/register" ? <Register /> :
-          !token ? <Login {...{ user, handleChange, handleSubmit }} /> :
+          !token ? <Login {...{ user, handleChange, handleSubmit, loading }} /> :
             <Verification {...{ otp, handleOtpChange, handleSubmit }} />}
       </div>
     </div>

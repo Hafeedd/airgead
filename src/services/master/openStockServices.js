@@ -1,7 +1,8 @@
-import axios from "../../api/axios"
+import useAxiosPrivate from "../../hooks/axios/useAxiosPrivate"
 
 const useOpenStockServices = () =>{
-
+    const axios = useAxiosPrivate()
+    
     //get open stock
     const getOpenStock = async (params) =>{
         const response = await axios.get("/master/items/opening_stock/",{params:params})

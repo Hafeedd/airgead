@@ -1,6 +1,7 @@
-import axios from "../../api/axios";
+import useAxiosPrivate from "../../hooks/axios/useAxiosPrivate";
 
 const useItemServices = () => {
+  const axios = useAxiosPrivate()
   // api for adding new options and post req -----------------------------------------------
 
   // item add

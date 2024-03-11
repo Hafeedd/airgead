@@ -1,6 +1,7 @@
- import axios from "../../api/axios"
+import useAxiosPrivate from "../../hooks/axios/useAxiosPrivate"
 
 const useAccountServices = () => {
+  const axios = useAxiosPrivate()
     
 // POST Services--------------------------------------------------------------
   // Account Group

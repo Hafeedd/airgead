@@ -1,6 +1,8 @@
-import axios from "../../api/axios"
+import useAxiosPrivate from "../../hooks/axios/useAxiosPrivate"
 
 const useProductionServices = () =>{
+    const axios = useAxiosPrivate()
+
     const postMaterialComposition = async(data) =>{
         const response = await axios.post('production/compositions/',data)
         return response.data

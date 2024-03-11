@@ -1,6 +1,7 @@
-import axios from "../../api/axios"
+import useAxiosPrivate from "../../hooks/axios/useAxiosPrivate"
 
 const useChequeRegister = () => {
+    const axios = useAxiosPrivate()
 
     //get cheque register
     const getChequeRegister = async(params) =>{

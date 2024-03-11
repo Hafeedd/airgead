@@ -1,7 +1,8 @@
-import axios from "../../api/axios"
+import useAxiosPrivate from "../../hooks/axios/useAxiosPrivate"
 
 
 export const useSalesReturnServices = () => {
+    const axios = useAxiosPrivate()
 
     // post sales
     const postSalesReturn = async(data) =>{

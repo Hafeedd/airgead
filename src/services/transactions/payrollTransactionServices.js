@@ -1,6 +1,7 @@
-import axios from '../../api/axios'
+import useAxiosPrivate from "../../hooks/axios/useAxiosPrivate"
 
 export const usePayrollTransactionServices = ()=>{
+    const axios = useAxiosPrivate()
 
     const getAllStaffPayroll = async(params)=>{
         const response = await axios.get('/master/staff/staff_payroll/',{params:{...params}})

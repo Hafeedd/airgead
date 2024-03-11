@@ -1,7 +1,8 @@
-import axios from "../../api/axios"
+import useAxiosPrivate from "../../hooks/axios/useAxiosPrivate"
 
 
 const useCustomerServices = () => {
+    const axios = useAxiosPrivate()
 
 // POST Services--------------------------------------------------------------
     // Route

@@ -1,6 +1,7 @@
-import axios from "../../api/axios"
+import useAxiosPrivate from "../../hooks/axios/useAxiosPrivate"
 
 const useStockJournalServices = () =>{
+    const axios = useAxiosPrivate()
 
     //get stock journal
     const getStockJ = async (data) =>{

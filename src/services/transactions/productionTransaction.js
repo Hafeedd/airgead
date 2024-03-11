@@ -1,6 +1,8 @@
-import axios from '../../api/axios'
+import useAxiosPrivate from "../../hooks/axios/useAxiosPrivate"
 
 const useProductionTransactionServices = ()=>{
+    const axios = useAxiosPrivate()
+
     const postProductionData = async(data)=>{
         const response = await axios.post('production/',data)
         return response.data

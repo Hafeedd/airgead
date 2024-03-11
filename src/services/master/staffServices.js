@@ -1,6 +1,7 @@
-import axios from "../../api/axios"
+import useAxiosPrivate from "../../hooks/axios/useAxiosPrivate"
 
 const useStaffServices = () =>{
+    const axios = useAxiosPrivate()
 
     //get staff education
     const getStaffEducation = async () =>{

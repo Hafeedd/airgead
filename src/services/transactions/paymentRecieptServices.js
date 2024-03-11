@@ -1,6 +1,7 @@
-import axios from "../../api/axios"
-
+import useAxiosPrivate from "../../hooks/axios/useAxiosPrivate"
 const usePaymentRecieptServices = () =>{
+    const axios = useAxiosPrivate()
+   
     // post 
 
     const postPaymentReciept = async (data) => {

@@ -1,6 +1,7 @@
-import axios from "../../api/axios"
+import useAxiosPrivate from "../../hooks/axios/useAxiosPrivate"
 
 const usePurchaseOrderServices = () => {
+    const axios = useAxiosPrivate()
 
     //post requests =================================
 

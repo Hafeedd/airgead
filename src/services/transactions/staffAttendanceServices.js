@@ -1,6 +1,8 @@
-import axios from "../../api/axios"
+import useAxiosPrivate from "../../hooks/axios/useAxiosPrivate"
 
 const useStaffAttendanceServices = () => {
+   const axios = useAxiosPrivate()
+
    const getAllStaffAttendance =async(data)=>{
     const response = await axios.get('master/staff/all_staffattendance/',{params:data})
     return response.data

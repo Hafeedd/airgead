@@ -6,9 +6,11 @@ import setting from "../../assets/icons/setting.png";
 import bell from "../../assets/icons/bell.png";
 import { useLocation, useNavigate } from "react-router";
 import { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 // import e from "express";
 
 const Header = () => {
+  const userData = useSelector(state => state.auth.userDetails)
   const location = useLocation();
 
   useEffect(() => {
@@ -18,7 +20,7 @@ const Header = () => {
       element2.style.backgroundColor = getComputedStyle(element).backgroundColor
     }
   }, [location.pathname]);
-  
+
   const navigate = useNavigate();
   return (
     <div className="header main">
@@ -41,13 +43,15 @@ const Header = () => {
           <div className="header-item">
             <img src={setting} width="18rem" className="white-to-black" />
           </div>
+            {userData?.fk_role!=="Admin"&&
           <div className="heaader-user-cont rounded-1 px-2">
-            <img src={userProf} alt="user-prof" className="header-user-prof-img"/>
+            <img src={userProf} alt="user-prof" className="header-user-prof-img" />
             <div>
-            <div>Davis Doopli</div>
-            <div className="header-role-text">Admin</div>
+              <div>{`${userData?.username?.slice(0, 10)} ${userData?.username?.length > 9 ? "..." : ""}`}</div>
+              <div className="header-role-text">{userData?.fk_role}</div>
             </div>
           </div>
+            }
         </div>
       </div>
     </div>

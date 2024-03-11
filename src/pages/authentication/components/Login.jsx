@@ -7,12 +7,12 @@ import mobileIcon from '../../../assets/images/icomoon-free_mobile.svg'
 import PasswordField from './PasswordField'
 
 export const Login = (props) => {
-    const { user, handleChange, handleSubmit } = props
+    const { user, handleChange, handleSubmit, loading } = props
 
     const navigate = useNavigate()
 
     return (
-        <div className='d-flex flex-column align-items-center railway-font' style={{ width: "70%", height: "fit-content" }}>
+        <form onSubmit={handleSubmit} className='d-flex flex-column align-items-center railway-font' style={{ width: "70%", height: "fit-content" }}>
 
             <div className='d-flex mt-5'>
                 <div className='d-flex flex-column justify-content-center mt-2'>
@@ -38,7 +38,9 @@ export const Login = (props) => {
             </div>
 
             <div style={{ width: "100%" }}>
-                <button onClick={handleSubmit} className='btn-login rounded py-3' >Login</button>
+                <button type='submit' disabled={loading}  className='btn-login rounded py-3 d-flex px-0 align-items-center justify-content-center' >
+                    {loading?"Loading":"Login"} &nbsp;&nbsp;
+                {loading && <div className='login-loader'/>}</button>
             </div>
 
             <div className='my-4'>
@@ -54,6 +56,6 @@ export const Login = (props) => {
 
             </div>
 
-        </div>
+        </form>
     )
 }
