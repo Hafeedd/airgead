@@ -100,12 +100,15 @@ const StockValueTable = (props) => {
                                             <td>{data?.wholesale_rate?.toFixed(2)}</td>
                                             <td>{data?.super_wholesale_rate?.toFixed(2)}</td>
                                             <td>{data?.cost?.toFixed(2)}</td>
-                                            <td>{
-                                            rateType=="r_rate"?
-                                            data?.(stock*data?.ret_rate).toFixed(2):
-                                            rateType=="p_rate"?
-                                            data?.(stock*data?.p_rate).toFixed(2):
-                                            data?.stoke_value.toFixed(2)}</td>
+                                            <td>
+                                                {
+                                                    rateType=="r_rate"?
+                                                    data&& (stock*data?.ret_rate).toFixed(2):
+                                                    rateType=="p_rate"?
+                                                    data&& (stock*data?.p_rate).toFixed(2):
+                                                    data?.stoke_value.toFixed(2)
+                                                }
+                                            </td>
                                         </tr>
                                     </>
                                 )
