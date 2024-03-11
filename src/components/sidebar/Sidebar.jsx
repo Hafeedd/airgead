@@ -1,3 +1,4 @@
+
 import './sidebar.css'
 import Transaction from '../../assets/icons/transaction.svg'
 import Reports from '../../assets/icons/reports.svg'
@@ -6,6 +7,7 @@ import { useState } from 'react'
 import { useNavigate } from 'react-router'
 import { useSelector } from 'react-redux'
 import userProf from "../../assets/icons/prof.jpeg";
+import companyList from "../../assets/icons/company-list.png";
 
 const Sidebar = () => {
   const [masterActive, setMasterActive] = useState(false)
@@ -14,7 +16,63 @@ const Sidebar = () => {
 
   const userDetails = useSelector(state => state.auth.userDetails)
 
+  const master = [
+    { text: 'Accounts', navigate: '/account-master' },
+    { text: 'Customer', navigate: '/customer-master' },
+    { text: 'Supplier', navigate: '/supplier-master' },
+    { text: 'Staff', navigate: '/staff-list' },
+    { text: 'Items', navigate: '/' },
+    { text: 'Opening Stock', navigate: '/opening-stock' },
+    { text: 'Material Composition', navigate: '/material-composition-product' },
+  ]
+
+  const transaction = [
+    { text: 'Purchase', navigate: '/purchase-transaction' },
+    { text: 'Purchase Return', navigate: '/purchase-return' },
+    { text: 'Purchase Order', navigate: '/purchase-order' },
+    { text: 'Sales', navigate: '/sales-transaction' },
+    { text: 'Sales Return', navigate: '/sales-return' },
+    { text: 'Sales order', navigate: '/sales-order' },
+    { text: 'Payment', navigate: '/payment-transaction' },
+    { text: 'Reciept', navigate: '/receipt-transaction' },
+    { text: 'Stock Journal', navigate: '/stock-journal' },
+    { text: 'Account Journal', navigate: '/account-journal' },
+    { text: 'Staff Attendance', navigate: '/staff-attendance' },
+    { text: 'Pay Roll', navigate: '/pay-roll' },
+    { text: 'Cheque Register', navigate: '/cheque-register' },
+    { text: 'Production', navigate: '/production-transaction' },
+  ]
+
+  const reports = [
+    { text: 'Stock Ledger', navigate: '/stock-reports' },
+    { text: 'Account Ledger', navigate: '/account-reports' },
+    { text: 'Day Book', navigate: '/day-book' },
+    { text: 'Cust Outstanding', navigate: '/customer-outstandings' },
+    { text: 'Sup Outstanding', navigate: '/supplier-outstandings' },
+    { text: 'Sales Report', navigate: '/sales-book' },
+    { text: 'Staff Outstanding', navigate: '/staff-outstandings' },
+    { text: 'Tax Reports', navigate: '/tax-report' },
+    { text: 'Cash Book', navigate: '/cashbook-report' },
+    { text: 'Stock Journal', navigate: '/Stock-journal-report' },
+    { text: 'Item Wise Profit', navigate: '/profit-report' },
+    { text: 'Purchase Report', navigate: '/purchase-book' },
+    { text: 'Barcode Register', navigate: '/barcode-register' },
+    { text: 'Item History', navigate: '/item-history' },
+    { text: 'Bill Wise Ledger', navigate: '/bill-wise-ledger' },
+    { text: 'Bill Wise Profit', navigate: '/bill-wise-profit' },
+    { text: 'Cheque Register', navigate: '/cheque-register-report' },
+    { text: 'Stock Value Report', navigate: '/stock-value-report' },
+    { text: 'Staff Salary & Attendance', navigate: '/StaffAttendance' },
+    { text: 'Production report', navigate: '/production-report' },
+    { text: 'Trial balance', navigate: '/trial-balance' },
+    { text: 'Group Wise Trial balance', navigate: '/group-trial-balance' },
+    { text: 'Balance Sheet', navigate: '/balance-sheet' },
+    { text: 'Traid Profit And Loss', navigate: '/traid-profit-loss' },
+    { text: 'Chart Of Account', navigate: '/chart-of/account' },
+  ]
+
   const navigate = useNavigate()
+
   return (
     <div className={`sidebar pb-5 ${userDetails.fk_role === "Admin" && "company"}`}>
       <div className="company-logo-cont mb-3">
@@ -31,408 +89,70 @@ const Sidebar = () => {
         style={{ userSelect: "none" }}
         className="SidebarItems mt-0 mt-5 mx-0 px-0"
       >
+        {userDetails.fk_role === "Admin" && <>
         <div
+          onClick={() => navigate('/company-list')}
+          className={`SidebarItem mb-1 admin ${masterActive && "active"}`}
+        >
+          <img src={companyList} className="sidebar_icon" width={"25px"} />
+          Company
+        </div>
+        </>}
+
+        {userDetails.fk_role === "User" && <><div
           onClick={() => setMasterActive(!masterActive)}
           className={`SidebarItem mb-1 ${masterActive && "active"}`}
         >
           <img src={User} className="sidebar_icon" width={"25px"} />
           Master
         </div>
-        <div className={`sidebar_span_cont ${!masterActive && "d-none"}`}>
-          <span className="SidebarSpan d-flex ms-5 ps-3">
-            <div
-              className="SidebarItemText"
-              onClick={() => navigate("/account-master")}
-            >
-              Accounts
-            </div>
-          </span>
-          <span className="SidebarSpan d-flex ms-5 ps-3">
-            <div
-              className="SidebarItemText"
-              onClick={() => navigate("/customer-master")}
-            >
-              Customer
-            </div>
-          </span>
-          <span className="SidebarSpan d-flex ms-5 ps-3">
-            <div
-              className="SidebarItemText"
-              onClick={() => navigate("/supplier-master")}
-            >
-              Supplier
-            </div>
-          </span>
-          <span className="SidebarSpan d-flex ms-5 ps-3">
-            <div
-              className="SidebarItemText"
-              onClick={() => navigate("/staff-list")}
-            >
-              Staff
-            </div>
-          </span>
-          <span className="SidebarSpan d-flex ms-5 ps-3">
-            <div className="SidebarItemText" onClick={() => navigate("/")}>
-              Items
-            </div>
-          </span>
-          <span className="SidebarSpan d-flex ms-5 ps-3">
-            <div
-              className="SidebarItemText"
-              onClick={() => navigate("/opening-stock")}
-            >
-              Opening Stock
-            </div>
-          </span>
-          <span className="SidebarSpan d-flex ms-5 ps-3">
-            <div
-              className="SidebarItemText"
-              onClick={() => navigate("/material-composition-product")}
-            >
-              Material Composition
-            </div>
-          </span>
-        </div>
-
-        <div
-          onClick={() => setReportsActive(!ReportsActive)}
-          className={`SidebarItem mt-3 mb-1 ${ReportsActive && "active"}`}
-        >
-          <img className="sidebar_icon" src={Transaction} width={"20px"} />
-          Transactions
-        </div>
-        <div className={`sidebar_span_cont ${!ReportsActive && "d-none"}`}>
-          <span className="SidebarSpan d-flex ms-5 ps-3">
-            <div
-              className="SidebarItemText"
-              onClick={() => navigate("/purchase-transaction")}
-            >
-              Purchase
-            </div>
-          </span>
-          <span className="SidebarSpan d-flex ms-5 ps-3">
-            <div
-              className="SidebarItemText"
-              onClick={() => navigate("/purchase-return")}
-            >
-              Purchase Return
-            </div>
-          </span>
-          <span className="SidebarSpan d-flex ms-5 ps-3">
-            <div
-              className="SidebarItemText"
-              onClick={() => navigate("/purchase-order")}
-            >
-              Purchase Order
-            </div>
-          </span>
-          <span className="SidebarSpan d-flex ms-5 ps-3">
-            <div
-              className="SidebarItemText"
-              onClick={() => navigate("/sales-transaction")}
-            >
-              Sales
-            </div>
-          </span>
-          <span className="SidebarSpan d-flex ms-5 ps-3">
-            <div
-              className="SidebarItemText"
-              onClick={() => navigate("/sales-return")}
-            >
-              Sales Return
-            </div>
-          </span>
-          <span className="SidebarSpan d-flex ms-5 ps-3">
-            <div
-              className="SidebarItemText"
-              onClick={() => navigate("/sales-order")}
-            >
-              Sales Order
-            </div>
-          </span>
-          {/* <span className="SidebarSpan d-flex ms-5 ps-3">
+          <div className={`sidebar_span_cont ${!masterActive && "d-none"}`}>
+            {master.map(data => <span className="SidebarSpan d-flex ms-5 ps-3">
               <div
                 className="SidebarItemText"
-                onClick={() => navigate("/sales-return")}
+                onClick={() => navigate(data.navigate)}
               >
-                Sales Return
+                {data.text}
               </div>
-            </span> */}
-          <span className="SidebarSpan d-flex ms-5 ps-3">
-            <div
-              className="SidebarItemText"
-              onClick={() => navigate("/payment-transaction")}
-            >
-              Payment
-            </div>
-          </span>
-          <span className="SidebarSpan d-flex ms-5 ps-3">
-            <div
-              className="SidebarItemText"
-              onClick={() => navigate("/receipt-transaction")}
-            >
-              Receipt
-            </div>
-          </span>
-          <span className="SidebarSpan d-flex ms-5 ps-3">
-            <div
-              className="SidebarItemText"
-              onClick={() => navigate("/stock-journal")}
-            >
-              Stock Journal
-            </div>
-          </span>
-          <span className="SidebarSpan d-flex ms-5 ps-3">
-            <div
-              className="SidebarItemText"
-              onClick={() => navigate("/account-journal")}
-            >
-              Account Journal
-            </div>
-          </span>
-          <span className="SidebarSpan d-flex ms-5 ps-3">
-            <div
-              className="SidebarItemText"
-              onClick={() => navigate("/staff-attendance")}
-            >
-              Staff Attendance
-            </div>
-          </span>
-          <span className="SidebarSpan d-flex ms-5 ps-3">
-            <div
-              className="SidebarItemText"
-              onClick={() => navigate("/pay-roll")}
-            >
-              Pay Roll
-            </div>
-          </span>
-          <span className="SidebarSpan d-flex ms-5 ps-3">
-            <div
-              className="SidebarItemText"
-              onClick={() => navigate("/cheque-register")}
-            >
-              Cheque Register
-            </div>
-          </span>
-          <span className="SidebarSpan d-flex ms-5 ps-3">
-            <div
-              className="SidebarItemText"
-              onClick={() => navigate("/production-transaction")}
-            >
-              Production
-            </div>
-          </span>
-        </div>
+            </span>)}
+          </div>
 
-        <div
-          onClick={() => setArrowActive(!ArrowActive)}
-          className={`SidebarItem mt-3 mb-1 ${ArrowActive && "active"}`}
-        >
-          <img className='sidebar_icon' src={Reports} width={"18px"} />
-          Reports
-        </div>
-        <div className={`sidebar_span_cont ${!ArrowActive && "d-none"}`}>
-          <span className="SidebarSpan d-flex ms-5 ps-3">
-            <div
-              className="SidebarItemText"
-              onClick={() => navigate("/stock-reports")}
-            >
-              Stock Ledger
-            </div>
-          </span>
-          <span className="SidebarSpan d-flex ms-5 ps-3">
-            <div
-              className="SidebarItemText"
-              onClick={() => navigate("/account-reports")}
-            >
-              Account Ledger
-            </div>
-          </span>
-          <span className="SidebarSpan d-flex ms-5 ps-3">
-            <div
-              className="SidebarItemText"
-              onClick={() => navigate("/day-book")}
-            >
-              Day Book
-            </div>
-          </span>
-          <span className="SidebarSpan d-flex ms-5 ps-3">
-            <div
-              className="SidebarItemText"
-              onClick={() => navigate("/customer-outstandings")}
-            >
-              Cust Outstanding
-            </div>
-          </span>
-          <span className="SidebarSpan d-flex ms-5 ps-3">
-            <div
-              className="SidebarItemText"
-              onClick={() => navigate("/supplier-outstandings")}
-            >
-              Sup Outstanding
-            </div>
-          </span>
-          <span className="SidebarSpan d-flex ms-5 ps-3">
-            <div
-              className="SidebarItemText"
-              onClick={() => navigate("/sales-book")}
-            >
-              Sales Report
-            </div>
-          </span>
-          <span className="SidebarSpan d-flex ms-5 ps-3">
-            <div
-              className="SidebarItemText"
-              onClick={() => navigate("/staff-outstandings")}
-            >
-              Staff Outstanding
-            </div>
-          </span>
-          <span className="SidebarSpan d-flex ms-5 ps-3">
-            <div
-              className="SidebarItemText"
-              onClick={() => navigate("/tax-report")}
-            >
-              Tax Reports
-            </div>
-          </span>
-          <span className="SidebarSpan d-flex ms-5 ps-3">
-            <div
-              className="SidebarItemText"
-              onClick={() => navigate("/cashbook-report")}
-            >
-              Cash Book
-            </div>
-          </span>
-          <span className="SidebarSpan d-flex ms-5 ps-3">
-            <div
-              className="SidebarItemText"
-              onClick={() => navigate("/Stock-journal-report")}
-            >
-              Stock Journal
-            </div>
-          </span>
-          <span className="SidebarSpan d-flex ms-5 ps-3">
-            <div
-              className="SidebarItemText"
-              onClick={() => navigate("/profit-report")}
-            >
-              Item Wise Profit
-            </div>
-          </span>
-          <span className="SidebarSpan d-flex ms-5 ps-3">
-            <div
-              className="SidebarItemText"
-              onClick={() => navigate("/purchase-book")}
-            >
-              Purchase Report
-            </div>
-          </span>
-          <span className="SidebarSpan d-flex ms-5 ps-3">
-            <div
-              className="SidebarItemText"
-              onClick={() => navigate("/barcode-register")}
-            >
-              Barcode Register
-            </div>
-          </span>
-          <span className="SidebarSpan d-flex ms-5 ps-3">
-            <div
-              className="SidebarItemText"
-              onClick={() => navigate("/item-history")}
-            >
-              Item History
-            </div>
-          </span>
-          <span className="SidebarSpan d-flex ms-5 ps-3">
-            <div
-              className="SidebarItemText"
-              onClick={() => navigate("/bill-wise-ledger")}
-            >
-              Bill Wise Ledger
-            </div>
-          </span>{" "}
-          <span className="SidebarSpan d-flex ms-5 ps-3">
-            <div
-              className="SidebarItemText"
-              onClick={() => navigate("/bill-wise-profit")}
-            >
-              Bill Wise Profit
-            </div>
-          </span>
-          <span className="SidebarSpan d-flex ms-5 ps-3">
-            <div
-              className="SidebarItemText"
-              onClick={() => navigate("/cheque-register-report")}
-            >
-              Cheque Register
-            </div>
-          </span>
-          <span className="SidebarSpan d-flex ms-5 ps-3">
-            <div
-              className="SidebarItemText"
-              onClick={() => navigate("/stock-value-report")}
-            >
-              Stock Value Report
-            </div>
-          </span>
-          <span className="SidebarSpan d-flex ms-5 ps-3">
-            <div
-              className="SidebarItemText"
-              onClick={() => navigate("/StaffAttendance")}
-            >
-              Staff Salary & Attendance
-            </div>
-          </span>
-          <span className="SidebarSpan d-flex ms-5 ps-3">
-            <div
-              className="SidebarItemText"
-              onClick={() => navigate("/production-report")}
-            >
-              Production report
-            </div>
-          </span>
-          <span className="SidebarSpan d-flex ms-5 ps-3">
-            <div
-              className="SidebarItemText"
-              onClick={() => navigate("/trial-balance")}
-            >
-              Trial balance
-            </div>
-          </span>
-          <span className="SidebarSpan d-flex ms-5 ps-3">
-            <div
-              className="SidebarItemText"
-              onClick={() => navigate("/group-trial-balance")}
-            >
-              Group Wise Trial balance
-            </div>
-          </span>
-          <span className="SidebarSpan d-flex ms-5 ps-3">
-            <div
-              className="SidebarItemText"
-              onClick={() => navigate("/balance-sheet")}
-            >
-              Balance Sheet
-            </div>
-          </span>
-          <span className="SidebarSpan d-flex ms-5 ps-3">
-            <div
-              className="SidebarItemText"
-              onClick={() => navigate("/traid-profit-loss")}
-            >
-              Traid Profit And Loss
-            </div>
-          </span>
-          <span className="SidebarSpan d-flex ms-5 ps-3">
-            <div
-              className="SidebarItemText"
-              onClick={() => navigate("/chart-of/account")}
-            >
-              Chart Of Account
-            </div>
-          </span>
-        </div>
+          <div
+            onClick={() => setReportsActive(!ReportsActive)}
+            className={`SidebarItem mt-3 mb-1 ${ReportsActive && "active"}`}
+          >
+            <img className="sidebar_icon" src={Transaction} width={"20px"} />
+            Transactions
+          </div>
+          <div className={`sidebar_span_cont ${!ReportsActive && "d-none"}`}>
+            {transaction.map(data => <span className="SidebarSpan d-flex ms-5 ps-3">
+              <div
+                className="SidebarItemText"
+                onClick={() => navigate(data.navigate)}
+              >
+                {data.text}
+              </div>
+            </span>)}
+          </div>
+
+          <div
+            onClick={() => setArrowActive(!ArrowActive)}
+            className={`SidebarItem mt-3 mb-1 ${ArrowActive && "active"}`}
+          >
+            <img className='sidebar_icon' src={Reports} width={"18px"} />
+            Reports
+          </div>
+          <div className={`sidebar_span_cont ${!ArrowActive && "d-none"}`}>
+            {reports.map(data => <span className="SidebarSpan d-flex ms-5 ps-3">
+              <div
+                className="SidebarItemText"
+                onClick={() => navigate(data.navigate)}
+              >
+                {data.text}
+              </div>
+            </span>)}
+          </div>
+        </>}
       </div>
     </div>
   );

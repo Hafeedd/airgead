@@ -3,7 +3,7 @@ import { useAuthServices } from "../../services/auth/authServices"
 import { useEffect, useState } from "react"
 import { Navigate, Outlet, useLocation, useNavigate } from "react-router-dom"
 
-const CheckAuth = () => {
+export const CheckAuth = ({type}) => {
     const auth = useSelector((state) => state.auth)
     const [verify, setVerify] = useState(null)
 
@@ -20,19 +20,21 @@ const CheckAuth = () => {
         try {
             const resp = await verifyUser()
             if (resp.success) {
-                setVerify(true)
+                if(type?.includes(resp.data.fk_role))
+                setVerify(resp.data.fk_role)
+                else if(resp.data.fk_role === "Admin")
+                navigate('/company-list',{ replace: true })
+                else if(resp.data.fk_role === "User")
+                navigate('/',{ replace: true })
             } else {
                 setVerify(false)
-                navigate('/login')
+                navigate('/login',{ replace: true })
             }
         } catch (err) {
             setVerify(false)
-            navigate('/login')
+            navigate('/login',{ replace: true })
         }
     }
 
-    return (verify&&<Outlet/>)
-    // return (<Outlet/>)
+    return (type?.includes(verify) && <Outlet/>)
 }
-
-export default CheckAuth

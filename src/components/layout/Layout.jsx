@@ -6,7 +6,7 @@ import background from '../../assets/images/background.png'
 
 export const Layout = () => {
     return (
-      <div className="d-flex" style={{backgroundImage:`url(${background})`,backgroundColor:"white"}}>
+      <div className="d-flex" style={{backgroundImage:`url(${background})`,backgroundColor:"white", backgroundRepeat:'no-repeat',backgroundSize:'cover'}}>
         {/* <div className="w-100">asd</div> */}
           <Sidebar />
           <div className="main-content w-100" style={{userSelect:'none'}}>
