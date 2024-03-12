@@ -54,7 +54,7 @@ const by_prod_data = {
   margin: null,
   mrp_rate: null,
   p_type: null,
-  s_rate: null,
+  retail_rate: null,
   item_name: null,
   item_produced_name: null,
 };
@@ -77,12 +77,14 @@ const ProductionTransaction = () => {
   const [code, setCode] = useState();
   const [fullProdData, setFullProdData] = useState([]);
   const [produceData, setProduceData] = useState(Initial_data);
-  const [fullRawData, setFullRawData] = useState([]);
-  const [rawItems, setRawItems] = useState(raw_data);
-  const [fullByprodData, setFullByprodData] = useState([]);
-  const [byProductItems, setByProductItems] = useState(by_prod_data);
-  const [fullLabourData, setFullLabourData] = useState([]);
-  const [labourDetails, setLabourDetails] = useState(labour_data);
+  const [rawData, setRawData] = useState(raw_data);
+  const [labourData, setLabourData] = useState(labour_data);
+  const [byprodData, setByprodData] = useState(by_prod_data);
+  const [rawItems, setRawItems] = useState([]);
+  const [labourDetails, setLabourDetails] = useState([]);
+  const [byProductItems, setByProductItems] = useState([]);
+
+
   const [show, setShow] = useState(false);
   const [listProduction, setListProduction] = useState([]);
   const [selectedStaffAccount, setSelectedStaffAccount] = useState("");
@@ -95,6 +97,10 @@ const ProductionTransaction = () => {
   const [productionList, setProductionList] = useState();
   const [isByOpen, setIsByOpen] = useState(false);
   const [isLabOpen, setIsLabOpen] = useState(true);
+  const [proList,setProList]=useState([]);
+  const [itemCompleteData,setItemCompleteData] = useState();
+
+  // console.log('first',proList)
   // const [entryList, setEntryList] = useState([])
 
   // const getEntryList=(data)=>{
@@ -126,7 +132,7 @@ const ProductionTransaction = () => {
       let tempList = [];
       data?.map((item) => {
         let a = {
-          key: item.types,
+          // key: item.types,
           text: item.name,
           value: item.id,
         };
@@ -140,7 +146,7 @@ const ProductionTransaction = () => {
         if (item.property_type == filterProperty) {
           let a = {
             ...item,
-            key: item.property_type,
+            // key: item.property_type,
             text: item.property_value,
             value: item.id,
           };
@@ -164,6 +170,7 @@ const ProductionTransaction = () => {
       }
       res4 = await getItemList();
       if (res4?.success) {
+        setItemCompleteData(res4?.data)
         filter1(res4?.data, setItems);
       }
       res5 = await getProperty();
@@ -179,7 +186,7 @@ const ProductionTransaction = () => {
           if (item.name && item.code) {
             // && item.bank_account === true
             a = {
-              key: item.code,
+              // key: item.code,
               value: item.id,
               text: item.name,
               description: item.code,
@@ -217,7 +224,7 @@ const ProductionTransaction = () => {
   //   }
   //   return response.data;
   // };
-
+// console.log(items,'productionsssssssssssssssssssssss')
   const search = (options, searchValue) => {
     searchValue = searchValue.toUpperCase();
     return options.filter((option) => {
@@ -242,7 +249,9 @@ const ProductionTransaction = () => {
       const tempByproductOnly = tempList.flatMap((data) => data.by_products);
       const tempLabourOnly = tempList.flatMap((data) => data.expense_accounts);
       const tempProductionItem = [];
+      const tempProList = []
       tempList.map((data) => {
+        tempProList.push(items.filter(item => item.value === data.fk_item)[0])
         tempProductionItem.push({
           id: data.id,
           initial_qty: data.qty,
@@ -266,6 +275,7 @@ const ProductionTransaction = () => {
       const tempByproduct = [];
       const tempLabour = [];
 
+      
       tempRawOnly.map((data) => {
         let choosenItem = tempList.filter(
           (item) => item.id === data.fk_production_item
@@ -302,7 +312,7 @@ const ProductionTransaction = () => {
           margin: data.item_details.margin,
           mrp_rate: data.item_details.mrp_rate,
           p_type: null,
-          s_rate: data.item_details.retail_rate,
+          retail_rate: data.item_details.retail_rate,
           item_name: data.item_details.name,
           item_produced_name: itemName,
         });
@@ -324,11 +334,11 @@ const ProductionTransaction = () => {
           initial_amount: data.amount,
         });
       });
-
       setRawItems(tempRaw);
       setFullProdData(tempProductionItem);
       setByProductItems(tempByproduct);
       setLabourDetails(tempLabour);
+      setProList(tempProList);
     }
   };
 
@@ -345,9 +355,9 @@ const ProductionTransaction = () => {
     setByProductItems([]);
     setLabourDetails("");
     setProduceData("");
-    setFullRawData([]);
-    setFullByprodData([]);
-    setFullLabourData([]);
+    // setFullRawData([]);
+    // setFullByprodData([]);
+    // setFullLabourData([]);
     setFullProdData([]);
   };
 
@@ -405,6 +415,8 @@ const ProductionTransaction = () => {
       total_margin: 0,
       produced_items: listProd,
     };
+    // console.log(submitData.produced_items);
+    // return 0
     if (!edit){
       let response = await postProductionData(submitData);
       if (!response?.success) {
@@ -449,26 +461,29 @@ const ProductionTransaction = () => {
       </div>
       <div className="p-3 mt-3">
         <div className="p-2 bg-light rounded-1">
-          <div className="col-12 pt-2 d-flex mb-2">
-            <div className="col-2 col-3 d-flex mx-0">
-              <div className="col-3 mx-0">Doc.No :</div>
+          <div className="row pt-2 d-flex mb-2 px-2">
+            <div className="col-4 d-flex mx-0">
+              <div className="col-2 col-3 mx-0">Doc.No :</div>
               <input
                 type="text"
-                className="rounded border col-8 ps-3"
+                className="rounded border col-6 ps-3"
                 value={code}
                 onChange={(e) => setCode(e.target.value)}
               />
-            </div>
-            <div className="col-1 d-flex mx-0">
-              <button
+              <div className="col-1 mx-1">
+                <button
                 onClick={() => setShow(true)}
-                className="bg-dark text-light border border-dark rounded w-25"
+                className="bg-dark text-light border border-dark rounded w-100"
               >
                 <LuClipboardEdit className="my-1" />
               </button>
+              </div>
             </div>
-            <div className="col-2 col-3 d-flex mx-0">
-              <div className="col-3 mx-0 ps-4">Date :</div>
+            {/* <div className="col-1 d-flex mx-0">
+              
+            </div> */}
+            <div className="col-3 d-flex mx-0">
+              <div className="col-3 mx-0 ps-3">Date :</div>
               <input
                 type="date"
                 className="rounded border col-7 ms-1"
@@ -490,34 +505,40 @@ const ProductionTransaction = () => {
               setLabourDetails,
               fullProdData,
               setFullProdData,
-              fullRawData,
-              setFullRawData,
-              fullByprodData,
-              setFullByprodData,
-              fullLabourData,
-              setFullLabourData,
+              // fullRawData,
+              // setFullRawData,
+              // fullByprodData,
+              // setFullByprodData,
+              // fullLabourData,
+              // setFullLabourData,
               rawItems,
               byProductItems,
               labourDetails,
               listProduction,
               setListProduction,
+              proList,
+              setProList
               // getEntryList,
             }}
           />
 
           <RawMaterials
             {...{
+              items,
               rawItems,
               setRawItems,
               fullProdData,
               produceData,
               setFullProdData,
               units,
-              fullRawData,
-              setFullRawData,
               setProduceData,
               labourDetails,
               setLabourDetails,
+              
+              proList,
+              itemCompleteData,
+              rawData,
+              setRawData,
             }}
           />
           <LabourAndExpense
@@ -529,12 +550,15 @@ const ProductionTransaction = () => {
               labourDetails,
               setLabourDetails,
               accDetails,
-              fullLabourData,
-              setFullLabourData,
               setProduceData,
               isLabOpen,
               setIsLabOpen,
               setIsByOpen,
+
+              itemCompleteData,
+              proList,
+              labourData,
+              setLabourData,
             }}
           />
           <ByProductDetails
@@ -542,17 +566,23 @@ const ProductionTransaction = () => {
               byProductItems,
               setByProductItems,
               units,
-              fullByprodData,
-              setFullByprodData,
+              // fullByprodData,
+              // setFullByprodData,
+              items,
               isByOpen,
               setIsByOpen,
               setIsLabOpen,
+
+              proList,
+              itemCompleteData,
+              byprodData,
+              setByprodData
             }}
           />
 
-          <div className="col-12 d-flex justify-content-end mb-1 mt-2">
+          <div className="col-12 d-flex justify-content-end mb-1 mt-2 px-2">
             <div className="col-4 d-flex pe-3">
-              <div className="col-3">Checked by </div>
+              <div className="col-3">Checked by :</div>
               <Dropdown
                 clearable
                 selection
@@ -560,7 +590,7 @@ const ProductionTransaction = () => {
                 search={search}
                 // onKeyDown={handleKeyDown1}
                 onChange={handleDropdownStaffAccount}
-                className="purchase-input-text table-drop d-flex align-items-center py-0 form-control w-100"
+                className="purchase-input-text table-drop d-flex align-items-center py-0 form-control w-100 bordercolors"
                 name="fk_type"
                 placeholder="Select"
                 value={selectedStaffAccount}
@@ -568,10 +598,10 @@ const ProductionTransaction = () => {
               />
             </div>
             <div className="col-4 d-flex pe-3">
-              <div className="col-3">Narration</div>
+              <div className="col-3">Narration :</div>
               <input
                 type="text"
-                className="col-9 rounded border ms-2 ps-3"
+                className="col-9 rounded border ps-3"
                 value={narration}
                 onChange={(e) => setNarration(e.target.value)}
               />
