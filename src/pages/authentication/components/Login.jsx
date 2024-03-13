@@ -25,7 +25,7 @@ export const Login = (props) => {
             </div>
 
             <div className='w-100'>
-                <TextField onChange={handleChange} value={user.username} name="username" className='auth-input-filed my-4' id="outlined-basic" label="User Name" variant="outlined" />
+                <TextField onChange={handleChange} value={user.username} name="username" className='auth-input-field my-4' id="outlined-basic" label="User Name" variant="outlined" />
             </div>
             <PasswordField name="password" state={user} {...{ handleChange }} />
 

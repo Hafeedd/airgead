@@ -1,78 +1,298 @@
-.company-cont{
-    background: #FFFFFFA8;
-    padding: 1rem;
-    border-radius: 0.5rem;
-    box-shadow: 0px 0px 2px 5px rgb(227, 227, 227);
+.company-cont {
+  background: #ffffffa8;
+  border-radius: 0.5rem;
+  box-shadow: 0px 0px 2px 5px rgb(227, 227, 227);
 }
 
-.item_seach_bar_cont.admin{
-    background: #F2F2F2 !important;
-    height: 3rem;
-}
-.item_seach_bar_cont.admin .item_search_bar{
-    background: transparent;
-    color: black;
+.company-list-cont {
+  padding: 1rem;
 }
 
-.company-add-btn,.company-add-btn:hover{
-    display: flex;
-    gap: 0.6rem;
-    align-items: center;
-    justify-content: center;
-    background: #400A86;
-    color: white;
-    width: fit-content;
+.item_seach_bar_cont.admin {
+  background: #f2f2f2 !important;
+  height: 3rem;
+}
+.item_seach_bar_cont.admin .item_search_bar {
+  background: transparent;
+  color: black;
 }
 
-.company-list-table-cont{
-    height: 35rem;
-    overflow: hidden;
-    overflow-y: scroll;
+.company-add-btn,
+.company-add-btn:hover {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #4A00A8;
+  color: white;
 }
 
-.company-list.table thead tr th{
-    position: sticky;
-    top: 0;
-    z-index: 5;
-    background: #3D3B92;
-    color: white;
-    vertical-align: middle;
-    border-left: 1px solid white;
-    border-top-right-radius: 0.5rem;
-    border-top-left-radius: 0.5rem;
+.company-add-btn.clear{
+  background: #707070;
 }
 
-.company-list.table tbody tr td{
-    position: relative;
-    padding: 0 2rem;
-    vertical-align: middle;
-    text-align: start;
-    height: 3rem;
-    color: #4B4B4B;
-    background: #F3F3F3;
-    border-bottom: 1px solid white;
+.company-list-table-cont {
+  height: 35rem;
+  overflow: hidden;
+  overflow-y: scroll;
 }
 
-.company-list.table tbody tr td:after{
-    content: '|';
-    height: 80%;
-    width: 1px !important;
-    position: absolute;
-    right: 0%;
-    top: 10%;
-    background-color: gray;
-    color: gray;
+.company-list.table thead tr th {
+  position: sticky;
+  top: 0;
+  z-index: 5;
+  background: #3d3b92;
+  color: white;
+  vertical-align: middle;
+  border-left: 1px solid white;
+  border-top-right-radius: 0.5rem;
+  border-top-left-radius: 0.5rem;
+}
+
+.company-list.table tbody tr td {
+  position: relative;
+  padding: 0 2rem;
+  vertical-align: middle;
+  text-align: start;
+  height: 3rem;
+  color: #4b4b4b;
+  background: #f3f3f3;
+  border-bottom: 1px solid white;
+}
+
+.company-list.table tbody tr td:after {
+  content: "|";
+  height: 80%;
+  width: 1px !important;
+  position: absolute;
+  right: 0%;
+  top: 10%;
+  background-color: gray;
+  color: gray;
+}
+
+.company-list.table tbody tr td:first-child {
+  border-top-left-radius: 1rem;
+  border-bottom-left-radius: 1rem;
+}
+.company-list.table tbody tr td:last-child {
+  border-top-right-radius: 1rem;
+  border-bottom-right-radius: 1rem;
+}
+
+.company-list.table tbody tr td:last-child:after {
+  content: none;
+}
+
+.company-add-cont .company-progress-bar {
+  padding: 0.8rem;
+  position: relative;
+  background: white;
+  color: #37007e;
+  border-bottom: 1px solid #4a04a5;
+}
+
+.company-progress-bar .bar-text {
+  padding-left: 2rem;
+  color: #4a04a5;
+}
+.company-progress-bar .bar-text.active {
+  border-left: 1px solid rgb(209, 209, 209) ;
+  color: white;
+  font-weight: 600;
+}
+
+.company-progress-loader{
+  border: transparent !important;
+  width: 28%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  position: absolute;
+  background: #4a04a5;
+  border-top-right-radius: 2rem;
+  border-bottom-right-radius: 2rem;
+  animation-name: "bar-move1";
+  animation-duration: 2s;
+}
+.company-progress-loader.act2{
+  width: 55%;
+  animation-name: "bar-move2";
+}
+
+.company-progress-loader.act3{
+  width: 90%;
+  animation-name: "bar-move3";
+}
+
+@keyframes bar-move1 {
+  from{
+    width: 0;
   }
-
-.company-list.table tbody tr td:first-child{
-    border-top-left-radius: 1rem;
-    border-bottom-left-radius: 1rem;
+  to {
+    width: 28%;
+  }
 }
-.company-list.table tbody tr td:last-child{
-    border-top-right-radius: 1rem;
-    border-bottom-right-radius: 1rem;
+@keyframes bar-move2 {
+  from{
+    width: 30%;
+  }
+  to {
+    width: 55%;
+  }
+}
+@keyframes bar-move3 {
+  from {
+    width: 60%;
+  }
+  to {
+    width: 90%;
+  }
 }
 
-.company-list.table tbody tr td:last-child:after{
-    content: none;
+.company-add {
+  padding: 2rem;
+  padding-bottom: 0.8rem;
+  min-height: 35rem;
+}
+
+.comp-details-cont-1{
+  padding: 1rem;
+  background: white;
+}
+.comp-details-cont-1{
+  padding: 1rem;
+  background: white;
+}
+
+.comp-details-cont-1 .image-cont{
+  width: 28rem;
+  height: 8rem;
+  background: #F5EEFF;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0.3rem;
+}
+
+.comp-details-cont-1 .image-upload-btn{
+  font-weight: 600;
+  border-radius: 0.3rem;
+  margin-top: 1rem;
+  background: #37007E;
+  color: white;
+  padding: 1rem;
+  width: 28rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.checkbox-comp-details{
+  position: relative;
+  width: 1.5rem;
+  height: 1.5rem;
+  accent-color: #37007E;
+}
+
+.checkbox-comp-details::before{
+  content:'';
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  background: #000 !important;
+}
+
+.comp-input-det{
+  margin-top: 1.5rem;
+}
+
+.comp-input-det.active{
+  background: #F2F2F2;
+
+}
+
+.circle{
+  border-radius: 50%;
+  background-color: deepskyblue;
+  width: 20px;
+  height: 20px;
+  position: absolute;
+  top: 25%;
+  right: 13px;
+  opacity: 0;
+  animation: scaleIn 2s infinite cubic-bezier(.36, .11, .89, .32);
+}
+
+.circle.animation1{
+  animation-delay: 2s;
+}
+.circle.animation2{
+  animation-delay: 2.8s;
+}
+.circle.animation3{
+  animation-delay: 3.3s;
+}
+
+@keyframes scaleIn {
+  from {
+    transform: scale(.4, .4);
+    opacity: .5;
+  }
+  to {
+    transform: scale(1.7, 1.7);
+    opacity: 0;
+  }
+}
+
+.accordian-cont{
+  height: 10rem;
+  overflow: hidden;
+  overflow-y: scroll;
+  animation: 'addition-accord' 1s;
+}
+
+@keyframes addition-accord {
+  from{
+    height: 0;
+  }
+  to{
+    height: 10rem;
+  }
+}
+
+.company-input-field{
+  width: 100%;
+}
+
+.company-input-field div{
+  border-bottom: 1px solid gray !important;
+  background: #F5F5F5;
+}
+
+.company-plan-btn.module{
+  background: #3C087E;
+  border-radius: 0.4rem;
+  color:white;
+  padding: 0.5rem 1.5rem;
+}
+
+.module-cont{
+  margin-top: 1rem;
+  width: 35rem;
+  height: 17rem;
+  border-radius: 0.2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #F5EEFF;
+  color: #808080;
+}
+
+.image-cont .company-details-company-logo{
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
 }

@@ -46,6 +46,7 @@ import ChartOfAccount from "./pages/reports/chartOfAccount/ChartOfAccount";
 import { CheckAuth } from './components/auth/auth'
 import { useSelector } from "react-redux";
 import { CompanyMain } from "./pages/company/CompanyMain";
+import { CompanyAdd } from "./pages/company/components/CompanyAdd";
 
 function App() {
   const userDetails = useSelector(state => state.auth.userDetails)
@@ -60,12 +61,13 @@ function App() {
             <Route element={<Outlet />}>
               <Route element={<CheckAuth type='Admin' />}>
                 <Route path='/company-list' element={<CompanyMain />} />
+                <Route path='/company-add' element={<CompanyMain />} />
               </Route>
               <Route element={<CheckAuth type="User" />}>
                 <Route index element={<ItemMaster />} />
                 <Route path="/add" element={<ItemMaster />} />
-                <Route path="/customer-master" element={<CustomerMaster />} />
                 <Route path="/customer-add" element={<CustomerMaster />} />
+                <Route path="/customer-master" element={<CustomerMaster />} />
                 <Route path="/supplier-master" element={<SupplierMaster />} />
                 <Route path="/supplier-add" element={<SupplierMaster />} />
                 <Route path="/account-master" element={<AccountMaster />} />

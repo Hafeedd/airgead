@@ -1,5 +1,5 @@
 import { useSelector } from "react-redux"
-import { useAuthServices } from "../../services/auth/authServices"
+import { useAuthServices } from "../../services/controller/authServices"
 import { useEffect, useState } from "react"
 import { Navigate, Outlet, useLocation, useNavigate } from "react-router-dom"
 
