@@ -315,12 +315,13 @@ const LabourAndExpense = (props) => {
                     options={accDetails}
                   />
                 </td>
-                <td><BsPlusSquareFill
-                className="me-1"
-                style={{ color: "black" }}
-                onClick={handleLabourDataSubmit}
-                onKeyDown={handleLabourDataSubmit}
-              /></td>
+                <td>
+                  <button className=" border-0 bg-light" 
+                    onMouseDown={handleLabourDataSubmit}
+                    onKeyDown={handleLabourDataSubmit}>
+                    <BsPlusSquareFill style={{ color: "black" }} />
+                  </button>
+                </td>
             </tr>
           {/* {fullLabourData?.length>0?fullLabourData?.map((data,i)=>{
           const handleChange = (e, drop_data) => {

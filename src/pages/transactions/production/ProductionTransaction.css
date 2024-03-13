@@ -132,3 +132,7 @@
 .purchase-input-text.table-drop.bordercolors{
     border-color: #dadbdb !important;
 }
+
+/* button:focus{
+    outline: #0C2D6A;
+} */

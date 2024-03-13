@@ -406,12 +406,13 @@ const RawMaterials = (props) => {
                 name='godown_rate'
                 disabled
                 /></td>
-              <td><BsPlusSquareFill 
-                className="me-1"
-                style={{ color: "black" }}
-                onClick={handleRawDataSubmit}
-                onKeyDown={handleRawDataSubmit}
-              /></td>
+              <td>
+                <button className=" border-0 bg-light" 
+                  onMouseDown={handleRawDataSubmit}
+                  onKeyDown={handleRawDataSubmit}>
+                  <BsPlusSquareFill style={{ color: "black" }} />
+                </button>
+              </td>
             </tr>
 
           {/* {fullRawData?.length>0?fullRawData?.map((data,key)=>{

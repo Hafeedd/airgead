@@ -988,14 +988,11 @@ const ItemProduce = (props) => {
               />
             </td>
             <td>
-              <button className=" border-0 bg-light" onClick={handleSubmit}
+              <button className=" border-0 bg-light" 
+                onMouseDown={handleSubmit}
                 onKeyDown={handleSubmit}>
-              <BsPlusSquareFill
-                style={{ color: "black" }}
-                
-              />
+                <BsPlusSquareFill style={{ color: "black" }} />
               </button>
-              
             </td>
           </tr>
         </tbody>

@@ -362,12 +362,13 @@ const ByProductDetails = (props) => {
               onKeyDown={handleKeyDown1}
               name='mrp_rate'
               /></td>
-            <td><BsPlusSquareFill 
-                className="me-1"
-                style={{ color: "black" }}
-                onClick={handleByProdDataSubmit}
-                onKeyDown={handleByProdDataSubmit}
-              /></td>
+              <td>
+                <button className=" border-0 bg-light " 
+                  onMouseDown={handleByProdDataSubmit}
+                  onKeyDown={handleByProdDataSubmit}>
+                  <BsPlusSquareFill style={{ color: "black"}} />
+                </button>
+              </td>
           </tr>
        
        {/* {fullByprodData?.length>0?fullByprodData?.map((data,i)=>{
