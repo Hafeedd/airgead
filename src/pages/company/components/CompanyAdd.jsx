@@ -3,7 +3,8 @@ import { CompanyDetails } from "./CompanyDetails";
 import { CompanyPayment } from "./CompanyPlan";
 
 export const CompanyAdd = () => {
-  const [active, setActive] = useState(2);
+  const [active, setActive] = useState(1);
+  const [companyId, setCompanyId] = useState(null)
 
   return (
     <div className="company-add-cont pb-2">
@@ -40,9 +41,9 @@ export const CompanyAdd = () => {
         <h3>{active === 1 ? "Company Details" : "Company Plan Details"}</h3>
         {/* <div className="company-details-cont row justify-content-between mx-0 my-2 p-0"> */}
           {active === 1 ? (
-            <CompanyDetails {...{active,setActive}}/>
+            <CompanyDetails {...{active,setActive, setCompanyId}}/>
           ) : (
-            <CompanyPayment {...{active, setActive}}/>
+            <CompanyPayment {...{active, setActive, companyId, setCompanyId}}/>
           )}
         {/* </div> */}
       </div>

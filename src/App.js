@@ -46,12 +46,14 @@ import ChartOfAccount from "./pages/reports/chartOfAccount/ChartOfAccount";
 import { CheckAuth } from './components/auth/auth'
 import { useSelector } from "react-redux";
 import { CompanyMain } from "./pages/company/CompanyMain";
-import { CompanyAdd } from "./pages/company/components/CompanyAdd";
+import { LocalizationProvider } from '@mui/x-date-pickers';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
 
 function App() {
   const userDetails = useSelector(state => state.auth.userDetails)
 
   return (
+    <LocalizationProvider dateAdapter={AdapterDayjs}>
     <BrowserRouter>
       <Routes>
         <Route path="/login" element={<LoginMainPage />} />
@@ -132,6 +134,8 @@ function App() {
         <Route path="*" element={<div>Page Not Found</div>} />
       </Routes>
     </BrowserRouter>
+    </LocalizationProvider>
+
   );
 }
 

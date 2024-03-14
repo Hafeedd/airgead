@@ -6,7 +6,7 @@ import { useCompanyServices } from "../../../services/controller/companyServices
 import Swal from "sweetalert2";
 
 export const CompanyDetails = (props) => {
-  const { setActive, active } = props;
+  const { setActive, active, setCompanyId } = props;
 
   const [additionalFiled, setAdditionalFields] = useState(false);
   const [loginField, setLoginFiled] = useState(false);
@@ -46,15 +46,23 @@ export const CompanyDetails = (props) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
+      // let filteredData =  { key: value for (key, value) of Object.entries(myObject) if value !== null };
+      let tempCompany = {...company}
+      for (const [key, value] of Object.entries(company)) {
+        if (value === 0 || value === null || value === undefined) {
+          delete tempCompany[key];
+        }
+      }
       const CompanyData = new FormData();
-      Object.keys(company).map((data) =>
-        CompanyData.append(data, company[data])
+      Object.keys(tempCompany).map((data) =>
+      CompanyData.append(data, company[data])
       );
       // console.log(CompanyData);
       // return 0;
       const resp = await companyRegister(CompanyData);
       if (resp.success) {
         setActive(2);
+        setCompanyId(resp?.data?.company_profile?.id)
       } else {
         Swal.fire({
           title: "Error",
@@ -63,9 +71,14 @@ export const CompanyDetails = (props) => {
         });
       }
     } catch (err) {
+      let message = err.response.data.message || "Company Registration Failed."
+      console.log(err.response.data.errors)
+      if(err.response.data?.errors){
+        message = Object.values(err.response.data?.errors)[0]
+      }
       Swal.fire({
         title: "Failed",
-        text: "Company Registration Failed.",
+        text: message,
         icon: "error",
         showConfirmButton: true,
         timer: 3500,
@@ -315,6 +328,7 @@ export const CompanyDetails = (props) => {
           Next &nbsp;&nbsp;{">"}
         </button>
       </div>
+      
     </form>
   );
 };

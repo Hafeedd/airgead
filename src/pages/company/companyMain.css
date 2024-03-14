@@ -12,6 +12,7 @@
   background: #f2f2f2 !important;
   height: 3rem;
 }
+
 .item_seach_bar_cont.admin .item_search_bar {
   background: transparent;
   color: black;
@@ -26,7 +27,7 @@
   color: white;
 }
 
-.company-add-btn.clear{
+.company-add-btn.clear {
   background: #707070;
 }
 
@@ -74,6 +75,7 @@
   border-top-left-radius: 1rem;
   border-bottom-left-radius: 1rem;
 }
+
 .company-list.table tbody tr td:last-child {
   border-top-right-radius: 1rem;
   border-bottom-right-radius: 1rem;
@@ -95,13 +97,14 @@
   padding-left: 2rem;
   color: #4a04a5;
 }
+
 .company-progress-bar .bar-text.active {
-  border-left: 1px solid rgb(209, 209, 209) ;
+  border-left: 1px solid rgb(209, 209, 209);
   color: white;
   font-weight: 600;
 }
 
-.company-progress-loader{
+.company-progress-loader {
   border: transparent !important;
   width: 28%;
   height: 100%;
@@ -114,36 +117,42 @@
   animation-name: "bar-move1";
   animation-duration: 2s;
 }
-.company-progress-loader.act2{
+
+.company-progress-loader.act2 {
   width: 55%;
   animation-name: "bar-move2";
 }
 
-.company-progress-loader.act3{
+.company-progress-loader.act3 {
   width: 90%;
   animation-name: "bar-move3";
 }
 
 @keyframes bar-move1 {
-  from{
+  from {
     width: 0;
   }
+
   to {
     width: 28%;
   }
 }
+
 @keyframes bar-move2 {
-  from{
+  from {
     width: 30%;
   }
+
   to {
     width: 55%;
   }
 }
+
 @keyframes bar-move3 {
   from {
     width: 60%;
   }
+
   to {
     width: 90%;
   }
@@ -155,16 +164,17 @@
   min-height: 35rem;
 }
 
-.comp-details-cont-1{
-  padding: 1rem;
-  background: white;
-}
-.comp-details-cont-1{
+.comp-details-cont-1 {
   padding: 1rem;
   background: white;
 }
 
-.comp-details-cont-1 .image-cont{
+.comp-details-cont-1 {
+  padding: 1rem;
+  background: white;
+}
+
+.comp-details-cont-1 .image-cont {
   width: 28rem;
   height: 8rem;
   background: #F5EEFF;
@@ -174,7 +184,7 @@
   border-radius: 0.3rem;
 }
 
-.comp-details-cont-1 .image-upload-btn{
+.comp-details-cont-1 .image-upload-btn {
   font-weight: 600;
   border-radius: 0.3rem;
   margin-top: 1rem;
@@ -188,15 +198,15 @@
   cursor: pointer;
 }
 
-.checkbox-comp-details{
+.checkbox-comp-details {
   position: relative;
   width: 1.5rem;
   height: 1.5rem;
   accent-color: #37007E;
 }
 
-.checkbox-comp-details::before{
-  content:'';
+.checkbox-comp-details::before {
+  content: '';
   width: 100%;
   height: 100%;
   position: absolute;
@@ -205,16 +215,16 @@
   background: #000 !important;
 }
 
-.comp-input-det{
+.comp-input-det {
   margin-top: 1.5rem;
 }
 
-.comp-input-det.active{
+.comp-input-det.active {
   background: #F2F2F2;
 
 }
 
-.circle{
+.circle {
   border-radius: 50%;
   background-color: deepskyblue;
   width: 20px;
@@ -226,13 +236,15 @@
   animation: scaleIn 2s infinite cubic-bezier(.36, .11, .89, .32);
 }
 
-.circle.animation1{
+.circle.animation1 {
   animation-delay: 2s;
 }
-.circle.animation2{
+
+.circle.animation2 {
   animation-delay: 2.8s;
 }
-.circle.animation3{
+
+.circle.animation3 {
   animation-delay: 3.3s;
 }
 
@@ -241,13 +253,14 @@
     transform: scale(.4, .4);
     opacity: .5;
   }
+
   to {
     transform: scale(1.7, 1.7);
     opacity: 0;
   }
 }
 
-.accordian-cont{
+.accordian-cont {
   height: 10rem;
   overflow: hidden;
   overflow-y: scroll;
@@ -255,44 +268,101 @@
 }
 
 @keyframes addition-accord {
-  from{
+  from {
     height: 0;
   }
-  to{
+
+  to {
     height: 10rem;
   }
 }
 
-.company-input-field{
+.company-input-field {
   width: 100%;
 }
 
-.company-input-field div{
+.company-input-field div {
   border-bottom: 1px solid gray !important;
   background: #F5F5F5;
 }
 
-.company-plan-btn.module{
+.company-plan-btn.module {
   background: #3C087E;
   border-radius: 0.4rem;
-  color:white;
+  color: white;
   padding: 0.5rem 1.5rem;
 }
 
-.module-cont{
+.module-cont {
+  padding: 1rem 0;
+  overflow: hidden;
+  overflow-y: scroll;
   margin-top: 1rem;
   width: 35rem;
+  column-gap: 2rem;
+  row-gap: 1rem;
   height: 17rem;
   border-radius: 0.2rem;
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   justify-content: center;
   background: #F5EEFF;
   color: #808080;
 }
 
-.image-cont .company-details-company-logo{
+.image-cont .company-details-company-logo {
   max-width: 100%;
   max-height: 100%;
   object-fit: contain;
+}
+
+.comp-plan-module-modal{
+  width: 100%;
+  /* padding: 1rem; */
+  display: flex;
+  flex-direction: column;
+  align-items: end;
+}
+
+.comp-plan-module-modal .module-items{
+  width: 100%;
+  padding: 3.5rem;
+  min-height: 20rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2rem;
+  align-items: start;
+}
+
+.comp-module-item {
+  cursor: pointer;
+  height: 8rem;
+  width: 8rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  border-radius: 0.3rem;
+  border: 1px solid #7E48C2;
+  /* color: gray; */
+  background: #F7F1FF;
+}
+
+.comp-module-item.active {
+  color: white;
+  background: linear-gradient(166.42deg, #5A13B6 8.84%, #3A077A 85.91%);
+}
+.comp-module-item.active img{
+  -webkit-filter: invert(100%);
+  filter: invert(100%);
+}
+
+
+.comp-module-btn{
+  background: linear-gradient(166.42deg, #5A13B6 8.84%, #3A077A 85.91%);
+  color: white;
+  width: fit-content;
+  margin: 1rem;
 }
