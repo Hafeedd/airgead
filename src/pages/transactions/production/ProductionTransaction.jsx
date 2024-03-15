@@ -93,7 +93,7 @@ const ProductionTransaction = () => {
   const { getStaff } = useStaffServices();
   const { getItemList, getProperty, getCode } = useItemServices();
   const { getAccountList } = useAccountServices();
-  const { postProductionData, getProductionDaybookPart, getProductionDetails, putProductionData } = useProductionTransactionServices();
+  const { postProductionData, getProductionDaybookPart, getProductionDetails, putProductionData,delProductionData } = useProductionTransactionServices();
   const [productionList, setProductionList] = useState();
   const [isByOpen, setIsByOpen] = useState(false);
   const [isLabOpen, setIsLabOpen] = useState(true);

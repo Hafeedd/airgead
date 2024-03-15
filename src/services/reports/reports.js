@@ -157,7 +157,7 @@ export const useReportsServices = () => {
 
   const getProductionRegister = async (params) => {
     const response = await axiosPrivate.get(
-      "production/production/production_register/",
+      "production/production_register/",
       { params: params }
     );
     return response?.data;
