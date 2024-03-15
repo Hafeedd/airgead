@@ -189,12 +189,12 @@ console.log(prodDetailData,'complete')
           }} />
           <div className="row mt-2">
             <div className="w-100 d-flex justify-content-end mb-2 ">
-              <div
+              {/* <div
                 // onClick={() => navigate(-1)}
                 className="rounded col-1 col-2 py-1 me-2 text-center pur-s-btn"
               >
                 Show
-              </div>
+              </div> */}
               <div
                 // onClick={() => navigate(-1)}
                 className="rounded col-1 col-2 py-1 me-2 text-center pur-p-btn"
