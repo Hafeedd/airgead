@@ -11,13 +11,19 @@ export const useCompanyServices = () => {
     {headers:{'Content-Type': 'multipart/form-data'}});
     return resp.data;
   };
-  // register company
+  // get company
   const getCompanyRegister = async (data) => {
     const resp = await axiosPrivate.get("controller/company_register/", data);
     return resp.data;
   };
+  // set company plan
+  const postCompanyPlan = async (id,data) => {
+    const resp = await axiosPrivate.post(`controller/company/${id}/plan_details/`, data);
+    return resp.data;
+  };
 
   return {
+    postCompanyPlan,
     companyRegister,
     getCompanyRegister,
   };

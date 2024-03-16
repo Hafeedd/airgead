@@ -202,7 +202,7 @@ export const ItemAddForm = ({ edit, refresh, setToEdit }) => {
           let cod = res2?.data?.filter((x) => x.sub_id === "ITM");
           setItemAdd((data) => ({
             ...data,
-            ["code"]: cod[0].sub_id + cod[0]?.next_value,
+            ["code"]: cod[0]?.sub_id + cod[0]?.next_value,
           }));
         }
       } catch (err) {

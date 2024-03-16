@@ -5,7 +5,8 @@ import { Checkbox } from "semantic-ui-react";
 import { HiDotsVertical } from "react-icons/hi";
 import { useNavigate } from "react-router";
 
-export const CompanyList = () => {
+export const CompanyList = (props) => {
+  const {setEdit} = props
   const navigate = useNavigate();
 
   return (
@@ -53,7 +54,7 @@ export const CompanyList = () => {
             </tr>
           </thead>
           <tbody>
-            <tr>
+            <tr onClick={()=>setEdit(true)}>
               <td>1</td>
               <td>a</td>
               <td>b</td>

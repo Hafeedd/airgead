@@ -4,6 +4,9 @@ import { TimePicker } from '@mui/x-date-pickers/TimePicker';
 import dayjs from "dayjs";
 import React, { useState } from "react";
 import { Modal } from "react-bootstrap";
+import { useCompanyServices } from "../../../services/controller/companyServices";
+import Swal from "sweetalert2";
+import { companyModules } from "../data/initialData";
 
 export const CompanyPayment = (props) => {
   const { setActive, companyId, setCompanyId } = props;
@@ -17,21 +20,7 @@ export const CompanyPayment = (props) => {
     modules: [],
   });
 
-  const companyModules = [
-    { name: 'Purchase', code: 100, icon: 'https://icons.foxa.in/media/icons/cart-shopping-fast.svg', primary: 'YES' },
-    { name: 'Sales', code: 101, icon: 'https://icons.foxa.in/media/icons/point-of-sale-bill.svg', primary: 'YES' },
-    { name: 'Purchase Return', code: 102, icon: 'https://icons.foxa.in/media/icons/cart-minus.svg', paretn: 100, primary: 'YES' },
-    { name: 'Sales Return', code: 103, icon: 'https://icons.foxa.in/media/icons/undo.svg', parent: 101, primary: 'YES' },
-    { name: 'Payment', code: 104, icon: 'https://icons.foxa.in/media/icons/document-signed_p9I0WXo.svg', primary: 'YES' },
-    { name: 'Receipt', code: 105, icon: 'https://icons.foxa.in/media/icons/point-of-sale-bill.svg', primary: 'YES' },
-    { name: 'Stock Journal', code: 106, icon: 'https://icons.foxa.in/media/icons/document-signed_p9I0WXo.svg', primary: 'YES' },
-    { name: 'Account Journal', code: 107, icon: 'https://icons.foxa.in/media/icons/document-signed_p9I0WXo.svg', primary: 'YES' },
-    { name: 'Staff', code: 108, icon: 'https://icons.foxa.in/media/icons/document-signed_p9I0WXo.svg', primary: 'YES' },
-    { name: 'Staff Attendance', code: 109, icon: 'https://icons.foxa.in/media/icons/document-signed.svg', parent: 108, primary: 'YES' },
-    { name: 'Payroll', code: 110, icon: 'https://icons.foxa.in/media/icons/cost-per-lead_11336391.png', parent: 108, primary: 'YES' },
-    { name: 'Cheque Register', code: 111, icon: 'https://icons.foxa.in/media/icons/cost-per-lead_11336391.png', primary: 'YES' },
-    { name: 'Production', code: 112, icon: 'https://icons.foxa.in/media/icons/product-management_12525462.png', primary: 'YES' }
-  ]
+  const {postCompanyPlan} = useCompanyServices()
 
   const handleChange = (e,date_name) => {
     const name = e?.target?.name;
@@ -40,8 +29,8 @@ export const CompanyPayment = (props) => {
     if (date_name==="renewal_time") {
       setCompanyPlan((data) => ({ ...data, renewal_time: dayjs(e).format('hh:mm') }));
     }else if(date_name){
-      console.log(dayjs(e).format('DD/MM/YYYY'))
-      setCompanyPlan((data) => ({ ...data, [date_name]: dayjs(e).format('DD/MM/YYYY') }));
+      console.log(dayjs(e).format('YYYY-MM-DD'))
+      setCompanyPlan((data) => ({ ...data, [date_name]: dayjs(e).format('YYYY-MM-DD') }));
     }
     else if (value === "") setCompanyPlan((data) => ({ ...data, [name]: null }));
     else setCompanyPlan((data) => ({ ...data, [name]: value }));
@@ -56,58 +45,71 @@ export const CompanyPayment = (props) => {
     setModuleCodeList([...tempList])
   }
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
-    console.log(companyPlan)
+    if(moduleCodeList?.length<0){
+      Swal.fire('Warning',"Please select at least 1 module.",'warning')
+      return 0
+    }
+    try{
+      let tempCompanyPlan = {...companyPlan,
+        modules:moduleCodeList.map(data=>({code:data,"is_active":true}))
+      }
+      const response = await postCompanyPlan(companyId,tempCompanyPlan)
+      if(response.success){
+        setActive(3)
+      }
+    }catch(err){
+      console.log(err)
+      let message = "Something went wrong. Please try again later"
+      if(typeof err?.response?.data?.error === "object")
+        message = Object.values(err.response.data.error)[0]
+      Swal.fire('Error',message,'error')
+    }
   }
 
   return (
     <form onSubmit={handleSubmit} className="company-details-cont row justify-content-between mx-0 my-2 p-0">
       <div className="comp-details-cont-1 col-5 col-6 border rounded-2">
-        <DatePicker
-          slotProps={{ textField: { size: 'small' } }}
+        <DatePicker          
+          slotProps={{ textField: { size: 'small' ,required:true} }}
           name="renewal_date"
-          value={companyPlan.renewal_date?dayjs(companyPlan.renewal_date).format('DD/MM/YYYY'):null}
+          value={companyPlan.renewal_date?dayjs(companyPlan.renewal_date).format('YYYY-MM-DD'):null}
+          format="DD/MM/YYYY"    
           onChange={(val)=>handleChange(val,'renewal_date')}
           className="company-input-field my-3"
-          size="small"
-          id="outlined-basic"
           label="Renewal Date"
           variant="outlined"
         />
         <TimePicker
-          slotProps={{ textField: { size: 'small' } }}
-          name="renewal_time"
-          // value={companyPlan.renewal_time}
+          slotProps={{ textField: { size: 'small', required:true } }}
+          name="renewal_time"          
           value={companyPlan.renewal_time?dayjs(companyPlan.renewal_time, 'HH:mm') : null}
           format="HH:mm"
           onChange={(val)=>handleChange(val,'renewal_time')}
-          className="company-input-field my-3"
-          size="small"
-          id="outlined-basic"
+          className="company-input-field my-3"          
           label="Renewal Time"
           variant="outlined"
         />
-        <DatePicker
-          slotProps={{ textField: { size: 'small' } }}
+        <DatePicker          
+          slotProps={{ textField: { size: 'small', required:true } }}
           name="extended_date"
-          value={companyPlan.extended_date?dayjs(companyPlan.extended_date).format('DD/MM/YYYY'):null}
+          value={companyPlan.extended_date?dayjs(companyPlan.extended_date).format('YYYY-MM-DD'):null}
+          format="DD/MM/YYYY"
           onChange={(val)=>handleChange(val,'extended_date')}
-          className="company-input-field my-3"
-          size="small"
-          id="outlined-basic"
+          className="company-input-field my-3"          
           label="Extension Date"
           variant="outlined"
         />
         <TextField
+          required
           slotProps={{ textField: { size: 'small' } }}
           type="number"
           name="staff_limit"
           value={companyPlan.staff_limit}
           onChange={handleChange}
           className="company-input-field my-3"
-          size="small"
-          id="outlined-basic"
+          size="small"          
           label="Staff Limit"
           variant="outlined"
         />

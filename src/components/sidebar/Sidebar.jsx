@@ -9,7 +9,7 @@ import { useSelector } from 'react-redux'
 import userProf from "../../assets/icons/prof.jpeg";
 import companyList from "../../assets/icons/company-list.png";
 
-const Sidebar = () => {
+const Sidebar = ({perm}) => {
   const [masterActive, setMasterActive] = useState(false)
   const [ArrowActive, setArrowActive] = useState(false)
   const [ReportsActive, setReportsActive] = useState(false)
@@ -74,8 +74,8 @@ const Sidebar = () => {
   const navigate = useNavigate()
 
   return (
-    <div className={`sidebar pb-5 ${userDetails.fk_role === "Admin" && "company"}`}>
-      <div className="company-logo-cont mb-3">
+    <div className={`sidebar pb-5 ${userDetails.fk_role === "Admin" && "company"} ${perm&& 'h-100 pt-2 permission'}`}>
+      {!perm && <div className="company-logo-cont mb-3">
         {userDetails.fk_role === "Admin" && <div className="company-logo pb-5 h-100 pt-4">
           <div className='d-flex text-light gap-3'>
             <img className="header-user-prof-img company" src={userProf} alt="user" />
@@ -84,12 +84,12 @@ const Sidebar = () => {
           </div>
         </div>
         }
-      </div>
+      </div>}
       <div
         style={{ userSelect: "none" }}
-        className="SidebarItems mt-0 mt-5 mx-0 px-0"
+        className={`SidebarItems mt-0 mt-5 mx-0 px-0`}
       >
-        {userDetails.fk_role === "Admin" && <>
+        {(userDetails.fk_role === "Admin"&& !perm) && <>
         <div
           onClick={() => navigate('/company-list')}
           className={`SidebarItem mb-1 admin ${masterActive && "active"}`}
@@ -99,7 +99,7 @@ const Sidebar = () => {
         </div>
         </>}
 
-        {userDetails.fk_role === "User" && <><div
+        {(userDetails.fk_role === "User"||perm) && <><div
           onClick={() => setMasterActive(!masterActive)}
           className={`SidebarItem mb-1 ${masterActive && "active"}`}
         >
@@ -110,7 +110,7 @@ const Sidebar = () => {
             {master.map(data => <span className="SidebarSpan d-flex ms-5 ps-3">
               <div
                 className="SidebarItemText"
-                onClick={() => navigate(data.navigate)}
+                onClick={() =>{if(!perm) navigate(data.navigate)}}
               >
                 {data.text}
               </div>
@@ -128,7 +128,7 @@ const Sidebar = () => {
             {transaction.map(data => <span className="SidebarSpan d-flex ms-5 ps-3">
               <div
                 className="SidebarItemText"
-                onClick={() => navigate(data.navigate)}
+                onClick={() =>{if(!perm) navigate(data.navigate)}}
               >
                 {data.text}
               </div>
@@ -146,7 +146,7 @@ const Sidebar = () => {
             {reports.map(data => <span className="SidebarSpan d-flex ms-5 ps-3">
               <div
                 className="SidebarItemText"
-                onClick={() => navigate(data.navigate)}
+                onClick={() =>{if(!perm) navigate(data.navigate)}}
               >
                 {data.text}
               </div>

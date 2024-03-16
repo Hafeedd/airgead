@@ -1,20 +1,20 @@
 import React, { useState } from "react";
 import { CompanyDetails } from "./CompanyDetails";
 import { CompanyPayment } from "./CompanyPlan";
+import { CompanyPermission } from "./CompanyPermission";
 
 export const CompanyAdd = () => {
   const [active, setActive] = useState(1);
   const [companyId, setCompanyId] = useState(null)
 
   return (
-    <div className="company-add-cont pb-2">
+    <div className="company-add-cont pb-1">
       <div className={`company-progress-bar row mx-0 rounded-2`}>
         <span
-          className={`company-progress-loader ${active > 1 && "act2"} ${
-            active > 2 && "act3"
-          }`}
+          className={`company-progress-loader ${active > 1 && "act2"} ${active > 2 && "act3"
+            }`}
         >
-          <div className="circle animation1"></div>
+          <div className="circle"></div>
           <div className="circle animation2"></div>
           <div className="circle animation3"></div>
         </span>
@@ -38,16 +38,18 @@ export const CompanyAdd = () => {
         </div>
       </div>
       <div className="company-add">
-        <h3>{active === 1 ? "Company Details" : "Company Plan Details"}</h3>
+        <h3>{active === 1 ? "Company Details" :active ===2 ? "Company Plan Details": active ===3 && "Access Permissions"}</h3>
         {/* <div className="company-details-cont row justify-content-between mx-0 my-2 p-0"> */}
-          {active === 1 ? (
-            <CompanyDetails {...{active,setActive, setCompanyId}}/>
-          ) : (
-            <CompanyPayment {...{active, setActive, companyId, setCompanyId}}/>
-          )}
+        {active === 2 ? (
+          <CompanyPayment {...{ active, setActive, companyId, setCompanyId }} />
+        ) : active === 3 ? (
+          <CompanyPermission />
+        ) :
+          <CompanyDetails {...{ active, setActive, setCompanyId }} />
+        }
         {/* </div> */}
       </div>
-      
+
     </div>
   );
 };

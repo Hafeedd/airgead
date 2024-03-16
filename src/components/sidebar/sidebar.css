@@ -17,6 +17,10 @@
 
 }
 
+.sidebar.company.permission{
+  background: #233547;
+}
+
 .header-item {
   height: 2rem;
   width: 2rem;

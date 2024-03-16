@@ -6,7 +6,6 @@ import ItemList from "./components/ItemList";
 import { ItemAddForm } from "./components/AddForm";
 
 const ItemMaster = () => {
-  const [pageHeadItem, setPageHeadItem] = useState(1);  
   const [loading, setLoading] = useState(false)
   const [toEdit, setToEdit] = useState(false);
   const [listItem, setListItem] = useState();
@@ -55,7 +54,7 @@ const ItemMaster = () => {
                 onClick={() => {
                   navigate("/");
                 }}
-                className={`page_head_item ${pageHeadItem === 1 && "active"}`}
+                className={`page_head_item active`}
               >
                 Item List
               </div>
