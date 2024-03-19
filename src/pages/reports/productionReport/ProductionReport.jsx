@@ -51,7 +51,7 @@ const ProductionReport = () => {
         setItems(tempList)
       }
     }catch(err){
-      console.log(err)
+      // console.log(err)
     }
   }
 
@@ -72,7 +72,7 @@ const ProductionReport = () => {
         setTypes(tempList)
       }
     }catch(err){
-      console.log(err)
+      // console.log(err)
     }
   }
   // const location = useLocation();
@@ -96,7 +96,7 @@ const ProductionReport = () => {
           setAccDetails(tempList);
         }
       }catch(err){
-          console.log(err)
+          // console.log(err)
         }
       }
   
@@ -107,7 +107,7 @@ const ProductionReport = () => {
         setProdDetailData(response.data)
       }
     }catch(err){
-      console.log(err);
+      // console.log(err);
     }
   }
 
@@ -132,8 +132,8 @@ const searchedProdDetails = () => {
   
   setFilteredProductList(tempList);
 };
-console.log(filteredProductList,'filterd')
-console.log(prodDetailData,'complete')
+// console.log(filteredProductList,'filterd')
+// console.log(prodDetailData,'complete')
 
   return (
     <div className="item_add">
