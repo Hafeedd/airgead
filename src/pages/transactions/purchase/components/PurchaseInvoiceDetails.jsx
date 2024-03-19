@@ -21,7 +21,6 @@ const PurchaseInvoiceDetails = (props) => {
 
   const navigate = useNavigate();
   
-  console.log(purchaseAdd.order_no)
   const [handleKeyDown, formRef] = useOnKey(
     purchaseInvoiceRef,
     setPurchaseInvoiceRef,

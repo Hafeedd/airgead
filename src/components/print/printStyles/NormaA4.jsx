@@ -34,11 +34,11 @@ export const NormaA4 = (props) => {
           {" "}
           {/* row of sub head */}
           <div className="col-4 row ms-1">
-            <div className="row">
+            <div className="row mx-0 gap-2">
               <div className="col-3 text-end">Invoice: </div>
               <div className="col-6">A/0000006</div>
             </div>
-            <div className="row">
+            <div className="row mx-0 gap-2">
               <div className="col-3 text-end">Invoice: </div>
               <div className="col-6">A/0000006</div>
             </div>

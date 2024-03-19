@@ -11,7 +11,7 @@ const AccountMaster = () => {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
-  const location = useLocation().pathname;
+  const location = useLocation()
 
   const { getAccountList } = useAccountServices();
 
@@ -35,6 +35,12 @@ const AccountMaster = () => {
     loadAccountList();
   }, []);
 
+  useEffect(()=>{
+    if(location?.state?.account){
+      setToEdit(location?.state?.account)
+    }
+  },[location.pathname])
+
   const handleEdit = (data) => {
     navigate("/account-add");
     setToEdit(data);
@@ -56,7 +62,7 @@ const AccountMaster = () => {
           </div>
           <div
             className={`d-flex align-items-center ${
-              location === "/account-add" && "d-none"
+              location.pathname === "/account-add" && "d-none"
             }`}
           >
             <div
@@ -66,13 +72,13 @@ const AccountMaster = () => {
               }}
               className="btn btn-primary add-btn px-2 py-1 w-auto"
             >
-              + &nbsp; Add Customer
+              + &nbsp; Add Account
             </div>
           </div>
         </div>
       </div>
 
-      {location === "/account-add" ? (
+      {location.pathname === "/account-add" ? (
         <AccountAdd
           edit={toEdit}
           refresh={loadAccountList}

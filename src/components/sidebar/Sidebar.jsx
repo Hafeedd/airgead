@@ -414,6 +414,14 @@ const Sidebar = () => {
                 Traid Profit And Loss
               </div>
             </span>
+            <span className="SidebarSpan d-flex ms-5 ps-3">
+              <div
+                className="SidebarItemText"
+                onClick={() => navigate("/chart-of/account")}
+              >
+                Chart Of Account
+              </div>
+            </span>
           </div>
         </div>
       </div>

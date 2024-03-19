@@ -12,7 +12,7 @@ export const initialSalesState = {
   bill_no: null,
   created_at: null,
   rate_types: "RETAIL_RATE",
-  date: new Date().toISOString()?.slice(0, 10),
+  date: new Date().toISOString(),
   tax_gst: null,
   interstate: false,
   reverse_charge: false,

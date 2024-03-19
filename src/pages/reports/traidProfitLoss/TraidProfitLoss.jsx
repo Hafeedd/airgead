@@ -15,7 +15,7 @@ const TraidProfitLoss = () => {
         try{
             const date = {
 
-                to_from:params.from_date?.split('-')?.reverse()?.join('-'),
+                from_date:params.from_date?.split('-')?.reverse()?.join('-'),
                 to_date:params.to_date?.split('-')?.reverse()?.join('-'),
             }
             const response = await getTaridProfitLoss(date);

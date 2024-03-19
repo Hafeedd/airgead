@@ -229,12 +229,12 @@ export const StockJournalEdit = (props) => {
         </div>
         <div
           className={`stockJ-edit-table-cont px-0 ${
-            from.includes('Rtn') && "p-return"
+            from?.includes('Rtn') && "p-return"
           } `}
         >
           <table className="stockJ-edit-table table ">
             <thead>
-              {!from.includes("Rtn") ? (
+              {!from?.includes("Rtn") ? (
                 <>
                   <th width="150" className="ps-4">
                     Date
@@ -261,7 +261,7 @@ export const StockJournalEdit = (props) => {
               )}
             </thead>
             <tbody>
-              {!from.includes('Rtn') && searchedList?.length > 0 ? (
+              {!from?.includes('Rtn') && searchedList?.length > 0 ? (
                 searchedList?.map((data, i) => {
                   return (
                     <>
@@ -302,21 +302,21 @@ export const StockJournalEdit = (props) => {
                     </>
                   );
                 })
-              ) : !from.includes('Rtn') ? (
+              ) : !from?.includes('Rtn') ? (
                 <tr>
                   <td colSpan={5} className="border-0">{`No ${
                     from === "acc" ? "Account Journal" :from =="production"?"Production":"Stock Journal"
                   } Transactions`}</td>
                 </tr>
               ) : (
-                from.includes('Rtn') &&
+                from?.includes('Rtn') &&
                 searchedList.length > 0 &&
                 searchedList.map((data, i1) => {
                   return (
                     <>
                       <tr className="first-child" key={i1}>
                         <td>
-                          {new Date(data?.created_at).toLocaleDateString()}
+                          {new Date(data?.date).toLocaleDateString()}
                         </td>
                         <td className="text-start ps-4" colSpan={6}>
                           {data.documents_no}
@@ -332,7 +332,6 @@ export const StockJournalEdit = (props) => {
                             let index = tempListItemSelected.findIndex(
                               (x) => x.id === item.id
                             );
-                            console.log(index);
                             tempListItemSelected.splice(index, 1);
                             setSelectedItemList([...tempListItemSelected]);
                           }
@@ -376,7 +375,7 @@ export const StockJournalEdit = (props) => {
           >
             Close
           </div>
-          {from.includes('Rtn') && (
+          {from?.includes('Rtn') && (
             <div
               onClick={handePurchaseReturnSubmit}
               className="btn col-2 btn-dark py-1 px-5 mt-3"

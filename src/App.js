@@ -46,14 +46,15 @@ import TrialBalance from "./pages/reports/trial_balance/TrialBalance";
 import BalanceSheet from "./pages/reports/balanceSheet/BalanceSheet";
 import GroupWiseTrialBalance from "./pages/reports/groupWiseTrialBalance/GroupWiseTrialBalance";
 import TraidProfitLoss from "./pages/reports/traidProfitLoss/TraidProfitLoss";
+import ChartOfAccount from "./pages/reports/chartOfAccount/ChartOfAccount";
 
 function App() {
   return (
     <BrowserRouter>
       <Routes>
-      <Route path="/login-page" element={<Login/>}/>
-      <Route path="/register-page" element={<Register/>}/>
-      <Route path="/verification-page" element={<Verification/>}/>
+      <Route path="/login" element={<Login/>}/>
+      <Route path="/register" element={<Register/>}/>
+      <Route path="/verification" element={<Verification/>}/>
       <Route path="/company-list" element={<CompanyList/>}/>
       <Route path="/company-password" element={<CompanyPassword/>}/>
 
@@ -117,6 +118,8 @@ function App() {
             <Route path="/group-trial-balance" element={<GroupWiseTrialBalance/>}/>
             <Route path="/balance-sheet" element={<BalanceSheet/>}/>
             <Route path="/traid-profit-loss" element={<TraidProfitLoss/>}/>
+
+            <Route path="/chart-of/account" element={<ChartOfAccount/>}/>
 
           </Route>
         </Route>

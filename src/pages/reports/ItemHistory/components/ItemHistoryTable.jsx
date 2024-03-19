@@ -259,7 +259,7 @@ export const ItemHistoryTable = (props) => {
               0 && (
               <tr>
                 <td className="fs-5 py-2 " colSpan={7}>
-                  Closing Stock&emsp; {searchedList.closing_stock}
+                  Closing Stock&emsp; {searchedList.closing_stock + searchedList.opening_stock}
                 </td>
               </tr>
             )}

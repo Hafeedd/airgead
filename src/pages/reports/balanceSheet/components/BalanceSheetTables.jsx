@@ -103,17 +103,25 @@ const BalanceSheetTables = (props) => {
                             </tr>
                         </thead>
                         <tbody>
-                            {
-                                newValue?.account_details?.length > 0 && (
-                                    <>
+                            {/* {
+                                newValue?.account_details?.length > 0 && 
+                                newValue?.account_details?.map((data)=>{
+                                    console.log(value)
+
+                                    return(
+                                        <>
                                         <tr className='bg-asset-color'>
-                                            <td className=''>CLOSING STOCK</td>
+                                            <td className=''></td>
                                             <td className=''>{value > 0 ? value.toFixed(2) : "0.00"}</td>
                                         </tr>
-                                    </>
+                                        </>
+                                    )
+
+                                }
+                                    
                                 )
 
-                            }
+                            } */}
 
                             {
                                 newValue?.account_details?.length > 0 &&
@@ -126,7 +134,8 @@ const BalanceSheetTables = (props) => {
                                             <tr className='bg-asset-color'>
                                                 {/* <td>{countAsset}</td> */}
                                                 <td>{data?.account_name}</td>
-                                                <td>{data?.closing_balance.toFixed(2)}</td>
+                                                {/* <td>{ data?.closing_balance.toFixed(2)}</td> */}
+                                                <td>{newValue?.closing_stock_account_name == data?.account_name? value.toFixed(2) : data?.closing_balance.toFixed(2)}</td>
 
                                             </tr>
                                         </>
@@ -144,7 +153,7 @@ const BalanceSheetTables = (props) => {
                                 <td className='bg-danger text-white' colSpan={2}>LOSS:{tableValue.total_asset - tableValue.total_liability}</td>
                             </tr> */}
                             <tr style={{ position: "sticky", bottom: "0" }}>
-                                <td className='bg-primary text-white' colSpan={2}>TOTAL ASSET: {(tableValue.total_asset - (tableValue.diff_amount > 0 ? tableValue.diff_amount:0.0)) | "0.0"}</td>
+                                <td className='bg-primary text-white' colSpan={2}>TOTAL ASSET: {(+tableValue.total_asset - (+tableValue.diff_amount < 0 ? +tableValue.diff_amount:0.0)).toFixed(2)}</td>
                             </tr>
 
 
@@ -164,17 +173,7 @@ const BalanceSheetTables = (props) => {
                             </tr>
                         </thead>
                         <tbody>
-                            {
-                                newValue?.account_details?.length > 0 && (
-                                    <>
-                                        <tr className='bg-liability-color'>
-                                            <td className=''>CLOSING STOCK</td>
-                                            <td className=''>{value < 0 ? value.toFixed(2) : "0.00"}</td>
-                                        </tr>
-                                    </>
-                                )
-
-                            }
+                         
                             {
                                 newValue?.account_details?.length > 0 &&
                                 newValue?.account_details?.map((data, i) => {
@@ -194,7 +193,7 @@ const BalanceSheetTables = (props) => {
                             </tr>
 
                             <tr style={{ position: "sticky", bottom: "0" }}>
-                                <td className='bg-primary text-white' colSpan={2}>TOTAL LIABILITY: {tableValue.total_liability - (tableValue.diff_amount > 0 ? tableValue.diff_amount:0.0) | "0.00"}</td>
+                                <td className='bg-primary text-white' colSpan={2}>TOTAL LIABILITY: {(+tableValue.total_liability - (+tableValue.diff_amount > 0 ? +tableValue.diff_amount:0.0)).toFixed(2)}</td>
                             </tr>
 
                         </tbody>

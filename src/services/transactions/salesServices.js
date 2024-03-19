@@ -10,6 +10,12 @@ const useSalesServices = () => {
     }
     
     // get sales
+    const getSales = async() =>{
+        const response = await axiosPrivate.get('/sales/sales_master/created/')
+        return response.data
+    }
+
+    // get sales code date customer and net-amount
     const getSalesList = async() =>{
         const response = await axiosPrivate.get('/sales/sales_master/code/')
         return response.data
@@ -52,6 +58,7 @@ const useSalesServices = () => {
         getCodeWithBillType,
         getSalesList,
         getSalesWithId,
+        getSales,
         //post
         postSales,
         //put

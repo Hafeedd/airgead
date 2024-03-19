@@ -83,13 +83,13 @@ const PurchaseTable = (props) => {
         margin: item?.margin,
         sales_rate: item?.retail_rate,
       };
-      setTableItem({ ...tempItem });
+      setTableItem((data)=>({...data,...tempItem}));
       navigate(null, { state: null });
       document
         .getElementById("tableItemFkItem")
         ?.parentNode?.nextSibling?.firstChild?.focus();
     }
-  }, []);
+  }, [location.pathname]);
 
   useEffect(() => {
     if (tableItemList?.length > 10)
@@ -152,7 +152,6 @@ const PurchaseTable = (props) => {
     let tempItem = { ...state };
     if (data) {
       let itemData = data.options.filter((x) => x?.value === data?.value)[0];
-
       const { purchase_rate, discount_1_percentage, tax_gst, fk_unit } =
         itemData || {};
       tempItem = {
@@ -179,7 +178,9 @@ const PurchaseTable = (props) => {
     }
     // let calculatedData = tempItem
     // if(!data)
-    let calculatedData = handleAmountCalculation(tempItem, e, state);
+    let name = e.target.name
+    if(data) name = data.name
+    let calculatedData = handleAmountCalculation(tempItem, name, state);
     if (toTableItem === true) setTableItem(calculatedData);
     else {
       let tempList = [...tableItemList];
@@ -191,8 +192,7 @@ const PurchaseTable = (props) => {
 
   //  calculating table item values
 
-  const handleAmountCalculation = (tempItem, e, state) => {
-    let name = e.target.name;
+  const handleAmountCalculation = (tempItem, name, state) => {
     let value = {};
     let total, cost;
     if (tempItem.rate && tempItem.quantity) {
@@ -213,16 +213,11 @@ const PurchaseTable = (props) => {
             value.value -
             (value.value -
               tempItem.discount_1_percentage * (value.value / 100)),
-          discount_1_amount_per_item:
-            tempItem.rate -
-            (tempItem.rate -
-              tempItem.discount_1_percentage * (tempItem.rate / 100)),
         };
       } else if (name !== "discount_1_amount") {
         value = {
           ...value,
           discount_1_amount: 0,
-          discount_1_amount_per_item: 0,
         };
       }
 
@@ -239,16 +234,16 @@ const PurchaseTable = (props) => {
       tempItem = { ...tempItem, ...value };
       if (tempItem.value && tempItem.discount_1_amount) {
         tempItem.discount_1_amount = parseFloat(tempItem.discount_1_amount);
+        let total = parseFloat(tempItem.quantity * tempItem.rate) -
+        parseFloat(tempItem.discount_1_amount),
         value = {
           ...tempItem,
           value:
             parseFloat(tempItem.quantity * tempItem.rate) -
             parseFloat(tempItem.discount_1_amount),
           total:
-            parseFloat(tempItem.quantity * tempItem.rate) -
-            parseFloat(tempItem.discount_1_amount),
-          cost:
-            parseFloat(tempItem.rate) - parseFloat(tempItem.discount_1_amount_per_item),
+            total,
+          cost: total/tempItem.quantity||1
         };
       } else if (name !== "margin" && name !== "sales_rate") {
         value = {
@@ -265,14 +260,11 @@ const PurchaseTable = (props) => {
         let sgst = (totalTaxAmnt / 2)?.toFixed(2);
         let isVat = tableHeadList?.filter((x) => x.state == "vat")[0]
           ?.visible;
+          let total = +tempItem.value + sgst * 2
         value = {
           ...value,
-          total: +tempItem.value + sgst * 2,
-          cost:
-            +tempItem.rate -
-            +tempItem.discount_1_amount_per_item +
-            +tempItem.tax_gst *
-              ((+tempItem.rate - +tempItem.discount_1_amount_per_item) / 100),
+          total: total,
+          cost:total/tempItem.quantity||1
         };
         
         if (isVat) {
@@ -292,7 +284,7 @@ const PurchaseTable = (props) => {
       }
 
       tempItem = { ...tempItem, ...value };
-      if (name !== "sales_rate") {
+      if (name !== "sales_rate" && name !== "name") {
         if (tempItem.margin>0 && tempItem.cost>0) {
           value = {
             ...tempItem,
@@ -305,8 +297,7 @@ const PurchaseTable = (props) => {
         }
       }
       tempItem = { ...tempItem, ...value };
-      if (name !== "margin") {
-        console.log(tempItem.cost)
+      if (name !== "margin" && name !== "name") {
         if (tempItem.sales_rate>0 && tempItem.cost>0) {
           value = {
             ...value,
@@ -314,7 +305,7 @@ const PurchaseTable = (props) => {
               ((tempItem.sales_rate - tempItem.cost) / tempItem.cost) * 100
             ),
           };
-        } else{
+        } else if(name == "sales_rate"){
           value = { ...value, margin: 0 };
         }
       }
@@ -327,7 +318,6 @@ const PurchaseTable = (props) => {
         total: 0,
         cost: 0,
         sales_rate:0,
-        margin:0
       };
     }
     tempItem = { ...tempItem, ...value };
@@ -419,13 +409,13 @@ const PurchaseTable = (props) => {
   const AdjustHeightOfTable = () => {
     let tableTr = [];
     tableTr.push(
-      <tr>
+      <tr key={0}>
         <td className="border-0" colSpan={tableHeadList.length + 2}></td>
       </tr>
     );
     for (let i = 0; i < 8 - purchaseAdd.total_items || 0; i++) {
       tableTr.push(
-        <tr key={i}>
+        <tr key={i+1}>
           <td className="border-0" colSpan={tableHeadList.length + 2}></td>
         </tr>
       );
@@ -679,7 +669,7 @@ const PurchaseTable = (props) => {
                             tableItem[item.state === 'vat'?'tax_gst':item.state] ||
                             tableItem[item.state === 'vat'?'tax_gst':item.state] === 0
                               ? tableItem[item.state === 'vat'?'tax_gst':item.state]
-                              : ""
+                              : "0"
                           }
                           type="number"
                           className="purchase_input border-0 w-100 text-center"

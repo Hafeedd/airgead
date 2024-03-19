@@ -60,6 +60,7 @@ const SalesTransaction = ({ returnPage, orderPage }) => {
   const { getProperty } = useItemServices();
   const { getCustomer } = useCustomerServices();
   const {
+    getSales,
     getSalesList,
     getSalesWithId,
     postSales,
@@ -90,6 +91,7 @@ const SalesTransaction = ({ returnPage, orderPage }) => {
     setShowPrint(false);
     if (!returnPage && !orderPage) localStorage.setItem("salesData", false);
     // else if (returnPage || orderPage) handleGetSalesReturnCode();
+    if (returnPage || orderPage) handleGetSalesReturnCode();
   };
 
   const location = useLocation();
@@ -148,33 +150,36 @@ const SalesTransaction = ({ returnPage, orderPage }) => {
       localStorage.setItem("salesData", JSON.stringify(allSaleState));
   };
 
-  const handlePurchOrderSelect = async (e,data) => {
-    if (returnPage || orderPage) return 0;        
-        handleSetEdit({id:data.value},true);
+  const handlePurchOrderSelect = async (e, data) => {
+    if (returnPage || orderPage) return 0;
+    handleSetEdit({ id: data.value }, true);
   };
 
-  const handleSetEdit = async (data,orderGet) => {
+  const handleSetEdit = async (data, orderGet) => {
     try {
       let salesData;
-      if (!returnPage && !orderPage && !orderGet) salesData = await getSalesWithId(data.id);
+      if (!returnPage && !orderPage && !orderGet)
+        salesData = await getSalesWithId(data.id);
       if (returnPage) salesData = await getSalesReturnWihtId(data.id);
       if (orderPage || orderGet) salesData = await getSalesOrderWithId(data.id);
 
       if (salesData) {
         let { sales_item, updated_at, ...others } = salesData.data;
         let tempData = { ...others, change_due: others.change_due || "0.00" };
-        if (orderGet){ 
-          tempData = {...tempData,order_no:others?.id}
-          delete tempData.documents_no
+        if (orderGet) {
+          tempData = { ...tempData, order_no: others?.id };
+          delete tempData.documents_no;
         }
         setSalesAdd((data) => ({ ...data, ...tempData }));
+        setEdit((data) => ({ ...data, ...tempData }));
         if (sales_item) {
           setTableItemList([...sales_item]);
           handleSalesAddCalc(sales_item, true, tempData);
         }
-        if (orderGet){
-          setEdit(false)
-          handleGetCode()}
+        if (orderGet) {
+          setEdit(false);
+          handleGetCode();
+        }
       } else handleGetCode();
     } catch (err) {
       console.log(err);
@@ -187,6 +192,7 @@ const SalesTransaction = ({ returnPage, orderPage }) => {
       handleReloadData();
       handleGetCode();
     } else if (returnPage || orderPage) {
+      setSalesList([])
       handleSalesAllReset();
       handleGetSalesReturnCode();
     }
@@ -348,6 +354,14 @@ const SalesTransaction = ({ returnPage, orderPage }) => {
           change_due: 0,
           bank_amount: 0,
         };
+        if(orderPage){
+          tempSalesAdd = {
+            ...tempSalesAdd,
+            change_due: +netAmount?.toFixed(0),
+            paid_cash: 0,
+            bank_amount: 0,
+          };
+        }
       }
       // let paidCash = (+netAmount?.toFixed(0)- salesAdd.discount) - (+salesAdd.change_due || 0 + +salesAdd.bank_amount ||0)
 
@@ -441,6 +455,7 @@ const SalesTransaction = ({ returnPage, orderPage }) => {
           if (i.sub_id == type) {
             code = i.next_code;
           }
+          // console.log(code)
           setSalesAdd((data) => ({ ...data, documents_no: code }));
         }
       }
@@ -454,20 +469,27 @@ const SalesTransaction = ({ returnPage, orderPage }) => {
       let response1, response2;
       if (returnPage) {
         response1 = await getSalesReturnList();
-      }
-      if (orderPage) {
+        response2 = await getSales();
+      } else if (orderPage) {
         response2 = await getSalesOrderList();
       } else {
         response2 = await getSalesList();
         response1 = await getSalesOrderList();
       }
       if (response1?.success && response2?.success && returnPage) {
+        console.log(response2?.data);
         setSalesOnlyList(response2?.data);
         setSalesList(response1?.data);
       } else if (response2?.success) {
         setSalesList(response2?.data);
-        if(response1?.success){
-          setOrderDocList(()=>response1?.data.map(order=>({...order,text:order.documents_no,value:order.id})))
+        if (response1?.success) {
+          setOrderDocList(() =>
+            response1?.data.map((order) => ({
+              ...order,
+              text: order.documents_no,
+              value: order.id,
+            }))
+          );
         }
       }
       return response2?.data;
@@ -481,6 +503,8 @@ const SalesTransaction = ({ returnPage, orderPage }) => {
   };
 
   const handleChange = (e, data) => {
+    let name = e.target.name;
+    let value = e.target.value;
     if (data && data.name == "fk_bank") {
       let bank_data = data.options.filter((x) => x.value === data.value)[0];
       setSalesAdd((data) => ({
@@ -491,29 +515,29 @@ const SalesTransaction = ({ returnPage, orderPage }) => {
     if (e.target.type === "checkbox") {
       setSalesAdd((data) => ({
         ...data,
-        [e.target.name]: !salesAdd[e.target.name],
+        [name]: !salesAdd[name],
       }));
-    } else if (e.target.name == "discount") {
+    } else if (name == "discount") {
       let discPrice,
-        value = e.target.value !== "" ? +e.target.value : null;
+        total_value = value !== "" ? +value : null;
 
       let totalAmount =
         (+salesAdd.paid_cash || 0) +
         (+salesAdd?.bank_amount || 0) +
         (+salesAdd?.change_due || 0);
-      discPrice = totalAmount + +salesAdd.discount - value;
+      discPrice = totalAmount + +salesAdd.discount - total_value;
       setSalesAdd((data) => ({
         ...data,
-        [e.target.name]: value,
+        [name]: total_value,
         total_amount: discPrice?.toFixed(0),
         paid_cash: discPrice?.toFixed(0),
         change_due: "0.00",
         bank_amount: 0,
         payment_type: data.paid_cash > 0 ? "CASH" : "CREDIT",
       }));
-    } else if (e.target.name == "paid_cash") {
+    } else if (name == "paid_cash") {
       if (
-        +e.target.value >
+        +value >
         +salesAdd.paid_cash + +salesAdd.bank_amount + +salesAdd.change_due
       ) {
         Swal.fire({
@@ -523,35 +547,37 @@ const SalesTransaction = ({ returnPage, orderPage }) => {
           timer: 1560,
         });
       } else {
-        let value = e.target.value == "" ? null : e.target.value;
+        let total_value = value == "" ? null : value;
         setSalesAdd((data) => ({
           ...data,
           change_due:
             Number(salesAdd.change_due) +
               Number(salesAdd.total_amount) +
               Number(salesAdd.paid_cash) -
-              value -
+              total_value -
               salesAdd.total_amount || "0.00",
-          paid_cash: value,
-          payment_type: value === 0 || !value ? "CREDIT" : "CASH",
+          paid_cash: total_value,
+          payment_type: total_value === 0 || !total_value ? "CREDIT" : "CASH",
         }));
       }
-    } else if (e.target.name == "bank_amount") {
-      let value = e.target.value == "" ? null : +e.target.value;
+    } else if (name == "bank_amount") {
+      let total_value = value == "" ? null : +value;
       let totalAmount = salesAdd.total_amount;
       // (+salesAdd.change_due || 0) +
       // (+salesAdd.paid_cash || 0) +
       // (+salesAdd.bank_amount || 0);
       setSalesAdd((data) => ({
         ...data,
-        paid_cash: +totalAmount - value,
+        paid_cash: +totalAmount - total_value,
         change_due:
           /* (salesAdd.total_amount - (value + +totalAmount - value)) || */ "0.00",
-        bank_amount: value,
+        bank_amount: total_value,
       }));
-    } else if (e.target.value === "")
-      setSalesAdd((data) => ({ ...data, [e.target.name]: null }));
-    else setSalesAdd((data) => ({ ...data, [e.target.name]: e.target.value }));
+    } else if (value === "") setSalesAdd((data) => ({ ...data, [name]: null }));
+    else {
+      if (name === "date") value = new Date(value).toISOString();
+      setSalesAdd((data) => ({ ...data, [name]: value }));
+    }
   };
 
   const getOfInvoiceData = async () => {
@@ -603,10 +629,7 @@ const SalesTransaction = ({ returnPage, orderPage }) => {
         });
         return 0;
       }
-      if (
-        orderPage &&
-        ((!salesAdd.fk_customer && salesAdd.paid_cash > 0))
-      ) {
+      if (orderPage && !salesAdd.fk_customer && salesAdd.paid_cash > 0) {
         Swal.fire({
           title: "Please Select Customer",
           icon: "warning",
@@ -637,7 +660,10 @@ const SalesTransaction = ({ returnPage, orderPage }) => {
       if (response?.success) {
         getData();
         setShowPrint(true);
-        handleGetCode()
+        // if(!returnPage && !orderPage)
+        //   handleGetCode()
+        // else
+        //   handleGetSalesReturnCode()
         Swal.fire(
           `Sales ${
             returnPage ? "return" : orderPage ? "order" : ""
@@ -793,6 +819,7 @@ const SalesTransaction = ({ returnPage, orderPage }) => {
           <div className={`col-9 ${pageHeadItem !== 1 && "d-none"}`}>
             <SalesInvoiceDetails
               {...{
+                setSalesEditModal,
                 handlePurchOrderSelect,
                 orderDocList,
                 returnPage,
@@ -888,14 +915,15 @@ const SalesTransaction = ({ returnPage, orderPage }) => {
         show={salesEditModal}
         size="lg"
         centered
-        contentClassName="purchase-table-container"
         onHide={() => setSalesEditModal(false)}
       >
         <PurchaseEditList
-          purchaseOrReturnList={salesList}
+          title={salesEditModal=="order"?"Sales Order Table":"Sales Edit Table"}
+          list={salesEditModal == "order" ? orderDocList : salesList}
           from="sales"
           setPurchaseList={setSalesList}
-          closeEditModal={setSalesEditModal}
+          show={salesEditModal}
+          setShow={setSalesEditModal}
           {...{ handleSetEdit, setSalesEditModal, getData, setEdit, edit }}
         />
       </Modal>

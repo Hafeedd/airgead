@@ -1,0 +1,7 @@
+.chart-acc-table-data td{
+    text-align: start;
+}
+.icon-hover:hover{
+    cursor: pointer;
+    color: blue;
+}
