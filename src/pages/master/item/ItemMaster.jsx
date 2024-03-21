@@ -52,7 +52,7 @@ const ItemMaster = () => {
             <div className="page_head_items mb-2">
               <div
                 onClick={() => {
-                  navigate("/");
+                  navigate("/list");
                 }}
                 className={`page_head_item active`}
               >

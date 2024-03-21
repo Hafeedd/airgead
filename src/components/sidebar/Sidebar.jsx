@@ -17,11 +17,12 @@ const Sidebar = ({ perm, setPage }) => {
   const userDetails = useSelector(state => state.auth.userDetails)
 
   const master = [
+    { text: 'Dashboard', navigate: '/', main: 'master', sub: 'Account' },
     { text: 'Accounts', navigate: '/account-master', main: 'master', sub: 'Account' },
     { text: 'Customer', navigate: '/customer-master', main: 'master', sub: 'Customer' },
     { text: 'Supplier', navigate: '/supplier-master', main: 'master', sub: 'Supplier' },
     { text: 'Staff', navigate: '/staff-list', main: 'master', sub: 'Staff' },
-    { text: 'Items', navigate: '/', main: 'master', sub: 'Item' },
+    { text: 'Items', navigate: '/list', main: 'master', sub: 'Item' },
     { text: 'Opening Stock', navigate: '/opening-stock', main: 'master', sub: 'Opening-Stock' },
     { text: 'Material Composition', navigate: '/material-composition-product', main: 'master', sub: 'Material-Composition' },
   ]
@@ -157,5 +158,6 @@ const Sidebar = ({ perm, setPage }) => {
     </div>
   );
 }
+
 
 export default Sidebar
