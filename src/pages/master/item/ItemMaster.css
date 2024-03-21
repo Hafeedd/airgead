@@ -57,6 +57,7 @@
     height: 39rem;
     overflow-y: scroll;
     overflow-x: visible;
+    transition: height 0.3s ease-in;
 }
 
 .button{

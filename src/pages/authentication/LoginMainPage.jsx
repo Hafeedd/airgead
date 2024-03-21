@@ -56,8 +56,8 @@ const LoginMainPage = () => {
         if (token) {
           setToken(false)
           let data = resp.data
-          const {username,mobile,image,email, fk_role} = data
-          dispatch(login({ token: data.token, userDetails: { ...{ username, mobile, image, email, fk_role } } }))
+          const {username,mobile,image,email, fk_role, fk_group} = data
+          dispatch(login({ token: data.token, userDetails: { ...{ username, mobile, image, email, fk_role,fk_group } } }))
           navigate("/")
         }
         setToken(resp.data.verification_token)

@@ -931,7 +931,7 @@ const SalesTransaction = ({ returnPage, orderPage }) => {
         <PurchaseEditList
           title={salesEditModal=="order"?"Sales Order Table":"Sales Edit Table"}
           list={salesEditModal == "order" ? orderDocList : salesList}
-          from="sales"
+          from={orderPage?"sales Order":returnPage?"sales Return":"sales"}
           setPurchaseList={setSalesList}
           show={salesEditModal}
           setShow={setSalesEditModal}

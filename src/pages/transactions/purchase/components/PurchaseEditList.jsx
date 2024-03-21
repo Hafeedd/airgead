@@ -6,6 +6,10 @@ import Swal from "sweetalert2";
 import useSalesServices from "../../../../services/transactions/salesServices";
 import usePurchaseServices from "../../../../services/transactions/purchcaseServices";
 import { Form } from "react-bootstrap";
+import { usePurchaseOrderServices } from "../../../../services/transactions/purchaseOrderServices";
+import usePurchaseReturnServices from "../../../../services/transactions/purchaseReturnService";
+import { useSalesOrderServices } from "../../../../services/transactions/salesOrderServices";
+import { useSalesReturnServices } from "../../../../services/transactions/salesReturnService";
 
 const PurchaseEditList = (props) => {
   const {
@@ -26,7 +30,11 @@ const PurchaseEditList = (props) => {
   });
 
   const { deleteSales } = useSalesServices();
+  const { deleteSalesOrder } = useSalesOrderServices();
+  const { deleteSalesReturn } = useSalesReturnServices();
   const { deletePurchase } = usePurchaseServices();
+  const { deletePurchaseOrder } = usePurchaseOrderServices();
+  const { deletePurchaseReturn } = usePurchaseReturnServices();
 
   useEffect(() => {
     if (list?.length > 0) {
@@ -94,11 +102,15 @@ const PurchaseEditList = (props) => {
     try {
       let response;
       if (from == "sales") response = await deleteSales(id);
-      else response = await deletePurchase(id);
+      else if(from == "purch") response = await deletePurchase(id);
+      else if(from == "purch Order") response = await deletePurchaseOrder(id);
+      else if(from == "purch Return") response = await deletePurchaseReturn(id);
+      else if(from == "sales Order") response = await deleteSalesOrder(id);
+      else if(from == "sales Return") response = await deleteSalesReturn(id);
       if (response?.success) {
         Swal.fire({
           title: "Success",
-          text: `${from === "sales" ? "Sales" : from === "purch" ? "Purchase" : "Account"} deleted successfully`,
+          text: `${from.match(/sales/)? "Sales" : from.match(/purch/) ? "Purchase" : "Account"} deleted successfully`,
           icon: "success",
           timer: 1000,
           showConfirmButton: false,
@@ -109,7 +121,7 @@ const PurchaseEditList = (props) => {
           title: "Warning",
           text:
             response?.message ||
-            `Failed to delete ${from === "sales" ? "sale" : from === "purch" ? "purchase" : "account"}. There may be transaction done with this account.`,
+            `Failed to delete ${from.match(/sales/)? "sale" : from.match(/purch/) ? "purchase" : "account"}. There may be transaction done with this account.`,
           icon: "info",
           // timer: 1000,
           // showConfirmButton: false,
@@ -121,7 +133,7 @@ const PurchaseEditList = (props) => {
         title: "Warning",
         text:
           err?.response?.data?.message ||
-          `Failed to delete ${from === "sales" ? "sale" : from === "purch" ? "purchase" : "account"}. There may be transaction done with this account.`,
+          `Failed to delete ${from.match(/sales/)? "sale" : from.match(/purch/) ? "purchase": "account"}. There may be transaction done with this account.`,
         icon: "info",
       });
     }
@@ -171,7 +183,7 @@ const PurchaseEditList = (props) => {
             <tr>
               <th className="text-start ps-3 start">Doc Number</th>
               <th>Date</th>
-              <th>{from === "sales" ? "Customer Name" : "Supplier Name"}</th>
+              <th>{from.match(/sales/) ? "Customer Name" : "Supplier Name"}</th>
               <th style={{ borderRight: "0px" }}>NET Amount</th>
               <th
                 style={{ borderRight: "0px", width: "23%" }}
@@ -204,7 +216,7 @@ const PurchaseEditList = (props) => {
                 const handleDelete = async (e) => {
                   Swal.fire({
                     title: "Delete",
-                    text: `Are you sure, you want to delete ${from == "sales" ? "sale" : "purchase"
+                    text: `Are you sure, you want to delete ${from.match(/sales/) ? "sale" :from.match(/purchase/)? "purchase": "account"
                       } ${data.documents_no}?`,
                     icon: "question",
                     showDenyButton: true,
@@ -238,7 +250,7 @@ const PurchaseEditList = (props) => {
                         .join("-")}
                     </td>
                     <td className="">
-                      {from === "sales"
+                      {from.match(/sales/)
                         ? data?.customer_name
                         : data?.supplier_name}
                     </td>

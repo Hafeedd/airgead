@@ -20,12 +20,13 @@ export const CheckAuth = ({type}) => {
         try {
             const resp = await verifyUser()
             if (resp.success) {
-                if(type?.includes(resp.data.fk_role))
-                setVerify(resp.data.fk_role)
-                else if(resp.data.fk_role === "Admin")
-                navigate('/company-list',{ replace: true })
-                else if(resp.data.fk_role === "User")
-                navigate('/',{ replace: true })
+                if(type?.includes(resp.data.fk_group))
+                setVerify(resp.data.fk_group)
+                // if(resp.data.fk_group === "Controller")
+                console.log(type , type?.includes(resp.data.fk_group))
+                // navigate('/company-list',{ replace: true })
+                // else if(type?.includes(resp.data.fk_group))
+                // navigate('/',{ replace: true })
             } else {
                 setVerify(false)
                 navigate('/login',{ replace: true })

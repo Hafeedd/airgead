@@ -48,9 +48,16 @@ import { useSelector } from "react-redux";
 import { CompanyMain } from "./pages/company/CompanyMain";
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
+import { CompanyView } from "./pages/company/components/CompanyView";
 
 function App() {
   const userDetails = useSelector(state => state.auth.userDetails)
+
+  const DirectToMainPage = ()=>{
+    if(userDetails.fk_group === "Controller"){
+      return <CompanyMain/>
+    }else return <ItemMaster/>
+  }
 
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -58,15 +65,17 @@ function App() {
       <Routes>
         <Route path="/login" element={<LoginMainPage />} />
         <Route path="/register" element={<LoginMainPage />} />
-        <Route element={<CheckAuth type='Admin' />}>
+        <Route element={<CheckAuth type='Controller Company Agency' />}>
           <Route path="/" element={<Layout />}>
             <Route element={<Outlet />}>
-              <Route element={<CheckAuth type='Admin' />}>
-                <Route path='/company-list' element={<CompanyMain />} />
+              <Route index element={<DirectToMainPage/>}/>
+              <Route element={<CheckAuth type='Controller' />}>
+                {/* <Route path="/company-list" element={<CompanyMain />} /> */}
                 <Route path='/company-add' element={<CompanyMain />} />
+                <Route path='/company-view' element={<CompanyView />} />
               </Route>
-              <Route element={<CheckAuth type="User" />}>
-                <Route index element={<ItemMaster />} />
+              <Route element={<CheckAuth type="Company" />}>
+                {/* <Route index element={<ItemMaster />} /> */}
                 <Route path="/add" element={<ItemMaster />} />
                 <Route path="/customer-add" element={<CustomerMaster />} />
                 <Route path="/customer-master" element={<CustomerMaster />} />

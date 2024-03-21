@@ -18,6 +18,10 @@ export const useAuthServices = () =>{
         )
         return resp.data
     }
+    const logoutAuth = async () =>{
+        const resp = await axiosPrivate.post('auth/logout/')
+        return resp.data
+    }
 
     const verifyUser = async () =>{
         const resp = await axiosPrivate.get('auth/verify')
@@ -28,5 +32,6 @@ export const useAuthServices = () =>{
         register,
         loginAuth,
         verifyUser,
+        logoutAuth,
     }
 }

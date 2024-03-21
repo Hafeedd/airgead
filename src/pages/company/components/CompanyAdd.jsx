@@ -1,11 +1,21 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { CompanyDetails } from "./CompanyDetails";
 import { CompanyPayment } from "./CompanyPlan";
 import { CompanyPermission } from "./CompanyPermission";
+import { useLocation } from "react-router";
 
 export const CompanyAdd = () => {
   const [active, setActive] = useState(1);
   const [companyId, setCompanyId] = useState(null)
+  const [edit, setEdit] = useState(false)
+  const [moduleCodeList, setModuleCodeList] = useState([])
+
+  const location = useLocation()
+
+  useEffect(() => {
+    if (location?.state?.company)
+      setEdit(location.state.company)
+  }, [location.state])
 
   return (
     <div className="company-add-cont pb-1">
@@ -30,22 +40,22 @@ export const CompanyAdd = () => {
         >
           2. Plan Details
         </div>
-        <div
+        {/* <div
           className={`col-4 bar-text ${active > 2 && "active"}`}
           style={{ zIndex: "3" }}
         >
           3. Modules
-        </div>
+        </div> */}
       </div>
       <div className="company-add">
-        <h3>{active === 1 ? "Company Details" :active ===2 ? "Company Plan Details": active ===3 && "Access Permissions"}</h3>
+        <h3>{active === 1 ? "Company Details" : active === 2 ? "Company Plan Details" : active === 3 && "Access Permissions"}</h3>
         {/* <div className="company-details-cont row justify-content-between mx-0 my-2 p-0"> */}
         {active === 2 ? (
-          <CompanyPayment {...{ active, setActive, companyId, setCompanyId }} />
+          <CompanyPayment {...{moduleCodeList, setModuleCodeList, edit, active, setActive, companyId, setCompanyId }} />
         ) : active === 3 ? (
-          <CompanyPermission />
+          <CompanyPermission {...{moduleCodeList, setModuleCodeList, companyId, edit,setEdit,setCompanyId,setActive }} />
         ) :
-          <CompanyDetails {...{ active, setActive, setCompanyId }} />
+          <CompanyDetails {...{ edit, active, setActive, setCompanyId }} />
         }
         {/* </div> */}
       </div>

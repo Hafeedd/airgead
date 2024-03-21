@@ -1,6 +1,6 @@
 import useAxiosPrivate from "../../hooks/axios/useAxiosPrivate"
 
-const usePurchaseOrderServices = () => {
+export const usePurchaseOrderServices = () => {
     const axios = useAxiosPrivate()
 
     //post requests =================================
@@ -55,5 +55,3 @@ const usePurchaseOrderServices = () => {
         deletePurchaseOrder,
     }
 }
-
-export default usePurchaseOrderServices
