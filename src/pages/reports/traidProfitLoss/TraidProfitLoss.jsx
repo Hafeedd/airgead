@@ -35,12 +35,12 @@ const TraidProfitLoss = () => {
                 <div className="itemList_header row mx-0">
                     <div className="page_head ps-4 d-flex justify-content-between">
                         <div>
-                            <div className="fw-600 fs-5">Traid Profit And Loss</div>
+                            <div className="fw-600 fs-5">Trading & Profit And Loss Account</div>
                             <div className="page_head_items mb-2 mt-2">
                                 <div
                 /* onClick={()=>navigate("/stock-reports")}  */ className={`page_head_customer active`}
                                 >
-                                    Traid Profit And Loss
+                                    Trading & Profit And Loss Account
                                 </div>
                             </div>
                         </div>
