@@ -58,9 +58,9 @@ const StockValueTable = (props) => {
             w_rate = w_rate + data.wholesale_rate
             cost = cost + data.cost
             sup_w_rate = sup_w_rate + data.super_wholesale_rate
-            total_cost = total_cost + (data.stock + data.cost)
-            total_p_rate = total_cost + (data.stock + data.p_rate)
-            total_s_rate = total_cost + (data.stock + data.ret_rate)
+            total_cost = total_cost + (data.stock * data.cost)
+            total_p_rate = total_cost + (data.stock * data.p_rate)
+            total_s_rate = total_cost + (data.stock * data.ret_rate)
         })
         total_item = array.length
         
