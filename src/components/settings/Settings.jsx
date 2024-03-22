@@ -7,7 +7,7 @@ import { useNavigate } from 'react-router'
 import { logout } from '../../redux/authSlice'
 
 export const Settings = (props) => {
-    const auth = useSelector(state=>state.auth?.userDetails)
+    const auth = useSelector(state=>state.auth?.value.userDetails)
 
     const navigate = useNavigate()
     const dispatch = useDispatch()

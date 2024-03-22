@@ -65,7 +65,7 @@ const Sidebar = ({ perm, setPage }) => {
   const [ArrowActive, setArrowActive] = useState(false)
   const [ReportsActive, setReportsActive] = useState(false)
 
-  const auth = useSelector(state => state.auth)
+  const auth = useSelector(state => state.auth.value)
 
   const navigate = useNavigate()
 
@@ -96,7 +96,7 @@ const Sidebar = ({ perm, setPage }) => {
         </>}
 
         {("Company Agency".includes(auth?.userDetails?.fk_group) || perm) && <>
-          {navigationList.filter(data=>data.main==="master"&&auth.permissions.findIndex(x=>x==data.code)>-1).length>0&&<><div
+          {navigationList.filter(data=>data.main==="master"&&auth?.permissions?.findIndex(x=>x==data.code)>-1).length>0&&<><div
             onClick={() => setMasterActive(!masterActive)}
             className={`SidebarItem mb-1 ${masterActive && "active"}`}
           >
@@ -115,7 +115,7 @@ const Sidebar = ({ perm, setPage }) => {
               </span>))}
             </div></>}
 
-          {navigationList.filter(data=>data.main==="transaction"&&auth.permissions.findIndex(x=>x==data.code)>-1).length>0&&<><div
+          {navigationList.filter(data=>data.main==="transaction"&&auth?.permissions?.findIndex(x=>x==data.code)>-1).length>0&&<><div
             onClick={() => setReportsActive(!ReportsActive)}
             className={`SidebarItem mt-3 mb-1 ${ReportsActive && "active"}`}
           >

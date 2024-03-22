@@ -12,13 +12,13 @@ const authSlice = createSlice({
         login: (state,action) =>{
             localStorage.setItem('token',action.payload.token)
             localStorage.setItem('userDetails',JSON.stringify(action.payload.userDetails))
-            state = {token:action.payload.token,userDetails:action.payload.userDetails,remember:action.payload.userDetails.remember}
+            state.value = {token:action.payload.token,userDetails:action.payload.userDetails}
         },
         logout: (state) =>{
             state.token = null
         },
         handlePermissions: (state,action)=>{
-            state.permissions = action.payload
+            state.value.permissions = action.payload
         },
     }
 })

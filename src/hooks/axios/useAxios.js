@@ -5,7 +5,7 @@ import { useSelector } from "react-redux";
 
 
 const useAxios = () => {
-    const auth = useSelector(state=>state.auth)
+    const auth = useSelector(state=>state.auth.value)
 
     useEffect(() => {
 

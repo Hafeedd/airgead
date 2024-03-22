@@ -12,7 +12,7 @@ import { useSelector } from "react-redux";
 const Header = (props) => {
   const {activeSetting , setActiveSetting} = props
 
-  const userData = useSelector(state => state.auth.userDetails)
+  const userData = useSelector(state => state.auth.value?.userDetails)
   const location = useLocation();
 
   useEffect(() => {

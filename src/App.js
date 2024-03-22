@@ -53,7 +53,7 @@ import { CompanyView } from "./pages/company/components/CompanyView";
 import { BadGateway } from "./pages/badGateway/BadGateway";
 
 function App() {
-  const userDetails = useSelector(state => state.auth.userDetails)
+  const userDetails = useSelector(state => state.auth.value?.userDetails)
 
   const DirectToMainPage = () => {
     if (userDetails?.fk_group === "Controller") {

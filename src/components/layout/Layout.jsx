@@ -9,7 +9,7 @@ import { useSelector } from "react-redux";
 
 export const Layout = () => {
   const [activeSetting , setActiveSetting] = useState(false)
-  const auth = useSelector(state=>state.auth.userDetails)
+  const auth = useSelector(state=>state.auth.value?.userDetails)
   // console.log(auth)
   const handleBeforeUnload = (event) => {
     if(!auth.remember){
