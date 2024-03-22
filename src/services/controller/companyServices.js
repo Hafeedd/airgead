@@ -1,5 +1,6 @@
 import useAxios from "../../hooks/axios/useAxios";
 import useAxiosPrivate from "../../hooks/axios/useAxiosPrivate";
+import { handleNetworkError } from "../ErrorHandler/errorHandler";
 
 export const useCompanyServices = () => {
   const axiosPrivate = useAxiosPrivate();
@@ -7,9 +8,14 @@ export const useCompanyServices = () => {
 
   // register company
   const companyRegister = async (data) => {
-    const resp = await axiosPrivate.post("controller/company_register/", data,
-    {headers:{'Content-Type': 'multipart/form-data'}});
-    return resp.data;
+    try{
+      const resp = await axiosPrivate.post("controller/company_register/", data,
+      {headers:{'Content-Type': 'multipart/form-data'}});
+      return resp.data;
+    }catch(err){
+      console.log(err)
+      handleNetworkError(err)
+    }
   };
   // get company
   const getCompanyRegister = async (data) => {

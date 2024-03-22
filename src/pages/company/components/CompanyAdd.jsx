@@ -43,7 +43,7 @@ export const CompanyAdd = () => {
         {active === 2 ? (
           <CompanyPayment {...{ active, setActive, companyId, setCompanyId }} />
         ) : active === 3 ? (
-          <CompanyPermission />
+          <CompanyPermission {...{setActive}} />
         ) :
           <CompanyDetails {...{ active, setActive, setCompanyId }} />
         }

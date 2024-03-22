@@ -3,7 +3,8 @@ import { Outlet } from 'react-router'
 import Sidebar from '../../../components/sidebar/Sidebar'
 import { ItemAddForm } from '../../master/item/components/AddForm'
 
-export const CompanyPermission = () => {
+export const CompanyPermission = (props) => {
+    const {setActive} = props
     const [page, setPage] = useState({ main: 'transaction', sub: 'Sales' })
     const permissions =
     {
@@ -78,7 +79,7 @@ export const CompanyPermission = () => {
                 </div>
             </div>
             <div className='w-100 d-flex justify-content-end mt-1'>
-            <div className="btn comp-module-btn previous px-5 m-1 fs-5 py-1">Previous</div>
+            <div onClick={()=>setActive(2)} className="btn comp-module-btn previous px-5 m-1 fs-5 py-1">Previous</div>
             <div className="btn comp-module-btn px-5 m-1 fs-5 py-1">Done</div>
             </div>
         </div>

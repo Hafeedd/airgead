@@ -47,6 +47,8 @@ export const CompanyPayment = (props) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault()
+    setActive(3)
+    return 0
     if(moduleCodeList?.length<0){
       Swal.fire('Warning',"Please select at least 1 module.",'warning')
       return 0
@@ -72,7 +74,7 @@ export const CompanyPayment = (props) => {
     <form onSubmit={handleSubmit} className="company-details-cont row justify-content-between mx-0 my-2 p-0">
       <div className="comp-details-cont-1 col-5 col-6 border rounded-2">
         <DatePicker          
-          slotProps={{ textField: { size: 'small' ,required:true} }}
+          slotProps={{ textField: { size: 'small' /* ,required:true */} }}
           name="renewal_date"
           value={companyPlan.renewal_date?dayjs(companyPlan.renewal_date).format('YYYY-MM-DD'):null}
           format="DD/MM/YYYY"    
@@ -82,7 +84,7 @@ export const CompanyPayment = (props) => {
           variant="outlined"
         />
         <TimePicker
-          slotProps={{ textField: { size: 'small', required:true } }}
+          slotProps={{ textField: { size: 'small'/* , required:true  */} }}
           name="renewal_time"          
           value={companyPlan.renewal_time?dayjs(companyPlan.renewal_time, 'HH:mm') : null}
           format="HH:mm"
@@ -92,7 +94,7 @@ export const CompanyPayment = (props) => {
           variant="outlined"
         />
         <DatePicker          
-          slotProps={{ textField: { size: 'small', required:true } }}
+          slotProps={{ textField: { size: 'small'/* , required:true  */} }}
           name="extended_date"
           value={companyPlan.extended_date?dayjs(companyPlan.extended_date).format('YYYY-MM-DD'):null}
           format="DD/MM/YYYY"
@@ -102,7 +104,7 @@ export const CompanyPayment = (props) => {
           variant="outlined"
         />
         <TextField
-          required
+          // required
           slotProps={{ textField: { size: 'small' } }}
           type="number"
           name="staff_limit"
@@ -131,7 +133,7 @@ export const CompanyPayment = (props) => {
       </div>
       <div className="w-100 row mx-0 justify-content-end gap-3 pe-3 pt-3">
         <div
-          onClick={() => setActive((data) => (data > 1 ? data - 1 : data))}
+          onClick={() => setActive(1)}
           className="company-add-btn clear btn col-1 col-2"
         >
           Previous

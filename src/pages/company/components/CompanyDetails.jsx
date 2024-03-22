@@ -6,7 +6,7 @@ import { useCompanyServices } from "../../../services/controller/companyServices
 import Swal from "sweetalert2";
 
 export const CompanyDetails = (props) => {
-  const { setActive, active, setCompanyId } = props;
+  const { setActive, active, setCompanyId  } = props;
 
   const [additionalFiled, setAdditionalFields] = useState(false);
   const [loginField, setLoginFiled] = useState(false);
@@ -71,10 +71,9 @@ export const CompanyDetails = (props) => {
         });
       }
     } catch (err) {
-      let message = err.response.data.message || "Company Registration Failed."
-      console.log(err.response.data.errors)
-      if(err.response.data?.errors){
-        message = Object.values(err.response.data?.errors)[0]
+      let message = err?.response?.data?.message || "Company Registration Failed."
+      if(err?.response?.data?.errors){
+        message = Object.values(err?.response.data?.errors)[0]
       }
       Swal.fire({
         title: "Failed",
@@ -314,7 +313,7 @@ export const CompanyDetails = (props) => {
       </div>
       <div className="w-100 row mx-0 justify-content-end gap-3 pe-3 pt-2">
         <div
-          onClick={() => setActive((data) => (data > 1 ? data - 1 : data))}
+          onClick={() => {setActive((data) => (data > 1 ? data - 1 : data))}}
           className="company-add-btn clear btn col-1 col-2"
         >
           Previous

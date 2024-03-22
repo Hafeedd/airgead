@@ -1,5 +1,6 @@
 import useAxios from '../../hooks/axios/useAxios'
 import useAxiosPrivate from '../../hooks/axios/useAxiosPrivate'
+import { handleNetworkError } from '../ErrorHandler/errorHandler'
 
 export const useAuthServices = () =>{
     const axiosPrivate = useAxiosPrivate()
@@ -20,8 +21,12 @@ export const useAuthServices = () =>{
     }
 
     const verifyUser = async () =>{
-        const resp = await axiosPrivate.get('auth/verify')
-        return resp.data
+        try{
+            const resp = await axiosPrivate.get('auth/verify')
+            return resp.data
+        }catch(err){
+            handleNetworkError(err)
+        }
     }
 
     return {

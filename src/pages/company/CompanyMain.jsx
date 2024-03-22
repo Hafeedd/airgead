@@ -6,7 +6,7 @@ import { CompanyAdd } from "./components/CompanyAdd";
 import { CompanyView } from "./components/CompanyView";
 
 export const CompanyMain = () => {
-  const [edit, setEdit] = useState(true)
+  const [edit, setEdit] = useState(false)
     const location = useLocation();
 
   return (

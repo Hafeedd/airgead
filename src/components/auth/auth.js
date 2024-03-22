@@ -28,11 +28,11 @@ export const CheckAuth = ({type}) => {
                 navigate('/',{ replace: true })
             } else {
                 setVerify(false)
-                navigate('/login',{ replace: true })
+                navigate(null,{ replace: true })
             }
         } catch (err) {
             setVerify(false)
-            navigate('/login',{ replace: true })
+            navigate(null,{ replace: true })
         }
     }
 

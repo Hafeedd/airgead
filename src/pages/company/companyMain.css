@@ -119,48 +119,17 @@
   background: #4a04a5;
   border-top-right-radius: 2rem;
   border-bottom-right-radius: 2rem;
-  animation-name: "bar-move1";
-  animation-duration: 2s;
+  transition: width 1s ease-out;
 }
 
 .company-progress-loader.act2 {
   width: 55%;
-  animation-name: "bar-move2";
+  transition: width 1s ease-in;
 }
 
 .company-progress-loader.act3 {
   width: 90%;
-  animation-name: "bar-move3";
-}
-
-@keyframes bar-move1 {
-  from {
-    width: 0;
-  }
-
-  to {
-    width: 28%;
-  }
-}
-
-@keyframes bar-move2 {
-  from {
-    width: 30%;
-  }
-
-  to {
-    width: 55%;
-  }
-}
-
-@keyframes bar-move3 {
-  from {
-    width: 60%;
-  }
-
-  to {
-    width: 90%;
-  }
+  transition: width 1s ease-in;
 }
 
 .company-add {
