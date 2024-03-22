@@ -11,7 +11,6 @@ export const CheckAuth = ({ type }) => {
     const [verify, setVerify] = useState(null)
 
     const { verifyUser } = useAuthServices()
-    const dispatch = useDispatch()
 
     const location = useLocation().pathname
     const navigate = useNavigate()
