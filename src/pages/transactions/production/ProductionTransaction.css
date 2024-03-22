@@ -5,73 +5,83 @@
     top: 0;
     position: sticky;
     z-index: 3;
-    background-color: black;
+    background-color: #1F52AF;
+    color: white;
+    padding-bottom: 10px;
 }
+
+/* .ProdTable thead th:first-child {
+    border-radius: 7px 0 0 0;
+} */
 .ProdTable tbody td {
     padding:  .08rem .08rem;
     z-index: 1;
-    background-color:#a6cdec;
+    background-color:white;
 }
 
-.ProdTable thead th:last-child{
+/* .ProdTable thead th:last-child{
     background-color: #4a00a8;
-}
+    border-radius: 0 7px 0 0;
+} */
 
 .ProdTable thead tr{
-    border-left: 1px solid black ;
-    border-right: 1px solid black ;
+    border-left: 1px solid #0C2D6A ;
+    border-right: 1px solid #0C2D6A ;
 }
 .ProdTable tbody tr{
-    border-bottom: 1px solid rgb(0, 0, 0);
-    border-left: 1px solid black ;
-    border-right: 1px solid black ;
+    border-bottom: 1px solid #0C2D6A;
+    border-left: .5px solid #0C2D6A ;
+    border-right: .5px solid #0C2D6A ;
 }
 
 
 .ProdTable1 thead th {
     padding:0;
+    color: white;
 }
 .ProdTable1 tbody td {
     padding: .08rem .08rem;
-    background-color: #a6cdec;
+    background-color: white !important;
 }
 .div-head{
     /* background-color: #51385D; */
-    background-color: black;
+    background-color: #51385D;
     color: white;
 }
 .ProdTable1 thead th{
     /* background-color: #51385D; */
-    background-color: black;
+    background-color: #51385D;
+    color: white;
 }
 
 .ProdTable1 thead th:last-child{
     /* background-color: #51385D; */
-    background-color: black;
+    background-color: #51385D;
+    color: white;
 }
 
 .ProdTable1 thead tr{
-    border-left: 1px solid black ;
-    border-right: 1px solid black ;
+    border-left: 1px solid #51385D ;
+    border-right: 1px solid #51385D ;
 }
 .ProdTable1 tfoot tr{
-    border-top: 1px solid black;
-    border-left: 1px solid black ;
-    border-right: 1px solid black ;
-    border-bottom: 1px solid black;
+    /* border-top: 1px solid #51385D;
+    border-left: 1px solid #51385D ;
+    border-right: 1px solid #51385D ; */
+    border: 1px solid #51385D;
     padding: 0;
 }
 .ProdTable1 tbody tr{
-    border-bottom: 1px solid black;
-    border-left: 1px solid black ;
-    border-right: 1px solid black ;
+    border-bottom: 1px solid #51385D;
+    border-left: 1px solid #51385D ;
+    border-right: 1px solid #51385D ;
 }
 
 
 .purchase-input-text.table-drop.custom-dropdown-width2{
     min-width: 100% !important; 
     max-width: 100% !important;     
-    border-color: #a6cdec!important;
+    border-color: white !important;
 }
 
 .purchase-input-text.table-drop.custom-dropdown-width2 input{
@@ -80,39 +90,49 @@
 
 .ProdTable input{
     padding-left: .5rem;
-    background-color: #a6cdec;
+    background-color: white !important;
     text-align: center;
 }
 
 .ProdTable1 input{
     width: '10px';
     height: '10px';
-    background-color: #a6cdec;
+    background-color: white !important;
     text-align: center;
 }
 
 /* .purchase-input-text.table-drop.custom-dropdown-border{
     min-width: 25rem !important; 
-    border-color: #a6cdec !important;
+    border-color: white !important;
 } */
 .purchase-input-text.table-drop.custom-dropdown-width1{
     min-width: 25rem !important; 
     /* max-width: 25rem !important; */
-    border-color: #a6cdec !important;
+    border-color: white !important; 
   }
 
 .ProdTable1 thead tr th{
     position: sticky;
     top: 23.5px;
     z-index: 2;
+    color: white;
 }
 
 .ProdTable1 tfoot td {
     padding: .08rem .08rem;
-    background-color: #a6c4fd;
+    background-color: #6b4a7a;
+    color: white !important;
 }
 
 .ProdTable1 tfoot tr td{
     position:sticky;
     bottom: 0;
 }
+
+.purchase-input-text.table-drop.bordercolors{
+    border-color: #dadbdb !important;
+}
+
+/* button:focus{
+    outline: #0C2D6A;
+} */

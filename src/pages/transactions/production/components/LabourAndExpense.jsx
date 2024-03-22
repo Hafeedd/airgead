@@ -17,6 +17,9 @@ const LabourAndExpense = (props) => {
     fullProdData,
     produceData,
     setFullProdData,
+    proList,
+    labourData,
+    setLabourData,
   } = props;
 
   const [ref1, setRef1] = useState();
@@ -37,10 +40,43 @@ const LabourAndExpense = (props) => {
     });
   };
 
- 
+  const handleLabourDropdownProducedItem = (e, data)=>{
+  if (data.value!=null){
+    let tempName=data?.options?.filter(x=>x.value===data.value)[0]
+    setLabourData((obj)=>({ ...obj, item_produced_name:tempName?.text,fk_produced_item:data.value}));
+    }
+  }
+
+  const handleLabourDropdownDebit = (e, data)=>{
+    if (data.value!=null){
+      let tempName=data?.options?.filter(x=>x.value===data.value)[0]
+      setLabourData((obj)=>({ ...obj, debit_account_name:tempName?.text,fk_debit_account:data.value}));
+      }
+    }
+
+  const handleAmountChange = (e)=>{
+    setLabourData((obj)=>({...obj,amount:e.target.value}))
+  }
+
+  const handleLabourDropdownCredit = (e, data)=>{
+    if (data.value!=null){
+      let tempName=data?.options?.filter(x=>x.value===data.value)[0]
+      setLabourData((obj)=>({ ...obj, credit_account_name:tempName?.text,fk_credit_account:data.value}));
+      }
+    }
+  const handleLabourDataSubmit=()=>{
+    setLabourDetails((data)=>[...data,labourData]);
+    let labour_data = {
+        fk_debit_account: null,
+        fk_credit_account: null,
+        amount: null,
+        item_produced_name: null,
+      };
+    setLabourData(labour_data);
+  }
   return (
     <div
-      className="col-12 mt-1"
+      className="col-12 mt-1 px-2"
       style={{
         display: isLabOpen ? "block" : "block",
         height: isLabOpen ? "120px" : "2rem",
@@ -49,7 +85,7 @@ const LabourAndExpense = (props) => {
     >
       <div
         className="div-head rounded-top ps-3 my-0 py-0 d-flex justify-content-between"
-        style={{ top: "0", position: "sticky", zIndex: 1 }}
+        style={{ top: "0", position: "sticky", zIndex: 5 }}
       >
         <div className="pt-1">Labour and Expenses</div>
         <div
@@ -66,11 +102,11 @@ const LabourAndExpense = (props) => {
       <table className="w-100 ProdTable1">
         <thead>
           <tr className="bg-dark text-light">
-            <th>Item Produced</th>
-            <th>Debit Account</th>
-            <th>Amount</th>
-            <th>Credit Account</th>
-            <th width="20"></th>
+            <th width='30%'>Item Produced</th>
+            <th width='30%'>Debit Account</th>
+            <th width='5%'>Amount</th>
+            <th width='30%'>Credit Account</th>
+            <th width="5%"></th>
           </tr>
         </thead>
         <tbody ref={formRef1}>
@@ -173,7 +209,7 @@ const LabourAndExpense = (props) => {
                   <td>
                     <input
                       type="text"
-                      className="border-0 rounded-1 w-75"
+                      className="border-0 rounded-1"
                       value={data.item_produced_name}
                       onChange={handleChange}
                       onKeyDown={handleKeyDown1}
@@ -198,7 +234,7 @@ const LabourAndExpense = (props) => {
                   <td>
                     <input
                       type="text"
-                      className="border-0 rounded-1 w-25"
+                      className="border-0 rounded-1 w-75"
                       value={data.amount}
                       onChange={handleChange}
                       onKeyDown={handleKeyDown1}
@@ -231,58 +267,61 @@ const LabourAndExpense = (props) => {
               );
             })}
             <tr>
-              <td>
-              <input
-                type='text'
-                className='border-0 rounded-1 w-75' 
-                // value={data.item_produced_name}
-                // onChange={handleChange}
-                // onKeyDown={handleKeyDown1}
-                name='item_produced_name'
-                />
-              </td>
+              <td><Dropdown
+                clearable
+                selection
+                search={search}
+                onKeyDown={handleKeyDown1}
+                onChange={(e, val) =>handleLabourDropdownProducedItem(e, val, labourData)}
+                className="purchase-input-text table-drop py-0 form-control custom-dropdown-width2 d-flex  align-items-center"
+                name="fk_produced_item"
+                placeholder="Select"
+                value={labourData.fk_produced_item || ""}
+                options={proList}
+              /></td>
               <td><Dropdown
                     clearable
                     selection
                     required
-                    // search={search}
-                    // onKeyDown={handleKeyDown1}
-                    // onChange={handleDropdownChangeUnit}
+                    search={search}
+                    onKeyDown={handleKeyDown1}
+                    onChange={(e, val) =>handleLabourDropdownDebit(e, val, labourData)}
                     className="purchase-input-text table-drop d-flex align-items-center py-0 form-control custom-dropdown-width1 "
-                    name="fk_unit"
+                    name="fk_debit_account"
                     placeholder="Select"
-                    // value={data.fk_debit_account}
+                    value={labourData.fk_debit_account}
                     options={accDetails}
                   />
                 </td>
               <td><input
                 type='text'
-                className='border-0 rounded-1 w-25' 
-                // value={data.amount}
-                // onChange={handleChange}
-                // onKeyDown={handleKeyDown1}
+                className='border-0 rounded-1 w-75' 
+                value={labourData.amount||''}
+                onChange={(e) =>handleAmountChange(e,labourData)}
+                onKeyDown={handleKeyDown1}
                 name='amount'
                 /></td>
                   <td><Dropdown
                     clearable
                     selection
                     required
-                    // search={search}
-                    // onKeyDown={handleKeyDown1}
-                    // onChange={handleDropdownChangeUnit}
+                    search={search}
+                    onKeyDown={handleKeyDown1}
+                    onChange={(e, val) =>handleLabourDropdownCredit(e, val, labourData)}
                     className="purchase-input-text table-drop d-flex align-items-center py-0 form-control custom-dropdown-width1 "
-                    name="fk_unit"
+                    name="fk_credit_account"
                     placeholder="Select"
-                    // value={data.fk_credit_account}
+                    value={labourData.fk_credit_account}
                     options={accDetails}
                   />
                 </td>
-                <td><BsPlusSquareFill
-                className="me-1"
-                style={{ color: "black" }}
-                // onClick={handleSubmit}
-                // onKeyDown={handleSubmit}
-              /></td>
+                <td>
+                  <button className=" border-0 bg-light" 
+                    onMouseDown={handleLabourDataSubmit}
+                    onKeyDown={handleLabourDataSubmit}>
+                    <BsPlusSquareFill style={{ color: "black" }} />
+                  </button>
+                </td>
             </tr>
           {/* {fullLabourData?.length>0?fullLabourData?.map((data,i)=>{
           const handleChange = (e, drop_data) => {
@@ -398,7 +437,7 @@ const LabourAndExpense = (props) => {
             <td></td>
             <td>Total Amount :</td>
             <td className="text-left">
-              {labourDetails.reduce((acc, item) => +acc + +item.amount, 0)}
+              {labourDetails.reduce((acc, item) => (+acc + +item.amount).toFixed(2), 0)}
             </td>
             <td colSpan={2}></td>
           </tr>
