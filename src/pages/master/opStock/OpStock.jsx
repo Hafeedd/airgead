@@ -56,10 +56,12 @@ export const OpStock = () => {
   }, [filter]);
 
   const getData = async () => {
-    let params;
-    if (filter.category || filter.company || filter.name) {
-      params = {
-        company: filter?.company,
+    try{
+
+      let params;
+      if (filter.category || filter.company || filter.name) {
+        params = {
+          company: filter?.company,
         category: filter?.category,
         name: filter?.name,
       };
@@ -68,6 +70,7 @@ export const OpStock = () => {
     if (response?.success) {
       setItemList([...response?.data]);
     }
+  }catch(err){ console.log(err) }
   };
 
   const handleClearAll = (e) => {

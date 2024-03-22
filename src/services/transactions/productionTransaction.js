@@ -22,14 +22,22 @@ const useProductionTransactionServices = ()=>{
         const response = await axios.get(`/production/${id}/`)
         return response?.data
     }
+
+    const delProductionData = async(id)=>{
+        const response = await axios.get(`/production/${id}/`)
+        return response?.data
+    }
+
     return{
-        // post
+        //post
         postProductionData,
         //get
         getProductionDaybookPart,
         getProductionDetails,
         //put
-        putProductionData
+        putProductionData,
+        //delete
+        delProductionData
     }
 }
 

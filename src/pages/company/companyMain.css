@@ -45,18 +45,18 @@
 .company-list.table thead tr th {
   position: sticky;
   top: 0;
-  z-index: 5;
+  z-index: 10;
   background: #3d3b92;
   color: white;
   vertical-align: middle;
-  border-left: 1px solid white;
+  outline: 1px solid white;
   border-top-right-radius: 0.5rem;
   border-top-left-radius: 0.5rem;
 }
 
 .company-list.table tbody tr td {
   position: relative;
-  padding: 0 2rem;
+  padding: 0 1rem 0 2rem;
   vertical-align: middle;
   text-align: start;
   height: 3rem;
@@ -119,12 +119,15 @@
   background: #4a04a5;
   border-top-right-radius: 2rem;
   border-bottom-right-radius: 2rem;
-  transition: width 1s ease-out;
+  /* animation-name: "bar-move1";
+  animation-duration: 2s; */
+  transition: width 1.2s ease-out 0s;
 }
 
 .company-progress-loader.act2 {
   width: 55%;
-  transition: width 1s ease-in;
+  /* animation-name: "bar-move2"; */
+  transition: width 1.2s ease-out 0s;
 }
 
 .company-progress-loader.act3 {
@@ -180,15 +183,14 @@
   accent-color: #37007E;
 }
 
-.checkbox-comp-details::before {
+/* .checkbox-comp-details::before {
   content: '';
   width: 100%;
   height: 100%;
   position: absolute;
   top: 0;
   left: 0;
-  background: #000 !important;
-}
+} */
 
 .comp-input-det {
   margin-top: 1.5rem;
@@ -259,10 +261,16 @@
 }
 
 .accordian-cont {
-  height: 10rem;
+  max-height: 0px !important;
   overflow: hidden;
   overflow-y: scroll;
-  animation: 'addition-accord' 1s;
+  /* animation: 'addition-accord' 1s; */
+  transition: max-height 0.7s ease-out;
+}
+
+.accordian-cont.additional,.accordian-cont.login{
+  max-height: 10rem !important;
+  transition: max-height 0.7s ease-in;
 }
 
 @keyframes addition-accord {
@@ -279,7 +287,7 @@
   width: 100%;
 }
 
-.company-input-field div {
+.company-input-field div.MuiInputBase-root {
   border-bottom: 1px solid gray !important;
   background: #F5F5F5;
 }
@@ -391,11 +399,9 @@
 .permission-cont {
   height: 33rem;
   overflow: hidden;
+  overflow-y:scroll ;
   display: flex;
   width: 100%;
-}
-
-.permission-cont .permission-list1 {
   background: #F5F5F5;
 }
 
@@ -418,8 +424,14 @@
 
 .permission-list4 {
   display: flex;
+  flex-wrap: wrap;
+  width: 100%;
   gap: 1rem;
   font-size: 12px;
+}
+
+.check-all-permission{
+  width: 0.2rem;
 }
 
 .permission-checkbox-cont {
@@ -608,15 +620,14 @@
 }
 
 .accordian-anim{
+  overflow: hidden;
+  overflow-y: scroll;
   max-height: 0px;
-  height: 0px;
-  /* transition: max-height 0.5s ease-out; */
+  transition: max-height 0.5s ease-out;
 }
 
-.accordian-anim{
-  /* animation: 'acc-anim' 2s ; */
-  max-height: 300px;
-  height: auto;
+.accordian-anim.active{
+  max-height: 30rem;
   transition: max-height 0.5s ease-in;
 }
 
@@ -630,3 +641,16 @@
     height:max-content
   }
 } */
+
+.company-menue-dropdown{
+  position: absolute;
+  top:36px;
+  z-index: 5;
+  right: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  background: white;
+  padding: 1rem;
+  border-radius: 0.6rem;
+}

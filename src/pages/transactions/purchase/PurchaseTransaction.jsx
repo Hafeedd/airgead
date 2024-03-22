@@ -23,7 +23,7 @@ import {
 } from "./InitialData/data";
 import usePurchaseReturnServices from "../../../services/transactions/purchaseReturnService";
 import { StockJournalEdit } from "../stockjurnal/components/StockJournalEdit";
-import usePurchaseOrderServices from "../../../services/transactions/purchaseOrderServices";
+import {usePurchaseOrderServices} from "../../../services/transactions/purchaseOrderServices";
 
 export const initialPurchaseTableStatePositionLocal = JSON.parse(
   localStorage.getItem("initialPurchaseTableStatePositionLocal")
@@ -913,7 +913,7 @@ const PurchaseTransaction = ({ returnPage, orderPage }) => {
         onHide={() => setPurchaseEditModal(false)}
       >
         <PurchaseEditList
-          from="purch"
+          from={orderPage?"purch Order":returnPage?"purch Return":"pruch"}
           setShow={setPurchaseEditModal}
           title={"Purchase Edit Table"}
           list={purchaseOrReturnList}

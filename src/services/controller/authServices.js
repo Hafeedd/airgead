@@ -12,6 +12,11 @@ export const useAuthServices = () =>{
         )
         return resp.data
     }
+
+    const checkController = async () =>{
+        const resp = await axios.get('controller/controller_check/')
+        return resp.data
+    }
     
     const loginAuth = async (data,params) =>{
         const resp = await axios.post('auth/login/',data,
@@ -19,19 +24,25 @@ export const useAuthServices = () =>{
         )
         return resp.data
     }
+    const logoutAuth = async () =>{
+        const resp = await axiosPrivate.post('auth/logout/')
+        return resp.data
+    }
 
     const verifyUser = async () =>{
-        try{
-            const resp = await axiosPrivate.get('auth/verify')
+        // try{
+            const resp = await axiosPrivate.get('auth/verify/?permissions=yes')
             return resp.data
-        }catch(err){
-            handleNetworkError(err)
-        }
+        // }catch(err){
+        //     handleNetworkError(err)
+        // }
     }
 
     return {
         register,
         loginAuth,
         verifyUser,
+        logoutAuth,
+        checkController,
     }
 }

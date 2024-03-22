@@ -10,16 +10,18 @@ const authSlice = createSlice({
     initialState:initAuth,
     reducers:{
         login: (state,action) =>{
-            localStorage.setItem('token',action?.payload.token)
+            localStorage.setItem('token',action.payload.token)
             localStorage.setItem('userDetails',JSON.stringify(action.payload.userDetails))
-            state.token = action.payload.token
-            state.userDetails = action.payload.userDetails
+            state = {token:action.payload.token,userDetails:action.payload.userDetails,remember:action.payload.userDetails.remember}
         },
         logout: (state) =>{
             state.token = null
-        }
+        },
+        handlePermissions: (state,action)=>{
+            state.permissions = action.payload
+        },
     }
 })
 
-export const {login, logout} = authSlice.actions;
+export const {login, logout, handlePermissions} = authSlice.actions;
 export default authSlice.reducer;

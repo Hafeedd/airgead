@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import uploadImage from "../../../assets/icons/image-upload.png";
 import { MdOutlineFileUpload } from "react-icons/md";
 import TextField from "@mui/material/TextField";
@@ -6,7 +6,7 @@ import { useCompanyServices } from "../../../services/controller/companyServices
 import Swal from "sweetalert2";
 
 export const CompanyDetails = (props) => {
-  const { setActive, active, setCompanyId  } = props;
+  const { setActive, setCompanyId, edit } = props;
 
   const [additionalFiled, setAdditionalFields] = useState(false);
   const [loginField, setLoginFiled] = useState(false);
@@ -30,7 +30,18 @@ export const CompanyDetails = (props) => {
     password: null,
   });
 
-  const { companyRegister } = useCompanyServices();
+  const { companyRegister,companyUpdate } = useCompanyServices();
+
+  useEffect(()=>{
+    if(edit.id){
+      // setCompanyId(edit.id)
+      const {admin_details,created_by_details,group_detials,group_profile_details,subscription_history,...others} = edit
+      setCompany({
+        ...others,
+        ...admin_details,      
+      })
+    }
+  },[edit])
 
   const handleChange = (e) => {
     const name = e.target.name;
@@ -59,7 +70,9 @@ export const CompanyDetails = (props) => {
       );
       // console.log(CompanyData);
       // return 0;
-      const resp = await companyRegister(CompanyData);
+      let resp
+      if(edit.id) resp = await companyUpdate(edit.id,CompanyData)
+      else resp = await companyRegister(CompanyData);
       if (resp.success) {
         setActive(2);
         setCompanyId(resp?.data?.company_profile?.id)
@@ -71,9 +84,9 @@ export const CompanyDetails = (props) => {
         });
       }
     } catch (err) {
-      let message = err?.response?.data?.message || "Company Registration Failed."
-      if(err?.response?.data?.errors){
-        message = Object.values(err?.response.data?.errors)[0]
+      let message = err.response.data.message || "Company Registration Failed."
+      if(err.response.data?.errors){
+        message = Object.values(err.response.data?.errors)[0]
       }
       Swal.fire({
         title: "Failed",
@@ -124,8 +137,8 @@ export const CompanyDetails = (props) => {
           <label htmlFor="addition-fields" className="col-5">
             Additional Fields
           </label>
-          {additionalFiled && (
-            <div className="accordian-cont mt-2 col-12 px-0 pe-4">
+
+            <div className={`accordian-cont mt-2 col-12 px-0 pe-4 ${additionalFiled&& "additional"}`}>
               <TextField
                 value={company.address_line_1}
                 onChange={handleChange}
@@ -208,7 +221,7 @@ export const CompanyDetails = (props) => {
                 variant="outlined"
               />
             </div>
-          )}
+
         </div>
         <div
           className={`comp-input-det row mx-0 rounded-2 col-10 p-2 ${
@@ -225,8 +238,7 @@ export const CompanyDetails = (props) => {
           <label htmlFor="login-credentials" className="col-7">
             Custom Login Credentials
           </label>
-          {loginField && (
-            <div className="accordian-cont mt-2 col-12 px-0 pe-4">
+            <div className={`accordian-cont mt-2 col-12 px-0 pe-4 ${loginField&& "login"}`}>
               <TextField
                 name="username"
                 value={company.username}
@@ -248,14 +260,14 @@ export const CompanyDetails = (props) => {
                 variant="outlined"
               />
             </div>
-          )}
+
         </div>
       </div>
-      <div className="comp-details-cont-1 col-5 col-6 border rounded-2">
+      <div style={{height:'fit-content'}} className="comp-details-cont-1 col-5 col-6 border rounded-2">
         <TextField
           required
           name="group_name"
-          value={company.group_name}
+          value={company.group_name||''}
           onChange={handleChange}
           className="company-input-field my-3"
           size="small"
@@ -266,7 +278,7 @@ export const CompanyDetails = (props) => {
         <TextField
           name="first_name"
           required
-          value={company.first_name}
+          value={company.first_name||''}
           onChange={handleChange}
           className="company-input-field my-3"
           size="small"
@@ -277,7 +289,7 @@ export const CompanyDetails = (props) => {
         <TextField
           name="last_name"
           required
-          value={company.last_name}
+          value={company.last_name||''}
           onChange={handleChange}
           className="company-input-field my-3"
           size="small"
@@ -289,7 +301,7 @@ export const CompanyDetails = (props) => {
           name="mobile"
           required
           
-          value={company.mobile}
+          value={company.mobile||''}
           onChange={handleChange}
           className="company-input-field my-3"
           size="small"
@@ -302,7 +314,7 @@ export const CompanyDetails = (props) => {
           name="email"
           required
           type="email"
-          value={company.email}
+          value={company.email||""}
           onChange={handleChange}
           className="company-input-field my-3"
           size="small"

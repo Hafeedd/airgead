@@ -9,7 +9,9 @@ import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 // import e from "express";
 
-const Header = () => {
+const Header = (props) => {
+  const {activeSetting , setActiveSetting} = props
+
   const userData = useSelector(state => state.auth.userDetails)
   const location = useLocation();
 
@@ -40,15 +42,15 @@ const Header = () => {
           <div className="header-item">
             <img src={bell} width="15rem" className="white-to-black" />
           </div>
-          <div className="header-item">
+          <div className="header-item cursor" id={'setting-icon'} onClick={()=>setActiveSetting(true)}>
             <img src={setting} width="18rem" className="white-to-black" />
           </div>
-            {userData?.fk_role!=="Admin"&&
+            {userData?.fk_group!=="Controller"&&
           <div className="heaader-user-cont rounded-1 px-2">
             <img src={userProf} alt="user-prof" className="header-user-prof-img" />
             <div>
               <div>{`${userData?.username?.slice(0, 10)} ${userData?.username?.length > 9 ? "..." : ""}`}</div>
-              <div className="header-role-text">{userData?.fk_role}</div>
+              <div className="header-role-text">{userData?.fk_group}</div>
             </div>
           </div>
             }

@@ -7,11 +7,12 @@ import { Modal } from "react-bootstrap";
 import { useCompanyServices } from "../../../services/controller/companyServices";
 import Swal from "sweetalert2";
 import { companyModules } from "../data/initialData";
+import { useNavigate } from "react-router";
 
 export const CompanyPayment = (props) => {
-  const { setActive, companyId, setCompanyId } = props;
+  const { setActive, companyId, moduleCodeList, setModuleCodeList } = props;
   const [showModules, setShowModules] = useState(false)
-  const [moduleCodeList, setModuleCodeList] = useState([])
+  const [loading, setLoading] = useState(false)
   const [companyPlan, setCompanyPlan] = useState({
     renewal_date: null,
     renewal_time: null,
@@ -20,15 +21,17 @@ export const CompanyPayment = (props) => {
     modules: [],
   });
 
-  const {postCompanyPlan} = useCompanyServices()
+  const navigate = useNavigate()
 
-  const handleChange = (e,date_name) => {
+  const { postCompanyPlan } = useCompanyServices()
+
+  const handleChange = (e, date_name) => {
     const name = e?.target?.name;
     let value = e?.target?.value;
     // console.log(name,value)
-    if (date_name==="renewal_time") {
+    if (date_name === "renewal_time") {
       setCompanyPlan((data) => ({ ...data, renewal_time: dayjs(e).format('hh:mm') }));
-    }else if(date_name){
+    } else if (date_name) {
       console.log(dayjs(e).format('YYYY-MM-DD'))
       setCompanyPlan((data) => ({ ...data, [date_name]: dayjs(e).format('YYYY-MM-DD') }));
     }
@@ -47,59 +50,62 @@ export const CompanyPayment = (props) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault()
-    setActive(3)
-    return 0
-    if(moduleCodeList?.length<0){
-      Swal.fire('Warning',"Please select at least 1 module.",'warning')
+    if (moduleCodeList?.length < 0) {
+      Swal.fire('Warning', "Please select at least 1 module.", 'warning')
       return 0
     }
-    try{
-      let tempCompanyPlan = {...companyPlan,
-        modules:moduleCodeList.map(data=>({code:data,"is_active":true}))
+    try {
+      let tempCompanyPlan = {
+        ...companyPlan,
+        modules: moduleCodeList.map(data => ({ code: data, "is_active": true }))
       }
-      const response = await postCompanyPlan(companyId,tempCompanyPlan)
-      if(response.success){
-        setActive(3)
+      setLoading(true)
+      const response = await postCompanyPlan(companyId, tempCompanyPlan)
+      if (response.success) {
+        Swal.fire('Success', '', 'success')
+        navigate('/')
       }
-    }catch(err){
+      setLoading(false)
+    } catch (err) {
+      setLoading(false)
       console.log(err)
       let message = "Something went wrong. Please try again later"
-      if(typeof err?.response?.data?.error === "object")
+      if (typeof err?.response?.data?.error === "object")
         message = Object.values(err.response.data.error)[0]
-      Swal.fire('Error',message,'error')
+      Swal.fire('Error', message, 'error')
     }
   }
 
   return (
     <form onSubmit={handleSubmit} className="company-details-cont row justify-content-between mx-0 my-2 p-0">
       <div className="comp-details-cont-1 col-5 col-6 border rounded-2">
-        <DatePicker          
-          slotProps={{ textField: { size: 'small' /* ,required:true */} }}
+        <DatePicker
+          slotProps={{ textField: { size: 'small', required: true } }}
           name="renewal_date"
-          value={companyPlan.renewal_date?dayjs(companyPlan.renewal_date).format('YYYY-MM-DD'):null}
-          format="DD/MM/YYYY"    
-          onChange={(val)=>handleChange(val,'renewal_date')}
+          value={companyPlan.renewal_date ? dayjs(companyPlan.renewal_date).format('YYYY-MM-DD') : null}
+          format="DD/MM/YYYY"
+          onChange={(val) => handleChange(val, 'renewal_date')}
           className="company-input-field my-3"
           label="Renewal Date"
           variant="outlined"
         />
         <TimePicker
-          slotProps={{ textField: { size: 'small'/* , required:true  */} }}
-          name="renewal_time"          
-          value={companyPlan.renewal_time?dayjs(companyPlan.renewal_time, 'HH:mm') : null}
+          slotProps={{ textField: { size: 'small', required: true } }}
+          name="renewal_time"
+          value={companyPlan.renewal_time ? dayjs(companyPlan.renewal_time, 'HH:mm') : null}
           format="HH:mm"
-          onChange={(val)=>handleChange(val,'renewal_time')}
-          className="company-input-field my-3"          
+          onChange={(val) => handleChange(val, 'renewal_time')}
+          className="company-input-field my-3"
           label="Renewal Time"
           variant="outlined"
         />
-        <DatePicker          
-          slotProps={{ textField: { size: 'small'/* , required:true  */} }}
+        <DatePicker
+          slotProps={{ textField: { size: 'small', required: true } }}
           name="extended_date"
-          value={companyPlan.extended_date?dayjs(companyPlan.extended_date).format('YYYY-MM-DD'):null}
+          value={companyPlan.extended_date ? dayjs(companyPlan.extended_date).format('YYYY-MM-DD') : null}
           format="DD/MM/YYYY"
-          onChange={(val)=>handleChange(val,'extended_date')}
-          className="company-input-field my-3"          
+          onChange={(val) => handleChange(val, 'extended_date')}
+          className="company-input-field my-3"
           label="Extension Date"
           variant="outlined"
         />
@@ -111,7 +117,7 @@ export const CompanyPayment = (props) => {
           value={companyPlan.staff_limit}
           onChange={handleChange}
           className="company-input-field my-3"
-          size="small"          
+          size="small"
           label="Staff Limit"
           variant="outlined"
         />
@@ -126,7 +132,7 @@ export const CompanyPayment = (props) => {
 
             return moduleCodeList.findIndex(item => item === data.code) > -1 && <div onClick={() => handleModuleSelection(data)}
               className={`comp-module-item active`}>
-              <img src={data.icon} width={'25rem'} alt='module_image' />
+              <img src={data.icon} width={'25rem'} alt='' />
               {data.name}
             </div>
           })}</div>
@@ -139,12 +145,11 @@ export const CompanyPayment = (props) => {
           Previous
         </div>
         <button
-          // onClick={() => setActive((data) => (data < 3 ? data + 1 : data))}
-          // onClick={handleSubmit}
           type="submit"
+          disabled={loading}
           className="company-add-btn next btn col-1 col-2"
         >
-          Next &nbsp;&nbsp;{">"}
+          Done {/* &nbsp;&nbsp;{">"} */}
         </button>
       </div>
       <Modal
@@ -157,7 +162,7 @@ export const CompanyPayment = (props) => {
           <div className='module-items'>
             {companyModules.map(data => <div onClick={() => handleModuleSelection(data)}
               className={`comp-module-item ${moduleCodeList.findIndex(item => item === data.code) > -1 && 'active'}`}>
-              <img src={data.icon} width={'25rem'} alt='module_image' />
+              <img src={data.icon} width={'25rem'} alt='' />
               {data.name}
             </div>)}
           </div>
