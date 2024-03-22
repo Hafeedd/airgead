@@ -19,6 +19,7 @@ const LoginMainPage = () => {
   const [user, setUser] = useState({
     username: null,
     password: null,
+    remember: false,
   })
 
   const dispatch = useDispatch()
@@ -33,7 +34,10 @@ const LoginMainPage = () => {
     const value = e.target.value
     if (value === "") {
       setUser(data => ({ ...data, [name]: null }))
-    } else {
+    } else if (name === "remember") {
+      setUser(data => ({ ...data, [name]: !user.remember }))
+    }
+    else {
       setUser(data => ({ ...data, [name]: value }))
     }
   }
@@ -56,8 +60,8 @@ const LoginMainPage = () => {
         if (token) {
           setToken(false)
           let data = resp.data
-          const {username,mobile,image,email, fk_role, fk_group} = data
-          dispatch(login({ token: data.token, userDetails: { ...{ username, mobile, image, email, fk_role,fk_group } } }))
+          const { username, mobile, image, email, fk_role, fk_group } = data
+          await dispatch(login({ token: data.token, userDetails: {remember:user.remember, ...{ username, mobile, image, email, fk_role, fk_group } } }))
           navigate("/")
         }
         setToken(resp.data.verification_token)

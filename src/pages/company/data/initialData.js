@@ -1,8 +1,10 @@
 export const companyModules = [
   { name: 'Purchase', code: 100, icon: 'https://icons.foxa.in/media/icons/cart-shopping-fast.svg', primary: 'YES' },
   { name: 'Sales', code: 101, icon: 'https://icons.foxa.in/media/icons/point-of-sale-bill.svg', primary: 'YES' },
-  { name: 'Purchase Return', code: 102, icon: 'https://icons.foxa.in/media/icons/cart-minus.svg', paretn: 100, primary: 'YES' },
+  { name: 'Purchase Return', code: 102, icon: 'https://icons.foxa.in/media/icons/cart-minus.svg', parent: 100, primary: 'YES' },
+  { name: 'Purchase Order', code: 106, primary: 'YES' },
   { name: 'Sales Return', code: 103, icon: 'https://icons.foxa.in/media/icons/undo.svg', parent: 101, primary: 'YES' },
+  { name: 'Sales Order', code: 115, primary: 'YES' },
   { name: 'Payment', code: 104, icon: 'https://icons.foxa.in/media/icons/document-signed_p9I0WXo.svg', primary: 'YES' },
   { name: 'Receipt', code: 105, icon: 'https://icons.foxa.in/media/icons/point-of-sale-bill.svg', primary: 'YES' },
   { name: 'Stock Journal', code: 106, icon: 'https://icons.foxa.in/media/icons/document-signed_p9I0WXo.svg', primary: 'YES' },
@@ -13,11 +15,12 @@ export const companyModules = [
   { name: 'Cheque Register', code: 111, icon: 'https://icons.foxa.in/media/icons/cost-per-lead_11336391.png', primary: 'YES' },
   { name: 'Production', code: 112, icon: 'https://icons.foxa.in/media/icons/product-management_12525462.png', primary: 'YES' },
   { name: 'Opening Stock', code: 149, parent: 147, primary: 'NO' },
-  { name: 'Item Master', code: 148, parent: 147, primary: 'NO' },
-  { name: 'Account Master', code: 125, parent: 124, primary: 'NO' },
+  { name: 'Item', code: 147, primary: 'YES' },
+  { name: 'Account', code: 124, primary: 'YES' },
   { name: 'Customer', code: 127, parent: 124, primary: 'NO' },
   { name: 'Supplier', code: 128, parent: 124, primary: 'NO' },
-  { name: 'Staff Master', code: 137, icon: 'https://icons.foxa.in/media/icons/document-signed_p9I0WXo.svg', parent: 136, primary: 'NO' },
+  { name: 'Material Composition', code: 168, parent: 167, primary: 'NO' },
+  { name: 'Staff', code: 136, icon: 'https://icons.foxa.in/media/icons/document-signed_p9I0WXo.svg', primary: 'YES' },
 ]
 
 export const permissions =

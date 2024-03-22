@@ -11,6 +11,11 @@ export const useAuthServices = () =>{
         )
         return resp.data
     }
+
+    const checkController = async () =>{
+        const resp = await axios.get('controller/controller_check/')
+        return resp.data
+    }
     
     const loginAuth = async (data,params) =>{
         const resp = await axios.post('auth/login/',data,
@@ -24,7 +29,7 @@ export const useAuthServices = () =>{
     }
 
     const verifyUser = async () =>{
-        const resp = await axiosPrivate.get('auth/verify')
+        const resp = await axiosPrivate.get('auth/verify/?permissions=yes')
         return resp.data
     }
 
@@ -33,5 +38,6 @@ export const useAuthServices = () =>{
         loginAuth,
         verifyUser,
         logoutAuth,
+        checkController,
     }
 }

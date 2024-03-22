@@ -44,12 +44,13 @@ import GroupWiseTrialBalance from "./pages/reports/groupWiseTrialBalance/GroupWi
 import TraidProfitLoss from "./pages/reports/traidProfitLoss/TraidProfitLoss";
 import LoginMainPage from "./pages/authentication/LoginMainPage";
 import ChartOfAccount from "./pages/reports/chartOfAccount/ChartOfAccount";
-import { CheckAuth } from './components/auth/auth'
+import { CheckAuth, VerifyToken } from './components/auth/auth'
 import { useSelector } from "react-redux";
 import { CompanyMain } from "./pages/company/CompanyMain";
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
 import { CompanyView } from "./pages/company/components/CompanyView";
+import { BadGateway } from "./pages/badGateway/BadGateway";
 
 function App() {
   const userDetails = useSelector(state => state.auth.userDetails)
@@ -66,9 +67,11 @@ function App() {
         <Routes>
           <Route path="/login" element={<LoginMainPage />} />
           <Route path="/register" element={<LoginMainPage />} />
-          <Route element={<CheckAuth type='Controller Company Agency' />}>
-            <Route path="/" element={<Layout />}>
-              <Route element={<Outlet />}>
+          <Route path='/' element={<VerifyToken/>}>
+            {/* <Route path="/" element={<Layout />}> */}
+            <Route element={<Outlet />}>
+              <Route path="/bad-gateway" element={<BadGateway />} />
+              <Route element={<CheckAuth type='Controller Agency Company' />}>
                 <Route index element={<DirectToMainPage />} />
                 <Route element={<CheckAuth type='Controller' />}>
                   {/* <Route path="/company-list" element={<CompanyMain />} /> */}
@@ -141,6 +144,7 @@ function App() {
                 </Route>
               </Route>
             </Route>
+            {/* </Route> */}
           </Route>
           <Route path="*" element={<div>Page Not Found</div>} />
         </Routes>
