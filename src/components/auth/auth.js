@@ -1,13 +1,13 @@
 import { useDispatch, useSelector } from "react-redux";
 import { useAuthServices } from "../../services/controller/authServices";
 import { useEffect, useState } from "react";
-import { Navigate, Outlet, useLocation, useNavigate } from "react-router-dom";
+import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import { handlePermissions } from "../../redux/authSlice";
 import { navigationList } from "../sidebar/Sidebar";
 import Layout from "../layout/Layout";
 
 export const CheckAuth = ({ userType, authType }) => {
-  const auth = useSelector((state) => state.auth.value);
+  const auth = useSelector((state) => state.auth);
   const [verify, setVerify] = useState(null);
 
   const { verifyUser } = useAuthServices();
@@ -19,8 +19,9 @@ export const CheckAuth = ({ userType, authType }) => {
   let path = authType === "token" ? "/login" : "/bad-gateway";
 
   useEffect(() => {
+    console.log(auth)
     checkToken();
-  }, [location.pathname, auth.token,])
+  }, [auth?.token])
 
   const checkToken = async () => {
     try {
@@ -31,13 +32,12 @@ export const CheckAuth = ({ userType, authType }) => {
               resp.data.module_permissions.findIndex((x) => x === data.code) >
               -1
           );
-          if (
-            allAllowdPathList.findIndex((x) => x.navigate === location.pathname) > -1 ||
-            authType === "token"
+          if (1==1
+            // allAllowdPathList.findIndex((x) => x.navigate === location.pathname) > -1 ||
+            // authType === "token"
           ) {
-            console.log("a")
             setVerify(resp.data.fk_group);
-            // dispatch(handlePermissions(resp.data.module_permissions))
+            dispatch(handlePermissions(resp.data.module_permissions))
         } else {
               console.log("b")
               setVerify(false);
@@ -49,13 +49,13 @@ export const CheckAuth = ({ userType, authType }) => {
           navigate(path, { replace: true });
         }
     } catch (err) {
-        console.log(err)
+        // console.log(err)
       setVerify(false);
       navigate(path, { replace: true });
     }
   };
 
-  return (userType?.includes(verify) || (authType === "token"&& auth.token)) && ( authType=='token'?<Layout />:<Outlet/>);
+  return (userType?.includes(verify) || (authType === "token"&& auth?.token)) && ( authType=='token'?<Layout />:<Outlet/>);
 };
 
 // const checkToken = async () => {

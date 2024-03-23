@@ -53,7 +53,7 @@ import { CompanyView } from "./pages/company/components/CompanyView";
 import { BadGateway } from "./pages/badGateway/BadGateway";
 
 function App() {
-  const userDetails = useSelector(state => state.auth.value?.userDetails)
+  const userDetails = useSelector(state => state.auth.userDetails)
 
   const DirectToMainPage = () => {
     if (userDetails?.fk_group === "Controller") {
@@ -71,14 +71,14 @@ function App() {
             {/* <Route path="/" element={<Layout />}> */}
             <Route element={<Outlet />}>
               <Route path="/bad-gateway" element={<BadGateway />} />
-              <Route element={<CheckAuth type='Controller Agency Company' />}>
                 <Route index element={<DirectToMainPage />} />
-                <Route element={<CheckAuth type='Controller' />}>
+              <Route element={<CheckAuth userType='Controller Agency Company' />}>
+                <Route element={<CheckAuth userType='Controller' />}>
                   {/* <Route path="/company-list" element={<CompanyMain />} /> */}
                   <Route path='/company-add' element={<CompanyMain />} />
                   <Route path='/company-view' element={<CompanyView />} />
                 </Route>
-                <Route element={<CheckAuth type="Company" />}>
+                <Route element={<CheckAuth userType="Company" />}>
                   {/* <Route index element={<ItemMaster />} /> */}
                   <Route path="/list" element={<ItemMaster />} />
                   <Route path="/add" element={<ItemMaster />} />

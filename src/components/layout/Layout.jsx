@@ -9,22 +9,22 @@ import { useSelector } from "react-redux";
 
 export const Layout = () => {
   const [activeSetting , setActiveSetting] = useState(false)
-  const auth = useSelector(state=>state.auth.value?.userDetails)
+  const auth = useSelector(state=>state.auth.userDetails)
   // console.log(auth)
-  const handleBeforeUnload = (event) => {
-    if(!auth.remember){
-      alert("Are you sure?")
-      localStorage.removeItem("userDetails");
-    }
-};
+//   const handleBeforeUnload = (event) => {
+//     if(!auth.remember){
+//       alert("Are you sure?")
+//       localStorage.removeItem("userDetails");
+//     }
+// };
 
-useEffect(() => {
-    window.addEventListener("beforeunload", handleBeforeUnload);
+// useEffect(() => {
+//     window.addEventListener("beforeunload", handleBeforeUnload);
 
-    return () => {
-        window.removeEventListener("beforeunload", handleBeforeUnload);
-    };
-}, []);
+//     return () => {
+//         window.removeEventListener("beforeunload", handleBeforeUnload);
+//     };
+// }, []);
 
   useEffect(()=>{
     window.addEventListener('click',(e)=>{

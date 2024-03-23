@@ -16,6 +16,7 @@ const LoginMainPage = () => {
   const [token, setToken] = useState(false)
   const [otp, setOtp] = useState('')
   const [loading, setLoading] = useState(false)
+  const [otpWait, setOtpWait] = useState(false)
   const [user, setUser] = useState({
     username: null,
     password: null,
@@ -44,6 +45,18 @@ const LoginMainPage = () => {
 
   const handleOtpChange = (data) => {
     setOtp(data)
+  }
+
+  const handleResendOtp = async (e) =>{
+    e.preventDefault()
+    try{
+      setOtpWait(true)
+      let resp = await loginAuth({resend:true},{t:token})
+      if(!resp.success)
+        setOtpWait(false)
+    }catch(err){
+      setOtpWait(false)
+    }
   }
 
   const handleSubmit = async (e) => {
@@ -89,7 +102,7 @@ const LoginMainPage = () => {
         <img style={{ position: "fixed", zIndex: -1 }} src={vitezLogoWatermark} alt="" />
         {location.pathname === "/register" ? <Register /> :
           !token ? <Login {...{ user, handleChange, handleSubmit, loading }} /> :
-            <Verification {...{ otp, handleOtpChange, handleSubmit }} />}
+            <Verification {...{handleResendOtp,setOtpWait, otpWait, otp, handleOtpChange, handleSubmit }} />}
       </div>
     </div>
   )

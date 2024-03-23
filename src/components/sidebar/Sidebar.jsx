@@ -65,7 +65,7 @@ const Sidebar = ({ perm, setPage }) => {
   const [ArrowActive, setArrowActive] = useState(false)
   const [ReportsActive, setReportsActive] = useState(false)
 
-  const auth = useSelector(state => state.auth.value)
+  const auth = useSelector(state => state.auth)
 
   const navigate = useNavigate()
 

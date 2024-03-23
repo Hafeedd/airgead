@@ -4,7 +4,7 @@ import Swal from "sweetalert2";
 import { useSelector } from "react-redux";
 
 const useAxiosPrivate = () => {
-    const auth = useSelector(state=>state.auth.value)
+    const auth = useSelector(state=>state.auth)
 
     useEffect(() => {
 
@@ -12,7 +12,6 @@ const useAxiosPrivate = () => {
             config => {
                 if (!config.headers['Authorization']) {
                     config.headers['Authorization'] = `Token ${auth?.token}`;
-
                 }
                 return config;
             }, (error) => {

@@ -1,9 +1,18 @@
 import React, { useState } from 'react'
 import msgIcon from '../../../assets/images/msg-icon.png'
 import OTPInput from 'react-otp-input'
+import Countdown from 'react-countdown'
 
 export const Verification = (props) => {
-    const { otp, handleOtpChange, handleSubmit } = props
+    const { handleResendOtp,setOtpWait, otp, handleOtpChange, handleSubmit, otpWait } = props
+
+    const renderer = ({ hours, minutes, seconds, completed }) => {
+        if (!completed) {
+            return <span className="text-secondary">Please Wait for &nbsp;{hours}:{minutes}:{seconds}&nbsp; to resend OTP</span>;
+        }else{
+            setOtpWait(false)
+        }
+    };
 
     return (
         <div className='d-flex  flex-column align-items-center' style={{ width: "70%", height: "fit-content" }}>
@@ -43,7 +52,10 @@ export const Verification = (props) => {
             </div>
 
             <div className='d-flex justify-content-end mt-2' style={{ width: "100%" }}>
-                <p className='railway-font'>Didn’t Received SMS? <span className='span-text-color'>Resend Code</span></p>
+                {otpWait ? <Countdown
+                    date={Date.now() + 180000}
+                    renderer={renderer}
+                /> : <p className='railway-font'>Didn’t Received SMS? <span className='span-text-color cursor' onClick={handleResendOtp}>Resend Code</span></p>}
             </div>
             <button onClick={handleSubmit} className='btn-login rounded py-3 mt-3 railway-font' >Login</button>
         </div>
