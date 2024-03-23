@@ -23,7 +23,7 @@ export const CheckAuth = ({ userType, authType }) => {
     if(auth?.token)
     checkToken();
     else navigate(path,{replace:true})
-  }, [auth?.token])
+  }, [location.pathname,auth?.token,])
 
   const checkToken = async () => {
     try {
