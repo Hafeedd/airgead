@@ -51,6 +51,7 @@ import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
 import { CompanyView } from "./pages/company/components/CompanyView";
 import { BadGateway } from "./pages/badGateway/BadGateway";
+import { IdCodeConfig } from "./pages/idCodeConfig/IdCodeConfig";
 
 function App() {
   const userDetails = useSelector(state => state.auth.userDetails)
@@ -140,6 +141,8 @@ function App() {
                   <Route path="/traid-profit-loss" element={<TraidProfitLoss />} />
 
                   <Route path="/chart-of/account" element={<ChartOfAccount />} />
+                  
+                  <Route path="/code-configuration" element={<IdCodeConfig />} />
 
                 </Route>
               </Route>

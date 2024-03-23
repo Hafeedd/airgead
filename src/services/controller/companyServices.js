@@ -27,11 +27,13 @@ export const useCompanyServices = () => {
     const resp = await axiosPrivate.get(`controller/company/${id}/`);
     return resp.data;
   };
+  
   // update company detials
   const companyUpdate = async (id,data) => {
     const resp = await axiosPrivate.put(`controller/company/${id}/`,data);
     return resp.data;
   };
+
   // set company plan
   const postCompanyPlan = async (id,data) => {
     const resp = await axiosPrivate.post(`controller/company/${id}/plan_details/`, data);

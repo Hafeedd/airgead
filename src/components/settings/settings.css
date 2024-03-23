@@ -1,0 +1,31 @@
+
+.settings {
+    font-family: Raleway;
+    font-size: 13px;
+    font-weight: 500;
+    line-height: 18.78px;
+    text-align: left;
+    color: white;
+    height: 100vh;
+    position: fixed;
+    width: 0;
+    right: 0;
+    top: 0;
+    background: #2D569F;
+    z-index: 1000;
+    transition: width 0.4s ease-out;
+}
+
+.settings.active{
+    /* box-shadow: -5px 0px 20px -3px rgb(195, 199, 255); */
+    width: 17rem;
+    transition: width 0.5s ease-in;
+}
+
+.settings-item{
+    margin-left: 3rem;
+    cursor: pointer;
+    gap:10px;
+    display: flex;
+    align-items: center;
+}
