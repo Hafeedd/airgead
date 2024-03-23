@@ -142,11 +142,11 @@ const PaymentTransaction = ({ method }) => {
           for (let i of response2.data) {
             let type;
             if (method == "Payment") {
-              type = "PAY";
+              type = "PAYMENT_CODE";
             } else {
-              type = "RES";
+              type = "RECEIPT_CODE";
             }
-            if (i.sub_id == type) {
+            if (i.types == type) {
               code = i.next_code;
             }
           }
