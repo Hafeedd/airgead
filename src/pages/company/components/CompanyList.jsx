@@ -17,7 +17,7 @@ export const CompanyList = (props) => {
 
   const navigate = useNavigate();
 
-  const { getCompanyList } = useCompanyServices()
+  const { getCompanyList,companyActiveDeactive } = useCompanyServices()
 
   useEffect(() => {
     getData()
@@ -116,10 +116,11 @@ export const CompanyList = (props) => {
 
             {companyList?.length > 0 ?
               companyList.map((data, key) => {
-                const handleDelete = async (e) => {
+                const handleCheck = async (e,type) => {
                   Swal.fire({
                     title: "Delete",
-                    text: `Are you sure, you want to delete ${data.username}?`,
+                    text: `Are you sure, you want to 
+                    ${type=='delete'?'delete':data.is_active?"activated":"deactivated"} ${data.username}?`,
                     icon: "question",
                     showDenyButton: true,
                     showCancelButton: false,
@@ -127,7 +128,10 @@ export const CompanyList = (props) => {
                     denyButtonText: "Cancel",
                     showLoaderOnConfirm: true,
                     preConfirm: async () => {
+                      if(type=="delete"){
                       // await deleteGroup(data?.id);
+                    }
+                      else handleActive()
                     },
                     preDeny: () => {
                       Swal.fire({
@@ -144,6 +148,19 @@ export const CompanyList = (props) => {
                   navigate('/company-view', { state: { id: data.id } })
                 }
                 
+                const handleActive = async () =>{
+                  try{
+                    const resp = await companyActiveDeactive(data.id)
+                    if(resp.success){
+                      Swal.fire('Success',`${data.full_name} has been ${data.is_active?"activated":"deactivated"} successfully`,'success')
+                      getData()
+                    }
+                  }catch(err){
+                    let message = err?.response?.message || "Something went wrong. Please try again later."
+                    Swal.fire('Error',message,'error')
+                  }
+                }
+
                 return (
                   <tr>
                     <td onClick={handleNavigate}>{key + 1}</td>
@@ -165,11 +182,11 @@ export const CompanyList = (props) => {
                         : ""}
                     </td>
                     <td className="d-flex align-items-center justify-content-between ps-2 pe-1">
-                      <Checkbox toggle />
+                      <Checkbox onChange={handleActive} toggle checked={data.is_active} />
                       <HiDotsVertical onClick={() => handleDropDownList(key)} size={"1.5rem"} />
                       {listShow === key && <div className="company-menue-dropdown">
                         <div onClick={() => navigate('/company-add', { state: { company: data } })} className="d-flex cursor gap-3"><img src={pencilIcon} alt="edit" /> Edit</div>
-                        <div onClick={handleDelete} className="d-flex cursor gap-3"><img src={deleteBtn} alt="edit" /> Delete</div>
+                        <div onClick={()=>handleCheck('delete')} className="d-flex cursor gap-3"><img src={deleteBtn} alt="edit" /> Delete</div>
                       </div>}
                     </td>
                   </tr>)

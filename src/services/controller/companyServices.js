@@ -42,6 +42,12 @@ export const useCompanyServices = () => {
     const resp = await axiosPrivate.post(`controller/company/${id}/permissions/`, data);
     return resp.data;
   };
+  
+  // set company permission
+  const companyActiveDeactive = async (id) => {
+    const resp = await axiosPrivate.post(`controller/company/${id}/activation_status/`);
+    return resp.data;
+  };
 
   return {
     postCompanyPlan,
@@ -50,5 +56,6 @@ export const useCompanyServices = () => {
     getCompanyWithId,
     companyUpdate,
     postCompanyPermission,
+    companyActiveDeactive,
   };
 };
