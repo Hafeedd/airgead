@@ -41,13 +41,13 @@ const useAccountServices = () => {
 
   // Account List
   const getAccountList = async() =>{
-    const response = await axios.get('master/account/created/')
+    const response = await axios.get('master/account/created/?activity_code=1081')
     return response.data
   }
 
   // Account List
   const getAllAccountList = async() =>{
-    const response = await axios.get('master/all_user/accounts')
+    const response = await axios.get('master/all_user/accounts/?activity_code=1471')
     return response.data
   }
 

@@ -7,7 +7,7 @@ const usePurchaseReturnServices = () => {
 
     // post full purchase_return data 
     const postPurchaseReturn = async (data) =>{
-        const response = await axios.post('purchase/purchase_returns/created/',data)
+        const response = await axios.post('purchase/purchase_returns/created/?activity_code=1201',data)
         return response.data
     }
 
@@ -15,7 +15,7 @@ const usePurchaseReturnServices = () => {
 
     // update full purchase_return data
     const putPurchaseReturn = async (id,data) =>{
-        const response = await axios.put('purchase/purchase_returns/updated/'+id+'/',data)
+        const response = await axios.put('purchase/purchase_returns/updated/'+id+'/?activity_code=1203',data)
         return response.data
     }
 
@@ -23,12 +23,12 @@ const usePurchaseReturnServices = () => {
 
     // get all purchase_return data
     const getPurchaseReturnList = async (id) =>{
-        const response = await axios.get('purchase/purchase_return/code/')
+        const response = await axios.get('purchase/purchase_return/code/?activity_code=1467')
         return response.data
     }
     // get all purchase_return data
     const getPurchaseReturnWithId = async (id) =>{
-        const response = await axios.get('purchase/purchase_returns/updated/'+id+'/')
+        const response = await axios.get('purchase/purchase_returns/updated/'+id+'/?activity_code=1202')
         return response.data
     }
 
@@ -36,7 +36,7 @@ const usePurchaseReturnServices = () => {
 
     // get all purchase_return data
     const deletePurchaseReturn = async (id) =>{
-        const response = await axios.delete('purchase/purchase_return/updated/'+id+"/")
+        const response = await axios.delete('purchase/purchase_return/updated/'+id+"/?activity_code=1204")
         return response.data
     }
     
