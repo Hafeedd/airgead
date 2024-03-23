@@ -67,12 +67,12 @@ function App() {
         <Routes>
           <Route path="/login" element={<LoginMainPage />} />
           <Route path="/register" element={<LoginMainPage />} />
-          <Route path='/' element={<CheckAuth authType={'token'}/>}>
+          <Route path='/' element={<CheckAuth userType='Controller Agency Company' authType={'token'}/>}>
             {/* <Route path="/" element={<Layout />}> */}
             <Route element={<Outlet />}>
               <Route path="/bad-gateway" element={<BadGateway />} />
-                <Route index element={<DirectToMainPage />} />
               <Route element={<CheckAuth userType='Controller Agency Company' />}>
+                <Route index element={<DirectToMainPage />} />
                 <Route element={<CheckAuth userType='Controller' />}>
                   {/* <Route path="/company-list" element={<CompanyMain />} /> */}
                   <Route path='/company-add' element={<CompanyMain />} />

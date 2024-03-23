@@ -21,6 +21,7 @@ export const initialPurchaseAdd = {
     discount: null,
     roundoff: null,
     paid_cash: null,
+    due_date: null,
     change_due: null,
     vehicle_no: null,
     isBatch: false,

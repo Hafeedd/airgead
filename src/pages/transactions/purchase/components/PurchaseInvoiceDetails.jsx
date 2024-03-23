@@ -140,7 +140,21 @@ const PurchaseInvoiceDetails = (props) => {
           type="date"
         />
       </Form.Group>
-      <span className="col-3" />
+      {/* <span className="col-3" /> */}
+      <Form.Group className="col-3 ps-5 mx-0 d-flex align-items-center mt-1">
+        <Form.Label className="col-4 purchase-input-label">
+          Due Date
+        </Form.Label>
+        <Form.Control
+          name="due_date"
+          disabled={!purchaseAdd?.change_due}
+          value={purchaseAdd?.due_date?.slice(0, 10) || ""}
+          onKeyDown={handleKeyDown}
+          onChange={handleChange}
+          className="purchase-input-text"
+          type="date"
+        />
+      </Form.Group>
       <Form.Group className="col-3 col-4 mx-0 d-flex align-items-center my-1">
         <Form.Label className="col-3 col-4 purchase-input-label">
           Date

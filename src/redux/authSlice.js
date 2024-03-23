@@ -13,7 +13,8 @@ const authSlice = createSlice({
         login: (state,action) =>{
             localStorage.setItem('token',action.payload.token)
             localStorage.setItem('userDetails',JSON.stringify(action.payload.userDetails))
-            state = {token:action.payload.token,userDetails:action.payload.userDetails}
+            state.token = action.payload.token
+            state.userDetails = action.payload.userDetails
         },
         logout: (state) =>{
             localStorage.removeItem('token')

@@ -20,7 +20,9 @@ export const CheckAuth = ({ userType, authType }) => {
 
   useEffect(() => {
     console.log(auth)
+    if(auth?.token)
     checkToken();
+    else navigate(path,{replace:true})
   }, [auth?.token])
 
   const checkToken = async () => {
@@ -39,17 +41,14 @@ export const CheckAuth = ({ userType, authType }) => {
             setVerify(resp.data.fk_group);
             dispatch(handlePermissions(resp.data.module_permissions))
         } else {
-              console.log("b")
               setVerify(false);
               navigate(path, { replace: true });
             }
         } else {
-          console.log("c")
           setVerify(false);
           navigate(path, { replace: true });
         }
     } catch (err) {
-        // console.log(err)
       setVerify(false);
       navigate(path, { replace: true });
     }

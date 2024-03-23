@@ -74,6 +74,7 @@ const LoginMainPage = () => {
           setToken(false)
           let data = resp.data
           const { username, mobile, image, email, fk_role, fk_group } = data
+          localStorage.setItem('token',data.token)
           dispatch(login({ token: data.token, userDetails: { ...{ username, mobile, image, email, fk_role, fk_group } } }))
           navigate("/")
         }
