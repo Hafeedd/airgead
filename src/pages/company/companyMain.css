@@ -213,15 +213,14 @@
   accent-color: #37007E;
 }
 
-.checkbox-comp-details::before {
+/* .checkbox-comp-details::before {
   content: '';
   width: 100%;
   height: 100%;
   position: absolute;
   top: 0;
   left: 0;
-  background: #000 !important;
-}
+} */
 
 .comp-input-det {
   margin-top: 1.5rem;

@@ -12,6 +12,7 @@ import { useNavigate } from "react-router";
 export const CompanyPayment = (props) => {
   const { setActive, companyId, moduleCodeList, setModuleCodeList } = props;
   const [showModules, setShowModules] = useState(false)
+  const [loading, setLoading] = useState(false)
   const [companyPlan, setCompanyPlan] = useState({
     renewal_date: null,
     renewal_time: null,
@@ -58,12 +59,15 @@ export const CompanyPayment = (props) => {
         ...companyPlan,
         modules: moduleCodeList.map(data => ({ code: data, "is_active": true }))
       }
+      setLoading(true)
       const response = await postCompanyPlan(companyId, tempCompanyPlan)
       if (response.success) {
         Swal.fire('Success', '', 'success')
         navigate('/')
       }
+      setLoading(false)
     } catch (err) {
+      setLoading(false)
       console.log(err)
       let message = "Something went wrong. Please try again later"
       if (typeof err?.response?.data?.error === "object")
@@ -141,9 +145,8 @@ export const CompanyPayment = (props) => {
           Previous
         </div>
         <button
-          // onClick={() => setActive((data) => (data < 3 ? data + 1 : data))}
-          // onClick={handleSubmit}
           type="submit"
+          disabled={loading}
           className="company-add-btn next btn col-1 col-2"
         >
           Done {/* &nbsp;&nbsp;{">"} */}

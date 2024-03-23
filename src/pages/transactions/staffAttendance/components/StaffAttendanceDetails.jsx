@@ -226,7 +226,7 @@ const StaffAttendanceDetails = (props) => {
   const handleSingleAttendance = async (date, show) => {
     const data = {
       is_present: checkPresent,
-      leave_type: leaveType,
+      leave_type: leaveType||null,
       narration: textArea,
       fk_work_type: workType,
       attendance_date: date,

@@ -3,8 +3,10 @@ import { Dropdown } from "semantic-ui-react";
 import useOnKey from "../../../../hooks/onKeyFunct/onKeyFunct";
 import deleteBtn from "../../../../assets/icons/delete.svg";
 import { BsPlusSquareFill } from "react-icons/bs";
+import { Numbers } from "@mui/icons-material";
 const RawMaterials = (props) => {
   const {
+    items,
     rawItems,
     setRawItems,
     units,
@@ -13,7 +15,11 @@ const RawMaterials = (props) => {
     fullProdData,
     setProduceData,
     labourDetails,
-    setLabourDetails,
+    // setLabourDetails,
+    proList,
+    rawData,
+    setRawData,
+    itemCompleteData
   } = props;
 
   const [ref1, setRef1] = useState();
@@ -33,28 +39,71 @@ const RawMaterials = (props) => {
     setRawItems((obj) => ({ ...obj, fk_unit: data.value }));
   };
 
+  const handleDropdownChangeRawUnit = (event, data) => {
+    setRawData((obj) => ({ ...obj, fk_unit: data.value }));
+  };
+
+  const handleRawItemDropdownProducedItem = (e,data)=>{
+    if (data.value!=null){
+    let tempName=data?.options?.filter(x=>x.value===data.value)[0]
+    setRawData((obj)=>({ ...obj, item_produced_name:tempName?.text,fk_produced_item:data.value}));
+    }
+  }
+
+  const handleRawItemDropdownChangeItem = (e,data)=>{
+  let tempData = data?.options?.filter(x=>x.value==data.value)[0]
+  let tempitemData=itemCompleteData.filter(x=>x.id===data.value)[0]
+  setRawData((obj)=>({ ...obj, fk_item:data.value ,item_name:tempData?.text,cost:tempitemData?.cost,fk_unit:tempitemData?.fk_unit }));
+    // let tempData=data.options.filter(x=>x.value=data.value)[0]
+    // console.log(data,tempData.value,tempData.text)
+    // setRawData((obj)=>({ ...obj, fk_raw_item:data.value ,raw_item:tempName }));
+  }
+  const handleQtyChange = (e,rawData)=>{
+    setRawData((obj)=>({...obj,qty:e.target.value,value:parseFloat(rawData.cost*e.target.value).toFixed(2)}))
+  }
+  const handleCostChange = (e,rawData)=>{
+    setRawData((obj)=>({...obj,cost:e.target.value,value:parseFloat(e.target.value*rawData.qty).toFixed(2)}))
+  }
+  const handleValueChange = (e,rawData)=>{
+    setRawData((obj)=>({...obj,value:e.target.value,cost:parseFloat(e.target.value/rawData.qty).toFixed(2)}))
+  }
+  const handleRawDataSubmit = ()=>{
+    setRawItems((data)=>[...data,rawData]);
+    let raw_data = {
+      fk_produced_item:null,
+      item_produced_name: null,
+      fk_item: null,
+      item_name: null,
+      qty: null,
+      fk_unit: null,
+      cost: null,
+      value: null,
+      godown_rate: null,
+    };
+    setRawData(raw_data);
+  };
   return (
     <div
-      className="col-12 mt-1"
+      className="col-12 mt-1 px-2"
       style={{ height: "149px", overflowY: "scroll" }}
     >
       <div
         className="div-head rounded-top ps-3 pt-1 my-0 py-0 mx-0 px-0"
-        style={{ top: "0", position: "sticky", zIndex: 1 }}
+        style={{ top: "0", position: "sticky", zIndex: 5 }}
       >
         Raw Materials Used
       </div>
       <table className="w-100 ProdTable1">
         <thead>
           <tr className="bg-dark text-light">
-            <th>Item Produced</th>
-            <th>Item Used</th>
-            <th width="100">Qty</th>
-            <th width="100">Unit</th>
-            <th width="100">Cost</th>
-            <th width="200">Value</th>
-            <th>Godown</th>
-            <th width="20">
+            <th width='30%'>Item Produced</th>
+            <th width='25%'>Item Used</th>
+            <th width='5%'>Qty</th>
+            <th width='10%'>Unit</th>
+            <th width='5%'>Cost</th>
+            <th width='10%'>Value</th>
+            <th width='10%'>Godown</th>
+            <th width='5%'>
               <span className="pe-1">+</span>
             </th>
           </tr>
@@ -283,32 +332,37 @@ const RawMaterials = (props) => {
               );
             })}
               <tr>
-              <td>
-                <input
-                type='text'
-                className='border-0 rounded-1 w-100' 
-                // value={data.item_produced_name}
-                // onChange={handleChange}
+            
+              <td><Dropdown
+                clearable
+                selection
+                search={search}
                 onKeyDown={handleKeyDown1}
-                name='item_produced_name'
-                />
-                </td>
-              <td>
-              <input
-                type='text'
-                className='border-0 rounded-1 w-100' 
-                // value={data.item_name}
-                // onChange={handleChange}
+                onChange={(e, val) =>handleRawItemDropdownProducedItem(e, val,rawData)}
+                className="purchase-input-text table-drop py-0 form-control custom-dropdown-width2 d-flex  align-items-center "
+                name="fk_produced_item"
+                placeholder="Select"
+                value={rawData.fk_produced_item || ""}
+                options={proList}
+              /></td>
+              <td><Dropdown
+                clearable
+                selection
+                search={search}
                 onKeyDown={handleKeyDown1}
-                name='item_name'
-                />
-              </td>
+                onChange={(e, val) =>handleRawItemDropdownChangeItem(e, val, rawData)}
+                className="purchase-input-text table-drop py-0 form-control custom-dropdown-width2 d-flex  align-items-center"
+                name="fk_item"
+                placeholder="Select"
+                value={rawData.fk_item || ""}
+                options={items}
+              /></td>
               <td>
               <input
                 type='text'
                 className='border-0 rounded-1 w-75' 
-                // value={data.qty}
-                // onChange={handleChange}
+                value={rawData.qty||""}
+                onChange={(e) =>handleQtyChange(e, rawData)}
                 onKeyDown={handleKeyDown1}
                 name='qty'
                 />
@@ -319,27 +373,27 @@ const RawMaterials = (props) => {
                     required
                     search={search}
                     onKeyDown={handleKeyDown1}
-                    // onChange={handleDropdownChangeUnit}
+                    onChange={handleDropdownChangeRawUnit}
                     className="purchase-input-text table-drop d-flex align-items-center py-0 form-control custom-dropdown-width2 "
                     name="fk_unit"
                     placeholder="Select"
-                    // value={data.fk_unit}
+                    value={rawData.fk_unit}
                     options={units}
                   />
                 </td>
               <td><input
                 type='text'
                 className='border-0 rounded-1 w-75' 
-                // value={data.cost}
-                // onChange={handleChange}
+                value={rawData.cost||''}
+                onChange={(e) =>handleCostChange(e, rawData)}
                 onKeyDown={handleKeyDown1}
                 name='cost'
                 /></td>
               <td><input
                 type='text'
                 className='border-0 rounded-1 w-75' 
-                // value={data.value}
-                // onChange={handleChange}
+                value={rawData.value||''}
+                onChange={(e)=>handleValueChange(e, rawData)}
                 onKeyDown={handleKeyDown1}
                 name='value'
                 /></td>
@@ -352,12 +406,13 @@ const RawMaterials = (props) => {
                 name='godown_rate'
                 disabled
                 /></td>
-              <td><BsPlusSquareFill 
-                className="me-1"
-                style={{ color: "black" }}
-                // onClick={handleSubmit}
-                // onKeyDown={handleSubmit}
-              /></td>
+              <td>
+                <button className=" border-0 bg-light" 
+                  onMouseDown={handleRawDataSubmit}
+                  onKeyDown={handleRawDataSubmit}>
+                  <BsPlusSquareFill style={{ color: "black" }} />
+                </button>
+              </td>
             </tr>
 
           {/* {fullRawData?.length>0?fullRawData?.map((data,key)=>{

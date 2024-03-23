@@ -44,7 +44,7 @@ export const Login = (props) => {
             </div>
 
             <div className='my-4'>
-                <p>Don’t have Account? <span style={{ color: "#EE7777" }}
+                <p>Don’t have Account? <span className='cursor' style={{ color: "#EE7777" }}
                     onClick={() => navigate('/register')}>Signup</span></p>
             </div>
 
