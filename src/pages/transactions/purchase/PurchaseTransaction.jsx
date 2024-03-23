@@ -340,13 +340,13 @@ const PurchaseTransaction = ({ returnPage, orderPage }) => {
         ((!edit && nextCode) || nextCode || (!nextCode && firstReload))
       ) {
         for (let i of response.data) {
-          let type = "PUR";
+          let type = "PURCHASE_CODE";
           if (returnPage) {
-            type = "PURT";
+            type = "PURCHASE_RETURN";
           } else if (orderPage) {
-            type = "PORD";
+            type = "PURCHASE_ORDER";
           }
-          if (i.sub_id == type) {
+          if (i.types == type) {
             code = i.next_code;
           }
           setPurchaseAdd((data) => ({ ...data, documents_no: code }));

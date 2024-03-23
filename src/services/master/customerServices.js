@@ -43,7 +43,7 @@ const useCustomerServices = () => {
 
     // supplier
     const postSupplier = async(data) =>{
-        const response = await axios.post('master/supplier/created/',data)
+        const response = await axios.post('master/supplier/created/?activity_code=1145',data)
         return response.data
     }
    
@@ -55,7 +55,7 @@ const useCustomerServices = () => {
 
     // customer
     const postCustomer = async(data) =>{
-        const response = await axios.post('master/customer/created/',data)
+        const response = await axios.post('master/customer/created/?activity_code=1096',data)
         return response.data
     }
 
@@ -104,13 +104,13 @@ const useCustomerServices = () => {
 
     // supplier
     const getSupplier = async(data) =>{
-        const response = await axios.get('master/supplier/created/',{params:{data}})
+        const response = await axios.get('master/supplier/created/?activity_code=1143',{params:{data}})
         return response.data
     }
 
     // customer
     const getCustomer = async(data) =>{
-        const response = await axios.get('master/customer/created/',{params:{...data}})
+        const response = await axios.get('master/customer/created/?activity_code=1094',{params:{...data}})
         return response.data
     }
 
@@ -154,13 +154,13 @@ const useCustomerServices = () => {
     
     // supplier
     const putSupplier = async(id,data) =>{
-        const response = await axios.put(`master/supplier/updated/${id}/`,data)
+        const response = await axios.put(`master/supplier/updated/${id}/?activity_code=1146`,data)
         return response.data
     }
     
     // customer
     const putCustomer = async(id,data) =>{
-        const response = await axios.put(`master/customer/updated/${id}/`,data)
+        const response = await axios.put(`master/customer/updated/${id}/?activity_code=1097`,data)
         return response.data
     }
 // delete Services----------------------------------------------------------------------
@@ -204,13 +204,13 @@ const useCustomerServices = () => {
     
     // supplier
     const deleteSupplier = async(id) =>{
-        const response = await axios.delete(`master/supplier/updated/${id}/`)
+        const response = await axios.delete(`master/supplier/updated/${id}/?activity_code=1147`)
         return response.data
     }
     
     // customer
     const deleteCustomer = async(id) =>{
-        const response = await axios.delete(`master/customer/updated/${id}/`)
+        const response = await axios.delete(`master/customer/updated/${id}/?activity_code=1098`)
         return response.data
     }
 

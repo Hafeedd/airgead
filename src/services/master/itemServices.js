@@ -6,20 +6,20 @@ const useItemServices = () => {
 
   // item add
   const postItemAdd = async (data) => {
-    const response = await axios.post("master/item/created/", data);
+    const response = await axios.post("master/item/created/?activity_code=1002", data);
     return response.data;
   };
 
   // get properties
   const getProperty = async () => {
-    const response = await axios.get("master/property_type/created/");
+    const response = await axios.get("master/property_type/created/?activity_code=1461");
     return response.data;
   };
 
   // post properties
   const postProperty = async (data) => {
     const response = await axios.post(
-      "master/property_type/created/",
+      "master/property_type/created/?activity_code=1462",
       { property_value: data.property_value },
       { params: { property_type: data.property_type } }
     );
@@ -29,7 +29,7 @@ const useItemServices = () => {
   // put properties
   const putProperty = async (data, id) => {
     const response = await axios.put(
-      "master/property_type/updated/" + id + "/",
+      "master/property_type/updated/" + id + "/?activity_code=1464",
       data
     );
     return response.data;
@@ -127,7 +127,7 @@ const useItemServices = () => {
 
   //code
   const getCode = async () => {
-    const response = await axios.get("master/code/created/");
+    const response = await axios.get("master/code/created/?activity_code=1444");
     return response.data;
   };
 
@@ -207,7 +207,7 @@ const useItemServices = () => {
 
   // item list
   const getItemList = async (data) => {
-    const response = await axios.get("master/item/created/", {
+    const response = await axios.get("master/item/created/?activity_code=1000", {
       params: { data },
     });
     return response.data;
@@ -215,7 +215,7 @@ const useItemServices = () => {
 
   // item name only list
   const getItemNameList = async () => {
-    const response = await axios.get("master/item_list/created/");
+    const response = await axios.get("master/item_list/created/?activity_code=1000");
     return response.data;
   };
 
@@ -242,7 +242,7 @@ const useItemServices = () => {
   //item
   const putItemAdd = async (id, data) => {
     const response = await axios.put(
-      "master/item/updated/" + id + "/",
+      "master/item/updated/" + id + "/?activity_code=1003",
       data
     );
     return response.data;
@@ -253,7 +253,7 @@ const useItemServices = () => {
   // item delete
   const deleteItem = async (id) => {
     const response = await axios.delete(
-      "master/item/updated/" + id + "/"
+      "master/item/updated/" + id + "/?activity_code=1004"
     );
     return response.data;
   };
@@ -261,7 +261,7 @@ const useItemServices = () => {
   // item delete
   const deleteItemList = async (id) => {
     const response = await axios.delete(
-      "master/item/updated/" + id + "/"
+      "master/item/updated/" + id + "/?activity_code=1004"
     );
     return response.data;
   };

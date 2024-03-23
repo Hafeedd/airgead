@@ -457,13 +457,13 @@ const SalesTransaction = ({ returnPage, orderPage }) => {
     try {
       let code;
       let response = await getCode();
-      let type = "SLRT";
+      let type = "SALES_RETURN";
       if (orderPage) {
-        type = "SALORD";
+        type = "SALES_ORDER";
       }
       if (response.success) {
         for (let i of response.data) {
-          if (i.sub_id == type) {
+          if (i.types == type) {
             code = i.next_code;
           }
           // console.log(code)

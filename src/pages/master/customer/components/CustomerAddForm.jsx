@@ -177,7 +177,7 @@ const CustomerAddForm = (props) => {
       let code
       let res2 = await getCode();
       if (res2?.success) {
-        let cod = res2?.data?.filter((x) => x.sub_id === "CUS")[0];
+        let cod = res2?.data?.filter((x) => x.types === "CUSTOMER_CODE")[0];
 
         setCustomerAdd((data) => ({
           ...data,

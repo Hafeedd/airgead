@@ -2,9 +2,10 @@
 import './sidebar.css'
 import Transaction from '../../assets/icons/transaction.svg'
 import Reports from '../../assets/icons/reports.svg'
+import Dashboard from '../../assets/icons/dashboard-icon.svg'
 import User from '../../assets/icons/user.svg'
 import { useState } from 'react'
-import { useNavigate } from 'react-router'
+import { useLocation, useNavigate } from 'react-router'
 import { useSelector } from 'react-redux'
 import userProf from "../../assets/icons/prof.jpeg";
 import companyList from "../../assets/icons/company-list.png";
@@ -67,6 +68,7 @@ const Sidebar = ({ perm, setPage }) => {
 
   const auth = useSelector(state => state.auth)
 
+  const location = useLocation()
   const navigate = useNavigate()
 
   return (
@@ -96,23 +98,30 @@ const Sidebar = ({ perm, setPage }) => {
         </>}
 
         {("Company Agency".includes(auth?.userDetails?.fk_group) || perm) && <>
+        <div
+            onClick={() =>{navigate('/')}}
+            className={`SidebarItem mb-1 ${location.pathname==='/' && "active"}`}
+          >
+            <img src={Dashboard} className="sidebar_icon" width={"22px"} />
+            Dashboard
+          </div>
           {navigationList.filter(data=>data.main==="master"&&auth?.permissions?.findIndex(x=>x==data.code)>-1).length>0&&<><div
             onClick={() => setMasterActive(!masterActive)}
-            className={`SidebarItem mb-1 ${masterActive && "active"}`}
+            className={`SidebarItem mt-3 mb-1 ${masterActive && "active"}`}
           >
             <img src={User} className="sidebar_icon" width={"25px"} />
             Master
           </div>
             <div className={`sidebar_span_cont ${!masterActive && "d-none"}`}>
               {navigationList.map(data =>
-              ((auth?.userDetails?.permissions?.findIndex(x => x === data.code) > -1 && data.main === "master") && <span className="SidebarSpan d-flex ms-5 ps-3">
+              (auth?.permissions?.findIndex(x => x === data.code) > -1 && data.main === "master") && <span className="SidebarSpan d-flex ms-5 ps-3">
                 <div
                   className="SidebarItemText"
                   onClick={() => { if (!perm) navigate(data.navigate); else setPage({ main: data.main, sub: data.sub }) }}
                 >
                   {data.text}
                 </div>
-              </span>))}
+              </span>)}
             </div></>}
 
           {navigationList.filter(data=>data.main==="transaction"&&auth?.permissions?.findIndex(x=>x==data.code)>-1).length>0&&<><div
