@@ -105,7 +105,7 @@ export const DashBoard = () => {
                         <div className="px-2 py-1 col-4">
                            <div className="bg-white rounded-2 align-items-center mt-3">
                               <div className="grid-small-text my-0 p-0">S.Return</div>
-                              <div className="grid-small-text2 p-0">5654</div>
+                              <div className="grid-small-text2 p-0">₹{dataObject?.total_sales_return}</div>
                            </div>
                         </div>
                         <div className="col-12 mb-3">
@@ -122,8 +122,8 @@ export const DashBoard = () => {
                         />
                         <div className="px-2 py-1 col-4">
                            <div className="bg-white rounded-2 align-items-center mt-3">
-                              <div className="grid-small-text my-0 p-0">S.Return</div>
-                              <div className="grid-small-text2 p-0">5654</div>
+                              <div className="grid-small-text my-0 p-0">P.Return</div>
+                              <div className="grid-small-text2 p-0">₹{dataObject?.total_purchase_return}</div>
                            </div>
                         </div>
                         <div className="col-12 mb-3">
