@@ -10,13 +10,19 @@ const useBaseServices = () => {
   };
 
   const getCodeIdList = async () => {
-    const res = await axios.get("/master/code_configurations/types/?activity_code=1444/");
+    const res = await axios.get("/master/code_configurations/types/?activity_code=1444");
+    return res.data;
+  };
+
+  const postCode = async (data) => {
+    const res = await axios.post("/master/code/created/?activity_code=1444",data);
     return res.data;
   };
 
   return {
     getAccOpClBalance,
     getCodeIdList,
+    postCode
   };
 };
 
