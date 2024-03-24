@@ -111,7 +111,7 @@ const ChequeRegister = () => {
 		let tempCode = []
 		if (response?.success) {
 			let a = response.data?.filter(code =>
-				code.sub_id === "CHQ"
+				code.types === "CHEQUE_REGISTER_CODE"
 			)[0].next_code
 			setChequeRegisterAdd(data => ({ ...data, code: a }))
 		}

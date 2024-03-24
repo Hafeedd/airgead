@@ -1,6 +1,7 @@
 .dashboard .dashboard-center {
   background-color: rgba(31, 82, 175, 1);
   color: #4286a9;
+  height: 25% !important;
 }
 
 /* .dashboard-center .dashboard-center-left {
@@ -45,7 +46,9 @@
 
 .dashboard-center .dashboard-center-right {
   background-color: rgba(44, 64, 101, 1);
-  height: 350px;
+  
+
+ 
 }
 
 .dashboard .dashboard-bottom .dashboard-bottom-box3 {
@@ -57,7 +60,8 @@
 }
 
 .div-scroll {
-  background-color: lightgray;
+  /* background-color: rgba(255, 255, 255, 0.469); */
+  background-image: linear-gradient(rgba(255, 255, 255, 0.645),rgba(255, 255, 255, 0.303));
   height: 290px;
   overflow: scroll;
 }
@@ -65,4 +69,42 @@
 .div-scroll::-webkit-scrollbar {
   display: none;
   width: 10px;
+}
+
+.div-scroll-cheque{
+  overflow-y: auto;
+  height: 290px;
+}
+
+
+.dash-reciept-color{
+  background-image: linear-gradient(rgb(236, 12, 176),rgb(79, 6, 79));
+  color: white;
+  box-shadow: 0px 0px 10px black;
+  font-weight: 900;
+  border-style: none;
+}
+
+.dash-payment-color{
+  background-image: linear-gradient(rgba(54, 126, 211, 1),rgb(79, 6, 79));
+  color: white;
+  box-shadow: 0px 0px 10px black;
+  font-weight: 900;
+  border-style: none;
+}
+
+.dash-purchase-color{
+  background-image: linear-gradient( 	#FF1818,#5b0707);
+  color: white;
+  box-shadow: 0px 0px 10px black;
+  font-weight: 900;
+  border-style: none;
+}
+
+.dash-sales-color{
+  background-image: linear-gradient(#39FF14,#104a05);
+  color: white;
+  box-shadow: 0px 0px 10px black;
+  font-weight: 900;
+  border-style: none;
 }
