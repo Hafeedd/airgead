@@ -73,9 +73,7 @@ const LineChart = (props) => {
     }, [dataObject,]);
 
     return (
-        
-        <canvas className='h-100 w-75'  ref={chartRef}></canvas>
-        
+        <canvas className={'line-graph-canvas'} ref={chartRef}></canvas>
     );
 };
 
