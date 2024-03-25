@@ -26,6 +26,10 @@
         /* min-height: 2rem !important; */
 }
 
+textarea.purchase-select.code-conf{
+    height: fit-content !important;
+}
+
 .code-conf-checkbox-cont {
     padding: 0.5rem 0.8rem;
     background: white;

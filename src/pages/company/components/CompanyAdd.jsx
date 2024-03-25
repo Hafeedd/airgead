@@ -55,7 +55,7 @@ export const CompanyAdd = () => {
         ) : active === 3 ? (
           <CompanyPermission {...{moduleCodeList, setModuleCodeList, companyId, edit,setEdit,setCompanyId,setActive }} />
         ) :
-          <CompanyDetails {...{ edit, active, setActive, setCompanyId }} />
+          <CompanyDetails {...{ edit, active, setActive, setCompanyId,setEdit }} />
         }
         {/* </div> */}
       </div>

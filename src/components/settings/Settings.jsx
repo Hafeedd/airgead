@@ -39,28 +39,28 @@ export const Settings = (props) => {
             </div>
             <div className='ps-5'>
                 <div className="company-logo border-0 pb-2 h-100 pt-4">
-                    <div className='d-flex text-light gap-3'>
+                    <div className='d-flex text-light gap-3 cursor' onClick={()=>navigate('/profile')}>
                         <img className="header-user-prof-img company" src={auth?.userDetails?.image ? MEDIA_URL + auth?.userDetails?.image : userProf} alt="user" />
                         <span><h3>{auth?.userDetails?.username}</h3>
                             {auth?.userDetails?.fk_role}</span>
                     </div>
                 </div>
             </div>
-            {auth?.userDetails?.fk_group === "Controller" &&
+            {auth?.userDetails?.fk_group === "Controller" ?
                 <>
                     <div className="settings-item mt-5">
-                        <img src={IdConf} alt='Id Conf' /> Code Configuration
+                        <img src={IdConf} alt='Id Conf' /> Id Configuration
                     </div>
                     <div className="settings-item mt-5">
                         <img src={accessPerm} alt='access perm' />
                         Access Permission
                     </div>
-                </>
-            }
+                </>:
             <div onClick={()=>navigate('/code-configuration')} className="settings-item mt-5">
                 <img src={CodeIcon} alt='access perm' />
                 Code Configuration
             </div>
+            }
             {/* <div onClick={handleLogout} className="settings-item mt-5">
                 <img src={IdConf} alt='access perm' />
                 Logout

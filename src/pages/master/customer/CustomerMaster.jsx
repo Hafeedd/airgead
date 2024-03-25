@@ -7,7 +7,6 @@ import CustomerAddForm from "./components/CustomerAddForm";
 import useCustomerServices from "../../../services/master/customerServices";
 
 const CustomerList = () => {
-  const [pageHeadCustomer, setPageHeadCustomer] = useState(1);
   const [edit, setEdit] = useState(false);
   const [loading, setLoading] = useState(false);
   const [listCustomer, setListCustomer] = useState([]);

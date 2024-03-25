@@ -4,9 +4,10 @@ import { MdOutlineFileUpload } from "react-icons/md";
 import TextField from "@mui/material/TextField";
 import { useCompanyServices } from "../../../services/controller/companyServices";
 import Swal from "sweetalert2";
+import { useNavigate } from "react-router";
 
 export const CompanyDetails = (props) => {
-  const { setActive, setCompanyId, edit } = props;
+  const { setActive, setCompanyId, edit, setEdit } = props;
 
   const [additionalFiled, setAdditionalFields] = useState(false);
   const [loginField, setLoginFiled] = useState(false);
@@ -31,14 +32,17 @@ export const CompanyDetails = (props) => {
   });
 
   const { companyRegister,companyUpdate } = useCompanyServices();
+  const navigate = useNavigate()
 
   useEffect(()=>{
     if(edit.id){
       // setCompanyId(edit.id)
-      const {admin_details,created_by_details,group_detials,group_profile_details,subscription_history,...others} = edit
+      const {admin_details,created_by_details,group_detials,group_profile_details,subscription_history,
+        ...others} = edit
+      const {fk_group,user_permissions,groups,module_permissions,...admin_det_others} = admin_details
       setCompany({
         ...others,
-        ...admin_details,      
+        ...admin_det_others,      
       })
     }
   },[edit])
@@ -74,8 +78,10 @@ export const CompanyDetails = (props) => {
       if(edit.id) resp = await companyUpdate(edit.id,CompanyData)
       else resp = await companyRegister(CompanyData);
       if (resp.success) {
+        setEdit(false)      
         setActive(2);
         setCompanyId(resp?.data?.company_profile?.id)
+        if(edit?.id) navigate('/')
       } else {
         Swal.fire({
           title: "Error",
@@ -336,7 +342,7 @@ export const CompanyDetails = (props) => {
           type="submit"
           className="company-add-btn next btn col-1 col-2"
         >
-          Next &nbsp;&nbsp;{">"}
+          {edit?.id?'Update':'Next   >'}
         </button>
       </div>
       

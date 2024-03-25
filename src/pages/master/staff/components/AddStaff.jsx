@@ -7,7 +7,7 @@ import Swal from "sweetalert2";
 import StaffProfEducTable from ".//StaffProfEducTable";
 
 export const AddStaff = (props) => {
-  const { setEdit, edit, getMasetData } = props;
+  const { setEdit, edit, getMasetData,setShowCodeConf } = props;
 
   const [ref, setRef] = useState(null);
   const [showDropdown, setShowDropdown] = useState();
@@ -215,9 +215,13 @@ export const AddStaff = (props) => {
         let res2 = await getCode();
         if (res2?.success) {
           let cod = res2?.data?.filter((x) => x.types === "STAFF_CODE");
+          if(!cod?.length){
+            setShowCodeConf(true)
+            return 0
+          }
           setStaffAdd((data) => ({
             ...data,
-            ["code"]: cod[0].sub_id + cod[0]?.next_value,
+            ["code"]: cod[0]?.sub_id + cod[0]?.next_value,
           }));
         }
       }

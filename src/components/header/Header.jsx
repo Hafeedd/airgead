@@ -48,7 +48,7 @@ const Header = (props) => {
             {userData?.fk_group!=="Controller"&&
           <div className="heaader-user-cont rounded-1 px-2">
             <img src={userProf} alt="user-prof" className="header-user-prof-img" />
-            <div>
+            <div onClick={()=>navigate('/profile')}>
               <div>{`${userData?.username?.slice(0, 10)} ${userData?.username?.length > 9 ? "..." : ""}`}</div>
               <div className="header-role-text">{userData?.fk_group}</div>
             </div>

@@ -1,132 +1,37 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect , useState} from "react";
 import "./idCodeConfig.css";
-import { Form } from "react-bootstrap";
-import { Checkbox, Dropdown } from "semantic-ui-react";
 import searchIcon from "../../assets/icons/search.png";
 import { TbEdit } from "react-icons/tb";
-import useBaseServices from "../../services/master/baseServices";
-import Swal from "sweetalert2";
+import { IdCodeConfigAdd } from "./components/IdCodeConfigAdd";
 import useItemServices from "../../services/master/itemServices";
 
-const initCodeId = {
-    next_value: null,
-    sub_id: null,
-    types: null,
-    postfix: false,
-    prefix: true,
-    next_code: null,
-};
-
 export const IdCodeConfig = () => {
-    const [idList, setIdList] = useState([]);
-    const [codeList, setCodeList] = useState([]);
-    const [codeId, setCodeId] = useState(initCodeId);
     const [edit, setEdit] = useState(false);
+    const [codeList, setCodeList] = useState([]);
 
-    const { getCodeIdList, postCode,updateCode } = useBaseServices();
     const { getCode } = useItemServices();
 
     useEffect(() => {
-        getData();
-    }, []);
+        getData()
+    }, [])
 
     const getData = async () => {
         try {
-            let resp = await getCodeIdList();
-            let resp2 = await getCode();
-            if (resp?.success) {
-                setIdList(() => resp.data.map((data) => ({ value: data, text: data })));
-            }
+            let resp2 = await getCode();           
             if (resp2?.success) setCodeList(resp2.data);
         } catch (err) {
             console.log(err);
         }
     };
 
-    const handleToUpperCase = (data) => {
-        let keysOfData,
-            tempData = { ...data };
-        if (typeof data == "object") keysOfData = Object.keys(data);
-        if (!keysOfData?.length > 0) return 0;
-        keysOfData.map((item) => {
-            if (typeof data[item] == "string" && item != "method") {
-                let itemTemp = data[item]?.toUpperCase();
-                tempData = { ...tempData, [item]: itemTemp };
-            }
-        });
-        return tempData;
-    };
-
-    const handleChange = (e, data) => {
-        var name = e.target.name;
-        var value = e.target.value || null;
-        let tempCodeId = { ...codeId };
-        if (data) {
-            name = data.name;
-            value = data.value;
-        }
-        if (name?.match(/postfix|prefix/g)) {
-            tempCodeId = {
-                ...tempCodeId,
-                postfix: !codeId.postfix,
-                prefix: !codeId.prefix,
-            };
-        } else tempCodeId = { ...tempCodeId, [name]: value };
-
-        if (tempCodeId.postfix) {
-            tempCodeId = {
-                ...tempCodeId,
-                next_code: `${tempCodeId.next_value || ""}${tempCodeId.sub_id || ""}`,
-            };
-        } else
-            tempCodeId = {
-                ...tempCodeId,
-                next_code: `${tempCodeId.sub_id || ""}${tempCodeId.next_value || ""}`,
-            };
-
-        setCodeId({ ...tempCodeId });
-    };
-
-    const handleEdit = (data) =>{
-        if(data){
-            setEdit(data)
-            setCodeId({
-                ...data,
-                postfix:data?.next_code?.match(/^[a-zA-Z]+/)?false:true,
-                prefix:data?.next_code?.match(/^[a-zA-Z]+/)?true:false,
-            })
-        }
-    }
-
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        try {
-            if (!codeId.types) {
-                Swal.fire('Please select type', '', 'warning')
-            }
-            let tempData = handleToUpperCase(codeId)
-            let resp
-            if(edit){
-                resp = await updateCode(edit.id,tempData)
-            }else
-                resp = await postCode(tempData);
-            if (resp.success) {
-                Swal.fire("", "", "success");
-                setCodeId(initCodeId);
-                setEdit(false)
-                getData();
-            }
-        } catch (err) { }
-    };
-
-    const handleResetAll = () =>{
-        setCodeId(initCodeId)
-        setEdit(false)
+    const handleEdit = (data) => {
+        setEdit(data)
     }
 
     return (
         <div className="id-code-config">
-            <form onSubmit={handleSubmit}>
+            <IdCodeConfigAdd {...{edit, setEdit }} />
+            {/* <form onSubmit={handleSubmit}>
                 <div className="p-3">
                     <h5>Add Code Configuration</h5>
                     <div className="row mx-0 mt-3">
@@ -242,13 +147,13 @@ export const IdCodeConfig = () => {
                         {edit?"Update":'Save'}
                     </button>
                 </div>
-            </form>
+            </form> */}
             <div className="p-3">
                 <div className="code-conf-table-cont row mx-0 gap-3">
                     <div className="item_seach_bar_cont rounded-2 col-3">
                         <img src={searchIcon} className="search_img me-3 ms-2 py-2" />
                         <input
-                            onChange={handleChange}
+                            // onChange={handleChange}
                             // value={search}
                             // onChange={handleSearch}
                             className="item_search_bar rounded-2 border-0 py-1"
@@ -287,7 +192,7 @@ export const IdCodeConfig = () => {
                                             <div className="code-conf-td">{data.sub_id}</div>
                                         </td>
                                         <td>
-                                            <div className="code-conf-td">{data?.next_code?.match(/^[a-zA-Z]+/)?"Prefix":"Postfix"}</div>
+                                            <div className="code-conf-td">{data?.next_code?.match(/^[a-zA-Z]+/) ? "Prefix" : "Postfix"}</div>
                                         </td>
                                         <td>
                                             <div className="code-conf-td">{data.next_value}</div>
@@ -298,7 +203,7 @@ export const IdCodeConfig = () => {
                                         <td className="pe-2">
                                             <div className="code-conf-td rounded-end-4 gap-3">
                                                 <div className="d-flex cursor gap-3"
-                                                onClick={()=>handleEdit(data)}>
+                                                    onClick={() => handleEdit(data)}>
                                                     <TbEdit className="p-0 m-0" size={'1.5rem'} />
                                                 </div>
                                             </div>

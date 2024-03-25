@@ -11,7 +11,6 @@ import userProf from "../../assets/icons/prof.jpeg";
 import companyList from "../../assets/icons/company-list.png";
 
 export const navigationList = [
-  { text: 'Dashboard', code: 175, navigate: '/', main: 'master', sub: 'Account' },
   { text: 'Accounts', code: 125, navigate: '/account-master', main: 'master', sub: 'Account' },
   { text: 'Customer', code: 127, navigate: '/customer-master', main: 'master', sub: 'Customer' },
   { text: 'Supplier', code: 128, navigate: '/supplier-master', main: 'master', sub: 'Supplier' },

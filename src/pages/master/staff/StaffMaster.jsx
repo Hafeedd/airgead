@@ -6,11 +6,14 @@ import useStaffServices from "../../../services/master/staffServices";
 import { useLocation, useNavigate } from "react-router";
 import { StaffPayScale } from "./components/StaffPayScale";
 import Swal from "sweetalert2";
+import { Modal } from "react-bootstrap";
+import { IdCodeConfigAdd } from "../../idCodeConfig/components/IdCodeConfigAdd";
 
 const StaffMaster = () => {
   const [search, setSearch] = useState();
   const [edit, setEdit] = useState();
   const [loading, setLoading] = useState(false);
+  const [showCodeConf, setShowCodeConf] = useState(false);
   const [staffList, setStaffList] = useState([]);
   const [searchList, setSearchList] = useState([]);
   const { getStaff } = useStaffServices();
@@ -120,7 +123,7 @@ const StaffMaster = () => {
         </div>
       )}
       {location.pathname == "/staff-master" && (
-        <AddStaff getMasetData={getData} {...{ edit, setEdit }} />
+        <AddStaff getMasetData={getData} {...{ edit, setEdit,setShowCodeConf }} />
       )}
       {location.pathname == "/staff-pay-scale" && (
         <StaffPayScale
@@ -134,6 +137,9 @@ const StaffMaster = () => {
           }}
         />
       )}
+      <Modal show={showCodeConf} centered size='lg'>
+        <IdCodeConfigAdd popup="true" setShow={setShowCodeConf}/>
+      </Modal>
     </div>
   );
 };
