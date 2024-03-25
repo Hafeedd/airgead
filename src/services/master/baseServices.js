@@ -15,14 +15,20 @@ const useBaseServices = () => {
   };
 
   const postCode = async (data) => {
-    const res = await axios.post("/master/code/created/?activity_code=1444",data);
+    const res = await axios.post("/master/code/created/?activity_code=1445",data);
+    return res.data;
+  };
+
+  const updateCode = async (id,data) => {
+    const res = await axios.post(`/master/code/updated/${id}/?activity_code=1445`,data);
     return res.data;
   };
 
   return {
     getAccOpClBalance,
     getCodeIdList,
-    postCode
+    postCode,
+    updateCode
   };
 };
 
