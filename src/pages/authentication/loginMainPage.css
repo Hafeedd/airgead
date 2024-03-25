@@ -100,3 +100,8 @@
     50%   {transform:scaleY(-1) rotate(0deg)}
     100%  {transform:scaleY(-1) rotate(-135deg)}
   }
+
+  .model-view{
+    width: 200vb;
+    height: 70vh;
+  }

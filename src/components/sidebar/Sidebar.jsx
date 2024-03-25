@@ -56,7 +56,7 @@ export const navigationList = [
   { text: 'Trial balance', navigate: '/trial-balance', main: 'report', sub: 'Trial-Balance' },
   { text: 'Group Wise Trial balance', navigate: '/group-trial-balance', main: 'report', sub: 'Group-Wise-Trial-Balance' },
   { text: 'Balance Sheet', navigate: '/balance-sheet', main: 'report', sub: 'Balance-Sheet' },
-  { text: 'Traid Profit And Loss', navigate: '/traid-profit-loss', main: 'report', sub: 'Traid-Profit-And-Loss' },
+  { text: 'Trade Profit And Loss', navigate: '/traid-profit-loss', main: 'report', sub: 'Traid-Profit-And-Loss' },
   { text: 'Chart Of Account', navigate: '/chart-of/account', main: 'report', sub: 'Chart-Of-Account' },
 ]
 
