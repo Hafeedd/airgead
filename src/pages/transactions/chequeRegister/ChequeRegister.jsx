@@ -108,11 +108,10 @@ const ChequeRegister = () => {
 
 	const getCodeData = async () => {
 		const response = await getCode()
-		let tempCode = []
 		if (response?.success) {
 			let a = response.data?.filter(code =>
 				code.types === "CHEQUE_REGISTER_CODE"
-			)[0].next_code
+			)[0]?.next_code
 			setChequeRegisterAdd(data => ({ ...data, code: a }))
 		}
 
