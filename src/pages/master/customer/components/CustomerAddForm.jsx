@@ -181,9 +181,9 @@ const CustomerAddForm = (props) => {
 
         setCustomerAdd((data) => ({
           ...data,
-          ["code"]: cod.sub_id + cod?.next_value,
+          ["code"]: cod?.sub_id + cod?.next_value,
         }));
-        code = cod.sub_id + cod?.next_value;
+        code = cod?.sub_id + cod?.next_value;
       }
     } catch (err) {
       console.log(err);

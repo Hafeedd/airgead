@@ -6,9 +6,10 @@ import emailIcon from '../../../assets/images/mdi_email-open-outline.svg'
 import mobileIcon from '../../../assets/images/icomoon-free_mobile.svg'
 import PasswordField from './PasswordField'
 import { useAuthServices } from '../../../services/controller/authServices';
+import ForgotPwEmail from './ForgotPwEmail';
 
 export const Login = (props) => {
-    const { user, handleChange, handleSubmit, loading } = props
+    const { user, handleChange, handleSubmit, loading ,forgot,setForgot} = props
 
     const [controllerExist, setControllerExist] = useState(true)
 
@@ -29,6 +30,9 @@ export const Login = (props) => {
 
     const navigate = useNavigate()
 
+    const handleForgot =()=>{
+        setForgot(true)
+    }
     return (
         <form onSubmit={handleSubmit} className='d-flex flex-column align-items-center railway-font' style={{ width: "70%", height: "fit-content" }}>
 
@@ -53,7 +57,7 @@ export const Login = (props) => {
                      name="remember" checked={user.remember} />
                     <label className='ms-2' htmlFor="remember-me">Remember Me</label>
                 </div>
-                <p>Forgot Password</p>
+                <p className='cursor' onClick={handleForgot}>Forgot Password</p>
             </div>
 
             <div style={{ width: "100%" }}>

@@ -11,6 +11,11 @@ import { useAuthServices } from '../../services/controller/authServices'
 import Swal from 'sweetalert2'
 import { useDispatch } from 'react-redux'
 import { login } from '../../redux/authSlice'
+import ForgotPwEmail from './components/ForgotPwEmail'
+import RecoveryQuestion from './components/RecoveryQuestion'
+import SetNewPassword from './components/SetNewPassword'
+import { Modal } from 'react-bootstrap'
+import AddRecovery from './components/AddRecovery'
 
 const LoginMainPage = () => {
   const [token, setToken] = useState(false)
@@ -22,7 +27,9 @@ const LoginMainPage = () => {
     password: null,
     remember: false,
   })
-
+  const [show,setShow]=useState(false)
+  const [recovery,setRecovery]=useState(false)
+  const [forgot,setForgot] = useState(false)
   const dispatch = useDispatch()
 
   const { loginAuth } = useAuthServices()
@@ -102,10 +109,33 @@ const LoginMainPage = () => {
       <div className="col d-flex justify-content-center align-items-center">
         <img style={{ position: "fixed", zIndex: -1 }} src={vitezLogoWatermark} alt="" />
         {location.pathname === "/register" ? <Register /> :
-          !token ? <Login {...{ user, handleChange, handleSubmit, loading }} /> :
-            <Verification {...{handleResendOtp,setOtpWait, otpWait, otp, handleOtpChange, handleSubmit }} />}
+          !token && !forgot ? <Login {...{ user, handleChange, handleSubmit, loading ,setForgot,forgot}} /> : 
+            forgot?<ForgotPwEmail/>:<Verification {...{handleResendOtp,setOtpWait, otpWait, otp, handleOtpChange, handleSubmit }} />}
+            {/* <RecoveryQuestion/> */}
+            {/* <SetNewPassword {...{setShow}}/> */}
+            {/* <Verification/> */}
       </div>
+      <Modal
+       show={show}
+       
+       onHide={() => setShow(false)}
+       centered
+       size='lg'
+       contentClassName="d-flex justify-content-center align-items-center py-5 px-5"
+       > 
+       <SetNewPassword {...{setShow}}/>
+      </Modal>
+      <Modal
+       show={recovery}
+       onHide={() => setRecovery(false)}
+       centered
+       size='lg'
+       contentClassName="d-flex justify-content-center align-items-center py-5 px-5"
+       > 
+       <AddRecovery {...{setRecovery}}/>
+      </Modal>
     </div>
+    
   )
 }
 export default LoginMainPage

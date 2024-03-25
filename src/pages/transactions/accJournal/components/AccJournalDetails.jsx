@@ -103,10 +103,10 @@ export const AccJournalDetails = () => {
       const response2 = await getAccountList();
       const response3 = await getAccJournal();
       if (response.success && !edit) {
-        let code = response.data.filter((x) => x.sub_id === "JRE");
+        let code = response.data.filter((x) => x.types === "JOURNAL_CODE");
         setAccJnlAdd((data) => ({
           ...data,
-          voucher_number: code[0].next_code,
+          voucher_number: code[0]?.next_code,
         }));
       }
 

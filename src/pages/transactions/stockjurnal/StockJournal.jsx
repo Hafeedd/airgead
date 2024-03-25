@@ -158,7 +158,7 @@ export const StockJournal = () => {
     try{
       let response = await getCode();
       if (response.success && !edit) {
-        let code = response.data.filter((x) => x.sub_id === "SJN")[0];
+        let code = response.data.filter((x) => x.types === "STOCK_JOURNAL_CODE")[0];
         setStockJAdd(data=>({ ...data, code: code?.next_code }));
       }
     }catch(err){}
