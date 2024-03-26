@@ -28,7 +28,7 @@ const usePurchaseServices = () => {
     }
     // get all purchase data
     const getPurchaseList = async (id) =>{
-        const response = await axios.get('purchase/purchase/code/activity_code=1468')
+        const response = await axios.get('purchase/purchase/code/?activity_code=1468')
         return response.data
     }
     // get all purchase data
