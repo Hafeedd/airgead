@@ -8,7 +8,7 @@ import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 
 const PasswordField = (props) => {
-    const { handleChange, name, state } = props
+    const { handleChange, name, state , required } = props
 
     const [showPassword, setShowPassword] = React.useState(false);
 
@@ -22,6 +22,7 @@ const PasswordField = (props) => {
                 name={name}
                 value={state && state[name]}
                 id="outlined-adornment-password"
+                required={required}
                 type={showPassword ? 'text' : 'password'}
                 endAdornment={
                     <InputAdornment position="end">

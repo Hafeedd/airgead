@@ -34,6 +34,17 @@
     display: block;    
 }
 
+.staff-table-tab{
+    border-radius: 0.3rem 0.3rem 0 0;
+    padding: 0.5rem;
+}
+
+.staff-table-tab.active{
+    padding-bottom: 0.7rem !important;
+    background: #CBC9FF;
+    color: black;
+}
+
 .staff-table-cont{
     font-size: 0.8rem;
     padding: 1rem;
@@ -46,7 +57,7 @@
 }
 
 .staff-table thead th{
-    background: #212529;
+    background: #4D3072;
     position: sticky;
     top: 0;
     font-weight: normal;
@@ -105,22 +116,30 @@
 }
 
 .staff-select{
+    height: 100%;
+    background: #565656;
     appearance: none;
     -webkit-appearance: none;
     -moz-appearance: none;
-    text-indent: 1px;
     text-overflow: '';
 }
 
 .staff-table-container{
     background: inherit;
-    border: 0.14rem solid #212529;
+    border: 1px solid #969696;
+    border-top: none;
     padding: 0 !important;
     /* border: 1px solid black; */
     max-height: 14rem;
     overflow: hidden;
     overflow-y: scroll;
     margin-bottom: 0.4rem;
+}
+
+.staff-table-cont2{
+    background: #F5F5F5;
+    border: 1px solid #969696;
+    border-bottom: none;
 }
 
 .table-scroller.payscale{

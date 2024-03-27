@@ -7,8 +7,7 @@
   background: #2c68d2;
   position: sticky;
   top: 0px;
-  /* overflow: hidden;
-      overflow-y: scroll; */
+  background: linear-gradient(178.43deg, #150030 10.09%, #400091 80.48%);
 }
 
 .sidebar.company {
@@ -17,7 +16,7 @@
 
 }
 
-.sidebar.company.permission{
+.sidebar.company.permission {
   background: #233547;
 }
 
@@ -59,6 +58,8 @@
   overflow-y: scroll;
   display: flex;
   justify-content: start;
+  scrollbar-width: none;
+  scrollbar-color: gray;
   flex-direction: column;
   justify-content: start;
   padding: 0 1rem !important;

@@ -7,6 +7,10 @@ import { useSelector } from "react-redux";
 const useAxios = () => {
     const auth = useSelector(state=>state.auth)
 
+    const validateStatus = (status) => {
+        return status >= 200 && status < 500; // Default 2xx range
+      };
+
     useEffect(() => {
 
         axios.interceptors.request.use(

@@ -1,9 +1,9 @@
 
 import './sidebar.css'
-import Transaction from '../../assets/icons/transaction.svg'
-import Reports from '../../assets/icons/reports.svg'
+import Transaction from '../../assets/icons/sidebarTransaction.svg'
+import Reports from '../../assets/icons/sidebarReport.svg'
 import Dashboard from '../../assets/icons/dashboard-icon.svg'
-import User from '../../assets/icons/user.svg'
+import User from '../../assets/icons/sidebarMaster.svg'
 import { useState } from 'react'
 import { useLocation, useNavigate } from 'react-router'
 import { useSelector } from 'react-redux'
@@ -75,7 +75,8 @@ const Sidebar = ({ perm, setPage }) => {
       {!perm && <div className="company-logo-cont mb-3">
         {auth?.userDetails?.fk_group === "Controller" && <div className="company-logo pb-5 h-100 pt-4">
           <div className='d-flex text-light gap-3'>
-            <img className="header-user-prof-img company" src={userProf} alt="user" />
+            <img className="header-user-prof-img company" 
+            src={userProf} alt="user" />
             <span><h3>{auth?.userDetails?.username}</h3>
               {auth?.userDetails?.fk_role}</span>
           </div>

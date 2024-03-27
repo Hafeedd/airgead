@@ -4,6 +4,7 @@ import SupplierList from "./components/SupplierList";
 import { useNavigate, useLocation } from "react-router";
 import Swal from "sweetalert2";
 import useCustomerServices from "../../../services/master/customerServices";
+import { FiPlus } from "react-icons/fi";
 
 const SupplierMaster = () => {
   const [pageHeadItem, setPageHeadItem] = useState(1);
@@ -81,10 +82,10 @@ const SupplierMaster = () => {
                 setToEdit(false);
                 navigate("/supplier-add");
               }}
-              className="btn btn-primary add-btn px-2"
+              className="btn h-auto add-btn px-2"
               style={{width:'fit-content'}}
             >
-              + &nbsp; Add Supplier
+              <FiPlus size={'1.4rem'}/>&nbsp; Add Supplier
             </div>
           </div>
         </div>

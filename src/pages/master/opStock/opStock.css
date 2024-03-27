@@ -5,30 +5,20 @@
     box-shadow: 0px 0px 5px 2px lightgray !important;
 }
 
-.op-stock-apply-btn{
-    background: #6D6D6D;
+.op-stock-apply-btn,.op-stock-apply-btn:hover{
+    background: #29005D;
     height: 1.7rem;
     display: flex;
     align-items: center;
     justify-content: center;
     color:white;
 }
-.op-stock-apply-btn:hover{
-    background: #000;
-    color: white;
-}
-
-.op-stock-apply-btn.blck{
-    background: black;
-}
-.op-stock-apply-btn.blck:hover{
-    background: #6D6D6D;
-}
 
 .op-stock.table thead th{
     position: sticky;
     top: 0;
-    background: black;
+    background: #4D3072;
+
     border:none;
     color: white;
     padding: 0.4rem 0.4rem;
@@ -51,13 +41,14 @@
 
 .op-stock-table-cont{
     height: 20rem;
+    border: 1px solid gray;
+    border-top: none;
     overflow: hidden;
     overflow-y: scroll;
 }
 
 .op-stock.table{
     position: relative;
-    border: 1px solid gray;
     border-top: none;
 }
 

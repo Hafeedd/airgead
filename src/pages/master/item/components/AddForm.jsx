@@ -133,7 +133,7 @@ export const ItemAddForm = ({ edit, refresh, setToEdit }) => {
         } else items = { ...items, [key]: edit[key] };
         // setItemAdd(data=>({...data,[key]:edit[key]}))
       });
-    } 
+    }
     // else {
     //   handleReset();
     // }
@@ -147,10 +147,10 @@ export const ItemAddForm = ({ edit, refresh, setToEdit }) => {
       data.map((x) => {
         if (keys.indexOf(x.property_type) > -1) {
           if (!list[x.property_type]?.length > 0) {
-            if(x.property_type !== "unit")
-            list[x.property_type] = [{value:null,text:"SELECT"}];
+            if (x.property_type !== "unit")
+              list[x.property_type] = [{ value: null, text: "SELECT" }];
             else
-            list[x.property_type] = [];
+              list[x.property_type] = [];
             if (x.property_type === "unit") {
               list["transaction_unit"] = [];
             }
@@ -249,7 +249,7 @@ export const ItemAddForm = ({ edit, refresh, setToEdit }) => {
           setUnitEdit(false);
         } else {
         }
-      } catch (err) {}
+      } catch (err) { }
     } else if (edit && x.length > 3 && !barcodeShow) {
       try {
         const data = {
@@ -265,7 +265,7 @@ export const ItemAddForm = ({ edit, refresh, setToEdit }) => {
         } else {
           Swal.fire(res.message, "", "error");
         }
-      } catch (err) {}
+      } catch (err) { }
     } else if (
       unitConvShow &&
       unitConv.U_unit &&
@@ -338,7 +338,7 @@ export const ItemAddForm = ({ edit, refresh, setToEdit }) => {
         res = await postItemAdd(data);
       }
       if (res?.success) {
-        let barcodeCheck = Object.values(barcode||{});
+        let barcodeCheck = Object.values(barcode || {});
         barcodeCheck = barcodeCheck.filter((x) => x !== null);
         if (
           barcodeCheck?.length > 3 &&
@@ -378,17 +378,17 @@ export const ItemAddForm = ({ edit, refresh, setToEdit }) => {
         if ((res3 !== 1 && !res3?.success) || (res2 !== 1 && !res2?.success)) {
           await deleteItem(res?.data?.id);
         }
-        if(location?.state?.fromPurchase){
-            navigate('/purchase-transaction', {state:{fromItemAdd:true, item: res?.data}})
-        }else
-        Swal.fire("Item Added Successfully", "", "success");
+        if (location?.state?.fromPurchase) {
+          navigate('/purchase-transaction', { state: { fromItemAdd: true, item: res?.data } })
+        } else
+          Swal.fire("Item Added Successfully", "", "success");
         handleReset();
       } else Swal.fire(res?.data[0], "", "error");
       setSubmitLoading(false);
     } catch (err) {
-        console.log(err)
+      console.log(err)
       setSubmitLoading(false);
-      let a = Object.keys(err?.response?.data?.data||{});
+      let a = Object.keys(err?.response?.data?.data || {});
       Swal.fire(a[0] + ` ${err?.response?.data?.data[a[0]][0]}`, "", "error");
     }
   };
@@ -969,13 +969,13 @@ export const ItemAddForm = ({ edit, refresh, setToEdit }) => {
         <div className="w-100">
           <div
             onClick={() => setUnitConvShow(true)}
-            className="btn bg-black text-light col-5 text-start px-3 py-1 me-4 ms-0"
+            className="btn bg-secondary text-light col-5 text-start px-3 py-1 me-4 ms-0"
           >
             Unit Conversion
           </div>
           <div
             onClick={() => setBarcodeShow(true)}
-            className="btn bg-black text-light col-5 text-start px-3 py-1"
+            className="btn bg-secondary text-light col-5 text-start px-3 py-1"
           >
             BarCode
           </div>
@@ -1055,13 +1055,17 @@ export const ItemAddForm = ({ edit, refresh, setToEdit }) => {
           </div>
         </div>
       </div>
-      <div className="d-flex gap-2 justify-content-end pt-2">
-        <div onClick={handleReset} className="clear_btn btn">
-          Clear
+      <div className="row gap-2 mx-0 justify-content-end pt-2">
+        <div className="col-2 px-0">
+          <div onClick={handleReset} className="clear-btn btn">
+            Clear
+          </div>
         </div>
-        <button disabled={submitLoading} type="submit" className="save_btn btn">
-          {edit ? "Update" : "Submit"}
-        </button>
+        <div className="col-2 px-0">
+          <button disabled={submitLoading} type="submit" className="add-btn btn">
+            {edit ? "Update" : "Submit"}
+          </button>
+        </div>
       </div>
       <Modal
         contentClassName="unit_modal px-0 bg-dark"
@@ -1160,8 +1164,8 @@ export const ItemAddForm = ({ edit, refresh, setToEdit }) => {
                         {barcodeShow
                           ? "+ Add"
                           : unitEdit
-                          ? "Edit Unit"
-                          : "Add Unit"}
+                            ? "Edit Unit"
+                            : "Add Unit"}
                       </div>
                     </th>
                   </tr>

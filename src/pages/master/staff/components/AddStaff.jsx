@@ -184,7 +184,7 @@ export const AddStaff = (props) => {
 
   const handleChange = (e) => {
     if (e.target.type === "checkbox") {
-      setStaffAdd({ ...staffAdd, [e.target.name]: !e.target.value });
+      setStaffAdd({ ...staffAdd, [e.target.name]: !staffAdd[e.target.name] });
     } else if (e.target.value === "") {
       setStaffAdd({ ...staffAdd, [e.target.name]: null });
     } else {
@@ -215,10 +215,10 @@ export const AddStaff = (props) => {
         let res2 = await getCode();
         if (res2?.success) {
           let cod = res2?.data?.filter((x) => x.types === "STAFF_CODE");
-          if(!cod?.length){
-            setShowCodeConf(true)
-            return 0
-          }
+          // if(!cod?.length){
+          //   setShowCodeConf(true)
+          //   return 0
+          // }
           setStaffAdd((data) => ({
             ...data,
             ["code"]: cod[0]?.sub_id + cod[0]?.next_value,
@@ -425,7 +425,7 @@ export const AddStaff = (props) => {
             </div>
 
             <div className="d-flex align-items-center ps-0 row mx-0 sup-input-cont">
-              <div className="col-6 row mx-0 ps-0 pe-1">
+              <div className="col-6 row mx-0 ps-0 pe-0">
                 <div className="mx-0 px-0 col-3">Op.Bal</div>
                 <div className="mx-0 px-0 col-8 col-9">
                   <input
@@ -438,13 +438,13 @@ export const AddStaff = (props) => {
                   />
                 </div>
               </div>
-              <div className="mx-0 px-0 col-2">
+              <div className="mx-0 px-0 col-2 h-100">
                 <select
                   onChange={handleChange}
                   onKeyDown={handleKeyDown}
                   name="type"
                   value={staffAdd.type || ""}
-                  className="staff-select bg-dark border-0 rounded-2 py-1 text-light px-2"
+                  className="staff-select border-0 rounded-2 py-1 text-light px-2"
                 >
                   <option value="TO_RECIEVE">TO RECIEVE</option>
                   <option value="TO_GIVE">TO GIVE</option>
@@ -463,8 +463,8 @@ export const AddStaff = (props) => {
                   onKeyDown={handleKeyDown}
                   id="repeat"
                   name="repeat"
-                  checked={staffAdd.repeat || false}
-                  className="me-2"
+                  checked={staffAdd.repeat}
+                  className="me-2 account-select-black-accent"
                 />
                 <label className="pb-1" htmlFor="repeat">
                   Repeat
@@ -477,8 +477,8 @@ export const AddStaff = (props) => {
                   onKeyDown={handleKeyDown}
                   id="blocked"
                   name="blocked"
-                  value={staffAdd.blocked || ""}
-                  className="me-2"
+                  value={staffAdd.blocked}
+                  className="me-2 account-select-black-accent"
                 />
                 <label className="pb-1" htmlFor="blocked">
                   Blocked

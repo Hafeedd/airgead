@@ -519,13 +519,13 @@ const SupplierAdd = ({ edit, refresh, setToEdit }) => {
                 <button
                   onClick={handleReset}
                   type="reset"
-                  className="btn btn-sm btn-outline-dark w-100"
+                  className="btn btn-sm clear-btn w-100"
                 >
                   Clear
                 </button>
               </div>
               <div className="mx-0 px-1 col-4">
-                <button type="submit" className="btn btn-sm btn-dark w-100">
+                <button type="submit" className="btn btn-sm add-btn w-100">
                   {edit ? "Edit" : "Save"}
                 </button>
               </div>

@@ -28,7 +28,6 @@ export const CompanyPayment = (props) => {
   const handleChange = (e, date_name) => {
     const name = e?.target?.name;
     let value = e?.target?.value;
-    // console.log(name,value)
     if (date_name === "renewal_time") {
       setCompanyPlan((data) => ({ ...data, renewal_time: dayjs(e).format('hh:mm') }));
     } else if (date_name) {
@@ -41,10 +40,19 @@ export const CompanyPayment = (props) => {
 
   const handleModuleSelection = (data) => {
     let tempList = [...moduleCodeList]
-    let ind = tempList.findIndex(item => item === data.code)
-    if (ind > -1) tempList.splice(ind, 1)
-    else tempList.push(data.code)
-
+    let filteredList = []
+    companyModules.forEach(item => {
+      if ((item.code === data.code || item.code === data.parent)||(data.code === item.parent)) {
+        filteredList.push({ code:item.code,parent:item.parent })
+      }
+    })
+    // console.log(filteredList.every(i=>tempList.findIndex(x=>x.code==i.code)>-1))
+    if(filteredList.every(i=>tempList.findIndex(x=>x.code==i.code)>-1)){
+      tempList = tempList.filter(x=>filteredList.findIndex(i=>x.code==i.code)==-1&&tempList.findIndex(i=>i.code==x.parent) == -1)
+    }else{
+      tempList = [...tempList,...filteredList]
+    }
+    
     setModuleCodeList([...tempList])
   }
 
@@ -130,7 +138,7 @@ export const CompanyPayment = (props) => {
         <div className="module-cont">
           {companyModules.map(data => {
 
-            return moduleCodeList.findIndex(item => item === data.code) > -1 && <div onClick={() => handleModuleSelection(data)}
+            return moduleCodeList.findIndex(item => item.code === data.code) > -1 && <div onClick={() => handleModuleSelection(data)}
               className={`comp-module-item active`}>
               <img src={data.icon} width={'25rem'} alt='' />
               {data.name}
@@ -161,9 +169,9 @@ export const CompanyPayment = (props) => {
         <div className='comp-plan-module-modal'>
           <div className='module-items'>
             {companyModules.map(data => <div onClick={() => handleModuleSelection(data)}
-              className={`comp-module-item ${moduleCodeList.findIndex(item => item === data.code) > -1 && 'active'}`}>
+              className={`comp-module-item ${moduleCodeList.findIndex(item => item.code === data.code) > -1 && 'active'}`}>
               <img src={data.icon} width={'25rem'} alt='' />
-              {data.name}
+              <div className="text-center">{data.name}</div>
             </div>)}
           </div>
           <div onClick={() => setShowModules(false)} className="btn comp-module-btn px-5 fs-5">Done</div>

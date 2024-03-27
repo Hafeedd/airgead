@@ -264,7 +264,7 @@ export const OpStockDetails = (props) => {
               <option value={"wholesale_rate"} >WHOLESALE RATE</option>
               <option value={"super_wholesale_rate"} >SUPER WHOELSALE RATE</option>
               </Form.Select>
-              {/* <div className="col-6 btn op-stock-apply-btn blck">Apply</div> */}
+              {/* <div className="col-6 btn op-stock-apply-btn ">Apply</div> */}
             </div>
           </Form.Group>
           <Form.Group className="col-9 ps-0 mx-0 d-flex align-items-start mt-2 pe-1">
@@ -279,7 +279,7 @@ export const OpStockDetails = (props) => {
                 className="purchase-input-text me-2"
                 type="number"
               />
-              <div onClick={handlePercApply} className="col-6 btn op-stock-apply-btn blck">Apply</div>
+              <div onClick={handlePercApply} className="col-6 btn op-stock-apply-btn">Apply</div>
             </div>
           </Form.Group>
           <Form.Group className="col-9 ps-0 mx-0 d-flex align-items-start mt-2 pe-1">
@@ -294,7 +294,7 @@ export const OpStockDetails = (props) => {
                 className="purchase-input-text me-2"
                 type="number"
               />
-              <div onClick={handleAmntApply} className="col-6 btn op-stock-apply-btn blck">Apply</div>
+              <div onClick={handleAmntApply} className="col-6 btn op-stock-apply-btn ">Apply</div>
             </div>
           </Form.Group>
           <Form.Group className="col-9 ps-0 mx-0 d-flex align-items-start mt-2 pe-1">
@@ -309,16 +309,16 @@ export const OpStockDetails = (props) => {
                 className="purchase-input-text me-2"
                 type="number"
               />
-              <div onClick={handleRateApply} className="col-6 btn op-stock-apply-btn blck">Apply</div>
+              <div onClick={handleRateApply} className="col-6 btn op-stock-apply-btn ">Apply</div>
             </div>
           </Form.Group>
         </div>
         <div>
           <OpStockTable {...{ itemList, setItemList, setFilter, filter }} />
         </div>
-        <div className="row mx-0 justify-content-end">
-          <div onClick={handleClearAll} className="btn col-1 col-2 btn-secondary me-3">Clear</div>
-          <input type="submit" className="btn col-1 col-2 btn-dark" value={"Save"}/>
+        <div className="row mx-0 justify-content-end mt-2">
+          <div onClick={handleClearAll} className="btn col-1 col-2 clear-btn me-3">Clear</div>
+          <input type="submit" className="btn col-1 col-2 add-btn" value={"Save"}/>
         </div>
       </form>
     </div>

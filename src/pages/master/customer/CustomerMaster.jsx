@@ -5,6 +5,7 @@ import Swal from "sweetalert2";
 import CustomerTable from "./components/CustomerTable";
 import CustomerAddForm from "./components/CustomerAddForm";
 import useCustomerServices from "../../../services/master/customerServices";
+import { FiPlus } from "react-icons/fi";
 
 const CustomerList = () => {
   const [edit, setEdit] = useState(false);
@@ -69,9 +70,9 @@ const CustomerList = () => {
                 navigate("/customer-add");
                 setEdit(false);
               }}
-              className="btn btn-primary add-btn px-2 py-1 w-auto"
+              className="btn h-auto add-btn px-2 w-auto"
             >
-              + &nbsp; Add Customer
+             <FiPlus size={'1.4rem'}/>&nbsp; Add Customer
             </div>
           </div>
         </div>

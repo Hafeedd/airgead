@@ -392,7 +392,7 @@ const AccountAdd = ({ edit, refresh, setEdit }) => {
                             </div>
                             <div className="col-2 pe-0 d-flex align-items-center">
                                 <div
-                                    className="btn btn-md btn-dark w-100 py-0"
+                                    className="btn btn-md w-100 py-0 account-gray-btns"
                                     onClick={() => setShowAccountGroup(!showAccountGroup)}
                                 >
                                     {showAccountGroup ? "Hide" : "Add"}
@@ -486,6 +486,7 @@ const AccountAdd = ({ edit, refresh, setEdit }) => {
                                         onChange={handleChange}
                                         onKeyDown={handleKeyDown}
                                         name="reserved"
+                                        className="account-select-black-accent"
                                         checked={accountAdd.reserved}
                                     />
                                     <label htmlFor="reserved" className="ps-2">
@@ -498,6 +499,7 @@ const AccountAdd = ({ edit, refresh, setEdit }) => {
                                         onChange={handleChange}
                                         onKeyDown={handleKeyDown}
                                         name="blocked"
+                                        className="account-select-black-accent"
                                         checked={accountAdd.blocked}
                                     />
                                     <label htmlFor="blocked" className="ps-2">
@@ -550,6 +552,7 @@ const AccountAdd = ({ edit, refresh, setEdit }) => {
                                         onChange={handleChange}
                                         onKeyDown={handleKeyDown}
                                         name="transaction"
+                                        className="account-select-black-accent"
                                         checked={accountAdd?.transaction}
                                     />
                                     <label htmlFor="transaction" className="ps-2">
@@ -829,13 +832,13 @@ const AccountAdd = ({ edit, refresh, setEdit }) => {
                             <button
                                 onClick={handleReset}
                                 type="reset"
-                                className="btn btn-sm btn-outline-dark w-100"
+                                className="btn btn-sm clear-btn w-100"
                             >
                                 Clear
                             </button>
                         </div>
                         <div className="mx-0 ps-1 pe-0 col-1 col-2">
-                            <button type="submit" className="btn btn-sm btn-dark w-100">
+                            <button type="submit" className="btn btn-sm add-btn w-100">
                                 {edit ? "Update" : "Save"}
                             </button>
                         </div>

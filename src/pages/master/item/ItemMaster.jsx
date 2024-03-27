@@ -4,6 +4,7 @@ import "./ItemMaster.css";
 import { useNavigate, useLocation } from "react-router";
 import ItemList from "./components/ItemList";
 import { ItemAddForm } from "./components/AddForm";
+import { FiPlus } from "react-icons/fi";
 
 const ItemMaster = () => {
   const [loading, setLoading] = useState(false)
@@ -67,10 +68,10 @@ const ItemMaster = () => {
                   navigate("/add");
                   setToEdit(false);
                 }}
-                className="btn btn-primary add-btn px-0 w-auto px-2"
+                className="h-auto add-btn btn w-auto px-2"
                 // style={{width:'fit-content'}}
               >
-                + &nbsp; Add Item
+                <FiPlus size={'1.4rem'}/>&nbsp; Add Item
               </div>
             </div>
           )}

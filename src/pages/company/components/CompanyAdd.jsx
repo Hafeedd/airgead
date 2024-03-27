@@ -5,7 +5,7 @@ import { CompanyPermission } from "./CompanyPermission";
 import { useLocation } from "react-router";
 
 export const CompanyAdd = () => {
-  const [active, setActive] = useState(1);
+  const [active, setActive] = useState(2);
   const [companyId, setCompanyId] = useState(null)
   const [edit, setEdit] = useState(false)
   const [moduleCodeList, setModuleCodeList] = useState([])
