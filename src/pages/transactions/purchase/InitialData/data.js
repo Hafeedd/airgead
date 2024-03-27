@@ -43,7 +43,7 @@ export const initialPurchaseAdd = {
     fk_items: null,
     code: null,
     quantity: 0.0,
-    unit: null,
+    fk_unit: null,
     transaction_unit: null,
     rate: 0.0,
     sales_rate: 0.0,
@@ -87,7 +87,7 @@ export const initialPurchaseAdd = {
     },
     {
       title: "Ut",
-      state: "unit",
+      state: "fk_unit",
       position: 3,
       visible: true,
       skipping: false,

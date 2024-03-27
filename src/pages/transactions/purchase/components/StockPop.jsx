@@ -62,6 +62,7 @@ export const StockPop = (props) => {
               <th width="110">Code</th>
               <th>Item Name</th>
               <th>Retail Rate</th>
+              <th>Exp Date</th>
               <th className="rounded-top-2 rounded-start-0">Stock</th>
             </tr>
           </thead>
@@ -78,7 +79,7 @@ export const StockPop = (props) => {
               ))
             ) : (
               <tr>
-                <td colSpan={5} className="text-center fs-4">
+                <td colSpan={6} className="text-center fs-4">
                   No Item Added Yet
                 </td>
               </tr>

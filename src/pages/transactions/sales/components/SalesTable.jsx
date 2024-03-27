@@ -4,6 +4,7 @@ import useOnKey from "../../../../hooks/onKeyFunct/onKeyFunct";
 import { BsTrashFill } from "react-icons/bs";
 import useItemServices from "../../../../services/master/itemServices";
 import Swal from "sweetalert2";
+import useSalesServices from "../../../../services/transactions/salesServices";
 
 const SalesTable = (props) => {
   const {
@@ -12,6 +13,8 @@ const SalesTable = (props) => {
     setTableItemRef,
     handleSetEdit,
     tableItem,
+    setShowStock,
+    showStock,
     handleSalesAddCalc,
     setSalesItemModal,
     tableHeadList,
@@ -32,6 +35,7 @@ const SalesTable = (props) => {
   const [itemNameList, setItemNameList] = useState([]);
 
   const { getProperty, getItemNameList } = useItemServices();
+  const {getSalesItem} = useSalesServices()
 
   const [handleKeyDown, formRef] = useOnKey(tableItemRef, setTableItemRef);
   const [handleKeyDown2, formRef2] = useOnKey(
@@ -80,7 +84,7 @@ const SalesTable = (props) => {
   const getTableData = async () => {
     try {
       let response = await getProperty();
-      let response2 = await getItemNameList();
+      let response2 = await getSalesItem();
       if (response.success) {
         minFunct(response.data);
       }
@@ -569,7 +573,7 @@ const SalesTable = (props) => {
                                   options={itemNameList}
                                 />
                               </td>
-                            ) : item.state === "unit" ? (
+                            ) : item.state === "fk_unit" ? (
                               <td>
                                 <select
                                   onChange={(e) =>
@@ -646,6 +650,7 @@ const SalesTable = (props) => {
                         <Dropdown
                           clearable
                           // onClick={()=>setShowStock(data=>!data)}
+                          onClose={()=>setShowStock(!showStock)}
                           selection
                           required
                           upward={salesAdd.total_items > 4 ? true : false}
@@ -671,7 +676,7 @@ const SalesTable = (props) => {
                           options={itemNameList}
                         />
                       </td>
-                    ) : item.state === "unit" ? (
+                    ) : item.state === "fk_unit" ? (
                       <td key={i} colSpan={i === 0 ? 2 : 1}>
                         <select
                           onKeyDown={handleKeyDown}

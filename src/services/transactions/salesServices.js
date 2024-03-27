@@ -53,6 +53,12 @@ const useSalesServices = () => {
         return response.data
     }
 
+    // get item list  
+    const getSalesItem = async (id) =>{
+        const response = await axios.get('/sales/item_select/?activity_code=1471')
+        return response.data
+    }
+
     return{
         //get
         getAllUserAc,
@@ -60,6 +66,7 @@ const useSalesServices = () => {
         getSalesList,
         getSalesWithId,
         getSales,
+        getSalesItem,
         //post
         postSales,
         //put

@@ -155,6 +155,7 @@ const PurchaseTable = (props) => {
       let itemData = data.options.filter((x) => x?.value === data?.value)[0];
       const { purchase_rate, discount_1_percentage, tax_gst, fk_unit } =
         itemData || {};
+        console.log(itemData)
       tempItem = {
         ...tempItem,
         rate: purchase_rate || 0,
@@ -165,7 +166,7 @@ const PurchaseTable = (props) => {
         item_name: itemData?.text,
         code: itemData?.description,
         fk_items: itemData?.value,
-        unit: itemData?.unit,
+        fk_unit: itemData?.unit,
         margin: itemData?.margin,
         sales_rate: itemData?.retail_rate,
       };
@@ -532,15 +533,15 @@ const PurchaseTable = (props) => {
                                 options={itemNameList}
                               />
                             </td>
-                          ) : item.state === "unit" ? (
+                          ) : item.state === "fk_unit" ? (
                             <td>
                               <select
                                 onChange={(e) =>
                                   handleChangeTableItem(e, null, data, i)
                                 }
                                 onKeyDown={handleKeyDown2}
-                                name="unit"
-                                value={data.unit}
+                                name="fk_unit"
+                                value={data.fk_unit}
                                 style={{
                                   WebkitAppearance: "none",
                                   fontSize: "10px",
@@ -641,17 +642,17 @@ const PurchaseTable = (props) => {
                           options={itemNameList}
                         />
                       </td>
-                    ) : item.state === "unit" ? (
+                    ) : item.state === "fk_unit" ? (
                       <td colSpan={1}>
                         <select
                           onKeyDown={handleKeyDown}
-                          name={"unit"}
+                          name={"fk_unit"}
                           onChange={(e) =>
                             handleChangeTableItem(e, null, tableItem, true)
                           }
                           value={
-                            tableItem.unit === "" || tableItem.unit
-                              ? tableItem.unit
+                            tableItem.fk_unit === "" || tableItem.fk_unit
+                              ? tableItem.fk_unit
                               : ""
                           }
                           style={{
@@ -722,7 +723,7 @@ const PurchaseTable = (props) => {
           </tbody>
           <tfoot>
             <tr className="purchase-table-green">
-              <td colSpan={2} className="col-2 text-start">
+              <td colSpan={3} className="col-2 text-start">
                 <div className="d-flex justify-items-start">
                   <div
                     style={{ background: "#4A00A8" }}
@@ -741,8 +742,8 @@ const PurchaseTable = (props) => {
                 </div>
               </td>
               {tableHeadList?.length > 0 &&
-                tableHeadList.map((item, i) => {
-                  if (i > 0 && item.purchaseShow)
+                tableHeadList?.map((item, i) => {
+                  if (i > 1 && item.purchaseShow)
                     return item.state === "discount_1_amount" &&
                       item.visible ? (
                       <td className="item">

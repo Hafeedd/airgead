@@ -21,6 +21,8 @@ import { StockJournalEdit } from "../stockjurnal/components/StockJournalEdit";
 import { useSalesReturnServices } from "../../../services/transactions/salesReturnService";
 import { initialSalesState, initialTableItemState } from "./initialData/data";
 import { useSalesOrderServices } from "../../../services/transactions/salesOrderServices";
+import { SalesItemBactch } from "./components/SalesItemBactch";
+import { StockPop } from "../purchase/components/StockPop";
 
 export const initialSalesTableStatePositionLocal = JSON.parse(
   localStorage.getItem("initialSalesTableStatePositionLocal")
@@ -39,8 +41,10 @@ const SalesTransaction = ({ returnPage, orderPage }) => {
   const [billType, setBillType] = useState([]);
   const [orderDocList, setOrderDocList] = useState([]);
   const [codeWithBillTypeList, setCodeWithBillTypeList] = useState([]);
+  const [itemNameList, setItemNameList] = useState([]);
   const [showPrint, setShowPrint] = useState(false);
   const [bankSelect, setBankSelect] = useState(false);
+  const [showStock, setShowStock] = useState(false);
   const [cstClsOpn, setCstClsOpn] = useState({
     opening: null,
     closing: null,
@@ -127,13 +131,25 @@ const SalesTransaction = ({ returnPage, orderPage }) => {
       setEdit({ ...data.edit });
       handleSetEdit(data?.edit);
     } else if (data?.date) {
-      let { items,fk_customer,cusotmer_name, updated_at, edit, tablekeys, ...others } = data;
+      let {
+        items,
+        fk_customer,
+        cusotmer_name,
+        updated_at,
+        edit,
+        tablekeys,
+        ...others
+      } = data;
       let tempData = {
         ...others,
         change_due: others.change_due || "0.00",
       };
-      if(location?.state?.id<0){
-        tempData = {...tempData,fk_customer:fk_customer,cusotmer_name:cusotmer_name}
+      if (location?.state?.id < 0) {
+        tempData = {
+          ...tempData,
+          fk_customer: fk_customer,
+          cusotmer_name: cusotmer_name,
+        };
       }
       setSalesAdd((data) => ({ ...data, ...tempData }));
       if (items) {
@@ -167,19 +183,28 @@ const SalesTransaction = ({ returnPage, orderPage }) => {
       if (orderPage || orderGet) salesData = await getSalesOrderWithId(data.id);
 
       if (salesData) {
-        let { sales_item, updated_at,fk_customer, ...others } = salesData.data;
+        let { sales_item, updated_at, fk_customer, ...others } = salesData.data;
         let tempData = { ...others, change_due: others.change_due || "0.00" };
         if (orderGet) {
           tempData = { ...tempData, order_no: others?.id };
           delete tempData.documents_no;
         }
-        
-        if(location?.state?.id){
-          tempData = {...tempData, customer_name:location?.state?.name, fk_customer:location?.state?.id}
-        }
-        else if(fk_customer>=0){
-          let customerName = customerList?.filter(x=>x.value === fk_customer)[0]?.name
-          tempData = {...tempData,cusotmer_name:customerName,fk_customer:fk_customer}
+
+        if (location?.state?.id) {
+          tempData = {
+            ...tempData,
+            customer_name: location?.state?.name,
+            fk_customer: location?.state?.id,
+          };
+        } else if (fk_customer >= 0) {
+          let customerName = customerList?.filter(
+            (x) => x.value === fk_customer
+          )[0]?.name;
+          tempData = {
+            ...tempData,
+            cusotmer_name: customerName,
+            fk_customer: fk_customer,
+          };
         }
         setSalesAdd((data) => ({ ...data, ...tempData }));
         setEdit((data) => ({ ...data, ...tempData }));
@@ -203,7 +228,7 @@ const SalesTransaction = ({ returnPage, orderPage }) => {
       handleReloadData();
       handleGetCode();
     } else if (returnPage || orderPage) {
-      setSalesList([])
+      setSalesList([]);
       handleSalesAllReset();
       handleGetSalesReturnCode();
     }
@@ -365,7 +390,7 @@ const SalesTransaction = ({ returnPage, orderPage }) => {
           change_due: 0,
           bank_amount: 0,
         };
-        if(orderPage){
+        if (orderPage) {
           tempSalesAdd = {
             ...tempSalesAdd,
             change_due: +netAmount?.toFixed(0),
@@ -891,6 +916,7 @@ const SalesTransaction = ({ returnPage, orderPage }) => {
             setEdit,
             handleSalesAllReset,
             tableItemList,
+            setShowStock,
             salesList,
             setTableItemList,
             handleTableItemReset,
@@ -929,13 +955,27 @@ const SalesTransaction = ({ returnPage, orderPage }) => {
         onHide={() => setSalesEditModal(false)}
       >
         <PurchaseEditList
-          title={salesEditModal=="order"?"Sales Order Table":"Sales Edit Table"}
+          title={
+            salesEditModal == "order" ? "Sales Order Table" : "Sales Edit Table"
+          }
           list={salesEditModal == "order" ? orderDocList : salesList}
-          from={orderPage?"sales Order":returnPage?"sales Return":"sales"}
+          from={
+            orderPage ? "sales Order" : returnPage ? "sales Return" : "sales"
+          }
           setPurchaseList={setSalesList}
           show={salesEditModal}
           setShow={setSalesEditModal}
           {...{ handleSetEdit, setSalesEditModal, getData, setEdit, edit }}
+        />
+      </Modal>
+      <Modal
+        show={showStock||true}
+        size="lg"
+        centered
+        onHide={() => setShowStock(false)}
+      >
+        <StockPop
+          {...{ itemNameList, setTableItem, tableItem, setShowStock }}
         />
       </Modal>
       <Modal
