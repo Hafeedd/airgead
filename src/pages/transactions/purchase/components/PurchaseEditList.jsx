@@ -45,12 +45,12 @@ const PurchaseEditList = (props) => {
   const handleDateFilter = (tempList) => {
     if (date.from || date.to) {
       if (tempList.length > 0) {
-        let startDate = new Date(date.from?.slice(0, 10));
-        let endDate = new Date(date.to?.slice(0, 10));
+        let startDate = new Date(date.from?.slice(0, 10)).toLocaleDateString();
+        let endDate = new Date(date.to?.slice(0, 10)).toLocaleDateString();
         tempList = tempList.filter((x) => {
-          let dateOfItem = new Date(x.date);
-          console.log(dateOfItem)
-          if (dateOfItem >= startDate && dateOfItem <= endDate) {
+          let dateOfItem = new Date(x.date).toLocaleDateString();
+          // console.log(dateOfItem , endDate ,startDate.toLocaleDateString())
+          if ((dateOfItem >= startDate && dateOfItem <= endDate)|| dateOfItem == startDate)  {
             return true;
           } else return false;
         });
@@ -100,6 +100,7 @@ const PurchaseEditList = (props) => {
 
   const handleDeleteData = async (id) => {
     try {
+      console.log(from)
       let response;
       if (from == "sales") response = await deleteSales(id);
       else if(from == "purch") response = await deletePurchase(id);

@@ -19,7 +19,6 @@ export const CheckAuth = ({ userType, authType }) => {
   let path = authType === "token" ? "/login" : "/bad-gateway";
 
   useEffect(() => {
-    console.log(auth)
     if(auth?.token)
     checkToken();
     else navigate(path,{replace:true})

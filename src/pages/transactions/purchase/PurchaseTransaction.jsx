@@ -913,7 +913,7 @@ const PurchaseTransaction = ({ returnPage, orderPage }) => {
         onHide={() => setPurchaseEditModal(false)}
       >
         <PurchaseEditList
-          from={orderPage?"purch Order":returnPage?"purch Return":"pruch"}
+          from={orderPage?"purch Order":returnPage?"purch Return":"purch"}
           setShow={setPurchaseEditModal}
           title={"Purchase Edit Table"}
           list={purchaseOrReturnList}
