@@ -306,7 +306,7 @@ td.n_clr {
   background: #a6cdec !important;
 }
 
-.btn-primary.purchase-add-btn {
+.purchase-add-btn {
   border-radius: 0.125rem;
   background: white;
   color: #000;

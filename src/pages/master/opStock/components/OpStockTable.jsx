@@ -30,7 +30,7 @@ export const OpStockTable = (props) => {
   return (
     <div className="mt-4">
       <div
-        style={{ background: "#000" }}
+        style={{background: '#4D3072' }}
         className="w-100 d-flex justify-content-end"
       >
         <div className="col-3 p-2 stock-ledger-search d-flex align-items-center">

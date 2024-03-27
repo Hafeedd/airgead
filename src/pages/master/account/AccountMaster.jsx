@@ -4,6 +4,7 @@ import AccountList from "./components/AccountList";
 import AccountAdd from "./components/AccountAdd";
 import "./AccountMaster.css";
 import useAccountServices from "../../../services/master/accountServices";
+import { FiPlus } from "react-icons/fi";
 
 const AccountMaster = () => {
   const [toEdit, setToEdit] = useState(false);
@@ -70,9 +71,9 @@ const AccountMaster = () => {
                 navigate("/account-add");
                 setToEdit(false);
               }}
-              className="btn btn-primary add-btn px-2 py-1 w-auto"
+              className="h-auto add-btn px-2 btn w-auto"
             >
-              + &nbsp; Add Account
+              <FiPlus size={'1.4rem'}/>&nbsp; Add Account
             </div>
           </div>
         </div>

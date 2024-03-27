@@ -471,7 +471,7 @@ const PurchaseTable = (props) => {
                 })}
               <th className="py-1 text-end">
                 <div
-                  className="btn btn-primary purchase-add-btn my-0 py-0"
+                  className="btn purchase-add-btn my-0 py-0"
                   onClick={() => setPurchaseItemModal(true)}
                 >
                   +
@@ -556,7 +556,21 @@ const PurchaseTable = (props) => {
                                   ))}
                               </select>
                             </td>
-                          ) : (
+                          ) :item.state === 'exp_date'?
+                          (
+                            <td colSpan={1}>
+                              <input
+                              onKeyDown={handleKeyDown}
+                              name={item.state}
+                              onChange={(e)=>handleChangeTableItem(e,null,tableItem,i)}
+                              disabled={item.readOnly}
+                              value={data[item.state]||''}
+                              type="date"
+                              className="purchase_input border-0 w-100 text-center"
+                              />
+                            </td>
+                          ):                          
+                          (
                             <td>
                               <input
                                 onChange={(e) =>
@@ -656,7 +670,21 @@ const PurchaseTable = (props) => {
                             ))}
                         </select>
                       </td>
-                    ) : (
+                    ) :item.state === 'exp_date'?
+                    (
+                      <td colSpan={1}>
+                        <input
+                        onKeyDown={handleKeyDown}
+                        name={item.state}
+                        onChange={(e)=>handleChangeTableItem(e,null,tableItem,true)}
+                        disabled={item.readOnly}
+                        value={tableItem[item.state]||''}
+                        type="date"
+                        className="purchase_input border-0 w-100 text-center"
+                        />
+                      </td>
+                    ):
+                     (
                       <td colSpan={1}>
                         <input
                           onKeyDown={handleKeyDown}

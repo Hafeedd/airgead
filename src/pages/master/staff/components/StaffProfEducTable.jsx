@@ -28,7 +28,7 @@ export const StaffProfEducTable = (props) => {
   const [ref, setRef] = useState(null);
   const [tableEdit, setTableEdit] = useState(false);
 
-  const [ handleKeyDown , formRef ] = useOnKey(ref, setRef);
+  const [handleKeyDown, formRef] = useOnKey(ref, setRef);
   const {
     postStaffEducation,
     putStaffEducation,
@@ -153,10 +153,11 @@ export const StaffProfEducTable = (props) => {
             }
             tempList.unshift({ ...staffEducTable, id: response.data.id });
             setstaffEducList(tempList);
-            if(!tableEdit){
-                let tempIdList = [...educIdList]
-                tempIdList.push({id:response.data.id})
-                setEducIdList(tempIdList)}
+            if (!tableEdit) {
+              let tempIdList = [...educIdList]
+              tempIdList.push({ id: response.data.id })
+              setEducIdList(tempIdList)
+            }
           }
         } else if (staffTableTab == 2) {
           const submitData = handleToUpperCase(staffProfTable);
@@ -175,11 +176,11 @@ export const StaffProfEducTable = (props) => {
             }
             tempList.unshift({ ...staffProfTable, id: response.data.id });
             setstaffProfList(tempList);
-            if(!tableEdit){
-                let tempIdList = [...profIdList]
-                tempIdList.push({id:response.data.id})
-                setProfIdList(tempIdList)
-            } 
+            if (!tableEdit) {
+              let tempIdList = [...profIdList]
+              tempIdList.push({ id: response.data.id })
+              setProfIdList(tempIdList)
+            }
           }
         }
       } else {
@@ -221,33 +222,25 @@ export const StaffProfEducTable = (props) => {
   };
 
   return (
-    <div>
+    <div className="mt-2">
       <div className="staff-table-cont2 d-flex justify-content-between rounded-top-3 px-3 pt-1 pb-0">
         <div className="d-flex">
           <div
             onClick={() => setStaffTableTab(1)}
-            className={`${
-              staffTableTab == 1
-                ? "px-3 bg-dark text-light pb-2 rounded-top-3 pt-1"
-                : "d-flex align-items-end pb-1 px-3"
-            }`}
+            className={`staff-table-tab ${staffTableTab == 1 && "active"}`}
           >
             Education
           </div>
           <div
             onClick={() => setStaffTableTab(2)}
-            className={`${
-              staffTableTab == 2
-                ? "px-3 bg-dark text-light pb-2 rounded-top-3 pt-1"
-                : "d-flex align-items-end pb-1 px-3"
-            }`}
+            className={`staff-table-tab ${staffTableTab == 2 && "active"}`}
           >
             Profession
           </div>
         </div>
         <button
           onClick={handleListAdd}
-          className="bg-dark text-light px-3 rounded-2 py-1 border-0 mt-1 mb-2"
+          className="add-btn text-light w-auto px-3 rounded-2 py-1 border-0 mt-1 mb-2"
         >
           {tableEdit ? "Edit" : "Add"}
         </button>
@@ -390,10 +383,9 @@ export const StaffProfEducTable = (props) => {
           </tbody>
         </table>
       </div>
-      <div className="row mx-0 pb-2">
-        <div className="col-9 col-10" />
-        <div onClick={handleClearAll} className="col-1 btn btn-dark py-0 me-2">Clear</div>
-        <button className="col-1 btn btn-dark py-0">{edit?"Update":"Save"}</button>
+      <div className="row mx-0 pb-2 justify-content-end gap-3 h-100">
+        <div onClick={handleClearAll} className="col-1 col-2 clear-btn btn">Clear</div>
+        <button className="col-1 col-2 add-btn py-1 btn">{edit ? "Update" : "Save"}</button>
       </div>
     </div>
   );

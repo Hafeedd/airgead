@@ -245,6 +245,26 @@ export const initialPurchaseAdd = {
       saleShow: false,
       purchaseShow: true,
     },
+    {
+      title: "Batch",
+      state: "batch_no",
+      position: 18,
+      visible: true,
+      skipping: false,
+      readOnly: false,
+      saleShow: false,
+      purchaseShow: true,
+    },
+    {
+      title: "Exp Date",
+      state: "exp_date",
+      position: 19,
+      visible: true,
+      skipping: false,
+      readOnly: false,
+      saleShow: false,
+      purchaseShow: true,
+    },
   ];
   
 

@@ -8,6 +8,7 @@ import { StaffPayScale } from "./components/StaffPayScale";
 import Swal from "sweetalert2";
 import { Modal } from "react-bootstrap";
 import { IdCodeConfigAdd } from "../../idCodeConfig/components/IdCodeConfigAdd";
+import {FiPlus} from 'react-icons/fi'
 
 const StaffMaster = () => {
   const [search, setSearch] = useState();
@@ -95,10 +96,10 @@ const StaffMaster = () => {
           {location.pathname !== "/staff-master" && (
             <div className="h-100 d-flex align-items-center">
               <div
-                className="btn-dark btn"
+                className="add-btn btn h-auto d-flex w-100"
                 onClick={() => navigate("/staff-master")}
               >
-                + Add Staff
+                <FiPlus size={'1.4rem'}/>&nbsp; Add Staff
               </div>
             </div>
           )}

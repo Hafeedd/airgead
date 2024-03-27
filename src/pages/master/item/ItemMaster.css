@@ -40,19 +40,6 @@
     border: 1px solid #EEE;
 }
 
-.btn-primary.add-btn{
-    height: 2.188rem;
-    color: #FFF;
-    font-size: 0.9rem;
-    font-weight: 600;
-    background: #4A00A8;
-    border-radius: 0.5rem;
-    width: 80%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
 .table-scroller{
     height: 39rem;
     overflow-y: scroll;
@@ -100,7 +87,7 @@
 
 .pay-type-select{
     border: none;
-    background: #000;
+    background: #565656;
     border-radius: 0.3125rem;
     color: #FFF;
     margin-right: 0.1rem;
@@ -118,7 +105,8 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background-color: #000;
+    background: #4D3072;
+    background: #565656;
     color: #88ED7F;    
 }
 
@@ -265,21 +253,6 @@ input[type=number] {
     justify-content: space-between;
 }
 
-.clear_btn, .clear_btn:hover{
-    border-radius: 0.3125rem;
-    border: 1px solid #2C2C2C;
-    font-size: 12px;
-    padding: 0.5rem 2rem;
-}
-.save_btn, .save_btn:hover{
-    border-radius: 0.3125rem;
-    border: 1px solid #2C2C2C;
-    background: #2C2C2C;
-    color: white;
-    font-size: 12px;
-    padding: 0.5rem 2rem;
-}
-
 .unit_modal{
     width: 51rem;
     display: flex;
@@ -361,8 +334,8 @@ input[type=number] {
 }
 
 .table-light.custom-table{
-    --bs-table-color: #000;
-    --bs-table-bg: #D9D9D9;
+    --bs-table-color: #ffff !important;
+    --bs-table-bg: #4D3072 !important;
     --bs-table-border-color: #BEBEBE;
     --bs-table-striped-bg: #ecedee;
     --bs-table-striped-color: #000;
@@ -378,9 +351,11 @@ input[type=number] {
 .custom-table th{
     text-align: center;
     height: 3.125rem;
-    font-size: 0.875rem;
+    font-size: 14px;
+    line-height: 16px;
     font-weight: 600;
-    color: #1A1A1A;
+    color: #ffff;
+    font-family: 'Raleway';
     vertical-align: middle;
     padding: 0px;
    
@@ -401,8 +376,8 @@ input[type=number] {
 }
 
 .btn-dark.filter-btn{
-    height: 2.1875rem;
-    background: #000;
+    height: 100%;
+    background: #29005D;
     border-radius: 0.3125rem;
     border: 1px solid transparent;
     width: 100%;
@@ -411,25 +386,25 @@ input[type=number] {
     justify-content: center;
 }
 
-.btn-primary.add-btn{
-    height: 2.188rem;
+.add-btn,.add-btn:hover{
     color: #FFF;
     font-size: 0.9rem;
+    height: 100%;
     font-weight: 600;
-    background: #4A00A8;
+    background: #29005D;
     border-radius: 0.5rem;
-    width: 80%;
+    width: 100%;
     display: flex;
     align-items: center;
     justify-content: center;
 }
 
-.button{
-    cursor: pointer;
-}
-
-.customer-add-btn{
-    width: 11rem;
+.clear-btn,.clear-btn:hover{
+    border: 1px solid #29005D;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color :#29005D;
 }
 
 .task-description-popover{

@@ -28,8 +28,10 @@ const useAxiosPrivate = () => {
                     prevRequest.sent = true;
                     return axiosPrivate(prevRequest);
                 }
-                  if (error?.response?.status === 404 && error.response.config.method === "post") {
-                    console.log()
+                else if(error?.response?.status >= 200 && error?.response?.status <= 500){
+                    return Promise.reject(error)
+                }
+                  if (error?.response?.status === 404 && error.response.config.method === "post") {                    
                     Swal.fire("404","Page not found","error")
                   }
                 return Promise.reject(error)
@@ -39,4 +41,3 @@ const useAxiosPrivate = () => {
 }
 
 export default useAxiosPrivate;
-

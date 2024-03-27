@@ -293,6 +293,7 @@
 }
 
 .company-plan-btn.module {
+  user-select: none;
   background: #3C087E;
   border-radius: 0.4rem;
   color: white;
@@ -343,6 +344,7 @@
 
 .comp-module-item {
   cursor: pointer;
+  user-select: none;
   height: 8rem;
   width: 8rem;
   display: flex;

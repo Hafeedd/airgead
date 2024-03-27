@@ -48,9 +48,9 @@ export const Login = (props) => {
             </div>
 
             <div className='w-100'>
-                <TextField onChange={handleChange} value={user.username} name="username" className='auth-input-field my-4' id="outlined-basic" label="User Name" variant="outlined" />
+                <TextField required onChange={handleChange} value={user.username} name="username" className='auth-input-field my-4' id="outlined-basic" label="User Name" variant="outlined" />
             </div>
-            <PasswordField name="password" state={user} {...{ handleChange }} />
+            <PasswordField required={true} name="password" state={user} {...{ handleChange }} />
 
             <div className='d-flex flex-row justify-content-between my-4' style={{ width: "100%" }}>
                 <div className='d-flex align-items-center'>

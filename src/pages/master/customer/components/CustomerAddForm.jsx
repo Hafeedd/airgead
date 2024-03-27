@@ -215,8 +215,8 @@ const CustomerAddForm = (props) => {
       if (res.success) miniFunct(res?.data);
       res = await getItemNameList();
       if (res.success) setItemNameListState(res.data);
-      
-      setLisItem(list);
+      console.log(list)
+      setLisItem([...list]);
     } catch (err) {}
   };
 
@@ -229,10 +229,10 @@ const CustomerAddForm = (props) => {
       if (res?.success) {
         setCustomerAdd((data) => ({ ...data, [state]: res.data.id }));
         Swal.fire("Option Added Successfylly", "", "success");
+        getData(); 
       } else {
         Swal.fire(res?.message, "", "error");
       }
-      getData();
     } catch (err) {
       Swal.fire(err?.response?.data?.message, "", "error");
     }
@@ -735,19 +735,23 @@ const CustomerAddForm = (props) => {
                 onChange={handleChange}
                 name="repeat"
                 value={customerAdd.repeat || ""}
+                className="account-select-black-accent cursor"
                 type="checkbox"
+                id='repeat'
               />
-              <label className="px-2">Repeat</label>
+              <label htmlFor="repeat" className="px-2 cursor">Repeat</label>
             </div>
             <div className="mx-0 px-0 ps-4 col-8 d-flex align-items-center">
               <input
                 onKeyDown={handleKeyDown}
                 onChange={handleChange}
                 name="blocked"
+                id='blocked'
                 value={customerAdd.blocked || ""}
+                className="account-select-black-accent cursor"
                 type="checkbox"
               />
-              <label className="px-2">Blocked</label>
+              <label htmlFor="blocked" className="px-2 cursor">Blocked</label>
             </div>
           </div>
           <div className="bottom-btn-section row px-0 ms-2 mx-0 my-2">
@@ -762,7 +766,7 @@ const CustomerAddForm = (props) => {
               </button>
             </div>
             <div className="mx-0 px-1 col-4">
-              <button type="submit" className="btn btn-sm btn-dark w-100">
+              <button type="submit" className="btn btn-sm add-btn w-100">
                 {edit ? "Update" : "Save"}
               </button>
             </div>

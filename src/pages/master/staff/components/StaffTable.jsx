@@ -311,9 +311,8 @@ export const StaffTable = (props) => {
         </table>
       </div>
       {location.pathname == "/staff-pay-scale" && (
-        <div className="row mt-3">
-          <div className="col-10 col-11" />
-          <button className="col-1 btn btn-dark">Add</button>
+        <div className="row mt-3 justify-content-end">
+          <button className="col-1 btn add-btn w-auto px-5">Add</button>
         </div>
       )}
     </div>

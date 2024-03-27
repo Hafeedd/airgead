@@ -503,7 +503,7 @@ const SalesTable = (props) => {
 
               <th className="py-1 text-end">
                 <div
-                  className="btn btn-primary purchase-add-btn my-0"
+                  className="btn purchase-add-btn my-0"
                   onClick={() => setSalesItemModal(true)}
                 >
                   +

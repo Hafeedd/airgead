@@ -4,6 +4,7 @@ import editBtn from "../../assets/icons/edit-black.svg";
 import { Dropdown } from "semantic-ui-react";
 import "./searchDropDown.css";
 import { BsFillPlusSquareFill } from "react-icons/bs";
+import { cleanDigitSectionValue } from "@mui/x-date-pickers/internals/hooks/useField/useField.utils";
 
 const SearchDropDown = ({
   containerClass,
@@ -84,6 +85,8 @@ const SearchDropDown = ({
     setSearch(null);
     setEdit(false);
   };
+
+  console.log(options)
 
   return (
     <Form.Group
