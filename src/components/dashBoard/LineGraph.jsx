@@ -1,10 +1,12 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import Chart from 'chart.js/auto';
 
-const LineChart = () => {
+const LineChart = (props) => {
     const chartRef = useRef(null);
+    const {dataObject} = props;
 
     useEffect(() => {
+        
         const ctx = chartRef.current.getContext('2d');
         const myChart = new Chart(ctx, {
             type: 'line',
@@ -13,7 +15,7 @@ const LineChart = () => {
                 datasets: [
                     {
                         label: 'Revenue',
-                        data: [65, 59, 80, 81, 56, 55, 40],
+                        data: dataObject?.graph_profit,
                         borderColor: 'rgba(221, 16, 167, 1)',
                         backgroundColor: 'rgba(221, 16, 167, 1)',
                         borderWidth: 1,
@@ -21,7 +23,7 @@ const LineChart = () => {
                     },
                     {
                         label: 'Sales',
-                        data: [28, 48, 40, 19, 86, 27, 90],
+                        data: dataObject?.graph_sales,
                         borderColor: 'rgba(54, 126, 211, 1)',
                         backgroundColor: 'rgba(54, 126, 211, 1)',
                         borderWidth: 1,
@@ -68,12 +70,10 @@ const LineChart = () => {
         return () => {
             myChart.destroy();
         };
-    }, []);
+    }, [dataObject,]);
 
     return (
-        <div style={{height:"100%"}} >
-            <canvas ref={chartRef}></canvas>
-        </div>
+        <canvas className={'line-graph-canvas'} ref={chartRef}></canvas>
     );
 };
 

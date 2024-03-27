@@ -23,7 +23,8 @@ export const Login = (props) => {
         try {
             let resp = await checkController()
             if (resp.success) {
-                setControllerExist(resp?.data?.exist || true)
+                console.log(resp.data.exist)
+                setControllerExist(resp.data.exist)
             }
         } catch (err) { }
     }

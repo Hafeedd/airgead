@@ -5,9 +5,9 @@ export const useBaseServices = () => {
 
     const getDashBoard = async (params) => {
         const response = await axios.get("dashboard/accounts/dashboard/?activity_code=1454",{
-            params: {...params},
+            params: {params_day:params},
         });
-        return response.data;
+        return response?.data;
     };
 
     return{

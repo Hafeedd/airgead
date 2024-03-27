@@ -1,6 +1,7 @@
 .dashboard .dashboard-center {
   background-color: rgba(31, 82, 175, 1);
   color: #4286a9;
+  height: 25% !important;
 }
 
 /* .dashboard-center .dashboard-center-left {
@@ -45,7 +46,9 @@
 
 .dashboard-center .dashboard-center-right {
   background-color: rgba(44, 64, 101, 1);
-  height: 350px;
+  
+
+ 
 }
 
 .dashboard .dashboard-bottom .dashboard-bottom-box3 {
@@ -54,15 +57,119 @@
 
 .dashboard-bottom .dashboard-bottom-box3-bottom {
   background-color: rgba(71, 115, 195, 1);
+  position: sticky;
+  bottom: 0;
 }
 
 .div-scroll {
-  background-color: lightgray;
+  /* background-color: rgba(255, 255, 255, 0.469); */
+  background-image: linear-gradient(rgba(255, 255, 255, 0.645),rgba(255, 255, 255, 0.303));
   height: 290px;
-  overflow: scroll;
+  overflow: auto;
 }
 
 .div-scroll::-webkit-scrollbar {
   display: none;
   width: 10px;
+}
+
+.div-scroll-cheque {
+  /* background-color: rgba(255, 255, 255, 0.469); */
+ 
+  height: 342px;
+  overflow: auto;
+}
+.div-scroll-cheque .pdc-heading  {
+  position: sticky;
+  top:0
+  
+}
+.div-scroll-cheque::-webkit-scrollbar {
+  display: none;
+  width: 10px;
+}
+
+.div-scroll p{
+  font-size: 13px;
+}
+
+
+.dash-reciept-color{
+ background-color: rgba(76, 76, 76, 1);
+  color: white;
+  box-shadow: 0px 0px 3px black;
+  font-weight: 900;
+  border-style: none;
+ 
+}
+.dash-reciept-color:hover{
+  background-color: rgba(76, 76, 76, 1);
+  color: white;
+  box-shadow: 0px 0px 3px black;
+  font-weight: 900;
+  border-style: none;
+}
+
+.dash-payment-color{
+  background-color: rgba(50, 80, 134, 1);
+  color: white;
+  box-shadow: 0px 0px 3px black;
+  font-weight: 900;
+  border-style: none;
+ 
+}
+
+.dash-payment-color:hover{
+  background-color: rgba(50, 80, 134, 1);
+  color: white;
+  box-shadow: 0px 0px 3px black;
+  font-weight: 900;
+  border-style: none;
+}
+
+.dash-purchase-color{
+  background-color: white;
+  color: black;
+  box-shadow: 0px 0px 3px black;
+  font-weight: 900;
+  border-style: none;
+}
+.dash-purchase-color:hover{
+  color: black;
+}
+
+.dash-sales-color{
+  background-color: white;
+  color: black;
+  box-shadow: 0px 0px 3px black;
+  font-weight: 900;
+  border-style: none;
+}
+.dash-sales-color:hover{
+  color: black;
+}
+
+.dash-table-data{
+  border-radius: 5px;
+}
+
+.dash-table-data td{
+  text-align: start;
+  font-size: 13px;
+  
+
+}
+.dash-table-head th{
+  text-align: start;
+  font-size: 12px;
+  background-color: rgb(203, 209, 219);
+  position: sticky;
+  top: 0;
+}
+
+.line-graph-canvas{
+  margin-top: 2rem;
+  width: 100% !important;
+  height: 100% !important;
+  max-height: 90% !important;
 }
