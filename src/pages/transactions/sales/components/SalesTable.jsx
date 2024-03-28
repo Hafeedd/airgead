@@ -35,6 +35,7 @@ const SalesTable = (props) => {
   const [itemNameList, setItemNameList] = useState([]);
   const [itemSelected, setItemSelected] = useState(false);
   const [showStock, setShowStock] = useState(false);
+  const [dropdownOpen, setDropdownOpen] = useState(false);
 
   const { getProperty } = useItemServices();
   const { getSalesItem } = useSalesServices();
@@ -78,6 +79,9 @@ const SalesTable = (props) => {
         text: x.item_name,
         description: x.item_code,
         value: x.item_code,
+        content: (
+          <Dropdown.Item onClick={()=>setShowStock(true)}>{x.item_name}</Dropdown.Item>
+        ),
       });
     });
     setItemNameList([...tempList]);
@@ -179,6 +183,13 @@ const SalesTable = (props) => {
     handleKeyDown(e);
     handleTableItemReset();
   };
+
+  const handleKeyDownStockPopup = (e) =>{
+    if(e.type === 'keydown' && e.code === 'Enter'){
+      setShowStock(true)
+      handleKeyDown(e)
+    }
+  }
 
   const handleSelectItemFromDrop = (e, data, state, toTableItem) => {
     if (data.value) {
@@ -680,27 +691,20 @@ const SalesTable = (props) => {
                       >
                         <Dropdown
                           clearable
-                          // onClick={()=>setShowStock(data=>!data)}
-                          // onClose={(e) => {
-                          //   if (itemSelected) setShowStock(true);
-                          // }}
                           onChange={(e, data) =>
                             handleSelectItemFromDrop(e, data, tableItem, true)
                           }
                           selection
                           required
-                          onClose={e=>{if(itemSelected){setShowStock(true); handleKeyDown(e)}}}
-                          // upward={salesAdd.total_items > 4 ? true : false}
-                          // sc rolling
+                          upward={salesAdd.total_items > 4 ? true : false}
                           search={search} 
                           placeholder="SELECT"
+                          onFocus={()=>setDropdownOpen(true)}
+                          onBlur={()=>setDropdownOpen(false)}
                           className="purchase_search_drop border-0 w-100 ps-2"
-                          // selectOnNavigation
-                          onKeyDown={handleKeyDown}
-                          // onClick={handleKeyDownOnDrop}
-                          // allowAdditions
+                          open={dropdownOpen}
+                          onKeyDown={handleKeyDownStockPopup}
                           id="tableItemFkItem"
-                          // onAddItem={handleItemNameSelection}
                           name={"name"}
                           // onChange={
                           //   (e, data) =>
@@ -907,14 +911,15 @@ const SalesTable = (props) => {
         show={showStock}
         size="lg"
         centered
-        onHide={() => setShowStock(false)}
+        onHide={() =>setShowStock(false)}
       >
         <StockPop
           {...{
             itemSelected,
             setShowStock,
             handleChangeTableItem,
-            handleKeyDown
+            handleKeyDown,
+            setDropdownOpen
           }}
         />
       </Modal>

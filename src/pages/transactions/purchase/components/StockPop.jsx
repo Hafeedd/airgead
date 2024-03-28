@@ -7,7 +7,8 @@ export const StockPop = (props) => {
     itemSelected,
     setShowStock,
     handleChangeTableItem,
-    handleKeyDown
+    handleKeyDown,
+    setDropdownOpen
   } = props;
 
   const navigate = useNavigate();
@@ -44,6 +45,7 @@ export const StockPop = (props) => {
       itemSelected.toTableItem,
       true
     );
+    setDropdownOpen(false)
     setShowStock(false);
   };
 
