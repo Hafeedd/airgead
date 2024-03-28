@@ -239,7 +239,6 @@ const SalesTable = (props) => {
       if (others.sales_rate) {
         others.value = gross;
       }
-      console.log(newObj.code);
       tempItem = {
         ...tempItem,
         ...others,
@@ -690,16 +689,16 @@ const SalesTable = (props) => {
                           }
                           selection
                           required
-                          // onLabelClick={e=>{if(itemSelected){setShowStock(true); handleKeyDown(e)}}}
-                          upward={salesAdd.total_items > 4 ? true : false}
-                          // scrolling
-                          search={search}
+                          onClose={e=>{if(itemSelected){setShowStock(true); handleKeyDown(e)}}}
+                          // upward={salesAdd.total_items > 4 ? true : false}
+                          // sc rolling
+                          search={search} 
                           placeholder="SELECT"
                           className="purchase_search_drop border-0 w-100 ps-2"
+                          // selectOnNavigation
                           onKeyDown={handleKeyDown}
                           // onClick={handleKeyDownOnDrop}
-                          allowAdditions
-                          compact
+                          // allowAdditions
                           id="tableItemFkItem"
                           // onAddItem={handleItemNameSelection}
                           name={"name"}
@@ -717,10 +716,10 @@ const SalesTable = (props) => {
                           options={itemNameList}
                         >
                           {/* <Dropdown.Menu>
-                            {itemNameList.map((data) => (
-                              <Dropdown.Item className="d-flex justify-content-between w-100 ">
-                                {data.text}{data.value}
-                              </Dropdown.Item>
+                            {itemNameList.map((data,i) => (
+                              <Dropdown.Item key={i+1} tabIndex={i} value={data.value}>
+                              {data.text}
+                            </Dropdown.Item>
                             ))}
                           </Dropdown.Menu> */}
                         </Dropdown>
@@ -913,11 +912,9 @@ const SalesTable = (props) => {
         <StockPop
           {...{
             itemSelected,
-            setTableItem,
-            tableItem,
             setShowStock,
-            showStock,
             handleChangeTableItem,
+            handleKeyDown
           }}
         />
       </Modal>

@@ -5,11 +5,9 @@ import { useNavigate } from "react-router";
 export const StockPop = (props) => {
   const {
     itemSelected,
-    showStock,
-    setTableItem,
-    tableItem,
     setShowStock,
     handleChangeTableItem,
+    handleKeyDown
   } = props;
 
   const navigate = useNavigate();
@@ -84,6 +82,7 @@ export const StockPop = (props) => {
               <th>Item Name</th>
               <th>Retail Rate</th>
               <th>Exp Date</th>
+              <th>Batch</th>
               <th className="rounded-top-2 rounded-start-0">Stock</th>
             </tr>
           </thead>
@@ -100,7 +99,8 @@ export const StockPop = (props) => {
                       ? dayjs(data?.expiry_date).format("DD-MM-YYYY")
                       : ""}
                   </td>
-                  <td>{data?.sock || 0}</td>
+                  <td>{data?.batch_no}</td>
+                  <td>{data?.quantity || 0}</td>
                 </tr>
               ))
             ) : (

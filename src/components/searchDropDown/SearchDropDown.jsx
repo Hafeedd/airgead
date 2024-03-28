@@ -86,8 +86,6 @@ const SearchDropDown = ({
     setEdit(false);
   };
 
-  console.log(options)
-
   return (
     <Form.Group
       className={`search_container search-dropdown h-100 ${containerClass}`}
