@@ -188,7 +188,7 @@ const MaterialCompositionOfProduct = (props) => {
     setByproductList(editComposition?.by_products || []);
     setExpenseList(editComposition?.expense_accounts || []);
   }, [editComposition]);
-
+  const enabled = (selectedItem!=null||'') && (selectedType!=null||'') && itemQuantity==''||null  && (itemQuantityUnit!=null||'') && rawList.length>0;
   const handleMaterialSave = async () => {
     if (editComposition) {
       let id = editComposition.id;
@@ -776,13 +776,14 @@ const MaterialCompositionOfProduct = (props) => {
           >
             Clear
           </div>
-          <div
+          <button
             className="btn btn-md ms-3 me-1 text-dark col-1 col-2 py-1"
             style={{backgroundColor:'#abc9ff'}}
             onClick={handleMaterialSave}
+            disabled={!enabled}
           >
             Save
-          </div>
+          </button>
         </div>
       </div>
       <Modal

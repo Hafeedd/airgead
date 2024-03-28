@@ -1,0 +1,46 @@
+import useAxiosPrivate from "../../hooks/axios/useAxiosPrivate";
+// import { handleNetworkError } from "../ErrorHandler/errorHandler";
+
+export const useUserServices = () => {
+  const axiosPrivate = useAxiosPrivate();
+
+  const getUserList = async () => {
+    const resp = await axiosPrivate.get("company/user/register/");
+    return resp.data;
+  };
+
+  const postUserAdd = async (data) => {
+    const resp = await axiosPrivate.post("company/user/register/",data,{headers:{'Content-Type': 'multipart/form-data'}});
+    return resp.data;
+  };
+
+  
+  const putUserAdd = async (id,data) => {
+    const resp = await axiosPrivate.put(`company/user/${id}/`,data,{headers:{'Content-Type': 'multipart/form-data'}});
+    return resp.data;
+  };
+
+
+  const delUserAdd = async(id)=>{
+    const resp = await axiosPrivate.delete(`company/user/${id}/`);
+    return resp.data;
+  }
+
+  const userActiveDeactive = async (id) => {
+    const resp = await axiosPrivate.post(`company/user/activation/${id}/`);
+    return resp.data;
+  };
+
+  const getUserRoles = async() =>{
+    const resp = await axiosPrivate.get("company/roles/");
+    return resp.data;
+  }
+  return {
+    getUserList,
+    postUserAdd,
+    userActiveDeactive,
+    getUserRoles,
+    putUserAdd,
+    delUserAdd,
+  };
+}

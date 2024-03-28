@@ -4,11 +4,15 @@ import { MdOutlineFileUpload } from "react-icons/md";
 import TextField from "@mui/material/TextField";
 import { useCompanyServices } from "../../../services/controller/companyServices";
 import Swal from "sweetalert2";
+import { Dropdown } from "semantic-ui-react";
+import { useUserServices } from "../../../services/controller/userServices";
+import { MEDIA_URL } from "../../../api/axios";
 import { useNavigate } from "react-router";
 
 export const CompanyDetails = (props) => {
-  const { setActive, setCompanyId, edit, setEdit } = props;
-
+  const { setActive, setCompanyId, edit, setEdit ,location} = props;
+  const [allRoles,setAllRoles] =useState([])
+  const [selectedRole,setSelectedRole] =useState()
   const [additionalFiled, setAdditionalFields] = useState(false);
   const [loginField, setLoginFiled] = useState(false);
   const [company, setCompany] = useState({
@@ -29,8 +33,11 @@ export const CompanyDetails = (props) => {
     pincode: null,
     username: null,
     password: null,
+    image:null,
+    image_url:null,
   });
 
+  const {postUserAdd,getUserRoles,putUserAdd}=useUserServices()
   const { companyRegister,companyUpdate } = useCompanyServices();
   const navigate = useNavigate()
 
@@ -44,63 +51,146 @@ export const CompanyDetails = (props) => {
         ...others,
         ...admin_det_others,      
       })
+      // setSelectedRole(edit.fk_role)
     }
   },[edit])
 
+  const search = (options, searchValue) => {
+    searchValue = searchValue.toUpperCase();
+    return options.filter((option) => {
+      return (
+        option?.value?.toString()?.includes(searchValue) ||
+        option?.text?.toString()?.includes(searchValue)
+      );
+    });
+  };
+
+  const fullRoles = async()=>{
+    const response= await getUserRoles()
+    // let data=response.data.filter(property => property.types === 'PRODUCT')
+    let tempList = [];
+    response.data.map((item) => {
+      let a = {
+        text: item.role,
+        value:item.id,
+      };
+      tempList.push(a);
+    });
+    setAllRoles(tempList)
+  }
+// console.log('hoi',allRoles);
+// console.log('role',selectedRole)
+
+console.log('user',company)
+  useEffect(()=>{
+    fullRoles()
+  },[])
+ 
+  const handleDropdownChangeRole = (event, data) => {
+    setSelectedRole(data.value)
+    setCompany((c)=> ({...c,'fk_role':data.value}))
+  };
+ 
   const handleChange = (e) => {
     const name = e.target.name;
     const value = e.target.value;
+    const logoImage = location.pathname==='/user-add'? "image" :"logo"
     const files = e.target?.files || null;
-    if (name === "logo" && files?.length > 0) {
+    if (name === logoImage && files?.length > 0) {
       const imageUrl = URL.createObjectURL(files[0]);
-      setCompany((data) => ({ ...data, logo: files[0], logo_url: imageUrl }));
+      location.pathname==='/user-add'?
+      setCompany((data) => ({ ...data, image: files[0], image_url: imageUrl })): setCompany((data) => ({ ...data, logo: files[0], logo_url: imageUrl }))
     } else if (value === "") setCompany((data) => ({ ...data, [name]: null }));
     else setCompany((data) => ({ ...data, [name]: value }));
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    try {
-      // let filteredData =  { key: value for (key, value) of Object.entries(myObject) if value !== null };
-      let tempCompany = {...company}
-      for (const [key, value] of Object.entries(company)) {
-        if (value === 0 || value === null || value === undefined) {
-          delete tempCompany[key];
+    if(location.pathname ==='/user-add'){
+      try {
+        // let filteredData =  { key: value for (key, value) of Object.entries(myObject) if value !== null };
+        let tempCompany = {...company}
+        for (const [key, value] of Object.entries(company)) {
+          if (value === 0 || value === null || value === undefined) {
+            delete tempCompany[key];
+          }
         }
-      }
-      const CompanyData = new FormData();
-      Object.keys(tempCompany).map((data) =>
-      CompanyData.append(data, company[data])
-      );
-      // console.log(CompanyData);
-      // return 0;
-      let resp
-      if(edit.id) resp = await companyUpdate(edit.id,CompanyData)
-      else resp = await companyRegister(CompanyData);
-      if (resp.success) {
-        setEdit(false)      
-        setActive(2);
-        setCompanyId(resp?.data?.company_profile?.id)
-        if(edit?.id) navigate('/')
-      } else {
+        const CompanyData = new FormData();
+        Object.keys(tempCompany).map((data) =>
+        CompanyData.append(data, company[data])
+        );
+        // console.log(CompanyData,'hello');
+        // return 0;
+        let resp
+        if(edit.id) resp = await putUserAdd(edit.id,CompanyData)
+        else resp = await postUserAdd(CompanyData)
+        if (resp.success) {
+          setActive(3);
+          setCompanyId(resp?.data?.user_profile?.id)
+          console.log('Success :',resp?.data?.user_profile?.id)
+        } else {
+          Swal.fire({
+            title: "Error",
+            text: resp?.message || "User Registration Failed.",
+            icon: "error",
+          });
+        }
+      } catch (err) {
+        let message = err.response.data.message || "User Registration Failed."
+        if(err.response.data?.errors){
+          message = Object.values(err.response.data?.errors)[0]
+        }
         Swal.fire({
-          title: "Error",
-          text: resp?.message || "Company Registration failed.",
+          title: "Failed",
+          text: message,
           icon: "error",
+          showConfirmButton: true,
+          timer: 3500,
         });
       }
-    } catch (err) {
-      let message = err.response.data.message || "Company Registration Failed."
-      if(err.response.data?.errors){
-        message = Object.values(err.response.data?.errors)[0]
+    }else{
+      try {
+        // let filteredData =  { key: value for (key, value) of Object.entries(myObject) if value !== null };
+        let tempCompany = {...company}
+        for (const [key, value] of Object.entries(company)) {
+          if (value === 0 || value === null || value === undefined) {
+            delete tempCompany[key];
+          }
+        }
+        const CompanyData = new FormData();
+        Object.keys(tempCompany).map((data) =>
+        CompanyData.append(data, company[data])
+        );
+        // console.log(CompanyData);
+        // return 0;
+        let resp
+        if(edit.id) resp = await companyUpdate(edit.id,CompanyData)
+        else resp = await companyRegister(CompanyData);
+        if (resp.success) {
+        setEdit(false)      
+          setActive(2);
+          setCompanyId(resp?.data?.company_profile?.id)
+        if(edit?.id) navigate('/')
+        } else {
+          Swal.fire({
+            title: "Error",
+            text: resp?.message || "Company Registration failed.",
+            icon: "error",
+          });
+        }
+      } catch (err) {
+        let message = err.response.data.message || "Company Registration Failed."
+        if(err.response.data?.errors){
+          message = Object.values(err.response.data?.errors)[0]
+        }
+        Swal.fire({
+          title: "Failed",
+          text: message,
+          icon: "error",
+          showConfirmButton: true,
+          timer: 3500,
+        });
       }
-      Swal.fire({
-        title: "Failed",
-        text: message,
-        icon: "error",
-        showConfirmButton: true,
-        timer: 3500,
-      });
     }
   };
 
@@ -110,7 +200,29 @@ export const CompanyDetails = (props) => {
       className="company-details-cont row justify-content-between mx-0 my-2 p-0"
     >
       <div className="comp-details-cont-1 col-5 col-6 border rounded-2">
-        <div className="image-cont">
+      <div className="image-cont">
+        {location.pathname==='/user-add'?
+          <img
+            className="company-details-company-logo"
+            src={(edit.id&&company.image)?MEDIA_URL+company.image:company.image_url? company.image_url : uploadImage}
+            alt="upload-image"
+          />
+        :
+        <img
+          className="company-details-company-logo"
+          src={(edit.id&&company.logo)?MEDIA_URL+company.logo:company.logo_url? company.logo_url : uploadImage}
+          alt="upload-image"
+        />
+      }
+      </div>
+        <input
+          onChange={handleChange}
+          name={location.pathname==='/user-add'?"image":"logo"}
+          type="file"
+          className="d-none"
+          id="company-logo"
+        />
+        {/* <div className="image-cont">
           <img
             className="company-details-company-logo"
             src={company.logo_url ? company.logo_url : uploadImage}
@@ -123,7 +235,7 @@ export const CompanyDetails = (props) => {
           type="file"
           className="d-none"
           id="company-logo"
-        />
+        /> */}
         <label htmlFor="company-logo" className="image-upload-btn">
           <MdOutlineFileUpload className="me-2 p-0" size={"1.5rem"} />
           Upload Image
@@ -270,17 +382,18 @@ export const CompanyDetails = (props) => {
         </div>
       </div>
       <div style={{height:'fit-content'}} className="comp-details-cont-1 col-5 col-6 border rounded-2">
-        <TextField
-          required
-          name="group_name"
-          value={company.group_name||''}
-          onChange={handleChange}
-          className="company-input-field my-3"
-          size="small"
-          id="outlined-basic"
-          label="Company Name"
-          variant="outlined"
-        />
+        {location.pathname != '/user-add' &&
+       ( <TextField
+        required
+        name="group_name"
+        value={company.group_name||''}
+        onChange={handleChange}
+        className="company-input-field my-3"
+        size="small"
+        id="outlined-basic"
+        label="Company Name"
+        variant="outlined"
+      />)}
         <TextField
           name="first_name"
           required
@@ -328,6 +441,28 @@ export const CompanyDetails = (props) => {
           label="Email Address"
           variant="outlined"
         />
+        {location.pathname === '/user-add'&&(
+          <div className="w-100 d-flex justify-content-between align-items-center row">
+            <Dropdown
+                  clearable
+                  selection
+                  required
+                  search={search}
+                  // onKeyDown={handleKeyDown1}
+                  onChange={handleDropdownChangeRole}
+                  className="purchase-input-text table-drop d-flex align-items-center py-2 my-2 custom-drop-wid text-secondary col-9"
+                  name="role"
+                  placeholder="Select Role *"
+                  value={selectedRole}
+                  options={allRoles}
+                />
+                <div
+                className="company-add-btn next btn col-1 col-2"
+              >
+                Add
+              </div>
+          </div>
+         )}
       </div>
       <div className="w-100 row mx-0 justify-content-end gap-3 pe-3 pt-2">
         <div

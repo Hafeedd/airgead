@@ -34,12 +34,20 @@ export const CompanyAdd = () => {
         >
           1. Basic Details
         </div>
-        <div
+        {location.pathname !='/user-add'?
+          <div
           className={`col-3 col-4 bar-text ${active > 1 && "active"}`}
           style={{ zIndex: "3" }}
         >
           2. Plan Details
         </div>
+        :
+        <div
+          className={`col-3 col-4 bar-text ${active > 1 && "active"}`}
+          style={{ zIndex: "3" }}
+        >
+          2. Modules
+        </div>}
         {/* <div
           className={`col-4 bar-text ${active > 2 && "active"}`}
           style={{ zIndex: "3" }}
@@ -48,14 +56,14 @@ export const CompanyAdd = () => {
         </div> */}
       </div>
       <div className="company-add">
-        <h3>{active === 1 ? "Company Details" : active === 2 ? "Company Plan Details" : active === 3 && "Access Permissions"}</h3>
+        <h3>{location.pathname != '/user-add' ? (active === 1 ? "Company Details" : active === 2 ? "Company Plan Details" : active === 3 && "Access Permissions") : (active === 1 ? 'User Details' : active === 3 ? "Access Permissions" : '') }</h3>
         {/* <div className="company-details-cont row justify-content-between mx-0 my-2 p-0"> */}
         {active === 2 ? (
           <CompanyPayment {...{moduleCodeList, setModuleCodeList, edit, active, setActive, companyId, setCompanyId }} />
         ) : active === 3 ? (
           <CompanyPermission {...{moduleCodeList, setModuleCodeList, companyId, edit,setEdit,setCompanyId,setActive }} />
         ) :
-          <CompanyDetails {...{ edit, active, setActive, setCompanyId,setEdit }} />
+          <CompanyDetails {...{ edit, active, setActive, setCompanyId,setEdit ,location}} />
         }
         {/* </div> */}
       </div>

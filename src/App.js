@@ -52,7 +52,12 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
 import { CompanyView } from "./pages/company/components/CompanyView";
 import { BadGateway } from "./pages/badGateway/BadGateway";
 import { IdCodeConfig } from "./pages/idCodeConfig/IdCodeConfig";
+<<<<<<< HEAD
 import { Profile } from "./pages/profile/Profile";
+=======
+import { CompanyList } from "./pages/company/components/CompanyList";
+import { CompanyAdd } from "./pages/company/components/CompanyAdd";
+>>>>>>> 1c2a440cc41e0db43b3f380fe5e86cc0838cfa15
 
 function App() {
   const userDetails = useSelector(state => state.auth.userDetails)
@@ -82,6 +87,9 @@ function App() {
                   <Route path='/company-view' element={<CompanyView />} />
                 </Route>
                 <Route element={<CheckAuth userType="Company" />}>
+
+                  <Route path='/user-add' element={<CompanyAdd/>} />
+                  <Route path='/user-list' element={<CompanyList />} />
                   {/* <Route index element={<ItemMaster />} /> */}
                   <Route path="/list" element={<ItemMaster />} />
                   <Route path="/add" element={<ItemMaster />} />
