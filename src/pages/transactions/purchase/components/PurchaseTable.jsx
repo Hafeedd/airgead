@@ -557,7 +557,7 @@ const PurchaseTable = (props) => {
                                   ))}
                               </select>
                             </td>
-                          ) :item.state === 'exp_date'?
+                          ) :item.state === 'expiry_date'?
                           (
                             <td colSpan={1}>
                               <input
@@ -644,7 +644,7 @@ const PurchaseTable = (props) => {
                       </td>
                     ) : item.state === "fk_unit" ? (
                       <td colSpan={1}>
-                        <select
+                        <select 
                           onKeyDown={handleKeyDown}
                           name={"fk_unit"}
                           onChange={(e) =>
@@ -671,7 +671,7 @@ const PurchaseTable = (props) => {
                             ))}
                         </select>
                       </td>
-                    ) :item.state === 'exp_date'?
+                    ) :item.state === 'expiry_date'?
                     (
                       <td colSpan={1}>
                         <input

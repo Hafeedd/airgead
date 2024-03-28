@@ -51,6 +51,7 @@ export const initialPurchaseAdd = {
     cost: 0.0,
     total: 0.0,
     sgst: 0.0,
+    expiry_date:null,
     cgst_or_igst: 0.0,
     tax_gst: 0.0,
     vat_perc: 0.0,
@@ -257,7 +258,7 @@ export const initialPurchaseAdd = {
     },
     {
       title: "Exp Date",
-      state: "exp_date",
+      state: "expiry_date",
       position: 19,
       visible: true,
       skipping: false,

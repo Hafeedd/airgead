@@ -5,6 +5,8 @@ import { BsTrashFill } from "react-icons/bs";
 import useItemServices from "../../../../services/master/itemServices";
 import Swal from "sweetalert2";
 import useSalesServices from "../../../../services/transactions/salesServices";
+import { Modal } from "react-bootstrap";
+import { StockPop } from "../../purchase/components/StockPop";
 
 const SalesTable = (props) => {
   const {
@@ -13,8 +15,6 @@ const SalesTable = (props) => {
     setTableItemRef,
     handleSetEdit,
     tableItem,
-    setShowStock,
-    showStock,
     handleSalesAddCalc,
     setSalesItemModal,
     tableHeadList,
@@ -33,9 +33,11 @@ const SalesTable = (props) => {
   const [unitList, setUnitList] = useState(null);
   // const [calcChange, setCalcChange] = useState();
   const [itemNameList, setItemNameList] = useState([]);
+  const [itemSelected, setItemSelected] = useState(false);
+  const [showStock, setShowStock] = useState(false);
 
-  const { getProperty, getItemNameList } = useItemServices();
-  const {getSalesItem} = useSalesServices()
+  const { getProperty } = useItemServices();
+  const { getSalesItem } = useSalesServices();
 
   const [handleKeyDown, formRef] = useOnKey(tableItemRef, setTableItemRef);
   const [handleKeyDown2, formRef2] = useOnKey(
@@ -73,9 +75,9 @@ const SalesTable = (props) => {
       const { id, code, name, ...others } = x;
       tempList.push({
         ...others,
-        text: x.name,
-        description: x.code,
-        value: x.id,
+        text: x.item_name,
+        description: x.item_code,
+        value: x.item_code,
       });
     });
     setItemNameList([...tempList]);
@@ -88,8 +90,8 @@ const SalesTable = (props) => {
       if (response.success) {
         minFunct(response.data);
       }
-      if (response2.success) {
-        handleDataNameList(response2.data);
+      if (response2.data) {
+        handleDataNameList(response2.data.items);
       }
     } catch (err) {
       console.log(err);
@@ -123,7 +125,7 @@ const SalesTable = (props) => {
     );
     for (let i = 0; i < 7 - tableItemList.length || 0; i++) {
       tempTableTr.push(
-        <tr className="border-0" key={i+1}>
+        <tr className="border-0" key={i + 1}>
           <td className="border-0" colSpan={lengthOfTh + 2}></td>
         </tr>
       );
@@ -178,53 +180,74 @@ const SalesTable = (props) => {
     handleTableItemReset();
   };
 
-  const handleChangeTableItem = (e, data, state, toTableItem) => {
+  const handleSelectItemFromDrop = (e, data, state, toTableItem) => {
+    if (data.value) {
+      var item_data =
+        data?.options?.filter((x) => x?.value === data?.value)[0] || {};
+      var newObj = Object.fromEntries(
+        Object.entries(item_data)?.filter(([key, value]) => value !== null)
+      );
+      if (newObj) {
+        newObj.code = itemSelected.item_code;
+        setItemSelected({ data: newObj, ...{ e, state, toTableItem } });
+      } else handleTableItemReset();
+      if (e?.type == "click") handleKeyDown(e);
+    }
+  };
+
+  const handleChangeTableItem = (e, data, state, toTableItem, batch) => {
     // toTableItem is used to check if the state to be set to tableItem or tableItemList
     // if toTableItem is not true then it contains the index of tableItemList
 
     let tempItem = { ...state };
-    if (data?.value) {
-      var item_data =
-        data.options.filter((x) => x?.value === data?.value)[0] || {};
-      var newObj = Object.fromEntries(
-        Object.entries(item_data)?.filter(([key, value]) => value !== null)
-      );
+    if (data?.value || batch) {
+      let newObj;
+      if (!batch) {
+        var item_data =
+          data.options.filter((x) => x?.value === data?.value)[0] || {};
+        newObj = Object.fromEntries(
+          Object.entries(item_data)?.filter(([key, value]) => value !== null)
+        );
+      } else newObj = data;
+      // console.log(newObj)
       let {
         id,
         code,
         name,
         tax_gst,
         retail_rate,
+        sales_rate,
         purchase_rate,
         tax_inclusive,
         ...others
       } = newObj;
       others.cgst_or_igst = tax_gst / 2 || 0;
       others.sgst = tax_gst / 2 || 0;
-      if (!retail_rate) {
+      if (!sales_rate) {
         others = {};
-        retail_rate = 0;
+        sales_rate = 0;
       }
-      let gross = retail_rate;
+      let gross = sales_rate;
 
       if (tax_gst && !tax_inclusive) {
-        gross = retail_rate + tax_gst * (retail_rate / 100);
+        gross = sales_rate + tax_gst * (sales_rate / 100);
       }
       if (others.discount_1_percentage) {
         others.discount_1_amount =
           gross - (gross - others.discount_1_percentage * (gross / 100));
       }
-      if (others.retail_rate) {
+      if (others.sales_rate) {
         others.value = gross;
       }
+      console.log(newObj.code);
       tempItem = {
         ...tempItem,
         ...others,
         item_name: newObj?.text,
         code: newObj?.description,
-        fk_items: newObj?.value,
-        sales_rate: retail_rate || 0,
-        rate: retail_rate || 0,
+        fk_items: batch ? newObj?.code : newObj?.value,
+        sales_rate: sales_rate || 0,
+        rate: sales_rate || 0,
         gross: gross || 0,
         tax_gst: tax_gst || 0,
         quantity: 0,
@@ -242,7 +265,7 @@ const SalesTable = (props) => {
     } else {
       tempItem = { ...tempItem, [e.target.name]: e.target.value };
     }
-    
+
     const calculatedData = handleAmountCalculation(tempItem, e, data);
     if (toTableItem === true) setTableItem(calculatedData);
     else {
@@ -263,7 +286,7 @@ const SalesTable = (props) => {
       name !== "tax_gst" &&
       name !== "rate" &&
       name !== "discount_1_percentage" &&
-      data?.name !== "name" && 
+      data?.name !== "name" &&
       name !== "quantity"
     ) {
       if (tempItem.gross && tempItem.tax_gst) {
@@ -380,8 +403,7 @@ const SalesTable = (props) => {
       if (tempItem.tax_gst) {
         let totalTaxAmnt = +tempItem.tax_gst * (+tempItem.value / 100);
         let sgst = (totalTaxAmnt / 2)?.toFixed(2);
-        let isVat = tableHeadList?.filter((x) => x.state == "vat")[0]
-          ?.visible;
+        let isVat = tableHeadList?.filter((x) => x.state == "vat")[0]?.visible;
         value = {
           ...value,
           ["total"]: +tempItem.value + sgst * 2,
@@ -404,7 +426,7 @@ const SalesTable = (props) => {
           };
         }
       } else {
-        value = { ...value, cgst_or_igst: 0, sgst: 0,vat_perc:0 };
+        value = { ...value, cgst_or_igst: 0, sgst: 0, vat_perc: 0 };
       }
 
       tempItem = { ...tempItem, ...value };
@@ -441,6 +463,11 @@ const SalesTable = (props) => {
       );
     });
   };
+
+  const handleKeyDownOnDrop = (e) =>{
+    console.log("fdsfdsf")
+    console.log(e)
+  } 
 
   const handlePrev = () => {
     if (salesList?.length > 0) {
@@ -496,7 +523,12 @@ const SalesTable = (props) => {
                 tableHeadList.map((item, i) => {
                   if (item.visible && item.saleShow)
                     return i === 0 ? (
-                      <th key={i} width="200" className="text-start" colSpan={1}>
+                      <th
+                        key={i}
+                        width="200"
+                        className="text-start"
+                        colSpan={1}
+                      >
                         {item.title}
                       </th>
                     ) : (
@@ -650,31 +682,48 @@ const SalesTable = (props) => {
                         <Dropdown
                           clearable
                           // onClick={()=>setShowStock(data=>!data)}
-                          onClose={()=>setShowStock(!showStock)}
+                          // onClose={(e) => {
+                          //   if (itemSelected) setShowStock(true);
+                          // }}
+                          onChange={(e, data) =>
+                            handleSelectItemFromDrop(e, data, tableItem, true)
+                          }
                           selection
                           required
+                          // onLabelClick={e=>{if(itemSelected){setShowStock(true); handleKeyDown(e)}}}
                           upward={salesAdd.total_items > 4 ? true : false}
                           // scrolling
                           search={search}
                           placeholder="SELECT"
                           className="purchase_search_drop border-0 w-100 ps-2"
                           onKeyDown={handleKeyDown}
+                          // onClick={handleKeyDownOnDrop}
                           allowAdditions
+                          compact
                           id="tableItemFkItem"
                           // onAddItem={handleItemNameSelection}
                           name={"name"}
-                          onChange={
-                            (e, data) =>
-                              handleChangeTableItem(e, data, tableItem, true)
-                            // handleItemNameSelection(e,data)
-                          }
-                          value={
-                            tableItem.fk_items === "" || tableItem.fk_items
-                              ? tableItem.fk_items
-                              : ""
-                          }
+                          // onChange={
+                          //   (e, data) =>
+                          //     handleChangeTableItem(e, data, tableItem, true)
+                          //   // handleItemNameSelection(e,data)
+                          // }
+                          // value={
+                          //   tableItem.fk_items === "" || tableItem.fk_items
+                          //     ? tableItem.fk_items
+                          //     : ""
+                          // }
+                          value={itemSelected.item_code}
                           options={itemNameList}
-                        />
+                        >
+                          {/* <Dropdown.Menu>
+                            {itemNameList.map((data) => (
+                              <Dropdown.Item className="d-flex justify-content-between w-100 ">
+                                {data.text}{data.value}
+                              </Dropdown.Item>
+                            ))}
+                          </Dropdown.Menu> */}
+                        </Dropdown>
                       </td>
                     ) : item.state === "fk_unit" ? (
                       <td key={i} colSpan={i === 0 ? 2 : 1}>
@@ -724,11 +773,19 @@ const SalesTable = (props) => {
                           //     ? tableItem[item.state]
                           //     : ""
                           // }
-                          value={                            
-                            tableItem[item.state === 'vat'?'tax_gst':item.state] === "" ||
-                            tableItem[item.state === 'vat'?'tax_gst':item.state] ||
-                            tableItem[item.state === 'vat'?'tax_gst':item.state] === 0
-                              ? tableItem[item.state === 'vat'?'tax_gst':item.state]
+                          value={
+                            tableItem[
+                              item.state === "vat" ? "tax_gst" : item.state
+                            ] === "" ||
+                            tableItem[
+                              item.state === "vat" ? "tax_gst" : item.state
+                            ] ||
+                            tableItem[
+                              item.state === "vat" ? "tax_gst" : item.state
+                            ] === 0
+                              ? tableItem[
+                                  item.state === "vat" ? "tax_gst" : item.state
+                                ]
                               : ""
                           }
                           type="number"
@@ -847,6 +904,23 @@ const SalesTable = (props) => {
           <div className="col-7">.00</div>
         </div>
       </div>
+      <Modal
+        show={showStock}
+        size="lg"
+        centered
+        onHide={() => setShowStock(false)}
+      >
+        <StockPop
+          {...{
+            itemSelected,
+            setTableItem,
+            tableItem,
+            setShowStock,
+            showStock,
+            handleChangeTableItem,
+          }}
+        />
+      </Modal>
     </>
   );
 };

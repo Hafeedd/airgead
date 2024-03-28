@@ -55,7 +55,7 @@ const useSalesServices = () => {
 
     // get item list  
     const getSalesItem = async (id) =>{
-        const response = await axios.get('/sales/item_select/?activity_code=1471')
+        const response = await axios.get('/sales/sales/item_select/?activity_code=1471')
         return response.data
     }
 

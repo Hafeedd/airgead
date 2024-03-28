@@ -1,41 +1,57 @@
+import dayjs from "dayjs";
 import React from "react";
 import { useNavigate } from "react-router";
 
 export const StockPop = (props) => {
-  const { itemNameList, setTableItem, tableItem ,setShowStock} = props;
-  
-  const navigate = useNavigate()
-  
+  const {
+    itemSelected,
+    showStock,
+    setTableItem,
+    tableItem,
+    setShowStock,
+    handleChangeTableItem,
+  } = props;
+
+  const navigate = useNavigate();
+
   const handleSelect = (data) => {
-    let tempItem = {...tableItem}
-    tempItem = tempItem.map(x=>{
-      let a = {}
-      if(x == null ){
-        a[x] = 0
-      }else{
-        a[x] = x
-      }
-      
-    })
-    if (data) {
-      console.log(data)
-      // let data = data.options.filter((x) => x?.value === data?.value)[0];
-      tempItem = {
-        ...tempItem,...data,
-        sales_rate:data.retail_rate,
-        item_name: data?.text,
-        code: data?.description,
-        fk_items: data?.value,
-        unit: data?.unit,
-      };
-      setTableItem({ ...tempItem });
-    }
-    setShowStock(false)
+    // let tempItem = {...tableItem}
+    // tempItem = tempItem.map(x=>{
+    //   let a = {}
+    //   if(x == null ){
+    //     a[x] = 0
+    //   }else{
+    //     a[x] = x
+    //   }
+
+    // })
+
+    // if (data) {
+    //   console.log(data)
+    //   // let data = data.options.filter((x) => x?.value === data?.value)[0];
+    //   tempItem = {
+    //     ...tempItem,...data,
+    //     sales_rate:data.retail_rate,
+    //     item_name: data?.text,
+    //     code: data?.description,
+    //     fk_items: data?.value,
+    //     unit: data?.unit,
+    //   };
+    //   setTableItem({ ...tempItem });
+    // }
+    handleChangeTableItem(
+      itemSelected.e,
+      data,
+      itemSelected.state,
+      itemSelected.toTableItem,
+      true
+    );
+    setShowStock(false);
   };
 
   const AdjustTableHeight = () => {
     let a = [];
-    for (let i = 0; i < 9 - itemNameList.length || 0; i++)
+    for (let i = 0; i < 9 - itemSelected?.data?.batch_list?.length || 0; i++)
       a.push(
         <tr className="border-0">
           <td
@@ -52,7 +68,12 @@ export const StockPop = (props) => {
     <div className="rounded-1">
       <div className="bg-dark rounded-top-1 text-light p-2 px-3 fs-5 d-flex align-items-center justify-content-between">
         Select Stock
-        <div className="btn btn-light text-dark col-2" onClick={()=>navigate('/add')}>Add Item</div>
+        <div
+          className="btn btn-light text-dark col-2"
+          onClick={() => navigate("/add")}
+        >
+          Add Item
+        </div>
       </div>
       <div className="stock-body px-3">
         <table className="table stock-pop mt-3">
@@ -67,13 +88,18 @@ export const StockPop = (props) => {
             </tr>
           </thead>
           <tbody>
-            {itemNameList.length > 0 ? (
-              itemNameList.map((data, key) => (
-                <tr className="tr-with-data" onClick={()=>handleSelect(data)}>
+            {itemSelected?.data?.batch_list?.length > 0 ? (
+              itemSelected?.data?.batch_list?.map((data, key) => (
+                <tr className="tr-with-data" onClick={() => handleSelect(data)}>
                   <td>{key + 1}</td>
                   <td>{data?.code}</td>
-                  <td>{data?.name}</td>
-                  <td>{data?.retail_rate}</td>
+                  <td>{data?.item_name}</td>
+                  <td>{data?.sales_rate}</td>
+                  <td>
+                    {data?.expiry_date
+                      ? dayjs(data?.expiry_date).format("DD-MM-YYYY")
+                      : ""}
+                  </td>
                   <td>{data?.sock || 0}</td>
                 </tr>
               ))
@@ -89,7 +115,9 @@ export const StockPop = (props) => {
         </table>
       </div>
       <div className="text-end px-3 mb-2">
-        <div onClick={()=>setShowStock(false)} className="btn btn-dark col-2">Close</div>
+        <div onClick={() => setShowStock(false)} className="btn btn-dark col-2">
+          Close
+        </div>
       </div>
     </div>
   );

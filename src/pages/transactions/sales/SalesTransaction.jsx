@@ -21,8 +21,6 @@ import { StockJournalEdit } from "../stockjurnal/components/StockJournalEdit";
 import { useSalesReturnServices } from "../../../services/transactions/salesReturnService";
 import { initialSalesState, initialTableItemState } from "./initialData/data";
 import { useSalesOrderServices } from "../../../services/transactions/salesOrderServices";
-import { SalesItemBactch } from "./components/SalesItemBactch";
-import { StockPop } from "../purchase/components/StockPop";
 
 export const initialSalesTableStatePositionLocal = JSON.parse(
   localStorage.getItem("initialSalesTableStatePositionLocal")
@@ -41,10 +39,8 @@ const SalesTransaction = ({ returnPage, orderPage }) => {
   const [billType, setBillType] = useState([]);
   const [orderDocList, setOrderDocList] = useState([]);
   const [codeWithBillTypeList, setCodeWithBillTypeList] = useState([]);
-  const [itemNameList, setItemNameList] = useState([]);
   const [showPrint, setShowPrint] = useState(false);
-  const [bankSelect, setBankSelect] = useState(false);
-  const [showStock, setShowStock] = useState(false);
+  const [bankSelect, setBankSelect] = useState(false);  
   const [cstClsOpn, setCstClsOpn] = useState({
     opening: null,
     closing: null,
@@ -915,8 +911,7 @@ const SalesTransaction = ({ returnPage, orderPage }) => {
             edit,
             setEdit,
             handleSalesAllReset,
-            tableItemList,
-            setShowStock,
+            tableItemList,            
             salesList,
             setTableItemList,
             handleTableItemReset,
@@ -968,16 +963,7 @@ const SalesTransaction = ({ returnPage, orderPage }) => {
           {...{ handleSetEdit, setSalesEditModal, getData, setEdit, edit }}
         />
       </Modal>
-      <Modal
-        show={showStock||true}
-        size="lg"
-        centered
-        onHide={() => setShowStock(false)}
-      >
-        <StockPop
-          {...{ itemNameList, setTableItem, tableItem, setShowStock }}
-        />
-      </Modal>
+      
       <Modal
         show={showPrint}
         centered
