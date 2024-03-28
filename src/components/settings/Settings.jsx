@@ -10,6 +10,7 @@ import { useNavigate } from 'react-router'
 import { logout } from '../../redux/authSlice'
 import { MdLogout } from "react-icons/md";
 import { MEDIA_URL } from '../../api/axios'
+import userImg from '../../assets/icons/lucide_user.png'
 
 export const Settings = (props) => {
     const auth = useSelector(state => state.auth)
@@ -60,6 +61,11 @@ export const Settings = (props) => {
             <div onClick={()=>navigate('/code-configuration')} className="settings-item mt-5">
                 <img src={CodeIcon} alt='access perm' />
                 Code Configuration
+            </div>
+
+            <div onClick={()=>navigate('/user-list')} className="settings-item mt-5">
+                <img src={userImg} alt='access perm' />
+                User Register
             </div>
             {/* <div onClick={handleLogout} className="settings-item mt-5">
                 <img src={IdConf} alt='access perm' />
