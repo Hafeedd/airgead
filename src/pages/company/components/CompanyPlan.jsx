@@ -46,9 +46,11 @@ export const CompanyPayment = (props) => {
         filteredList.push({ code:item.code,parent:item.parent })
       }
     })
-    // console.log(filteredList.every(i=>tempList.findIndex(x=>x.code==i.code)>-1))
-    if(filteredList.every(i=>tempList.findIndex(x=>x.code==i.code)>-1)){
-      tempList = tempList.filter(x=>filteredList.findIndex(i=>x.code==i.code)==-1&&tempList.findIndex(i=>i.code==x.parent) == -1)
+    // console.log(filteredList.every(i=>tempList.findIndex(x=>x.code==i.code)>-1))  
+    if(filteredList.some(i=>tempList.findIndex(x=>x.code==i.code)>-1) && !data?.parent){
+      tempList = tempList.filter(x=>filteredList.findIndex(i=>i.code===x.code)==-1)
+    }else if(tempList.some(i=>i.code==data.code)&& data?.parent){
+      tempList = tempList.filter(x=>x.code!==data.code)
     }else{
       tempList = [...tempList,...filteredList]
     }
@@ -65,7 +67,7 @@ export const CompanyPayment = (props) => {
     try {
       let tempCompanyPlan = {
         ...companyPlan,
-        modules: moduleCodeList.map(data => ({ code: data, "is_active": true }))
+        modules: moduleCodeList.map(data => ({ code: data.code, "is_active": true }))
       }
       setLoading(true)
       const response = await postCompanyPlan(companyId, tempCompanyPlan)
@@ -135,7 +137,7 @@ export const CompanyPayment = (props) => {
           Modules{" "}
           <div onClick={() => setShowModules(true)} className="company-plan-btn btn module">Choose Modules</div>{" "}
         </div>
-        <div className="module-cont">
+        <div className="module-cont w-100">
           {companyModules.map(data => {
 
             return moduleCodeList.findIndex(item => item.code === data.code) > -1 && <div onClick={() => handleModuleSelection(data)}

@@ -6,23 +6,44 @@ import { useLocation } from "react-router";
 
 export const CompanyAdd = () => {
   const [active, setActive] = useState(2);
-  const [companyId, setCompanyId] = useState(null)
-  const [edit, setEdit] = useState(false)
-  const [moduleCodeList, setModuleCodeList] = useState([])
+  const [companyId, setCompanyId] = useState(null);
+  const [edit, setEdit] = useState(false);
+  const [moduleCodeList, setModuleCodeList] = useState([]);
+  const [company, setCompany] = useState({
+    first_name: null,
+    last_name: null,
+    mobile: null,
+    email: null,
+    group_name: null,
+    logo: null,
+    logo_url: null,
+    address_line_1: null,
+    address_line_2: null,
+    country: null,
+    location: null,
+    state: null,
+    district: null,
+    city: null,
+    pincode: null,
+    username: null,
+    password: null,
+    image: null,
+    image_url: null,
+  });
 
-  const location = useLocation()
+  const location = useLocation();
 
   useEffect(() => {
-    if (location?.state?.company)
-      setEdit(location.state.company)
-  }, [location.state])
+    if (location?.state?.company) setEdit(location.state.company);
+  }, [location.state]);
 
   return (
     <div className="company-add-cont pb-1">
       <div className={`company-progress-bar row mx-0 rounded-2`}>
         <span
-          className={`company-progress-loader ${active > 1 && "act2"} ${active > 2 && "act3"
-            }`}
+          className={`company-progress-loader ${active > 1 && "act2"} ${
+            active > 2 && "act3"
+          }`}
         >
           <div className="circle"></div>
           <div className="circle animation2"></div>
@@ -34,20 +55,21 @@ export const CompanyAdd = () => {
         >
           1. Basic Details
         </div>
-        {location.pathname !='/user-add'?
+        {location.pathname != "/user-add" ? (
           <div
-          className={`col-3 col-4 bar-text ${active > 1 && "active"}`}
-          style={{ zIndex: "3" }}
-        >
-          2. Plan Details
-        </div>
-        :
-        <div
-          className={`col-3 col-4 bar-text ${active > 1 && "active"}`}
-          style={{ zIndex: "3" }}
-        >
-          2. Modules
-        </div>}
+            className={`col-3 col-4 bar-text ${active > 1 && "active"}`}
+            style={{ zIndex: "3" }}
+          >
+            2. Plan Details
+          </div>
+        ) : (
+          <div
+            className={`col-3 col-4 bar-text ${active > 1 && "active"}`}
+            style={{ zIndex: "3" }}
+          >
+            2. Modules
+          </div>
+        )}
         {/* <div
           className={`col-4 bar-text ${active > 2 && "active"}`}
           style={{ zIndex: "3" }}
@@ -56,18 +78,60 @@ export const CompanyAdd = () => {
         </div> */}
       </div>
       <div className="company-add">
-        <h3>{location.pathname != '/user-add' ? (active === 1 ? "Company Details" : active === 2 ? "Company Plan Details" : active === 3 && "Access Permissions") : (active === 1 ? 'User Details' : active === 3 ? "Access Permissions" : '') }</h3>
+        <h3>
+          {location.pathname != "/user-add"
+            ? active === 1
+              ? "Company Details"
+              : active === 2
+              ? "Company Plan Details"
+              : active === 3 && "Access Permissions"
+            : active === 1
+            ? "User Details"
+            : active === 3
+            ? "Access Permissions"
+            : ""}
+        </h3>
         {/* <div className="company-details-cont row justify-content-between mx-0 my-2 p-0"> */}
         {active === 2 ? (
-          <CompanyPayment {...{moduleCodeList, setModuleCodeList, edit, active, setActive, companyId, setCompanyId }} />
+          <CompanyPayment
+            {...{
+              moduleCodeList,
+              setModuleCodeList,
+              edit,
+              active,
+              setActive,
+              companyId,
+              setCompanyId,
+            }}
+          />
         ) : active === 3 ? (
-          <CompanyPermission {...{moduleCodeList, setModuleCodeList, companyId, edit,setEdit,setCompanyId,setActive }} />
-        ) :
-          <CompanyDetails {...{ edit, active, setActive, setCompanyId,setEdit ,location}} />
-        }
+          <CompanyPermission
+            {...{
+              moduleCodeList,
+              setModuleCodeList,
+              companyId,
+              edit,
+              setEdit,
+              setCompanyId,
+              setActive,
+            }}
+          />
+        ) : (
+          <CompanyDetails
+            {...{
+              edit,
+              active,
+              setActive,
+              setCompanyId,
+              setEdit,
+              location,
+              company,
+              setCompany,
+            }}
+          />
+        )}
         {/* </div> */}
       </div>
-
     </div>
   );
 };

@@ -184,10 +184,11 @@ const SalesTable = (props) => {
     handleTableItemReset();
   };
 
-  const handleKeyDownStockPopup = (e) =>{
+  const handleKeyDownStockPopup = (e,fromList) =>{
     if(e.type === 'keydown' && e.code === 'Enter'){
       setShowStock(true)
-      handleKeyDown(e)
+      if(fromList) handleKeyDown2(e)
+      else handleKeyDown(e)
     }
   }
 
@@ -201,8 +202,10 @@ const SalesTable = (props) => {
       if (newObj) {
         newObj.code = itemSelected.item_code;
         setItemSelected({ data: newObj, ...{ e, state, toTableItem } });
-      } else handleTableItemReset();
+      }
       if (e?.type == "click") handleKeyDown(e);
+    }else{
+      handleTableItemReset()
     }
   };
 
@@ -220,7 +223,6 @@ const SalesTable = (props) => {
           Object.entries(item_data)?.filter(([key, value]) => value !== null)
         );
       } else newObj = data;
-      // console.log(newObj)
       let {
         id,
         code,
@@ -255,6 +257,7 @@ const SalesTable = (props) => {
         ...others,
         item_name: newObj?.text,
         code: newObj?.description,
+        fk_item: batch ? newObj?.code : newObj?.value,
         fk_items: batch ? newObj?.code : newObj?.value,
         sales_rate: sales_rate || 0,
         rate: sales_rate || 0,
@@ -598,16 +601,20 @@ const SalesTable = (props) => {
                               <td className="text-start ps-3 pe-3" colSpan={1}>
                                 <Dropdown
                                   // onClick={()=>setShowStock(data=>!data)}
-                                  selection
+                                  // onChange={(e, a) =>
+                                  //   handleChangeTableItem(e, a, data, i)
+                                  // }
+                                  // onKeyDown={handleKeyDown2}
                                   onChange={(e, a) =>
-                                    handleChangeTableItem(e, a, data, i)
+                                    handleSelectItemFromDrop(e, a, data, i)
                                   }
-                                  required
+                                  
+                                  onKeyDown={(e)=>handleKeyDownStockPopup(e,true)}
+                                  selection
                                   upward={
                                     salesAdd.total_items > 4 ? true : false
                                   }
                                   search={search}
-                                  onKeyDown={handleKeyDown2}
                                   placeholder="SELECT"
                                   className="purchase_search_drop border-0 w-100 ps-2"
                                   name={"name"}
@@ -694,16 +701,13 @@ const SalesTable = (props) => {
                           onChange={(e, data) =>
                             handleSelectItemFromDrop(e, data, tableItem, true)
                           }
+                          onKeyDown={handleKeyDownStockPopup}
                           selection
                           required
                           upward={salesAdd.total_items > 4 ? true : false}
                           search={search} 
                           placeholder="SELECT"
-                          onFocus={()=>setDropdownOpen(true)}
-                          onBlur={()=>setDropdownOpen(false)}
                           className="purchase_search_drop border-0 w-100 ps-2"
-                          open={dropdownOpen}
-                          onKeyDown={handleKeyDownStockPopup}
                           id="tableItemFkItem"
                           name={"name"}
                           // onChange={
@@ -716,7 +720,7 @@ const SalesTable = (props) => {
                           //     ? tableItem.fk_items
                           //     : ""
                           // }
-                          value={itemSelected.item_code}
+                          value={tableItem.fk_items}
                           options={itemNameList}
                         >
                           {/* <Dropdown.Menu>
