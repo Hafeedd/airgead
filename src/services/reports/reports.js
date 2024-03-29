@@ -213,6 +213,14 @@ export const useReportsServices = () => {
     return response?.data;
   };
 
+  const batchWiseStockReport = async (params) => {
+    const response = await axios.get(
+      "/reports/batch_items/report/?activity_code=1472",
+      { params: params }
+    );
+    return response?.data;
+  };
+
   return {
     getStockLedger,
     getAccLedger,
@@ -240,6 +248,7 @@ export const useReportsServices = () => {
     getBalanceSheet,
     getGroupBalanceSheet,
     getTaridProfitLoss,
-    getChartOfAccount
+    getChartOfAccount,
+    batchWiseStockReport
   };
 };

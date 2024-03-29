@@ -21,6 +21,7 @@ export const companyModules = [
   { name: 'Supplier', code: 128, parent: 124, primary: 'NO' },
   // { name: 'Material Composition', code: 168, parent: 167, primary: 'NO' },
   { name: 'Staff', code: 137, icon: 'https://icons.foxa.in/media/icons/document-signed_p9I0WXo.svg', primary: 'YES' },
+  { name: 'Dashboard', code: 174, primary: 'YES' },
 ]
 
 export const permissions =
