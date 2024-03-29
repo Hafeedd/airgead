@@ -509,7 +509,6 @@ const SalesTransaction = ({ returnPage, orderPage }) => {
         response1 = await getSalesOrderList();
       }
       if (response1?.success && response2?.success && returnPage) {
-        console.log(response2?.data);
         setSalesOnlyList(response2?.data);
         setSalesList(response1?.data);
       } else if (response2?.success) {
@@ -691,9 +690,10 @@ const SalesTransaction = ({ returnPage, orderPage }) => {
       }
       if (response?.success) {
         getData();
+        // handleGetCode();
         setShowPrint(true);
-        // if(!returnPage && !orderPage)
-        //   handleGetCode()
+        if(!returnPage && !orderPage)
+          handleGetCode()
         // else
         //   handleGetSalesReturnCode()
         Swal.fire(

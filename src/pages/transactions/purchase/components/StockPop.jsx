@@ -8,7 +8,7 @@ export const StockPop = (props) => {
     setShowStock,
     handleChangeTableItem,
     handleKeyDown,
-    setDropdownOpen
+    setDropdownOpen,
   } = props;
 
   const navigate = useNavigate();
@@ -45,7 +45,7 @@ export const StockPop = (props) => {
       itemSelected.toTableItem,
       true
     );
-    setDropdownOpen(false)
+    setDropdownOpen(false);
     setShowStock(false);
   };
 
@@ -91,7 +91,15 @@ export const StockPop = (props) => {
           <tbody>
             {itemSelected?.data?.batch_list?.length > 0 ? (
               itemSelected?.data?.batch_list?.map((data, key) => (
-                <tr className="tr-with-data" onClick={() => handleSelect(data)}>
+                <tr
+                  className="tr-with-data"
+                  onClick={() =>
+                    handleSelect({
+                      ...data,
+                      parentId: itemSelected?.data.item_id,
+                    })
+                  }
+                >
                   <td>{key + 1}</td>
                   <td>{data?.code}</td>
                   <td>{data?.item_name}</td>

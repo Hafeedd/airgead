@@ -97,6 +97,7 @@ export const CompanyPayment = (props) => {
           onChange={(val) => handleChange(val, 'renewal_date')}
           className="company-input-field my-3"
           label="Renewal Date"
+          
           variant="outlined"
         />
         <TimePicker

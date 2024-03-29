@@ -30,7 +30,8 @@ export const useCompanyServices = () => {
   
   // update company detials
   const companyUpdate = async (id,data) => {
-    const resp = await axiosPrivate.put(`controller/company/${id}/`,data);
+    const resp = await axiosPrivate.put(`controller/company/${id}/`,data,
+    {headers:{'Content-Type': 'multipart/form-data'}});
     return resp.data;
   };
 

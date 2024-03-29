@@ -74,11 +74,12 @@ const SalesTable = (props) => {
     let tempList = [];
     data?.map((x) => {
       const { id, code, name, ...others } = x;
+      console.log(x.item_id)
       tempList.push({
         ...others,
         text: x.item_name,
         description: x.item_code,
-        value: x.item_code,
+        value: x.item_id,
         content: (
           <Dropdown.Item onClick={()=>setShowStock(true)}>{x.item_name}</Dropdown.Item>
         ),
@@ -184,8 +185,20 @@ const SalesTable = (props) => {
     handleTableItemReset();
   };
 
+  const handleDropOpen = (e,item,state,toTableItem) =>{
+    // console.log(item.options,state.fk_item)
+    let data = item?.options[0]
+    if(state.fk_items){
+      data = item?.options?.filter(x=>x.value==state.fk_items)[0]
+    }
+    if(data){
+      setItemSelected({data, e, state, toTableItem } )
+    }
+  }
+
+
   const handleKeyDownStockPopup = (e,fromList) =>{
-    if(e.type === 'keydown' && e.code === 'Enter'){
+    if(e?.type === 'keydown' && e?.code === 'Enter'){      
       setShowStock(true)
       if(fromList) handleKeyDown2(e)
       else handleKeyDown(e)
@@ -257,8 +270,8 @@ const SalesTable = (props) => {
         ...others,
         item_name: newObj?.text,
         code: newObj?.description,
-        fk_item: batch ? newObj?.code : newObj?.value,
-        fk_items: batch ? newObj?.code : newObj?.value,
+        fk_items: batch ? newObj?.parentId : newObj?.value,
+        // fk_item: batch ? newObj?.code : newObj?.value,
         sales_rate: sales_rate || 0,
         rate: sales_rate || 0,
         gross: gross || 0,
@@ -290,7 +303,7 @@ const SalesTable = (props) => {
   };
 
   const handleAmountCalculation = (tempItem, e, data) => {
-    let name = e.target.name;
+    let name = e?.target?.name;
     let value = {};
     let total, cost;
 
@@ -608,7 +621,7 @@ const SalesTable = (props) => {
                                   onChange={(e, a) =>
                                     handleSelectItemFromDrop(e, a, data, i)
                                   }
-                                  
+                                  onOpen={(e,a)=>handleDropOpen(e,a,data,false)}
                                   onKeyDown={(e)=>handleKeyDownStockPopup(e,true)}
                                   selection
                                   upward={
@@ -701,7 +714,8 @@ const SalesTable = (props) => {
                           onChange={(e, data) =>
                             handleSelectItemFromDrop(e, data, tableItem, true)
                           }
-                          onKeyDown={handleKeyDownStockPopup}
+                          onOpen={(e,data)=>handleDropOpen(e,data,tableItem,true)}
+                          onKeyDown={(e)=>handleKeyDownStockPopup(e)}
                           selection
                           required
                           upward={salesAdd.total_items > 4 ? true : false}
