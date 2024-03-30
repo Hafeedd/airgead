@@ -10,8 +10,20 @@ export const useBaseServices = () => {
         return response?.data;
     };
 
+    const postIdConfiguration = async (data)=>{
+        const response = await axios.post('id_configurations/',data)
+        return response.data
+    }
+  
+    const getIdConfiguration = async (data)=>{
+        const response = await axios.get('id_configurations/')
+        return response.data
+    }
+
     return{
         getDashBoard,
+        postIdConfiguration,
+        getIdConfiguration
     };
 
 

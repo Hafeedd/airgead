@@ -77,7 +77,11 @@ function App() {
               <Route path="/bad-gateway" element={<BadGateway />} />
               <Route element={<CheckAuth userType='Controller Agency Company' />}>
                 <Route index element={<DirectToMainPage />} />
+
                 <Route path="/profile" element={<Profile />} />
+                <Route path="/code-configuration" element={<IdCodeConfig />} />
+                <Route path="/id-configuration" element={<IdCodeConfig />} />
+
                 <Route element={<CheckAuth userType='Controller' />}>
                   {/* <Route path="/company-list" element={<CompanyMain />} /> */}
                   <Route path='/company-add' element={<CompanyMain />} />
@@ -147,10 +151,7 @@ function App() {
                   <Route path="/balance-sheet" element={<BalanceSheet />} />
                   <Route path="/traid-profit-loss" element={<TraidProfitLoss />} />
 
-                  <Route path="/chart-of/account" element={<ChartOfAccount />} />
-                  
-                  <Route path="/code-configuration" element={<IdCodeConfig />} />
-
+                  <Route path="/chart-of/account" element={<ChartOfAccount />} />                
                 </Route>
               </Route>
             </Route>

@@ -101,7 +101,7 @@ export const CompanyPayment = (props) => {
           variant="outlined"
         />
         <TimePicker
-          slotProps={{ textField: { size: 'small', required: true } }}
+          slotProps={{ textField: { size: 'small'} }}
           name="renewal_time"
           value={companyPlan.renewal_time ? dayjs(companyPlan.renewal_time, 'HH:mm') : null}
           format="HH:mm"
@@ -111,7 +111,7 @@ export const CompanyPayment = (props) => {
           variant="outlined"
         />
         <DatePicker
-          slotProps={{ textField: { size: 'small', required: true } }}
+          slotProps={{ textField: { size: 'small'} }}
           name="extended_date"
           value={companyPlan.extended_date ? dayjs(companyPlan.extended_date).format('YYYY-MM-DD') : null}
           format="DD/MM/YYYY"

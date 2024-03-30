@@ -433,7 +433,6 @@ export const CompanyDetails = (props) => {
         />
         <TextField
           name="last_name"
-          required
           value={company.last_name || ""}
           onChange={handleChange}
           className="company-input-field my-3"
