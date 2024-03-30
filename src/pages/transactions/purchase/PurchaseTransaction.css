@@ -585,6 +585,9 @@ td.n_clr {
 .stock-pop.table tbody tr.tr-with-data:hover td {
   background: rgb(204, 204, 204) !important;
 }
+.stock-pop.table tbody tr.tr-with-data.active td {
+  background: rgb(204, 204, 204) !important;
+}
 
 .purchase-bank-drop,
 .purchase-bank-drop input {
@@ -662,4 +665,14 @@ td.n_clr {
   background: #3c8748;
   padding: 1rem;
   color: white;
+}
+
+#tr-input-width-data, #tr-input-width-data:focus{
+  width: fit-content !important;
+  background: transparent !important;
+  border: none !important;
+  cursor:default !important;
+  outline: none !important;
+  caret-color: transparent;
+  color: white !important;
 }

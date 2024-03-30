@@ -1,15 +1,38 @@
 import dayjs from "dayjs";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 
 export const StockPop = (props) => {
   const {
+    handleKeyDown,
     itemSelected,
     setShowStock,
     handleChangeTableItem,
-    handleKeyDown,
     setDropdownOpen,
   } = props;
+
+  const [selectedId, setSelectedId] = useState(0);
+
+  useEffect(() => {
+    document.getElementById("tr-input-width-data")?.focus();
+  }, []);
+
+  const handleArrowNav = (e) => {
+    if (
+      e.key === "ArrowDown" &&
+      selectedId < itemSelected?.data?.batch_list?.length - 1
+    ) {
+      e.preventDefault();
+      setSelectedId((data) => data + 1);
+    }
+    if (e.key === "ArrowUp" && selectedId > 0) {
+      e.preventDefault();
+      setSelectedId((data) => data - 1);
+    }
+    if (e.key === "Enter") {
+      handleSelect(itemSelected?.data?.batch_list[selectedId]);
+    }
+  };
 
   const navigate = useNavigate();
 
@@ -67,7 +90,9 @@ export const StockPop = (props) => {
   return (
     <div className="rounded-1">
       <div className="bg-dark rounded-top-1 text-light p-2 px-3 fs-5 d-flex align-items-center justify-content-between">
-        Select Stock
+        Select Stock Of &nbsp;
+        {itemSelected?.data?.item_name} &emsp;
+        {itemSelected?.data?.item_code}
         <div
           className="btn btn-light text-dark col-2"
           onClick={() => navigate("/add")}
@@ -75,16 +100,23 @@ export const StockPop = (props) => {
           Add Item
         </div>
       </div>
-      <div className="stock-body px-3">
+      <label htmlFor="tr-input-width-data" className="stock-body w-100 px-3">
         <table className="table stock-pop mt-3">
           <thead className="rounded-top-2">
             <tr>
-              <th className="rounded-top-2 rounded-end-0">SL</th>
-              <th width="110">Code</th>
-              <th>Item Name</th>
+              <th className="rounded-top-2 rounded-end-0">
+                <button
+                  onKeyDown={handleArrowNav}
+                  id={"tr-input-width-data"}
+                >
+                  SL
+                </button>
+              </th>
+              <th>Batch</th>
+              <th>Cost</th>
+              <th>Rate</th>
               <th>Retail Rate</th>
               <th>Exp Date</th>
-              <th>Batch</th>
               <th className="rounded-top-2 rounded-start-0">Stock</th>
             </tr>
           </thead>
@@ -92,7 +124,7 @@ export const StockPop = (props) => {
             {itemSelected?.data?.batch_list?.length > 0 ? (
               itemSelected?.data?.batch_list?.map((data, key) => (
                 <tr
-                  className="tr-with-data"
+                  className={`tr-with-data ${key == selectedId && "active"}`}
                   onClick={() =>
                     handleSelect({
                       ...data,
@@ -100,16 +132,23 @@ export const StockPop = (props) => {
                     })
                   }
                 >
-                  <td>{key + 1}</td>
-                  <td>{data?.code}</td>
-                  <td>{data?.item_name}</td>
+                  <td>
+                    {/* <input
+                    value={key+1}
+                    onClick={e=>(e.preventDefault())}
+                    onKeyDown={handleArrowNav}
+                    id={"tr-input-width-data"} /> */}
+                    {key + 1}
+                  </td>
+                  <td>{data?.batch_no}</td>
+                  <td>{data?.cost}</td>
+                  <td>{data?.rate}</td>
                   <td>{data?.sales_rate}</td>
                   <td>
                     {data?.expiry_date
                       ? dayjs(data?.expiry_date).format("DD-MM-YYYY")
                       : ""}
                   </td>
-                  <td>{data?.batch_no}</td>
                   <td>{data?.quantity || 0}</td>
                 </tr>
               ))
@@ -123,7 +162,7 @@ export const StockPop = (props) => {
             <AdjustTableHeight />
           </tbody>
         </table>
-      </div>
+      </label>
       <div className="text-end px-3 mb-2">
         <div onClick={() => setShowStock(false)} className="btn btn-dark col-2">
           Close

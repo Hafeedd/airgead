@@ -74,7 +74,6 @@ const SalesTable = (props) => {
     let tempList = [];
     data?.map((x) => {
       const { id, code, name, ...others } = x;
-      console.log(x.item_id)
       tempList.push({
         ...others,
         text: x.item_name,
