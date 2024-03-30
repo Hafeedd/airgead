@@ -55,6 +55,7 @@ import { IdCodeConfig } from "./pages/idCodeConfig/IdCodeConfig";
 import { Profile } from "./pages/profile/Profile";
 import { CompanyList } from "./pages/company/components/CompanyList";
 import { CompanyAdd } from "./pages/company/components/CompanyAdd";
+import { EmailConfig } from "./pages/emailConfig/EmailConfig";
 
 function App() {
   const userDetails = useSelector(state => state.auth.userDetails)
@@ -81,6 +82,7 @@ function App() {
                 <Route path="/profile" element={<Profile />} />
                 <Route path="/code-configuration" element={<IdCodeConfig />} />
                 <Route path="/id-configuration" element={<IdCodeConfig />} />
+                <Route path="/email-configuration" element={<EmailConfig />} />
 
                 <Route element={<CheckAuth userType='Controller' />}>
                   {/* <Route path="/company-list" element={<CompanyMain />} /> */}

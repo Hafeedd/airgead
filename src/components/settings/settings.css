@@ -16,6 +16,24 @@
     transition: width 0.2s ease-out;
 }
 
+/* .settings.controller,.settings.controller *{
+    background: white;
+    color: black;
+}
+.company-logo.company{
+    border: none !important;
+}
+
+.company-logo.controller .settings-item img{
+    -webkit-filter: invert(100%);
+      filter: invert(100%);
+} */
+
+.company-log.controller{
+    color: black !important;
+    border-image: radial-gradient(circle, rgb(255, 251, 251) 50%, #6f00ff 80%) !important;
+}
+
 .settings.active{
     width: 17rem;
     transition: font-size 0.2s, width 0.5s ease-out;
