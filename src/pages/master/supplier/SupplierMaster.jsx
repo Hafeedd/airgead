@@ -5,9 +5,11 @@ import { useNavigate, useLocation } from "react-router";
 import Swal from "sweetalert2";
 import useCustomerServices from "../../../services/master/customerServices";
 import { FiPlus } from "react-icons/fi";
+import { useSelector } from "react-redux";
 
 const SupplierMaster = () => {
   const [pageHeadItem, setPageHeadItem] = useState(1);
+  const permissions = useSelector((state) => state.auth.permissions);
   const [toEdit, setToEdit] = useState(false);
   const [loading, setLoading] = useState(false);
   const [listItem, setListItem] = useState();
@@ -77,7 +79,7 @@ const SupplierMaster = () => {
               location === "/supplier-add" && "d-none"
             }`}
           >
-            <div
+            {permissions.includes(1145)&&<div
               onClick={() => {
                 setToEdit(false);
                 navigate("/supplier-add");
@@ -86,7 +88,7 @@ const SupplierMaster = () => {
               style={{width:'fit-content'}}
             >
               <FiPlus size={'1.4rem'}/>&nbsp; Add Supplier
-            </div>
+            </div>}
           </div>
         </div>
       </div>
@@ -101,6 +103,7 @@ const SupplierMaster = () => {
               search,
               loading,
               setSearch,
+              permissions,
               getData,
               handleEdit,
               // handleDelete,

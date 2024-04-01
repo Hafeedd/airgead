@@ -7,7 +7,8 @@ import Swal from "sweetalert2";
 import useCustomerServices from "../../../../services/master/customerServices";
 
 const CustomerTable = (props) => {
-  const { list, handleEdit, loading, search, setSearch, getData } = props;
+  const { list, handleEdit, loading, search, permissions, setSearch, getData } =
+    props;
 
   const [searchedList, setSearchedList] = useState([]);
 
@@ -105,11 +106,15 @@ const CustomerTable = (props) => {
         style={{ borderRadius: "0.3125rem 0.3125rem 0rem 0rem" }}
       >
         {loading && (
-        <div className="loader-container w-100">
-          <div className="loader"></div>
-        </div>
-      )}
-        <table className={`table table-light custom-table  ${loading&& "loading-cont-par-blur"}`}>
+          <div className="loader-container w-100">
+            <div className="loader"></div>
+          </div>
+        )}
+        <table
+          className={`table table-light custom-table  ${
+            loading && "loading-cont-par-blur"
+          }`}
+        >
           <thead>
             <tr>
               {/* <th style={{borderTopLeftRadius: "0.3125rem"}}>No</th> */}
@@ -187,16 +192,16 @@ const CustomerTable = (props) => {
 
                     <td>
                       <div className="button d-flex gap-4 pe-3">
-                        <img
+                        {permissions.includes(1098)&&<img
                           src={deleteBtn}
                           alt="deletebtn"
                           onClick={(e) => handleDelete(data.id, e)}
-                        />
-                        <img
+                        />}
+                        {permissions.includes(1097)&&<img
                           src={editBtn}
                           alt="edit btn"
                           onClick={() => handleEdit(data)}
-                        />
+                        />}
                       </div>
                     </td>
                   </tr>

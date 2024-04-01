@@ -9,8 +9,8 @@ import deleteBtn from "../../../../assets/icons/delete.svg";
 const AccountList = (props) => {
   const {
     listItem,
+    permissions,
     handleEdit,
-    handleDelete,
     loading,
     toEdit,
     loadAccountList,
@@ -129,7 +129,7 @@ const AccountList = (props) => {
               <th style={{ width: "15rem" }}>Cl. Balance</th>
               {/* <th style={{ width: "1rem" }}></th> */}
               {/* <th style={{ width: "15rem" }}>Op. Balance</th> */}
-              <th
+              <th 
                 style={{ borderTopRightRadius: "0.3125rem", width: "5rem" }}
               ></th>
             </tr>
@@ -173,16 +173,16 @@ const AccountList = (props) => {
                     </td> */}
                     <td>
                       <div className="button pe-3 gap-4 d-flex">
-                        <img
+                        {permissions.includes(1085)&&<img
                           src={deleteBtn}
                           alt="delete_btn"
                           onClick={(e) => handleDelete(e)}
-                        />
-                        <img
+                        />}
+                       {permissions.includes(1084)&&<img
                           src={editIcon}
                           alt={"editbtn"}
                           onClick={(e) => handleEdit(data && data)}
-                        />
+                        />}
                       </div>
                     </td>
                   </tr>

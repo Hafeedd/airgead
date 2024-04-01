@@ -16,7 +16,7 @@
   
   .header {
     z-index: 1000;
-    height: 3.5rem;
+    height: 6.5vh;
     top: 0;
     position: sticky;
   }
@@ -46,7 +46,36 @@
   
   @media print {
     #new {
-      border: 1px solid black !important; /* Important for overriding defaults */
+      border: 1px solid black !important;
     }
   }
   
+
+  .heaader-user-cont {
+    background: #f6f6f6;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    font-size: 1.9vh !important;
+    gap: 10%;
+  }
+  
+  .header-user-prof-img {
+    border-radius: 0.2rem;
+    object-fit: cover;
+    width: 3vw;
+    height: 5.5vh;
+    color: black;
+  }
+  
+  .header-user-prof-img.company {
+    width: 3.5rem;
+    height: 3.5rem;
+  }
+  
+  .header-role-text {
+    color: gray;
+    font-weight: 400;
+    font-size: 1.7vh;
+  }

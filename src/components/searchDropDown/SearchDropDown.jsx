@@ -11,6 +11,7 @@ const SearchDropDown = ({
   setShowDropdown,
   handleKeyDown,
   noAdd,
+  isEditable,
   id,
   setDataValue,
   selectedValue,
@@ -134,11 +135,11 @@ const SearchDropDown = ({
                 tempList.map((item, i) => (
                   <div key={i} className="dropdown-add-item ms-0 mb-2 p-1 px-2">
                     {item.text}
-                    <img
+                    {isEditable&&<img
                       onClick={() => handleEdit(item)}
                       className="cursor"
                       src={editBtn}
-                    />
+                    />}
                   </div>
                 ))
               ) : (

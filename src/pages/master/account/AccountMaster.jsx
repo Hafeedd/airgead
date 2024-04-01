@@ -5,11 +5,13 @@ import AccountAdd from "./components/AccountAdd";
 import "./AccountMaster.css";
 import useAccountServices from "../../../services/master/accountServices";
 import { FiPlus } from "react-icons/fi";
+import { useSelector } from "react-redux";
 
 const AccountMaster = () => {
   const [toEdit, setToEdit] = useState(false);
   const [listItem, setListItem] = useState([]);
   const [loading, setLoading] = useState(false);
+  const permissions = useSelector((state) => state.auth.permissions);
   const navigate = useNavigate();
 
   const location = useLocation()
@@ -66,7 +68,7 @@ const AccountMaster = () => {
               location.pathname === "/account-add" && "d-none"
             }`}
           >
-            <div
+           {permissions.includes(1083) && <div
               onClick={() => {
                 navigate("/account-add");
                 setToEdit(false);
@@ -74,7 +76,7 @@ const AccountMaster = () => {
               className="h-auto add-btn px-2 btn w-auto"
             >
               <FiPlus size={'1.4rem'}/>&nbsp; Add Account
-            </div>
+            </div>}
           </div>
         </div>
       </div>
@@ -86,7 +88,7 @@ const AccountMaster = () => {
           setEdit={setToEdit}
         />
       ) : (
-        <AccountList {...{loadAccountList,loading, handleEdit, toEdit, listItem }} />
+        <AccountList {...{loadAccountList,loading, handleEdit, toEdit, listItem, permissions }} />
       )}
     </div>
   );

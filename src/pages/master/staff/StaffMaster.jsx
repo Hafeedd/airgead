@@ -9,8 +9,10 @@ import Swal from "sweetalert2";
 import { Modal } from "react-bootstrap";
 import { IdCodeConfigAdd } from "../../idCodeConfig/components/IdCodeConfigAdd";
 import {FiPlus} from 'react-icons/fi'
+import { useSelector } from "react-redux";
 
 const StaffMaster = () => {
+  const permissions = useSelector((state) => state.auth.permissions);
   const [search, setSearch] = useState();
   const [edit, setEdit] = useState();
   const [loading, setLoading] = useState(false);
@@ -95,12 +97,12 @@ const StaffMaster = () => {
           </div>
           {location.pathname !== "/staff-master" && (
             <div className="h-100 d-flex align-items-center">
-              <div
+              {permissions.includes(1317)&&<div
                 className="add-btn btn h-auto d-flex w-100"
                 onClick={() => navigate("/staff-master")}
               >
                 <FiPlus size={'1.4rem'}/>&nbsp; Add Staff
-              </div>
+              </div>}
             </div>
           )}
         </div>
@@ -109,6 +111,7 @@ const StaffMaster = () => {
         <div className="px-4">
           <StaffTable
             {...{
+              permissions,
               search,
               setSearch,
               loading,

@@ -11,9 +11,11 @@ import {
   initialBarcode,
   initialItemData,
 } from "../initialData/ItemData";
+import { useSelector } from "react-redux";
 
 export const ItemAddForm = ({ edit, refresh, setToEdit }) => {
   const [submitLoading, setSubmitLoading] = useState(false);
+  const permissions = useSelector((state) => state.auth.permissions);
   const [showDropdown, setShowDropdown] = useState("");
   const typesOptions = [
     { text: "PRODUCT", value: "PRODUCT" },
@@ -71,7 +73,7 @@ export const ItemAddForm = ({ edit, refresh, setToEdit }) => {
   } = useItemServices();
 
   const location = useLocation();
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   useEffect(() => {
     getData();
@@ -149,8 +151,7 @@ export const ItemAddForm = ({ edit, refresh, setToEdit }) => {
           if (!list[x.property_type]?.length > 0) {
             if (x.property_type !== "unit")
               list[x.property_type] = [{ value: null, text: "SELECT" }];
-            else
-              list[x.property_type] = [];
+            else list[x.property_type] = [];
             if (x.property_type === "unit") {
               list["transaction_unit"] = [];
             }
@@ -249,7 +250,7 @@ export const ItemAddForm = ({ edit, refresh, setToEdit }) => {
           setUnitEdit(false);
         } else {
         }
-      } catch (err) { }
+      } catch (err) {}
     } else if (edit && x.length > 3 && !barcodeShow) {
       try {
         const data = {
@@ -265,7 +266,7 @@ export const ItemAddForm = ({ edit, refresh, setToEdit }) => {
         } else {
           Swal.fire(res.message, "", "error");
         }
-      } catch (err) { }
+      } catch (err) {}
     } else if (
       unitConvShow &&
       unitConv.U_unit &&
@@ -379,14 +380,15 @@ export const ItemAddForm = ({ edit, refresh, setToEdit }) => {
           await deleteItem(res?.data?.id);
         }
         if (location?.state?.fromPurchase) {
-          navigate('/purchase-transaction', { state: { fromItemAdd: true, item: res?.data } })
-        } else
-          Swal.fire("Item Added Successfully", "", "success");
+          navigate("/purchase-transaction", {
+            state: { fromItemAdd: true, item: res?.data },
+          });
+        } else Swal.fire("Item Added Successfully", "", "success");
         handleReset();
       } else Swal.fire(res?.data[0], "", "error");
       setSubmitLoading(false);
     } catch (err) {
-      console.log(err)
+      console.log(err);
       setSubmitLoading(false);
       let a = Object.keys(err?.response?.data?.data || {});
       Swal.fire(a[0] + ` ${err?.response?.data?.data[a[0]][0]}`, "", "error");
@@ -492,118 +494,150 @@ export const ItemAddForm = ({ edit, refresh, setToEdit }) => {
               />
             </div>
           </div>
-          <div className="item_inputs d-flex pt-2 px-0">
-            <div className="col-6">Second Name</div>
-            <SearchDropDown
-              id="second_name"
-              addNew={true}
-              setNew={addOption}
-              options={listItem}
-              {...{ showDropdown, setShowDropdown, handleKeyDown }}
-              setDataValue={setItemAdd}
-              selectedValue={itemadd}
-            />
-          </div>
+          {/* {permissions.includes(1005) && ( */}
+            <div className="item_inputs d-flex pt-2 px-0">
+              <div className="col-6">Second Name</div>
+              <SearchDropDown
+                id="second_name"
+                // noAdd={!permissions.includes(1006)}
+                // isEditable={permissions.includes(1007)}
+                setNew={addOption}
+                options={listItem}
+                {...{ showDropdown, setShowDropdown, handleKeyDown }}
+                setDataValue={setItemAdd}
+                selectedValue={itemadd}
+              />
+            </div>
+          {/* )} */}
           <div className="item_inputs d-flex pt-2 px-0">
             <div className="col-6">Type</div>
             <SearchDropDown
               id="types"
               setNew={addOption}
               options={listItem}
-              noAdd={true}
               {...{ showDropdown, setShowDropdown, handleKeyDown }}
               setDataValue={setItemAdd}
               selectedValue={itemadd}
             />
           </div>
-          <div className="item_inputs d-flex pt-2 px-0">
-            <div className="col-6">Category</div>
-            <div className="col-6 px-0">
-              <SearchDropDown
-                id="category"
-                addNew={true}
-                setNew={addOption}
-                options={listItem}
-                {...{ showDropdown, setShowDropdown, handleKeyDown }}
-                setDataValue={setItemAdd}
-                selectedValue={itemadd}
-              />
+          {/* {permissions.includes(1008) && ( */}
+            <div className="item_inputs d-flex pt-2 px-0">
+              <div className="col-6">Category</div>
+              <div className="col-6 px-0">
+                <SearchDropDown
+                  id="category"
+                  // noAdd={!permissions.includes(1009)}
+                  // isEditable={!permissions.includes(1010)}
+                  setNew={addOption}
+                  options={listItem}
+                  {...{ showDropdown, setShowDropdown, handleKeyDown }}
+                  setDataValue={setItemAdd}
+                  selectedValue={itemadd}
+                />
+              </div>
             </div>
-          </div>
-          <div className="item_inputs d-flex pt-2 px-0">
-            <div className="col-6">Sub Category</div>
-            <div className="col-6 px-0">
-              <SearchDropDown
-                id="sub_category"
-                addNew={true}
-                setNew={addOption}
-                options={listItem}
-                {...{ showDropdown, setShowDropdown, handleKeyDown }}
-                setDataValue={setItemAdd}
-                selectedValue={itemadd}
-              />
+          {/* )} */}
+          {/* {permissions.includes(1011) && ( */}
+            <div className="item_inputs d-flex pt-2 px-0">
+              <div className="col-6">Sub Category</div>
+              <div className="col-6 px-0">
+                <SearchDropDown
+                  id="sub_category"
+                  // noAdd={!permissions.includes(1012)}
+                  // isEditable={!permissions.includes(1013)}
+                  setNew={addOption}
+                  options={listItem}
+                  {...{ showDropdown, setShowDropdown, handleKeyDown }}
+                  setDataValue={setItemAdd}
+                  selectedValue={itemadd}
+                />
+              </div>
             </div>
-          </div>
-          <div className="item_inputs d-flex pt-2 px-0">
-            <div className="col-6">Company*</div>
-            <div className="col-6 px-0">
-              <SearchDropDown
-                id="company"
-                addNew={true}
-                setNew={addOption}
-                options={listItem}
-                {...{ showDropdown, setShowDropdown, handleKeyDown }}
-                setDataValue={setItemAdd}
-                selectedValue={itemadd}
-              />
+          {/* )} */}
+          {/* {permissions.includes(1014) && ( */}
+            <div className="item_inputs d-flex pt-2 px-0">
+              <div className="col-6">Company*</div>
+              <div className="col-6 px-0">
+                <SearchDropDown
+                  id="company"
+                  // noAdd={!permissions.includes(1015)}
+                  // isEditable={!permissions.includes(1016)}
+                  addNew={true}
+                  setNew={addOption}
+                  options={listItem}
+                  {...{ showDropdown, setShowDropdown, handleKeyDown }}
+                  setDataValue={setItemAdd}
+                  selectedValue={itemadd}
+                />
+              </div>
             </div>
-          </div>
+          {/* )} */}
 
           <div className="item_inputs row mx-0 px-0 col-12 pt-2">
-            <div className="col-2 col-3 px-0">Size</div>
-            <div className="col-3 col-4 px-0">
-              <SearchDropDown
-                id="size"
-                addNew={true}
-                setNew={addOption}
-                options={listItem}
-                {...{ showDropdown, setShowDropdown, handleKeyDown }}
-                setDataValue={setItemAdd}
-                selectedValue={itemadd}
-              />
-            </div>
-            <div className="col-2 col-3 px-0 ps-3">Color</div>
-            <div className="col-3 col-4 px-0">
-              <SearchDropDown
-                id="color"
-                addNew={true}
-                setNew={addOption}
-                options={listItem}
-                {...{ showDropdown, setShowDropdown, handleKeyDown }}
-                setDataValue={setItemAdd}
-                selectedValue={itemadd}
-              />
-            </div>
+            {/* {permissions.includes(1017) && ( */}
+              <>
+                <div className="col-2 col-3 px-0">Size</div>
+                <div className="col-3 col-4 px-0">
+                  <SearchDropDown
+                    id="size"
+                    // noAdd={!permissions.includes(1018)}
+                    // isEditable={!permissions.includes(1019)}
+                    setNew={addOption}
+                    options={listItem}
+                    {...{ showDropdown, setShowDropdown, handleKeyDown }}
+                    setDataValue={setItemAdd}
+                    selectedValue={itemadd}
+                  />
+                </div>
+              </>
+            {/* )} */}
+            {/* {permissions.includes(1020) && ( */}
+              <>
+                <div className="col-2 col-3 px-0 ps-3">Color</div>
+                <div className="col-3 col-4 px-0">
+                  <SearchDropDown
+                    // noAdd={!permissions.includes(1021)}
+                    // isEditable={!permissions.includes(1022)}
+                    id="color"
+                    addNew={true}
+                    setNew={addOption}
+                    options={listItem}
+                    {...{ showDropdown, setShowDropdown, handleKeyDown }}
+                    setDataValue={setItemAdd}
+                    selectedValue={itemadd}
+                  />
+                </div>
+              </>
+            {/* )} */}
           </div>
           {/* </div> */}
 
           <div className="item_inputs row mx-0 px-0 col-12 pt-2">
-            <div className="col-2 col-3 px-0">Group</div>
-            <div className="col-3 col-4 px-0">
-              <SearchDropDown
-                id="group"
-                addNew={true}
-                setNew={addOption}
-                options={listItem}
-                {...{ showDropdown, setShowDropdown, handleKeyDown }}
-                setDataValue={setItemAdd}
-                selectedValue={itemadd}
-              />
-            </div>
+            {/* {permissions.includes(1023) && ( */}
+              <>
+                <div className="col-2 col-3 px-0">Group</div>
+                <div className="col-3 col-4 px-0">
+                  <SearchDropDown
+                    // noAdd={!permissions.includes(1024)}
+                    // isEditable={!permissions.includes(1025)}
+                    id="group"
+                    addNew={true}
+                    setNew={addOption}
+                    options={listItem}
+                    {...{ showDropdown, setShowDropdown, handleKeyDown }}
+                    setDataValue={setItemAdd}
+                    selectedValue={itemadd}
+                  />
+                </div>
+              </>
+            {/* )} */}
+            {/* {permissions.includes(1026)&&<> */}
             <div className="col-2 col-3 px-0 ps-3">Tax Group</div>
             <div className="col-3 col-4 px-0">
               <SearchDropDown
                 id="tax_group"
+                // noAdd={!permissions.includes(1027)}
+                // isEditable={!permissions.includes(1028)}
                 addNew={true}
                 setNew={addOption}
                 options={listItem}
@@ -612,13 +646,17 @@ export const ItemAddForm = ({ edit, refresh, setToEdit }) => {
                 selectedValue={itemadd}
               />
             </div>
+            {/* </>} */}
           </div>
 
+          {/* {permissions.includes(1029)&& */}
           <div className="item_inputs d-flex pt-2 px-0">
             <div className="col-6">Godown/Rack</div>
             <div className="col-6 px-0">
               <SearchDropDown
                 id="rack"
+                // noAdd={!permissions.includes(1030)}
+                // isEditable={!permissions.includes(1031)}
                 addNew={true}
                 setNew={addOption}
                 options={listItem}
@@ -628,10 +666,13 @@ export const ItemAddForm = ({ edit, refresh, setToEdit }) => {
               />
             </div>
           </div>
+          {/* } */}
           <div className="item_inputs d-flex pt-2 px-0">
             <div className="col-6">Stock Unit*</div>
             <div className="col-6 px-0">
               <SearchDropDown
+                // noAdd={!permissions.includes(1033)}
+                // isEditable={!permissions.includes(1034)}
                 required
                 id="unit"
                 addNew={true}
@@ -967,18 +1008,22 @@ export const ItemAddForm = ({ edit, refresh, setToEdit }) => {
       </div>
       <div className="pt-3 d-flex justify-content-between w-100">
         <div className="w-100">
+          {/* {permissions.includes(1035)&& */}
           <div
             onClick={() => setUnitConvShow(true)}
             className="btn bg-secondary text-light col-5 text-start px-3 py-1 me-4 ms-0"
           >
             Unit Conversion
           </div>
+          {/* } */}
+          {/* {permissions.includes(1039)&& */}
           <div
             onClick={() => setBarcodeShow(true)}
             className="btn bg-secondary text-light col-5 text-start px-3 py-1"
           >
             BarCode
           </div>
+          {/* } */}
         </div>
         <div className="checkbox col-6">
           <div className="checkbox_container">
@@ -1062,7 +1107,11 @@ export const ItemAddForm = ({ edit, refresh, setToEdit }) => {
           </div>
         </div>
         <div className="col-2 px-0">
-          <button disabled={submitLoading} type="submit" className="add-btn btn">
+          <button
+            disabled={submitLoading}
+            type="submit"
+            className="add-btn btn"
+          >
             {edit ? "Update" : "Submit"}
           </button>
         </div>
@@ -1086,7 +1135,9 @@ export const ItemAddForm = ({ edit, refresh, setToEdit }) => {
                     <th>{barcodeShow ? "MRP" : "Unit"}</th>
                     <th>{barcodeShow ? "S.Rate" : "Rate"}</th>
                     <th>{barcodeShow ? "Expiry" : "Mrp"}</th>
+                    {/* {permissions.some(x=>[1035,1036,1037,1038,1039,1040,1041,1042].includes(x))&& */}
                     <th></th>
+                    {/* } */}
                   </tr>
                 </thead>
                 <tbody className="rounded-2 ">
@@ -1157,16 +1208,20 @@ export const ItemAddForm = ({ edit, refresh, setToEdit }) => {
                       />
                     </td>
                     <th className="col col-1 cursor text-center">
+                      {/* {permissions.some(x=>[1038,1042].includes(x))&& */}
                       <img src={deleteBtn} alt="deletebtn" />
+                      {/* } */}
                     </th>
                     <th className="btn-td text-center">
+                      {/* {permissions.some(x=>[1036,1039].includes(x))&& */}
                       <div onClick={addToList} className="add_unit_btn btn">
-                        {barcodeShow
+                        {barcodeShow /* && permissions.includes(1039) */
                           ? "+ Add"
-                          : unitEdit
-                            ? "Edit Unit"
-                            : "Add Unit"}
+                          : unitEdit 
+                          ? "Edit Unit"
+                          : /* permissions.includes(1036) && */ "Add Unit"}
                       </div>
+                      {/* } */}
                     </th>
                   </tr>
                   {unitConvShow &&

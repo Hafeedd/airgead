@@ -36,14 +36,14 @@ export const Settings = (props) => {
   return (
     <div
       id={`settings-cont`}
-      className={`settings ${activeSetting && "active"} ${auth.userDetails.fk_group==="Controller"&&"controller"}`}
+      className={`settings ${activeSetting && "active"} ${auth?.userDetails?.fk_group==="Controller"&&"controller"}`}
     >
       <div onClick={handleLogout} className="mt-4 text-end pe-2 cursor">
         <MdLogout size={"1.5rem"} className="me-2" />
         Logout
       </div>
       <div className="ps-5">
-        <div className={`company-logo ${auth.userDetails.fk_group=='Company'?"company border-0":"controller"} pb-4 h-100 pt-4`}>
+        <div className={`company-logo ${auth?.userDetails?.fk_group=='Company'?"company border-0":"controller"} pb-4 h-100 pt-4`}>
           <div
             className="d-flex text-light gap-3 cursor"
             onClick={() => navigate("/profile")}

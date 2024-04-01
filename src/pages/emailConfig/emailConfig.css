@@ -1,0 +1,16 @@
+.id-code-config .email-conf-cont *{
+  font-family: Raleway;
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 16.44px;
+  text-align: left;
+}
+
+.id-code-config.email-config{
+    height: 30rem !important;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    background: #FFFFFF8A;
+    justify-content: space-between;
+}

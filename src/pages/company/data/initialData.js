@@ -22,6 +22,35 @@ export const companyModules = [
   // { name: 'Material Composition', code: 168, parent: 167, primary: 'NO' },
   { name: 'Staff', code: 137, icon: 'https://icons.foxa.in/media/icons/document-signed_p9I0WXo.svg', primary: 'YES' },
   { name: 'Dashboard', code: 174, primary: 'YES' },
+  {name:'Purchase Report',	code:105, parent:100	,primary:'NO'},
+  {name:'Sales Report',	code:114, parent:109	,primary:'NO'},
+  {name:'Stock Journal Report',	code:123, parent:121	,primary:'NO'},
+  {name:'Chart Of Account Report',	code:130, parent:124	,primary:'NO'},
+  {name:'Customer Out Standing Report',	code:131, parent:124	,primary:'NO'},
+  {name:'Supplier Out Standing Report',	code:132, parent:124	,primary:'NO'},
+  {name:'Daybook Report',	code:133, parent:124, primary:'NO'},
+  {name:'CashBook Report',	code:134, parent:124, primary:'NO'},
+  {name:'Account Ledger Report',	code:135, parent:124, primary:'NO'},
+  {name:'Staff Attendance Report', code:140, parent:136, primary:'NO'},
+  {name:'Staff Salary Report',	code:141, parent:136, primary:'NO'},
+  {name:'Staff Out Standing Report',	code:142, parent:136, primary:'NO'},
+  {name:'Cheque Register Report',	code:145, parent:143, primary:'NO'},
+  {name:'Item Wise Profit Report',	code:150, parent:147, primary:'NO'},
+  {name:'Item History Report',	code:151, parent:147, primary:'NO'},
+  {name:'Stock Value Report',	code:152, parent:147, primary:'NO'},
+  {name:'Stock Ledger Report',	code:153, parent:147, primary:'NO'},
+  {name:'Barcode Register Report',	code:156, parent:154, primary:'NO'},
+  {name:'Trial Balance Report',	code:158, parent:157, primary:'NO'},
+  {name:'Group Wise Trial Balance Report',	code:159, parent:157, primary:'NO'},
+  {name:'Balance Sheet Report',	code:161, parent:160, primary:'NO'},
+  {name:'Group Wise Balance Sheet Report', code:162,parent:160, primary:'NO'},
+  {name:'Detailed Balance Sheet Report', code:163,parent:160, primary:'NO'},
+  {name:'Bill Wise Ledger Report', code:165,parent:164, primary:'NO'},
+  {name:'Bill Wise Profit Report', code:166,parent:164, primary:'NO'},
+  {name:'Production Report',	code:170,parent:167, primary:'NO'},
+  {name:'Tax Report',	code:146,	primary:'YES'},
+  {name:'Bill Wise Report',	code:164, primary:'YES'},
+  {name:'Traiding & Profit And Loss Report', code:171,primary:'YES'},
 ]
 
 export const permissions =
@@ -666,11 +695,5 @@ export const permissions =
   'Balance-Sheet': { 'MAIN OPERATIONS': [{ key: 359, name: 'BALANCE SHEET REPORT VIEW', code: 1358 }, { key: 360, name: 'GROUP BALANCE SHEET REPORT VIEW', code: 1359 }, { key: 361, name: 'DETAILED BALANCE SHEET REPORT VIEW', code: 1360 },] },
   'Traid-Profit-And-Loss': { 'MAIN OPERATIONS': [{ key: 362, name: 'TRAID PROFIT AND LOSS REPORT VIEW', code: 1361 },] },
   'Chart-Of-Account': { 'MAIN OPERATIONS': [{ key: 363, name: 'CHART OF ACCOUNT REPORT VIEW', code: 1362 },] },
-  'Cheque-Register-Report': {
-    'MAIN OPERATIONS':
-      [
-        { key: 351, name: 'CHEQUE REGISTER VIEW', code: 1350 },
-        { key: 352, name: 'CHEQUE REGISTER EDIT', code: 1351 },
-      ]
-  },
+  'Cheque-Register-Report': {'MAIN OPERATIONS':[{ key: 351, name: 'CHEQUE REGISTER VIEW', code: 1350 },{ key: 352, name: 'CHEQUE REGISTER EDIT', code: 1351 },] },
 }

@@ -6,12 +6,14 @@ import CustomerTable from "./components/CustomerTable";
 import CustomerAddForm from "./components/CustomerAddForm";
 import useCustomerServices from "../../../services/master/customerServices";
 import { FiPlus } from "react-icons/fi";
+import { useSelector } from "react-redux";
 
 const CustomerList = () => {
   const [edit, setEdit] = useState(false);
   const [loading, setLoading] = useState(false);
   const [listCustomer, setListCustomer] = useState([]);
   const [search, setSearch] = useState();
+  const permissions = useSelector((state) => state.auth.permissions);
   // const [showCustomerAdd,setShowCustomerAdd] = useState(false)
   const { getCustomer } = useCustomerServices();
 
@@ -65,7 +67,7 @@ const CustomerList = () => {
               location === "/customer-add" && "d-none"
             }`}
           >
-            <div
+            {permissions.includes(1096)&&<div
               onClick={() => {
                 navigate("/customer-add");
                 setEdit(false);
@@ -73,7 +75,7 @@ const CustomerList = () => {
               className="btn h-auto add-btn px-2 w-auto"
             >
              <FiPlus size={'1.4rem'}/>&nbsp; Add Customer
-            </div>
+            </div>}
           </div>
         </div>
       </div>
@@ -89,6 +91,7 @@ const CustomerList = () => {
             list={listCustomer}
             {...{
               getData,
+              permissions,
               search,
               loading,
               setSearch,

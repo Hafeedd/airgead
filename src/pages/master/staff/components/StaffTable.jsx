@@ -9,6 +9,7 @@ import Swal from "sweetalert2";
 
 export const StaffTable = (props) => {
   const {
+    permissions,
     handleEdit,
     search,
     loading,
@@ -279,8 +280,8 @@ export const StaffTable = (props) => {
                     {!payscale ? (
                       <td>
                         <div className="button text-start d-flex gap-4 pe-3">
-                        <img src={deleteBtn} alt="deletebtn" onClick={(e) => handleDelete(data.id, e)}/>
-                          <img src={editBtn} alt="editBtn" onClick={() => handleEdit(data)}/>
+                        {permissions.includes(1319)&&<img src={deleteBtn} alt="deletebtn" onClick={(e) => handleDelete(data.id, e)}/>}
+                          {permissions.includes(1318)&&<img src={editBtn} alt="editBtn" onClick={() => handleEdit(data)}/>}
                         </div>
                       </td>
                     ) : (

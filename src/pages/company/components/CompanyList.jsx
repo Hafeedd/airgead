@@ -126,7 +126,7 @@ export const CompanyList = (props) => {
               ? navigate("/user-add")
               : navigate("/company-add")
           }
-          className="company-add-btn btn col-1 col-2 gap-2"
+          className="company-add-btn btn  col-2 gap-2"
         >
           <FaPlus size={"1.5rem"} />
           {location.pathname === "/user-list" ? "Add User" : "Add Company"}

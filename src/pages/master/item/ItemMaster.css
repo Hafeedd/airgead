@@ -49,10 +49,10 @@
   cursor: pointer;
 }
 
-.itemList_header {
-  position: sticky;
-  top: 3.5rem;
-  z-index: 200;
+.itemList_header{
+    position: sticky;
+    top:3.4rem;
+    z-index: 200;
 }
 
 .page_head {
@@ -61,7 +61,7 @@
   background: #f5f5f5;
   padding-left: 1rem;
   z-index: 100;
-
+  margin: 0 !important;
   font-family: Raleway;
   font-size: 16px;
   font-weight: 700;
