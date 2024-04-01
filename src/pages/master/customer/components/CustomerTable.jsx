@@ -205,7 +205,7 @@ const CustomerTable = (props) => {
             ) : (
               <tr>
                 <td className="fs-5 text-center" colSpan={9}>
-                  No Item Added Yet
+                  No Customer Added Yet
                 </td>
               </tr>
             )}

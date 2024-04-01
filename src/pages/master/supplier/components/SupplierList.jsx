@@ -201,7 +201,7 @@ const SupplierList = (props) => {
             ) : (
               <tr>
                 <td className="fs-5 text-center" colSpan={6}>
-                  No Item Added Yet
+                  No Supplier Added Yet
                 </td>
               </tr>
             )}

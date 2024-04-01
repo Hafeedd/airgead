@@ -818,12 +818,12 @@ const SalesTransaction = ({ returnPage, orderPage }) => {
             </div>
             <div className="col-12 gap-2 d-flex align-items-end justify-content-start px-0 mx-0 mt-1">
               <div className="">
-                <div className="btn btn-sm btn-secondary rounded-bottom-0 px-3">
+                <div className="btn btn-sm purch-table-btn1 px-3">
                   {`Sales ${returnPage ? "Return" : orderPage ? "Order" : ""}`}
                 </div>
               </div>
               <div className="">
-                <div className="btn btn-sm btn-secondary rounded-bottom-0 px-3">
+                <div className="btn btn-sm purch-table-btn1 px-3">
                   Other
                 </div>
               </div>

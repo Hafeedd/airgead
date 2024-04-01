@@ -102,14 +102,14 @@ const Sidebar = ({ perm, setPage }) => {
             onClick={() =>{navigate('/')}}
             className={`SidebarItem mb-1 ${location.pathname==='/' && "active"}`}
           >
-            <img src={Dashboard} className="sidebar_icon" width={"22px"} />
+            <img src={Dashboard} className="sidebar_icon" width={"19px"} />
             Dashboard
           </div>
           {navigationList.filter(data=>data.main==="master"&&auth?.permissions?.findIndex(x=>x==data.code)>-1).length>0&&<><div
             onClick={() => setMasterActive(!masterActive)}
             className={`SidebarItem mt-3 mb-1 ${masterActive && "active"}`}
           >
-            <img src={User} className="sidebar_icon" width={"25px"} />
+            <img src={User} className="sidebar_icon" width={"20px"} />
             Master
           </div>
             <div className={`sidebar_span_cont ${!masterActive && "d-none"}`}>
@@ -147,7 +147,7 @@ const Sidebar = ({ perm, setPage }) => {
             onClick={() => setArrowActive(!ArrowActive)}
             className={`SidebarItem mt-3 mb-1 ${ArrowActive && "active"}`}
           >
-            <img className='sidebar_icon' src={Reports} width={"18px"} />
+            <img className='sidebar_icon' src={Reports} width={"20px"} />
             Reports
           </div>
           <div className={`sidebar_span_cont ${!ArrowActive && "d-none"}`}>

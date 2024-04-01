@@ -539,9 +539,9 @@ const SalesTable = (props) => {
       <div className="mx-2 sales-table-item-container" id="TableToPrint">
         <table
           style={{ tableLayout: "fixed" }}
-          className="table table-secondary purchase-table mb-0"
+          className="table table-secondary sales-table mb-0"
         >
-          <thead className="purchase-table-header">
+          <thead className="sales-table-header">
             <tr>
               <th width="30">SL</th>
               {tableHeadList?.length > 0 &&
@@ -564,7 +564,7 @@ const SalesTable = (props) => {
 
               <th className="py-1 text-end">
                 <div
-                  className="btn purchase-add-btn my-0"
+                  className="btn table-title-btn my-0"
                   onClick={() => setSalesItemModal(true)}
                 >
                   +

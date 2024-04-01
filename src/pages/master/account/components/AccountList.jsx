@@ -190,8 +190,8 @@ const AccountList = (props) => {
               })
             ) : (
               <tr>
-                <td className="fs-5 text-center" colSpan={5}>
-                  No Item Added Yet
+                <td className="fs-5 text-center" colSpan={6}>
+                  No Accounts Added Yet
                 </td>
               </tr>
             )}

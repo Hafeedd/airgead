@@ -303,7 +303,7 @@ export const StaffTable = (props) => {
             ) : (
               <tr>
                 <td className="fs-5 text-center" colSpan={9}>
-                  No Item Added Yet
+                  No Staff Added Yet
                 </td>
               </tr>
             )}

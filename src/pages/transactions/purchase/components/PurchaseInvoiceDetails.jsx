@@ -123,7 +123,7 @@ const PurchaseInvoiceDetails = (props) => {
             }) /* openNewWindow() */
         }
       >
-        <div className="btn btn-sm btn-dark rounded-2 w-100 p-0 mt-2">
+        <div className="btn purchase-footer-cash-credit-select py-0 mt-2">
           Add Supplier
         </div>
       </div>

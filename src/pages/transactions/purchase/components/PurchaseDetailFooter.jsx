@@ -125,7 +125,7 @@ const PurchaseDetailFooter = (props) => {
                 onKeyDown={handleKeyDown}
                 value={purchaseAdd.payment_type || "CASH"}
                 name="payment_type"
-                className="customer-select border border-dark bg-dark text-light w-100"
+                className="purchase-footer-cash-credit-select text-light w-100"
               >
                 <option value="CASH">CASH</option>
                 <option value="CREDIT">CREDIT</option>
