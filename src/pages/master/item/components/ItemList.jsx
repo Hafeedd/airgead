@@ -4,10 +4,11 @@ import editBtn from "../../../../assets/icons/edit-black.svg";
 import { useEffect, useState } from "react";
 import Swal from "sweetalert2";
 import useItemServices from "../../../../services/master/itemServices";
+import { useSelector } from "react-redux";
 
 const ItemList = (props) => {
   const { list, handleEdit, handleDelete, getData, loading } = props;
-
+  const permissions = useSelector(state=>state.auth.permissions)
   const [searchedList, setSearchedList] = useState([]);
 
   const { deleteItemList } = useItemServices();
@@ -162,8 +163,8 @@ const ItemList = (props) => {
                     <td>{data?.mrp_rate}</td>
                     <td>
                       <div className="button d-flex gap-4 pe-3" >
-                        <img src={deleteBtn} alt="deletebtn" onClick={(e) => handleDelete(data?.id, e)}/>
-                        <img src={editBtn} alt="Edit button" onClick={(e) => handleEdit(data)}/>
+                       {permissions.includes(1004) && <img src={deleteBtn} alt="deletebtn" onClick={(e) => handleDelete(data?.id, e)}/>}
+                       {permissions.includes(1003) && <img src={editBtn} alt="Edit button" onClick={(e) => handleEdit(data)}/>}
                       </div>
                     </td>
                   </tr>

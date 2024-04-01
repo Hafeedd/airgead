@@ -46,7 +46,7 @@ export const Layout = () => {
       <Sidebar />
       <div className="main-content w-100" style={{ userSelect: 'none' }}>
         <Header {...{ activeSetting, setActiveSetting }} />
-        <Outlet />
+        <Outlet/>
         <Settings {...{ activeSetting }} />
       </div>
     </div>

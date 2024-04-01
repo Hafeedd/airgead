@@ -27,7 +27,9 @@ const Header = (props) => {
   return (
     <div className="header main">
       <div className="header-cont w-100 px-4 h-100 d-flex justify-content-between">
-        <div className="prev_btn btn" onClick={() => navigate(-1)}>
+        <div className={`prev_btn btn ${location.pathname==='/'&&'invisible'}`}
+         disabled={location.pathname==='/'}
+         onClick={() => navigate(-1)}>
           <img className="white-to-black me-2" src={arrow} width={"7px"} height={"10px"} />
           Back
         </div>

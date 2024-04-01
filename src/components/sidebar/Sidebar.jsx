@@ -32,31 +32,31 @@ export const navigationList = [
   { text: 'Pay Roll', code: 110, navigate: '/pay-roll', main: 'transaction', sub: 'Pay-Roll' },
   { text: 'Cheque Register', code: 111, navigate: '/cheque-register', main: 'transaction', sub: 'Cheque-Register' },
   { text: 'Production', code: 112, navigate: '/production-transaction', main: 'transaction', sub: 'Production' },
-  { text: 'Stock Ledger', navigate: '/stock-reports', main: 'report', sub: 'Stock-Ledger' },
-  { text: 'Account Ledger', navigate: '/account-reports', main: 'report', sub: 'Account-Ledger' },
-  { text: 'Day Book', navigate: '/day-book', main: 'report', sub: 'Day-Book' },
-  { text: 'Cust Outstanding', navigate: '/customer-outstandings', main: 'report', sub: 'Cust-Outstanding' },
-  { text: 'Sup Outstanding', navigate: '/supplier-outstandings', main: 'report', sub: 'Sup-Outstanding' },
-  { text: 'Sales Report', navigate: '/sales-book', main: 'report', sub: 'Sales-Report' },
-  { text: 'Staff Outstanding', navigate: '/staff-outstandings', main: 'report', sub: 'Staff-Outstanding' },
-  { text: 'Tax Reports', navigate: '/tax-report', main: 'report', sub: 'Tax-Reports' },
-  { text: 'Cash Book', navigate: '/cashbook-report', main: 'report', sub: 'Cash-Book' },
-  { text: 'Stock Journal', navigate: '/Stock-journal-report', main: 'report', sub: 'Stock-Journal-Report' },
-  { text: 'Item Wise Profit', navigate: '/profit-report', main: 'report', sub: 'Item-Wise-Profit' },
-  { text: 'Purchase Report', navigate: '/purchase-book', main: 'report', sub: 'Purchase-Report' },
-  { text: 'Barcode Register', navigate: '/barcode-register', main: 'report', sub: 'Barcode-Register' },
-  { text: 'Item History', navigate: '/item-history', main: 'report', sub: 'Item-History' },
-  { text: 'Bill Wise Ledger', navigate: '/bill-wise-ledger', main: 'report', sub: 'Bill-Wise-Ledger' },
-  { text: 'Bill Wise Profit', navigate: '/bill-wise-profit', main: 'report', sub: 'Bill-Wise-Profit' },
-  { text: 'Cheque Register', navigate: '/cheque-register-report', main: 'report', sub: 'Cheque-Register-Report' },
-  { text: 'Stock Value Report', navigate: '/stock-value-report', main: 'report', sub: 'Stock-Value-Report' },
-  { text: 'Staff Salary & Attendance', navigate: '/StaffAttendance', main: 'report', sub: 'Staff-Salary-&-Attendance' },
+  { text: 'Stock Ledger',code:153, navigate: '/stock-reports', main: 'report', sub: 'Stock-Ledger' },
+  { text: 'Account Ledger',code:135, navigate: '/account-reports', main: 'report', sub: 'Account-Ledger' },
+  { text: 'Day Book',code:133, navigate: '/day-book', main: 'report', sub: 'Day-Book' },
+  { text: 'Cust Outstanding',code:131, navigate: '/customer-outstandings', main: 'report', sub: 'Cust-Outstanding' },
+  { text: 'Sup Outstanding',code:132, navigate: '/supplier-outstandings', main: 'report', sub: 'Sup-Outstanding' },
+  { text: 'Sales Report',code:114, navigate: '/sales-book', main: 'report', sub: 'Sales-Report' },
+  { text: 'Staff Outstanding',code:142, navigate: '/staff-outstandings', main: 'report', sub: 'Staff-Outstanding' },
+  { text: 'Tax Reports',code:146, navigate: '/tax-report', main: 'report', sub: 'Tax-Reports' },
+  { text: 'Cash Book',code:134, navigate: '/cashbook-report', main: 'report', sub: 'Cash-Book' },
+  { text: 'Stock Journal',code:123, navigate: '/Stock-journal-report', main: 'report', sub: 'Stock-Journal-Report' },
+  { text: 'Item Wise Profit',code:150, navigate: '/profit-report', main: 'report', sub: 'Item-Wise-Profit' },
+  { text: 'Purchase Report',code:105, navigate: '/purchase-book', main: 'report', sub: 'Purchase-Report' },
+  { text: 'Barcode Register',code:156, navigate: '/barcode-register', main: 'report', sub: 'Barcode-Register' },
+  { text: 'Item History',code:151, navigate: '/item-history', main: 'report', sub: 'Item-History' },
+  { text: 'Bill Wise Ledger',code:165, navigate: '/bill-wise-ledger', main: 'report', sub: 'Bill-Wise-Ledger' },
+  { text: 'Bill Wise Profit',code:166, navigate: '/bill-wise-profit', main: 'report', sub: 'Bill-Wise-Profit' },
+  { text: 'Cheque Register',code:145, navigate: '/cheque-register-report', main: 'report', sub: 'Cheque-Register-Report' },
+  { text: 'Stock Value Report',code:152, navigate: '/stock-value-report', main: 'report', sub: 'Stock-Value-Report' },
+  { text: 'Staff Salary & Attendance',code:[141,140], navigate: '/StaffAttendance', main: 'report', sub: 'Staff-Salary-&-Attendance' },
   { text: 'Production report', navigate: '/production-report', main: 'report', sub: 'Production-Report' },
-  { text: 'Trial balance', navigate: '/trial-balance', main: 'report', sub: 'Trial-Balance' },
-  { text: 'Group Wise Trial balance', navigate: '/group-trial-balance', main: 'report', sub: 'Group-Wise-Trial-Balance' },
-  { text: 'Balance Sheet', navigate: '/balance-sheet', main: 'report', sub: 'Balance-Sheet' },
-  { text: 'Trade Profit And Loss', navigate: '/traid-profit-loss', main: 'report', sub: 'Traid-Profit-And-Loss' },
-  { text: 'Chart Of Account', navigate: '/chart-of/account', main: 'report', sub: 'Chart-Of-Account' },
+  { text: 'Trial balance',code:158, navigate: '/trial-balance', main: 'report', sub: 'Trial-Balance' },
+  { text: 'Group Wise Trial balance',code:159, navigate: '/group-trial-balance', main: 'report', sub: 'Group-Wise-Trial-Balance' },
+  { text: 'Balance Sheet',code:161, navigate: '/balance-sheet', main: 'report', sub: 'Balance-Sheet' },
+  { text: 'Trade Profit And Loss',code:171, navigate: '/traid-profit-loss', main: 'report', sub: 'Traid-Profit-And-Loss' },
+  { text: 'Chart Of Account',code:130, navigate: '/chart-of/account', main: 'report', sub: 'Chart-Of-Account' },
 ]
 
 
@@ -152,7 +152,7 @@ const Sidebar = ({ perm, setPage }) => {
           </div>
           <div className={`sidebar_span_cont ${!ArrowActive && "d-none"}`}>
             {navigationList.map(data =>
-            (/* auth?.permissions?.findIndex(x=>x===data.code)>-1&&  */data.main === "report" && <span className="SidebarSpan d-flex ms-5 ps-3">
+            (auth?.permissions?.findIndex(x=>x===data.code)>-1&& data.main === "report" && <span className="SidebarSpan d-flex ms-5 ps-3">
               <div
                 className="SidebarItemText"
                 onClick={() => { if (!perm) navigate(data.navigate); else setPage({ main: data.main, sub: data.sub }) }}

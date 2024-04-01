@@ -5,14 +5,16 @@ import { useNavigate, useLocation } from "react-router";
 import ItemList from "./components/ItemList";
 import { ItemAddForm } from "./components/AddForm";
 import { FiPlus } from "react-icons/fi";
+import { useSelector } from "react-redux";
 
 const ItemMaster = () => {
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(false);
   const [toEdit, setToEdit] = useState(false);
   const [listItem, setListItem] = useState();
   const [search, setSearch] = useState();
   // const [showAddItem, setShowAddItem] = useState(false)
   const { getItemList } = useItemServices();
+  const permissions = useSelector((state) => state.auth.permissions);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -21,21 +23,20 @@ const ItemMaster = () => {
 
   const location = useLocation();
 
-
   const getData = async () => {
     try {
       let params;
       if (search) {
         params = { code: search, name: search };
       }
-      setLoading(true)
+      setLoading(true);
       const res = await getItemList();
       if (res.success) {
         setListItem(res.data);
       }
-      setLoading(false)
+      setLoading(false);
     } catch (err) {
-      setLoading(false)      
+      setLoading(false);
     }
   };
 
@@ -61,7 +62,7 @@ const ItemMaster = () => {
               </div>
             </div>
           </div>
-          {location.pathname !== "/add" && (
+          {(location.pathname !== "/add" && permissions.includes(1000)) && (
             <div className="d-flex align-items-center">
               <div
                 onClick={() => {
@@ -71,7 +72,8 @@ const ItemMaster = () => {
                 className="h-auto add-btn btn w-auto px-2"
                 // style={{width:'fit-content'}}
               >
-                <FiPlus size={'1.4rem'}/>&nbsp; Add Item
+                <FiPlus size={"1.4rem"} />
+                &nbsp; Add Item
               </div>
             </div>
           )}
@@ -79,20 +81,22 @@ const ItemMaster = () => {
       </div>
       {
         /* toEdit||showAddItem */ location.pathname === "/add" ? (
+          // permissions?.includes(10001)&&<ItemAddForm refresh={getData} edit={toEdit} setToEdit={setToEdit} />
           <ItemAddForm refresh={getData} edit={toEdit} setToEdit={setToEdit} />
         ) : (
-          <ItemList
-            list={listItem}
-            {...{
-              search,
-              setSearch,
-              loading,
-              getData,
-              handleEdit,
-              // handleDelete,
-              toEdit,
-            }}
-          />
+          permissions?.includes(100) && (
+            <ItemList
+              list={listItem}
+              {...{
+                search,
+                setSearch,
+                loading,
+                getData,
+                handleEdit,
+                toEdit,
+              }}
+            />
+          )
         )
       }
     </div>
