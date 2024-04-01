@@ -46,9 +46,9 @@ const Header = (props) => {
             <img src={setting} width="18rem" className="white-to-black" />
           </div>
             {userData?.fk_group!=="Controller"&&
-          <div className="heaader-user-cont rounded-1 px-2">
+          <div className="heaader-user-cont rounded-1 px-2" onClick={()=>navigate('/profile')}>
             <img src={userProf} alt="user-prof" className="header-user-prof-img" />
-            <div onClick={()=>navigate('/profile')}>
+            <div>
               <div>{`${userData?.username?.slice(0, 10)} ${userData?.username?.length > 9 ? "..." : ""}`}</div>
               <div className="header-role-text">{userData?.fk_group}</div>
             </div>

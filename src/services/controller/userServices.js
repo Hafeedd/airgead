@@ -35,6 +35,26 @@ export const useUserServices = () => {
     const resp = await axiosPrivate.get("company/roles/");
     return resp.data;
   }
+
+  const getUserProfile = async()=>{
+    const resp = await axiosPrivate.get('company/user/profile/');
+    return resp.data;
+  }
+
+  const postSetPassword = async(data)=>{
+    const resp = await axiosPrivate.post('company/user/password/change/',data);
+    return resp.data;
+  }
+
+  const postSecurityQuestions = async(data)=>{
+    const resp = await axiosPrivate.post('/security_questions/',data);
+    return resp.data;
+  }
+
+  const getSecurityQuestions = async()=>{
+    const resp = await axiosPrivate.get('/security_questions/');
+    return resp.data;
+  }
   return {
     getUserList,
     postUserAdd,
@@ -42,5 +62,9 @@ export const useUserServices = () => {
     getUserRoles,
     putUserAdd,
     delUserAdd,
+    getUserProfile,
+    postSetPassword,
+    postSecurityQuestions,
+    getSecurityQuestions,
   };
 }

@@ -21,93 +21,117 @@ const MaterialComposition = () => {
   const [editComposition,setEditComposition] = useState(false);
 
   const allItemProducts = async()=>{
-    const response= await getItemList()
-    //console.log("items :",response.data)
-    let data=response.data.filter(property => property.types === 'PRODUCT')
-    let tempList = [];
-    data.map((item) => {
-      let a = {
-        ...item,
-        key:item.types,
-        text: item.name,
-        value:item.id,
-      };
-      tempList.push(a);
-    });
-    setAllItem(tempList)
+    try{
+      const response= await getItemList()
+      //console.log("items :",response.data)
+      let data=response.data.filter(property => property.types === 'PRODUCT')
+      let tempList = [];
+      data.map((item) => {
+        let a = {
+          ...item,
+          key:item.types,
+          text: item.name,
+          value:item.id,
+        };
+        tempList.push(a);
+      });
+      setAllItem(tempList)
+    }catch(e){
+    }
+   
   }
 
   const allRawMaterials = async()=>{
-    const response= await getItemList()
-    //console.log("items :",response.data)
-    let data=response.data.filter(property => property.types === 'RAW_MATERIAL')
-    let tempList = [];
-    data.map((item) => {
-      let a = {
-        ...item,
-        key:item.types,
-        text: item.name,
-        value:item.id,
-      };
-      tempList.push(a);
-    });
-    setAllRaw(tempList)
+    try{
+      const response= await getItemList()
+      //console.log("items :",response.data)
+      let data=response.data.filter(property => property.types === 'RAW_MATERIAL')
+      let tempList = [];
+      data.map((item) => {
+        let a = {
+          ...item,
+          key:item.types,
+          text: item.name,
+          value:item.id,
+        };
+        tempList.push(a);
+      });
+      setAllRaw(tempList)
+    }catch{
+
+    }
+   
   }
   const allPropertiesTypes = async()=>{
-    const response= await getProperty()
-    // console.log("properties :",response.data.filter(property => property.property_type === 'types'))
-    let data=response.data.filter(property => property.property_type === 'composition_type')
-    let tempList = [];
-    data.map((item) => {
-      let a = {
-        ...item,
-        key:item.property_type,
-        text: item.property_value,
-        value:item.id,
-      };
-      tempList.push(a);
-    });
-    setTypeList(tempList);
+    try{
+      const response= await getProperty()
+      // console.log("properties :",response.data.filter(property => property.property_type === 'types'))
+      let data=response.data.filter(property => property.property_type === 'composition_type')
+      let tempList = [];
+      data.map((item) => {
+        let a = {
+          ...item,
+          key:item.property_type,
+          text: item.property_value,
+          value:item.id,
+        };
+        tempList.push(a);
+      });
+      setTypeList(tempList);
+    }catch(e){
+
+    }
+    
   }
 
   const allPropertiesUnit = async()=>{
-    const response= await getProperty()
-    // console.log("properties :",response.data.filter(property => property.property_type === 'types'))
-    let data=response.data.filter(property => property.property_type === 'unit')
-    let tempList = [];
-    data.map((item) => {
-      let a = {
-        ...item,
-        key:item.property_type,
-        text: item.property_value,
-        value:item.id,
-      };
-      tempList.push(a);
-    });
-    setUnitList(tempList);
+    try{
+      const response= await getProperty()
+      // console.log("properties :",response.data.filter(property => property.property_type === 'types'))
+      let data=response.data.filter(property => property.property_type === 'unit')
+      let tempList = [];
+      data.map((item) => {
+        let a = {
+          ...item,
+          key:item.property_type,
+          text: item.property_value,
+          value:item.id,
+        };
+        tempList.push(a);
+      });
+      setUnitList(tempList);
+    }catch(e){
+    }
   }
 
   const allAcctData = async () => {
-		const response = await getAccountList()
-		let tempList = []
-		if (response?.success) {
-			response.data.map(item => {
-				let a
-				if (item.name && item.code) {
-          // && item.bank_account === true
-					a = { key: item.code, value: item.id, text: item.name, description: item.code }
-					tempList.push(a)
-				}
-			})
-			setBankAccList(tempList)
-		}
-		return response.data
+    try{
+      const response = await getAccountList()
+      let tempList = []
+      if (response?.success) {
+        response.data.map(item => {
+          let a
+          if (item.name && item.code) {
+            // && item.bank_account === true
+            a = { key: item.code, value: item.id, text: item.name, description: item.code }
+            tempList.push(a)
+          }
+        })
+        setBankAccList(tempList)
+      }
+      return response.data
+    }catch(e){
+    }
+	
 	}
   const {getMaterialComposition} = useProductionServices()
  
   const allMaterialComposition = async()=>{
-    const response= await getMaterialComposition()
-    setMaterialList(response.data)
+    try{
+      const response= await getMaterialComposition()
+      setMaterialList(response.data)
+    }catch(e){
+    }
   }
   useEffect(()=>{
     allItemProducts()
