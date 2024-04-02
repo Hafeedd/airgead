@@ -5,7 +5,7 @@ const BASE_URL = 'https://accounts-auth-api.foxa.in/api/v1/' // server api for a
 // const BASE_URL = 'https://accounts-api.foxa.in/api/v1/' // normal server api 
 // const BASE_URL = 'http://localhost:8000/api/v1/'
 // const BASE_URL = 'http://192.168.29.171:8000/api/v1/'
-export const MEDIA_URL = 'https://accounts-live-api.foxa.in/'
+export const MEDIA_URL = 'https://accounts-live-api.foxa.in'
 // export const MEDIA_URL = 'http://192.168.29.171:8000/'
 
 export default axios.create({

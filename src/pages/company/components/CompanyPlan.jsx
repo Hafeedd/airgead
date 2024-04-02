@@ -10,16 +10,10 @@ import { companyModules } from "../data/initialData";
 import { useNavigate } from "react-router";
 
 export const CompanyPayment = (props) => {
-  const { setActive, companyId, moduleCodeList, setModuleCodeList } = props;
+  const { setActive, companyId, moduleCodeList, setModuleCodeList,companyPlan,setCompanyPlan } = props;
   const [showModules, setShowModules] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [companyPlan, setCompanyPlan] = useState({
-    renewal_date: null,
-    renewal_time: null,
-    extended_date: null,
-    staff_limit: null,
-    modules: [],
-  });
+  
 
   const navigate = useNavigate();
 
@@ -93,7 +87,8 @@ export const CompanyPayment = (props) => {
       const response = await postCompanyPlan(companyId, tempCompanyPlan);
       if (response.success) {
         Swal.fire("Success", "", "success");
-        navigate("/");
+        // navigate("/");
+        setActive(3)
       }
       setLoading(false);
     } catch (err) {
@@ -128,8 +123,8 @@ export const CompanyPayment = (props) => {
           slotProps={{ textField: { size: "small", required: true } }}
           name="renewal_date"
           value={
-            companyPlan.renewal_date
-              ? dayjs(companyPlan.renewal_date).format("YYYY-MM-DD")
+            companyPlan?.renewal_date
+              ? dayjs(companyPlan?.renewal_date)
               : null
           }
           format="DD/MM/YYYY"
@@ -157,7 +152,7 @@ export const CompanyPayment = (props) => {
           name="extended_date"
           value={
             companyPlan.extended_date
-              ? dayjs(companyPlan.extended_date).format("YYYY-MM-DD")
+              ? dayjs(companyPlan.extended_date)/* ?.format("DD-MM-YYYY") */
               : null
           }
           format="DD/MM/YYYY"
@@ -218,7 +213,7 @@ export const CompanyPayment = (props) => {
           disabled={loading}
           className="company-add-btn next btn col-1 col-2"
         >
-          Done {/* &nbsp;&nbsp;{">"} */}
+          Next &nbsp;&nbsp;{">"}
         </button>
       </div>
       <Modal

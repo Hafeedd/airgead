@@ -66,18 +66,18 @@ export const permissions =
       { key: 5, name: "Delete", code: 1005, parent: 1002, module: 101 },
       { key: 6, name: "Edit", code: 1006, parent: 1002, module: 101 },
       { key: 7, name: "Add", code: 1007, parent: 1002, module: 101 },
-      { key: 8, name: "customer details", code: 1008, parent: 1002, module: 101 },
-      { key: 9, name: "invoice details", code: 1009, parent: 1002, module: 101 },
-      { key: 10, name: "delivery details", code: 1010, parent: 1002, module: 101 },
+      // { key: 8, name: "customer details", code: 1008, parent: 1002, module: 101 },
+      // { key: 9, name: "invoice details", code: 1009, parent: 1002, module: 101 },
+      // { key: 10, name: "delivery details", code: 1010, parent: 1002, module: 101 },
     ],
-    'On Edit': [
-      { key: 11, name: "Item delete", code: 1011, parent: 1003, module: 101 },
-      { key: 12, name: "Item edit", code: 1012, parent: 1003, module: 101 },
-      { key: 13, name: "Item add", code: 10013, parent: 1003, module: 101 },
-      { key: 14, name: "customer details", code: 1014, parent: 1003, module: 101 },
-      { key: 15, name: "invoice details", code: 1015, parent: 1003, module: 101 },
-      { key: 16, name: "delivery details", code: 1016, parent: 1003, module: 101 },
-    ]
+    // 'On Edit': [
+    //   { key: 11, name: "Item delete", code: 1011, parent: 1003, module: 101 },
+    //   { key: 12, name: "Item edit", code: 1012, parent: 1003, module: 101 },
+    //   { key: 13, name: "Item add", code: 10013, parent: 1003, module: 101 },
+    //   { key: 14, name: "customer details", code: 1014, parent: 1003, module: 101 },
+    //   { key: 15, name: "invoice details", code: 1015, parent: 1003, module: 101 },
+    //   { key: 16, name: "delivery details", code: 1016, parent: 1003, module: 101 },
+    // ]
   },
   Item: {
     'MAIN OPERATIONS': [

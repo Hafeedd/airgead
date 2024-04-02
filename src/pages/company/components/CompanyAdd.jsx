@@ -5,7 +5,7 @@ import { CompanyPermission } from "./CompanyPermission";
 import { useLocation } from "react-router";
 
 export const CompanyAdd = () => {
-  const [active, setActive] = useState(2);
+  const [active, setActive] = useState(1);
   const [companyId, setCompanyId] = useState(null);
   const [edit, setEdit] = useState(false);
   const [moduleCodeList, setModuleCodeList] = useState([]);
@@ -29,6 +29,13 @@ export const CompanyAdd = () => {
     password: null,
     image: null,
     image_url: null,
+  });
+  const [companyPlan, setCompanyPlan] = useState({
+    renewal_date: null,
+    renewal_time: null,
+    extended_date: null,
+    staff_limit: null,
+    modules: [],
   });
 
   const location = useLocation();
@@ -95,6 +102,8 @@ export const CompanyAdd = () => {
         {active === 2 ? (
           <CompanyPayment
             {...{
+              companyPlan, 
+              setCompanyPlan,
               moduleCodeList,
               setModuleCodeList,
               edit,
@@ -119,6 +128,7 @@ export const CompanyAdd = () => {
         ) : (
           <CompanyDetails
             {...{
+              setModuleCodeList,
               edit,
               active,
               setActive,
@@ -127,6 +137,7 @@ export const CompanyAdd = () => {
               location,
               company,
               setCompany,
+              setCompanyPlan,
             }}
           />
         )}

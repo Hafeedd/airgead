@@ -525,6 +525,8 @@
 .company-view1 img{
   width: 15rem;
   height: 10rem;
+  min-width: 15rem;
+  min-height: 10rem;
   object-fit: contain;
 }
 

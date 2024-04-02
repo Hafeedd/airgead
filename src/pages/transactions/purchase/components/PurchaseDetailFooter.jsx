@@ -5,6 +5,8 @@ import useBaseServices from "../../../../services/master/baseServices";
 
 const PurchaseDetailFooter = (props) => {
   const {
+    from,
+    permissions,
     handleGetCode,
     bankSelect,
     tableItemList,
@@ -239,7 +241,7 @@ const PurchaseDetailFooter = (props) => {
             </div>
             <div className="mx-0 px-1 pe-0 col-6">
               <button
-                disabled={!bankSelect}
+                disabled={!bankSelect || (from==='purch' && !permissions.includes(1163))||(from==='purch Return' && !permissions.includes(1201)||(from==="purch Order"&& !permissions.includes(1239)))}
                 type="submit"
                 className="btn btn-sm footer-button-save w-100"
               >

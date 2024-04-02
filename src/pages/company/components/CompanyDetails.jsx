@@ -10,7 +10,7 @@ import { MEDIA_URL } from "../../../api/axios";
 import { useNavigate } from "react-router";
 
 export const CompanyDetails = (props) => {
-  const { setActive, setCompanyId, edit, setEdit, location,company, setCompany } = props;
+  const { setActive, setCompanyId,setCompanyPlan,setModuleCodeList, edit, setEdit, location,company, setCompany } = props;
   const [allRoles, setAllRoles] = useState([]);
   const [selectedRole, setSelectedRole] = useState();
   const [additionalFiled, setAdditionalFields] = useState(false);
@@ -30,6 +30,7 @@ export const CompanyDetails = (props) => {
         group_detials,
         group_profile_details,
         subscription_history,
+        logo,
         ...others
       } = edit;
       const {
@@ -39,7 +40,8 @@ export const CompanyDetails = (props) => {
         module_permissions,
         ...admin_det_others
       } = admin_details;
-      setCompany({
+      setCompany({   
+        image_url:logo, 
         ...others,
         ...admin_det_others,
       });
@@ -72,10 +74,7 @@ export const CompanyDetails = (props) => {
       setAllRoles(tempList);
     } catch (err) {}
   };
-  // console.log('hoi',allRoles);
-  // console.log('role',selectedRole)
-
-  console.log("user", company);
+  
   useEffect(() => {
     fullRoles();
   }, []);
@@ -130,7 +129,6 @@ export const CompanyDetails = (props) => {
         if (resp.success) {
           setActive(3);
           setCompanyId(resp?.data?.user_profile?.id);
-          console.log("Success :", resp?.data?.user_profile?.id);
         } else {
           Swal.fire({
             title: "Error",
@@ -170,10 +168,12 @@ export const CompanyDetails = (props) => {
         if (edit.id) resp = await companyUpdate(edit.id, CompanyData);
         else resp = await companyRegister(CompanyData);
         if (resp.success) {
-          setEdit(false);
+          // setEdit(false);
           setActive(2);
           setCompanyId(resp?.data?.company_profile?.id);
-          if (edit?.id) navigate("/");
+          setCompanyPlan(company.active_plan_details)
+          setModuleCodeList(company.active_plan_details.activated_modules[0].module_details.map(data=>({code:data.code,is_acitve:data.is_active,parent:data.fk_parent})))
+          // if (edit?.id) navigate("/");
         } else {
           Swal.fire({
             title: "Error",
@@ -209,9 +209,10 @@ export const CompanyDetails = (props) => {
             <img
               className="company-details-company-logo"
               src={
-                edit.id && company.image
-                  ? MEDIA_URL + company.image
-                  : company.image_url
+                // edit.id && company.image
+                //   ? MEDIA_URL + company.image
+                  // :
+                   company.image_url
                   ? company.image_url
                   : uploadImage
               }

@@ -78,11 +78,10 @@ const PurchaseDeliveryDetails = (props) => {
       </Form.Group>
       {/* Row 3 -------------------------------------------------------------------------------------------------------- */}
       <div className="col-3 pe-0 d-flex align-items-end justify-content-start ps-1">
-        <div className="ps-1">
+        {/* <div className="ps-1">
           <div className="btn btn-sm purch-table-btn1 px-3">Purchase{returnPage? " Return":orderPage&& " Order"}</div>
         </div>
         <div className="">
-          {/* <div className="btn btn-sm purch-table-btn1 px-3">P.Return</div> */}
         </div>
         <div className="ps-1">
           <div className="btn btn-sm purch-table-btn1 px-3">Other</div>
@@ -95,7 +94,7 @@ const PurchaseDeliveryDetails = (props) => {
             <FiEdit size={"1rem"} />
             Edit
           </div>
-        </div>
+        </div> */}
       </div>
       <div className="col-1"></div>
       {/* <div className="col-1 d-flex align-items-end ps-0"> */}

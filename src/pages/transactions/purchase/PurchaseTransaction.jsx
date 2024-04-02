@@ -23,13 +23,16 @@ import {
 } from "./InitialData/data";
 import usePurchaseReturnServices from "../../../services/transactions/purchaseReturnService";
 import { StockJournalEdit } from "../stockjurnal/components/StockJournalEdit";
-import {usePurchaseOrderServices} from "../../../services/transactions/purchaseOrderServices";
+import { usePurchaseOrderServices } from "../../../services/transactions/purchaseOrderServices";
+import { useSelector } from "react-redux";
+import { FiEdit } from "react-icons/fi";
 
 export const initialPurchaseTableStatePositionLocal = JSON.parse(
   localStorage.getItem("initialPurchaseTableStatePositionLocal")
 );
 
 const PurchaseTransaction = ({ returnPage, orderPage }) => {
+  const permissions = useSelector((state) => state.auth.permissions);
   const [purchaseItemModal, setPurchaseItemModal] = useState(false);
   const [showPurchaseReturn, setShowPurchaseReturn] = useState(false);
   const [supplierList, setSupplierList] = useState(null);
@@ -47,7 +50,7 @@ const PurchaseTransaction = ({ returnPage, orderPage }) => {
   const [bankSelect, setBankSelect] = useState(false);
   const [tableHeadList, setTableHeadList] = useState(
     initialPurchaseTableStatePositionLocal ||
-    initialPurchaseSalesTableStatePosition
+      initialPurchaseSalesTableStatePosition
   );
 
   const [purchaseOnlyList, setPurchaseOnlyList] = useState([]);
@@ -95,13 +98,13 @@ const PurchaseTransaction = ({ returnPage, orderPage }) => {
   useEffect(() => {
     getData();
     if (!returnPage && !orderPage) {
-      setPurchaseOrReturnList([])
-      setPurchaseOnlyList([])
+      setPurchaseOrReturnList([]);
+      setPurchaseOnlyList([]);
       handleReloadData();
     } else if (returnPage || orderPage) {
-      setPurchaseOrReturnList([])
-      setPurchaseOnlyList([])
-      handlePurchaseAllReset()
+      setPurchaseOrReturnList([]);
+      setPurchaseOnlyList([]);
+      handlePurchaseAllReset();
       handleGetCode(true);
     }
 
@@ -152,15 +155,27 @@ const PurchaseTransaction = ({ returnPage, orderPage }) => {
       setEdit({ ...data.edit });
       handleSetEdit(data?.edit);
     } else if (data?.date) {
-      let { items, fk_supplier, supplier_name, updated_at, edit, tablekeys, ...others } = data;
+      let {
+        items,
+        fk_supplier,
+        supplier_name,
+        updated_at,
+        edit,
+        tablekeys,
+        ...others
+      } = data;
       let tempData = {
         ...others,
         change_due: others.change_due || "0.00",
       };
       if (location?.state?.id < 0) {
-        tempData = { ...tempData, fk_supplier: fk_supplier }
+        tempData = { ...tempData, fk_supplier: fk_supplier };
       }
-      setPurchaseAdd((data) => ({ ...data, ...tempData, supplier_name: supplier_name }));
+      setPurchaseAdd((data) => ({
+        ...data,
+        ...tempData,
+        supplier_name: supplier_name,
+      }));
       if (items) {
         setTableItemList([...items]);
         handlePurchAllCalc(items, true, tempData);
@@ -205,7 +220,6 @@ const PurchaseTransaction = ({ returnPage, orderPage }) => {
         purchaseData = await getPurchaseOrderWithId(state.id);
 
       if (purchaseData?.data) {
-
         let { fk_supplier, items, updated_at, ...others } = purchaseData.data;
         let tempData = {
           ...others,
@@ -215,13 +229,22 @@ const PurchaseTransaction = ({ returnPage, orderPage }) => {
           tempData = { ...tempData, order_no: others.id };
           delete tempData.documents_no;
         }
-        
+
         if (location?.state?.id) {
-          tempData = { ...tempData, supplier_name: location?.state?.name, fk_supplier: location?.state?.id }
-        }
-        else if(fk_supplier>=0) {
-          let supplierName = supplierList?.filter(x => x.value === fk_supplier)[0]?.name
-          tempData = { ...tempData, supplier_name: supplierName, fk_supplier: fk_supplier }
+          tempData = {
+            ...tempData,
+            supplier_name: location?.state?.name,
+            fk_supplier: location?.state?.id,
+          };
+        } else if (fk_supplier >= 0) {
+          let supplierName = supplierList?.filter(
+            (x) => x.value === fk_supplier
+          )[0]?.name;
+          tempData = {
+            ...tempData,
+            supplier_name: supplierName,
+            fk_supplier: fk_supplier,
+          };
         }
         setPurchaseAdd((data) => ({ ...data, ...tempData }));
         if (items) {
@@ -352,7 +375,7 @@ const PurchaseTransaction = ({ returnPage, orderPage }) => {
           setPurchaseAdd((data) => ({ ...data, documents_no: code }));
         }
       }
-    } catch (err) { }
+    } catch (err) {}
   };
 
   const getData = async () => {
@@ -537,10 +560,10 @@ const PurchaseTransaction = ({ returnPage, orderPage }) => {
           ...data,
           change_due:
             +purchaseAdd.change_due +
-            +purchaseAdd.total_amount +
-            +purchaseAdd.paid_cash -
-            total_value -
-            +purchaseAdd.total_amount || "0.00",
+              +purchaseAdd.total_amount +
+              +purchaseAdd.paid_cash -
+              total_value -
+              +purchaseAdd.total_amount || "0.00",
           paid_cash: total_value,
         }));
       }
@@ -630,7 +653,8 @@ const PurchaseTransaction = ({ returnPage, orderPage }) => {
         handleGetCode(true);
         getData();
         Swal.fire(
-          `Purchase  ${returnPage ? "return" : orderPage ? "order" : ""
+          `Purchase  ${
+            returnPage ? "return" : orderPage ? "order" : ""
           } added successfully`,
           "",
           "success"
@@ -751,16 +775,17 @@ const PurchaseTransaction = ({ returnPage, orderPage }) => {
   //   }
   // };
 
-  const handleBatchSubmit = (tempItems) => { };
+  const handleBatchSubmit = (tempItems) => {};
 
   return (
     <div className="item_add">
       <div className={`itemList_header row mx-0 mb-3`}>
         <div
-          className={`page_head ps-4 d-flex pe-0 ${returnPage
-            ? " purchase-return active-header2"
-            : orderPage && " purchase-order active-header2"
-            }`}
+          className={`page_head ps-4 d-flex pe-0 ${
+            returnPage
+              ? " purchase-return active-header2"
+              : orderPage && " purchase-order active-header2"
+          }`}
         >
           <div className="col-6 col-7">
             <div className="fw-600 fs-5">
@@ -809,38 +834,31 @@ const PurchaseTransaction = ({ returnPage, orderPage }) => {
           </div>
         </div>
       </div>
-      <form onSubmit={handleSubmit} className="item_add_cont px-3 pb-1 pt-0">
+      <form
+        onSubmit={handleSubmit}
+        className="item_add_cont px-3 pb-1 pt-0 position-relative"
+      >
         {/* {purchaseHeader} ---------------------------------------------------------*/}
-        {pageHeadItem == 1 ? (
-          <PurchaseInvoiceDetails
-            {...{
-              orderDocList,
-              orderPage,
-              returnPage,
-              purchaseInvoiceRef,
-              setPurchaseInvoiceRef,
-              tableItemRef,
-              setPurchaseAdd,
-              handleEdit,
-              purchaseAdd,
-              handleChange,
-              supplierList,
-              setSupplierList,
-            }}
-          />
-        ) : pageHeadItem == 2 ? (
-          <PurchasePrintingDetails
-            {...{
-              returnPage,
-              orderPage,
-              handleEdit,
-              purchaseAdd,
-              handleChange,
-            }}
-          />
-        ) : (
-          pageHeadItem == 3 && (
-            <PurchaseDeliveryDetails
+        <div className="position-relative">
+          {pageHeadItem == 1 ? (
+            <PurchaseInvoiceDetails
+              {...{
+                orderDocList,
+                orderPage,
+                returnPage,
+                purchaseInvoiceRef,
+                setPurchaseInvoiceRef,
+                tableItemRef,
+                setPurchaseAdd,
+                handleEdit,
+                purchaseAdd,
+                handleChange,
+                supplierList,
+                setSupplierList,
+              }}
+            />
+          ) : pageHeadItem == 2 ? (
+            <PurchasePrintingDetails
               {...{
                 returnPage,
                 orderPage,
@@ -849,11 +867,55 @@ const PurchaseTransaction = ({ returnPage, orderPage }) => {
                 handleChange,
               }}
             />
-          )
-        )}
+          ) : (
+            pageHeadItem == 3 && (
+              <PurchaseDeliveryDetails
+                {...{
+                  returnPage,
+                  orderPage,
+                  handleEdit,
+                  purchaseAdd,
+                  handleChange,
+                }}
+              />
+            )
+          )}
+          <div
+            className="col-3 pe-0 d-flex align-items-end justify-content-start ps-1 position-absolute "
+            style={{ bottom: "0rem" }}
+          >
+            <div className="ps-1">
+              <div className="btn btn-sm purch-table-btn1 px-3">
+                Purchase{returnPage ? " Return" : orderPage && " Order"}
+              </div>
+            </div>
+            <div className="">
+              {/* <div className="btn btn-sm purch-table-btn1 px-3">P.Return</div> */}
+            </div>
+            <div className="ps-1">
+              <div className="btn btn-sm purch-table-btn1 px-3">Other</div>
+            </div>
+            <div className="ps-1 col-2 col-3">
+              {((returnPage && permissions.includes(1200))||(orderPage && permissions.includes(1238))||(permissions.includes(1062))) && (
+                <div
+                  onClick={handleEdit}
+                  className="btn btn-sm btn-dark px-1 justify-content-center d-flex align-items-center gap-1"
+                >
+                  <FiEdit size={"1rem"} />
+                  Edit
+                </div>
+              )}
+            </div>
+          </div>
+          <div className="col-1"></div>
+        </div>
         {/* {purchaseHeader} ---------------------------------------------------------*/}
         <PurchaseTable
+          from={
+            orderPage ? "purch Order" : returnPage ? "purch Return" : "purch"
+          }
           {...{
+            permissions,
             purchaseInvoiceRef,
             tableItemRef,
             setTableItemRef,
@@ -879,7 +941,11 @@ const PurchaseTransaction = ({ returnPage, orderPage }) => {
           }}
         />
         <PurchaseDetailFooter
+        from={
+          orderPage ? "purch Order" : returnPage ? "purch Return" : "purch"
+        }
           {...{
+            permissions,
             setPurchaseAdd,
             handleGetCode,
             bankSelect,
@@ -913,7 +979,9 @@ const PurchaseTransaction = ({ returnPage, orderPage }) => {
         onHide={() => setPurchaseEditModal(false)}
       >
         <PurchaseEditList
-          from={orderPage?"purch Order":returnPage?"purch Return":"purch"}
+          from={
+            orderPage ? "purch Order" : returnPage ? "purch Return" : "purch"
+          }
           setShow={setPurchaseEditModal}
           title={"Purchase Edit Table"}
           list={purchaseOrReturnList}
@@ -986,4 +1054,3 @@ const PurchaseTransaction = ({ returnPage, orderPage }) => {
 };
 
 export default PurchaseTransaction;
-

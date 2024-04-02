@@ -14,6 +14,7 @@ import { useUserServices } from "../../../services/controller/userServices";
 export const CompanyList = (props) => {
   const [companyList, setCompanyList] = useState([]);
   const [listShow, setListShow] = useState(false);
+  const [loading, setLoading] = useState(false)
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -27,20 +28,26 @@ export const CompanyList = (props) => {
   const getData = async () => {
     if (location.pathname === "/user-list") {
       try {
+        setLoading(true)
         const resp = await getUserList();
         if (resp.success) {
-          setCompanyList(resp.data);
+          setCompanyList([...resp.data]);
         }
+        setLoading(false)
       } catch (err) {
+        setLoading(false)
         console.log(err);
       }
     } else {
       try {
+        setLoading(true)
         const resp = await getCompanyList();
         if (resp.success) {
           setCompanyList(resp.data);
         }
+        setLoading(false)
       } catch (err) {
+        setLoading(false)
         console.log(err);
       }
     }
@@ -429,7 +436,7 @@ export const CompanyList = (props) => {
               })
             ) : location.pathname==='/user-list'?
               <tr><td className="fs-3 text-center py-4" colSpan={9}>No User Added Yet !</td></tr>
-              :<tr><td className="fs-3 text-center py-4" colSpan={10}>No Company Added Yet !</td></tr>
+              :<tr><td className="fs-3 text-center py-4" colSpan={10}>{loading?"Loading...":"No Company Added Yet !"}</td></tr>
             }
           </tbody>
         </table>

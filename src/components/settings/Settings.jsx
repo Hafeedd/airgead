@@ -13,6 +13,7 @@ import { MEDIA_URL } from "../../api/axios";
 import userImg from "../../assets/icons/lucide_user.png";
 
 export const Settings = (props) => {
+  const { activeSetting } = props;
   const auth = useSelector((state) => state.auth);
 
   const navigate = useNavigate();
@@ -32,18 +33,25 @@ export const Settings = (props) => {
     }
   };
 
-  const { activeSetting } = props;
   return (
     <div
       id={`settings-cont`}
-      className={`settings ${activeSetting && "active"} ${auth?.userDetails?.fk_group==="Controller"&&"controller"}`}
+      className={`settings ${activeSetting && "active"} ${
+        auth?.userDetails?.fk_group === "Controller" && "controller"
+      }`}
     >
       <div onClick={handleLogout} className="mt-4 text-end pe-2 cursor">
         <MdLogout size={"1.5rem"} className="me-2" />
         Logout
       </div>
       <div className="ps-5">
-        <div className={`company-logo ${auth?.userDetails?.fk_group=='Company'?"company border-0":"controller"} pb-4 h-100 pt-4`}>
+        <div
+          className={`company-logo ${
+            auth?.userDetails?.fk_group == "Company"
+              ? "company border-0"
+              : "controller"
+          } pb-4 h-100 pt-4`}
+        >
           <div
             className="d-flex text-light gap-3 cursor"
             onClick={() => navigate("/profile")}
@@ -64,33 +72,33 @@ export const Settings = (props) => {
           </div>
         </div>
       </div>
-          <div className="settings-item mt-5"  onClick={()=>navigate('/id-configuration')} >
-            <img src={IdConf} alt="Id Conf"/> Id Configuration
-          </div>
+      <div
+        className="settings-item mt-5"
+        onClick={() => navigate("/id-configuration")}
+      >
+        <img src={IdConf} alt="Id Conf" /> Id Configuration
+      </div>
       {auth?.userDetails?.fk_group === "Controller" ? (
+        <></>
+      ) : (
         <>
-          <div className="settings-item mt-5">
-            <img src={accessPerm} alt="access perm" />
-            Access Permission
+          <div
+            onClick={() => navigate("/code-configuration")}
+            className="settings-item mt-5"
+          >
+            <img src={CodeIcon} alt="access perm" />
+            Code Configuration
+          </div>
+          <div
+            onClick={() => navigate("/user-list")}
+            className="settings-item mt-5"
+          >
+            <img src={userImg} alt="access perm" />
+            User Register
           </div>
         </>
-      ) : (
-        <div
-          onClick={() => navigate("/code-configuration")}
-          className="settings-item mt-5"
-        >
-          <img src={CodeIcon} alt="access perm" />
-          Code Configuration
-        </div>
       )}
 
-      <div
-        onClick={() => navigate("/user-list")}
-        className="settings-item mt-5"
-      >
-        <img src={userImg} alt="access perm" />
-        User Register
-      </div>
       <div
         onClick={() => navigate("/email-configuration")}
         className="settings-item mt-5"

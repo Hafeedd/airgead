@@ -33,8 +33,6 @@ export const CompanyView = () => {
         }
     }
 
-    console.log(company)
-
     return (
         <div>
             <div className='company-edit-bar row mx-0 justify-content-between px-4 position-relative'>

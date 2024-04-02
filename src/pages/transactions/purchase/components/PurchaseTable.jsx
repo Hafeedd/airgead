@@ -10,6 +10,8 @@ import { useLocation, useNavigate } from "react-router";
 
 const PurchaseTable = (props) => {
   const {
+    from,
+    permissions,
     purchaseInvoiceRef,
     tableItemRef,
     setTableItemRef,
@@ -526,6 +528,7 @@ const PurchaseTable = (props) => {
                                 }
                                 search={search}
                                 onKeyDown={handleKeyDown2}
+                                disabled={((from==='purch'&&!permissions.includes(1170))||(from==="purch Order"&&!permissions.includes(1246))||(from==="purch Return"&&!permissions.includes(1208)) )|| item.readOnly }
                                 placeholder="SELECT"
                                 className="purchase_search_drop border-0 w-100 ps-2"
                                 name={"name"}
@@ -542,6 +545,7 @@ const PurchaseTable = (props) => {
                                 onKeyDown={handleKeyDown2}
                                 name="fk_unit"
                                 value={data.fk_unit}
+                                disabled={((from==='purch'&&!permissions.includes(1170))||(from==="purch Order"&&!permissions.includes(1246))||(from==="purch Return"&&!permissions.includes(1208)) )|| item.readOnly }
                                 style={{
                                   WebkitAppearance: "none",
                                   fontSize: "10px",
@@ -564,7 +568,7 @@ const PurchaseTable = (props) => {
                               onKeyDown={handleKeyDown}
                               name={item.state}
                               onChange={(e)=>handleChangeTableItem(e,null,tableItem,i)}
-                              disabled={item.readOnly}
+                              disabled={((from==='purch'&&!permissions.includes(1170))||(from==="purch Order"&&!permissions.includes(1246))||(from==="purch Return"&&!permissions.includes(1208)) )|| item.readOnly }
                               value={data[item.state]||''}
                               type="date"
                               className="purchase_input border-0 w-100 text-center"
@@ -582,7 +586,7 @@ const PurchaseTable = (props) => {
                                   item.state == "vat" ? "tax_gst" : item.state
                                 }
                                 type="number"
-                                disabled={item.readOnly}
+                                disabled={((from==='purch'&&!permissions.includes(1170))||(from==="purch Order"&&!permissions.includes(1246))||(from==="purch Return"&&!permissions.includes(1208)) )|| item.readOnly }
                                 placeholder="0"
                                 className="purchase-table-items-input"
                                 value={
@@ -600,7 +604,7 @@ const PurchaseTable = (props) => {
                         onClick={() => confirmDelete()}
                         className="text-center w-100"
                       >
-                        <BsTrashFill className="mb-1 btn p-0" size={"16px"} />
+                       {(from==="purch"&&permissions.includes(1171))||(from==="purch Return"&&permissions.includes(1247))&&<BsTrashFill className="mb-1 btn p-0" size={"16px"} />}
                       </div>
                     </td>
                   </tr>
@@ -709,13 +713,13 @@ const PurchaseTable = (props) => {
                   else return null;
                 })}
               <td className="align-top">
-                <input
+              {permissions.includes(1169)&&<input
                   onKeyDown={handleAddOpenBatch}
                   onClick={handleAddOpenBatch}
                   type="button"
                   className="table-item-add-btn rounded-1 btn-sm align-middle"
                   value={"+"}
-                />
+                />}
               </td>
             </tr>
 

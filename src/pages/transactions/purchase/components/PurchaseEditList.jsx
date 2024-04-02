@@ -10,6 +10,7 @@ import { usePurchaseOrderServices } from "../../../../services/transactions/purc
 import usePurchaseReturnServices from "../../../../services/transactions/purchaseReturnService";
 import { useSalesOrderServices } from "../../../../services/transactions/salesOrderServices";
 import { useSalesReturnServices } from "../../../../services/transactions/salesReturnService";
+import { useSelector } from "react-redux";
 
 const PurchaseEditList = (props) => {
   const {
@@ -22,7 +23,7 @@ const PurchaseEditList = (props) => {
     getData,
     title,
   } = props;
-
+  const permissions = useSelector(state=>state.auth.permissions)
   const [searchedList, setSearchedList] = useState([]);
   const [date, setDate] = useState({
     from: new Date().toISOString(),
@@ -100,7 +101,6 @@ const PurchaseEditList = (props) => {
 
   const handleDeleteData = async (id) => {
     try {
-      console.log(from)
       let response;
       if (from == "sales") response = await deleteSales(id);
       else if(from == "purch") response = await deletePurchase(id);
@@ -259,16 +259,18 @@ const PurchaseEditList = (props) => {
                     <td className=""></td>
                     <td className="">
                       {show !== "order" && <div className="d-flex gap-3 pe-3 justify-content-end">
-                        <img
+                        {(from==="purch"&&permissions.includes(1166)||(from==="purch Order"&&permissions.includes(1242))||
+                        (from==='purch Return'&&permissions.includes(1209)))&&<img
                           src={deleteBtn}
                           alt="deleteBtn"
                           onClick={() => handleDelete()}
-                        />
-                        <img
+                        />}
+                        {((from==="purch"&&permissions.includes(1165))||(from==="purch Order"&&permissions.includes(1241))||
+                        (from==="purch Return"&&permissions.includes(1208)))&&<img
                           src={editBtn}
                           alt="editBtn"
                           onClick={() => handleEditClick(data)}
-                        />
+                        />}
                       </div>}
                     </td>
                   </tr>

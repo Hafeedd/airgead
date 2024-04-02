@@ -5,10 +5,12 @@ import "./opStock.css";
 // import useItemServices from "../../../services/master/itemServices";
 import useOpenStockServices from "../../../services/master/openStockServices";
 import Swal from "sweetalert2";
+// import { useSelector } from "react-redux";
 
 export const OpStock = () => {
   const [toEdit, setToEdit] = useState(false);
   const [itemList, setItemList] = useState([]);
+  // const permissions = useSelector(state=>state.auth.permissions)
   const [filter, setFilter] = useState({
     company: null,
     category: null,

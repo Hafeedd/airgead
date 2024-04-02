@@ -9,6 +9,7 @@ import { useNavigate } from "react-router";
 const MaterialCompositionList = (props) => {
   const { materialList,
     allMaterialComposition,
+    permissions,
     setEditComposition } = props;
   const [searchedArrayList, setSearchedArrayList] = useState([]);
   const navigate = useNavigate();
@@ -109,11 +110,11 @@ const MaterialCompositionList = (props) => {
                       <div>{data.type_details.property_value}</div>
                     </td>
                     <td>
-                      <div><FiEdit size={18} className="p-0" onClick={() => handleEditComposition(data)} /></div> 
+                      {permissions.includes(1391)&&<div><FiEdit size={18} className="p-0" onClick={() => handleEditComposition(data)} /></div> }
                    
                     </td>
                     <td>
-                      <div><MdDelete size={18} className="p-0" onClick={() => handleDeleteComposition(data.id)} /></div>
+                      {permissions.includes(1393)&&<div><MdDelete size={18} className="p-0" onClick={() => handleDeleteComposition(data.id)} /></div>}
                      </td>
                   </tr>
                 );
