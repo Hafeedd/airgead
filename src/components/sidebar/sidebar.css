@@ -1,11 +1,8 @@
 .sidebar {
-  /* display: flex;
-      justify-content: center; */
   height: 100vh;
   width: 17rem;
   margin-right: 0 !important;
-  background: #2c68d2;
-  position: sticky;
+  position: sticky !important;
   top: 0px;
   background: linear-gradient(178.43deg, #150030 10.09%, #400091 80.48%);
 }
@@ -13,7 +10,6 @@
 .sidebar.company {
   background: linear-gradient(178.43deg, #150030 10.09%, #400091 80.48%);
   mix-blend-mode: multiply;
-
 }
 
 .sidebar.company.permission {
@@ -34,11 +30,11 @@
   padding-top: 20px;
   z-index: 4;
   height: fit-content;
-  top: 0px;
   display: flex;
   justify-content: center;
-  position: sticky;
   width: 100%;
+  top: 0px;
+  position: sticky;
 }
 
 .company-logo {
@@ -47,9 +43,6 @@
   border-bottom: 2px solid transparent;
   border-image: radial-gradient(circle, rgb(255, 251, 251) 50%, #250055 80%);
   border-image-slice: 1;
-
-  /* background: rgb(245,245,245);
-  background: radial-gradient(circle, rgba(245,245,245,1) 0%, rgba(61,56,56,1) 100%);  */
 }
 
 .SidebarItems {
