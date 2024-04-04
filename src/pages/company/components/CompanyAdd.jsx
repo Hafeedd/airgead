@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { CompanyDetails } from "./CompanyDetails";
-import { CompanyPayment } from "./CompanyPlan";
+import { CompanyPlan } from "./CompanyPlan";
 import { CompanyPermission } from "./CompanyPermission";
 import { useLocation } from "react-router";
+import { MEDIA_URL } from "../../../api/axios";
+import { useCompanyServices } from "../../../services/controller/companyServices";
 
 export const CompanyAdd = () => {
   const [active, setActive] = useState(1);
@@ -35,14 +37,57 @@ export const CompanyAdd = () => {
     renewal_time: null,
     extended_date: null,
     staff_limit: null,
+    device_limit: null,
     modules: [],
   });
 
   const location = useLocation();
+  const {getCompanyWithId} = useCompanyServices()
 
   useEffect(() => {
-    if (location?.state?.company) setEdit(location.state.company);
+    if (edit.id) {
+      const {
+        admin_details,
+        created_by_details,
+        group_detials,
+        group_profile_details,
+        subscription_history,
+        logo,
+        image,
+        ...others
+      } = edit;
+      const {
+        fk_group,
+        user_permissions,
+        groups,
+        module_permissions,
+        ...admin_det_others
+      } = admin_details;
+      setCompany({
+        logo_url:MEDIA_URL+logo,
+        image_url:MEDIA_URL+image,
+        ...others,
+        ...admin_det_others,
+      });
+      // setSelectedRole(edit.fk_role)
+    }
+  }, [edit]);
+
+  useEffect(() => {
+    if (location?.state?.company) handleCompanyGet(location?.state?.company.id);
   }, [location.state]);
+
+  const handleCompanyGet = async (id) =>{
+    try{
+      let resp 
+      resp = await getCompanyWithId(id)
+      if(resp.success){
+        setEdit(resp.data)
+      }
+    }catch(err){
+      console.log(err)
+    }
+  }
 
   return (
     <div className="company-add-cont pb-1">
@@ -100,7 +145,7 @@ export const CompanyAdd = () => {
         </h3>
         {/* <div className="company-details-cont row justify-content-between mx-0 my-2 p-0"> */}
         {active === 2 ? (
-          <CompanyPayment
+          <CompanyPlan
             {...{
               companyPlan, 
               setCompanyPlan,

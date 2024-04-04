@@ -6,48 +6,28 @@ import { useCompanyServices } from "../../../services/controller/companyServices
 import Swal from "sweetalert2";
 import { Dropdown } from "semantic-ui-react";
 import { useUserServices } from "../../../services/controller/userServices";
-import { MEDIA_URL } from "../../../api/axios";
 import { useNavigate } from "react-router";
 
 export const CompanyDetails = (props) => {
-  const { setActive, setCompanyId,setCompanyPlan,setModuleCodeList, edit, setEdit, location,company, setCompany } = props;
+  const {
+    setActive,
+    setCompanyId,
+    setCompanyPlan,
+    setModuleCodeList,
+    edit,
+    setEdit,
+    location,
+    company,
+    setCompany,
+  } = props;
   const [allRoles, setAllRoles] = useState([]);
   const [selectedRole, setSelectedRole] = useState();
   const [additionalFiled, setAdditionalFields] = useState(false);
   const [loginField, setLoginFiled] = useState(false);
 
-
   const { postUserAdd, getUserRoles, putUserAdd } = useUserServices();
   const { companyRegister, companyUpdate } = useCompanyServices();
   const navigate = useNavigate();
-
-  useEffect(() => {
-    if (edit.id) {
-      // setCompanyId(edit.id)
-      const {
-        admin_details,
-        created_by_details,
-        group_detials,
-        group_profile_details,
-        subscription_history,
-        logo,
-        ...others
-      } = edit;
-      const {
-        fk_group,
-        user_permissions,
-        groups,
-        module_permissions,
-        ...admin_det_others
-      } = admin_details;
-      setCompany({   
-        image_url:logo, 
-        ...others,
-        ...admin_det_others,
-      });
-      // setSelectedRole(edit.fk_role)
-    }
-  }, [edit]);
 
   const search = (options, searchValue) => {
     searchValue = searchValue.toUpperCase();
@@ -74,7 +54,7 @@ export const CompanyDetails = (props) => {
       setAllRoles(tempList);
     } catch (err) {}
   };
-  
+
   useEffect(() => {
     fullRoles();
   }, []);
@@ -102,6 +82,7 @@ export const CompanyDetails = (props) => {
             logo: files[0],
             logo_url: imageUrl,
           }));
+      // setEdit(data=>({...data,logo:null}))
     } else if (value === "") setCompany((data) => ({ ...data, [name]: null }));
     else setCompany((data) => ({ ...data, [name]: value }));
   };
@@ -137,9 +118,10 @@ export const CompanyDetails = (props) => {
           });
         }
       } catch (err) {
-        let message = err.response.data.message || "User Registration Failed.";
-        if (err.response.data?.errors) {
-          message = Object.values(err.response.data?.errors)[0];
+        let message =
+          err?.response?.data?.message || "User Registration Failed.";
+        if (err?.response?.data?.errors?.length > 0) {
+          message = Object.values(err.response?.data?.errors)[0];
         }
         Swal.fire({
           title: "Failed",
@@ -168,11 +150,20 @@ export const CompanyDetails = (props) => {
         if (edit.id) resp = await companyUpdate(edit.id, CompanyData);
         else resp = await companyRegister(CompanyData);
         if (resp.success) {
-          // setEdit(false);
           setActive(2);
           setCompanyId(resp?.data?.company_profile?.id);
-          setCompanyPlan(company.active_plan_details)
-          setModuleCodeList(company.active_plan_details.activated_modules[0].module_details.map(data=>({code:data.code,is_acitve:data.is_active,parent:data.fk_parent})))
+          console.log(company);
+          setCompanyPlan(company.active_plan_details);
+          if (company?.active_plan_details?.activated_modules?.length > 0)
+            setModuleCodeList(
+              company?.active_plan_details?.activated_modules[
+                company?.active_plan_details?.activated_modules?.length - 1
+              ]?.module_details?.map((data) => ({
+                code: data.code,
+                is_acitve: data.is_active,
+                parent: data.fk_parent,
+              }))
+            );
           // if (edit?.id) navigate("/");
         } else {
           Swal.fire({
@@ -183,9 +174,11 @@ export const CompanyDetails = (props) => {
         }
       } catch (err) {
         let message =
-          err.response.data.message || "Company Registration Failed.";
-        if (err.response.data?.errors) {
-          message = Object.values(err.response.data?.errors)[0];
+          err?.response?.data?.message || "Company Registration Failed.";
+        if (err?.response?.data?.errors.length > 0) {
+          if (typeof err?.response?.data?.errors !== "string") {
+            message = err.response.data?.errors;
+          } else message = Object.values(err.response.data?.errors);
         }
         Swal.fire({
           title: "Failed",
@@ -197,6 +190,8 @@ export const CompanyDetails = (props) => {
       }
     }
   };
+
+  // console.log(company)
 
   return (
     <form
@@ -211,10 +206,8 @@ export const CompanyDetails = (props) => {
               src={
                 // edit.id && company.image
                 //   ? MEDIA_URL + company.image
-                  // :
-                   company.image_url
-                  ? company.image_url
-                  : uploadImage
+                // :
+                company.image_url ? company.image_url : uploadImage
               }
               alt="upload-image"
             />
@@ -222,11 +215,12 @@ export const CompanyDetails = (props) => {
             <img
               className="company-details-company-logo"
               src={
-                edit.id && company.logo
-                  ? MEDIA_URL + company.logo
-                  : company.logo_url
-                  ? company.logo_url
-                  : uploadImage
+                // edit.id && edit.logo
+                //   ? MEDIA_URL + company.logo
+                //   : company.logo_url
+                //   ? company.logo_url
+                //   : uploadImage
+                company.logo_url ? company.logo_url : uploadImage
               }
               alt="upload-image"
             />
@@ -279,7 +273,7 @@ export const CompanyDetails = (props) => {
             }`}
           >
             <TextField
-              value={company.address_line_1}
+              value={company.address_line_1 || ""}
               onChange={handleChange}
               name="address_line_1"
               className="company-input-field my-2"
@@ -290,7 +284,7 @@ export const CompanyDetails = (props) => {
             />
             <TextField
               name="address_line_2"
-              value={company.address_line_2}
+              value={company.address_line_2 || ""}
               onChange={handleChange}
               className="company-input-field my-2"
               size="small"
@@ -300,7 +294,7 @@ export const CompanyDetails = (props) => {
             />
             <TextField
               name="country"
-              value={company.country}
+              value={company.country || ""}
               onChange={handleChange}
               className="company-input-field my-2"
               size="small"
@@ -310,7 +304,7 @@ export const CompanyDetails = (props) => {
             />
             <TextField
               name="state"
-              value={company.state}
+              value={company.state || ""}
               onChange={handleChange}
               className="company-input-field my-2"
               size="small"
@@ -320,7 +314,7 @@ export const CompanyDetails = (props) => {
             />
             <TextField
               name="district"
-              value={company.district}
+              value={company.district || ""}
               onChange={handleChange}
               className="company-input-field my-2"
               size="small"
@@ -330,7 +324,7 @@ export const CompanyDetails = (props) => {
             />
             <TextField
               name="city"
-              value={company.city}
+              value={company.city || ""}
               onChange={handleChange}
               className="company-input-field my-2"
               size="small"
@@ -340,7 +334,7 @@ export const CompanyDetails = (props) => {
             />
             <TextField
               name="pincode"
-              value={company.pincode}
+              value={company.pincode || ""}
               type="number"
               onChange={handleChange}
               className="company-input-field my-2"
@@ -351,7 +345,7 @@ export const CompanyDetails = (props) => {
             />
             <TextField
               name="location"
-              value={company.location}
+              value={company.location || ""}
               onChange={handleChange}
               className="company-input-field my-2"
               size="small"
@@ -383,7 +377,7 @@ export const CompanyDetails = (props) => {
           >
             <TextField
               name="username"
-              value={company.username}
+              value={company.username || ""}
               onChange={handleChange}
               className="company-input-field my-2"
               size="small"
@@ -393,7 +387,7 @@ export const CompanyDetails = (props) => {
             />
             <TextField
               name="password"
-              value={company.password}
+              value={company.password || ""}
               onChange={handleChange}
               className="company-input-field my-2"
               size="small"
@@ -486,14 +480,14 @@ export const CompanyDetails = (props) => {
         )}
       </div>
       <div className="w-100 row mx-0 justify-content-end gap-3 pe-3 pt-2">
-        <div
+        {/* <div
           onClick={() => {
             setActive((data) => (data > 1 ? data - 1 : data));
           }}
           className="company-add-btn clear btn col-1 col-2"
         >
           Previous
-        </div>
+        </div> */}
         <button
           // onClick={() => setActive((data) => (data < 3 ? data + 1 : data))}
           // onClick={handleSubmit}

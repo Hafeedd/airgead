@@ -4,13 +4,15 @@ import { Form } from "react-bootstrap";
 import { useAuthServices } from "../../services/controller/authServices";
 import Swal from "sweetalert2";
 
+const initEmail = {
+  smtp_email:null,
+  smtp_password:null,
+  smtp_port:null,
+  smtp_host:null,
+}
+
 export const EmailConfig = (props) => {
-    const [email, setEmail] = useState({
-        smtp_email:null,
-        smtp_password:null,
-        smtp_port:null,
-        smtp_host:null,
-    })
+    const [email, setEmail] = useState(initEmail)
 
     const {postEmailConfig,getEmailConfig} = useAuthServices()
 
@@ -49,7 +51,10 @@ export const EmailConfig = (props) => {
             Swal.fire(message,'','error')
         }
     }
-
+    
+    const handleReset = () =>{
+      setEmail(initEmail)
+    }
   return (
     <form onSubmit={handleSubmit} className="id-code-config email-config pt-4">
       <div className="px-4">
@@ -59,9 +64,11 @@ export const EmailConfig = (props) => {
             <Form.Label>SMTP Email</Form.Label>
             <div className="col-9">
               <Form.Control
+              required
                 type="email"
+                id="email"
                 name="smtp_email"
-                value={email.smtp_email}            
+                value={email.smtp_email||''}
                 onChange={handleChange}
                 placeholder="eg : abcd@mail.in"
                 //   value={codeId.next_code || ""}
@@ -73,8 +80,9 @@ export const EmailConfig = (props) => {
             <Form.Label>SMTP Password</Form.Label>
             <div className="col-9">
               <Form.Control
+              required
                 name="smtp_password"
-                value={email.smtp_password}
+                value={email.smtp_password||''}
                 onChange={handleChange}
                 type="password"
                 placeholder="*********"
@@ -87,8 +95,9 @@ export const EmailConfig = (props) => {
             <Form.Label>SMTP HOST</Form.Label>
             <div className="col-9">
               <Form.Control
+              required
                 name="smtp_host"
-                value={email.smtp_host}
+                value={email.smtp_host||''}
                 onChange={handleChange}
                 placeholder="eg : smtp.abcd.com"
                 //   value={codeId.next_code || ""}
@@ -100,8 +109,9 @@ export const EmailConfig = (props) => {
             <Form.Label>SMPT PORT</Form.Label>
             <div className="col-9">
               <Form.Control
+              required
                 name='smtp_port'
-                value={email.smtp_port}
+                value={email.smtp_port||''}
                 onChange={handleChange}
                 placeholder="eg : 587"
                 //   value={codeId.next_code || ""}
@@ -117,7 +127,7 @@ export const EmailConfig = (props) => {
       >
         <div
           type="clear"
-          //   onClick={handleResetAll}
+            onClick={handleReset}
           className="company-add-btn clear btn col-1 col-2"
         >
           {/* {popup ? "Close" : "Clear"} */}

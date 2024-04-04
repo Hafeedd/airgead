@@ -68,7 +68,7 @@ const AccountMaster = () => {
               location.pathname === "/account-add" && "d-none"
             }`}
           >
-           {permissions.includes(1083) && <div
+           {!permissions.includes(1083) && <div
               onClick={() => {
                 navigate("/account-add");
                 setToEdit(false);

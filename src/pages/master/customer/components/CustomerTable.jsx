@@ -192,12 +192,12 @@ const CustomerTable = (props) => {
 
                     <td>
                       <div className="button d-flex gap-4 pe-3">
-                        {permissions.includes(1098)&&<img
+                        {!permissions.includes(1098)&&<img
                           src={deleteBtn}
                           alt="deletebtn"
                           onClick={(e) => handleDelete(data.id, e)}
                         />}
-                        {permissions.includes(1097)&&<img
+                        {!permissions.includes(1097)&&<img
                           src={editBtn}
                           alt="edit btn"
                           onClick={() => handleEdit(data)}

@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import './loginMainPage.css'
 import loginAnime from '../../assets/images/login.svg'
 import vitezLogoWatermark from '../../assets/images/VITEZ LOGO-01 2.svg'
@@ -12,12 +12,11 @@ import Swal from 'sweetalert2'
 import { useDispatch } from 'react-redux'
 import { login } from '../../redux/authSlice'
 import ForgotPwEmail from './components/ForgotPwEmail'
-import RecoveryQuestion from './components/RecoveryQuestion'
 import SetNewPassword from './components/SetNewPassword'
 import { Modal } from 'react-bootstrap'
 import AddRecovery from './components/AddRecovery'
 
-const LoginMainPage = () => {
+const LoginMainPage = () => {  
   const [token, setToken] = useState(false)
   const [otp, setOtp] = useState('')
   const [loading, setLoading] = useState(false)
@@ -90,7 +89,6 @@ const LoginMainPage = () => {
       setLoading(false)
     } catch (err) {
       setLoading(false)
-      console.log(err)
       Swal.fire('Error',
         err?.response?.data?.message ||
         'Something went wrong. Please try again later.', 'error')

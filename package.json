@@ -20,6 +20,7 @@
     "dayjs": "^1.11.10",
     "dom-to-image": "^2.6.0",
     "electron-is-dev": "^2.0.0",
+    "fs": "^0.0.1-security",
     "html-to-image": "^1.11.11",
     "html2canvas": "^1.4.1",
     "html2pdf.js": "^0.10.1",
@@ -49,7 +50,8 @@
     "serve": "^14.2.1",
     "styled-components": "^5.3.11",
     "sweetalert2": "^11.7.27",
-    "web-vitals": "^2.1.4"
+    "web-vitals": "^2.1.4",
+    "xlsx": "^0.18.5"
   },
   "main": "public/electron.js",
   "scripts": {

@@ -163,8 +163,8 @@ const ItemList = (props) => {
                     <td>{data?.mrp_rate}</td>
                     <td>
                       <div className="button d-flex gap-4 pe-3" >
-                       {permissions.includes(1004) && <img src={deleteBtn} alt="deletebtn" onClick={(e) => handleDelete(data?.id, e)}/>}
-                       {permissions.includes(1003) && <img src={editBtn} alt="Edit button" onClick={(e) => handleEdit(data)}/>}
+                       {!permissions.includes(1004) && <img src={deleteBtn} alt="deletebtn" onClick={(e) => handleDelete(data?.id, e)}/>}
+                       {!permissions.includes(1003) && <img src={editBtn} alt="Edit button" onClick={(e) => handleEdit(data)}/>}
                       </div>
                     </td>
                   </tr>

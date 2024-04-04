@@ -62,7 +62,7 @@ const ItemMaster = () => {
               </div>
             </div>
           </div>
-          {location.pathname !== "/add" && permissions.includes(1000) && (
+          {location.pathname !== "/add" && !permissions.includes(1000) && (
             <div className="d-flex align-items-center">
               <div
                 onClick={() => {
@@ -82,9 +82,9 @@ const ItemMaster = () => {
       {
         /* toEdit||showAddItem */ location.pathname === "/add" ? (
           // permissions?.includes(10001)&&<ItemAddForm refresh={getData} edit={toEdit} setToEdit={setToEdit} />
-          <ItemAddForm refresh={getData} edit={toEdit} setToEdit={setToEdit} />
+          !permissions.includes(1000)&&<ItemAddForm refresh={getData} edit={toEdit} setToEdit={setToEdit} />
         ) : (
-          permissions?.includes(100) && (
+          !permissions?.includes(10001) && (
             <ItemList
               list={listItem}
               {...{

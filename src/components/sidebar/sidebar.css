@@ -47,7 +47,8 @@
 
 .SidebarItems {
   overflow: hidden;
-  height: 80%;
+  height: 'fit-content';
+  max-height: 90%;
   overflow-y: scroll;
   display: flex;
   justify-content: start;

@@ -33,6 +33,8 @@ export const CompanyView = () => {
         }
     }
 
+    console.log(active)
+
     return (
         <div>
             <div className='company-edit-bar row mx-0 justify-content-between px-4 position-relative'>
@@ -114,14 +116,14 @@ export const CompanyView = () => {
                             </thead>
                             <tbody>
                                 {company?.subscription_history.map((data, key) => (
-                                <><tr className={`main-tr ${active && "active"}`} onClick={() => setActive(!active)}>
+                                <><tr className={`main-tr ${active===key && "active"}`} onClick={() => setActive(item=>item===key?false:key)}>
                                     <td><div className='comp-view-td rounded-start-2'>{data.extended_date&&dayjs(data?.extended_date).format('DD/MM/YYYY')}</div></td>
                                     <td><div className='comp-view-td'>{data.renewal_date&&dayjs(data?.renewal_date).format('DD/MM/YYYY')}</div></td>
                                     <td><div className='comp-view-td'>{data.extend_times}</div></td>
                                     <td>
                                         <div className='comp-view-td rounded-end-2'>
                                             <VscTriangleDown
-                                                className={`comp-view-arrow ${active ? "active" : "inactive"}`}
+                                                className={`comp-view-arrow ${active===key ? "active" : "inactive"}`}
                                                 size='1rem' />
                                         </div>
                                     </td>
@@ -129,7 +131,7 @@ export const CompanyView = () => {
                                     <tr>
                                         <td colSpan={5}>
 
-                                            <div className={`accordian-anim px-4 ${active && "active"}`}>
+                                            <div className={`accordian-anim px-4 ${active===key && "active"}`}>
                                                 {<table className='table inner-table'>
                                                     <thead>
                                                         <tr>

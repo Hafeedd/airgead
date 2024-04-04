@@ -1,4 +1,4 @@
-import { Form } from "react-bootstrap";
+import { Form, Modal } from "react-bootstrap";
 import { MdMovieEdit } from "react-icons/md";
 import { TfiEmail, TfiPrinter } from "react-icons/tfi";
 import { BsWhatsapp, BsFiletypePdf } from "react-icons/bs";
@@ -9,6 +9,7 @@ import { useState } from "react";
 import Swal from "sweetalert2";
 import useOnKey from "../../../../hooks/onKeyFunct/onKeyFunct";
 import delteIcon from "../../../../assets/icons/delete.svg";
+import { StockPop } from "../../purchase/components/StockPop";
 
 export const StockJournalDetails = (props) => {
   const {
@@ -33,6 +34,8 @@ export const StockJournalDetails = (props) => {
   } = props;
 
   const [ref, setRef] = useState(null);
+  const [itemSelected, setItemSelected] = useState(null);
+  const [showStock, setShowStock] = useState(false);
 
   const [handleKeyDown, formRef] = useOnKey(ref, setRef);
 
@@ -97,6 +100,23 @@ export const StockJournalDetails = (props) => {
         setStockJAdd((data) => ({ ...data, [name]: value }));
     }
   };
+
+  const handleDropOpen = (e,item,state,toTableItem) =>{
+    let data = item?.options[0]
+    if(state.fk_items){
+      data = item?.options?.filter(x=>x.value==state.fk_items)[0]
+    }
+    if(data){
+      setItemSelected({data, e, state, toTableItem } )
+    }
+  }
+
+
+  const handleKeyDownStockPopup = (e,fromList) =>{
+    if(e?.type === 'keydown' && e?.code === 'Enter'){      
+      setShowStock(true)
+    }
+  }
 
   const search = (options, searchValue) => {
     searchValue = searchValue.toUpperCase();
@@ -527,6 +547,20 @@ export const StockJournalDetails = (props) => {
           type="text"
         />
       </Form.Group>
+      <Modal
+        show={showStock}
+        size="lg"
+        centered
+        onHide={() =>setShowStock(false)}
+      >
+        <StockPop
+        handleChange={handleChangeTableItem}
+          {...{
+            itemSelected,
+            setShowStock,
+          }}
+        />
+      </Modal>
     </div>
   );
 };

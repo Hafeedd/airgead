@@ -2,4 +2,5 @@
     background-color: #f0f2f4;
     background-color: transparent;
     position: relative;
+    height: fit-content;
 }

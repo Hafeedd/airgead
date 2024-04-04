@@ -173,12 +173,12 @@ const AccountList = (props) => {
                     </td> */}
                     <td>
                       <div className="button pe-3 gap-4 d-flex">
-                        {permissions.includes(1085)&&<img
+                        {!permissions.includes(1085)&&<img
                           src={deleteBtn}
                           alt="delete_btn"
                           onClick={(e) => handleDelete(e)}
                         />}
-                       {permissions.includes(1084)&&<img
+                       {!permissions.includes(1084)&&<img
                           src={editIcon}
                           alt={"editbtn"}
                           onClick={(e) => handleEdit(data && data)}

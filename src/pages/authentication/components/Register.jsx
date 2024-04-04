@@ -120,9 +120,9 @@ const Register = () => {
                     <label for="user-prof" className='btn btn-login rounded mt-0 py-2 ' ><span><img src={uploadIcon} alt="" /></span>Upload Image</label>
                 </div>
                 <div className="col-6 p-0 ">
+                    <TextField required onChange={handleChange} value={user.username} name='username' size={window.innerWidth < 1500 ? 'small' : 'normal'} className='auth-input-field my-3' id="outlined-basic" label="User Name" variant="outlined" />
                     <TextField required onChange={handleChange} value={user.first_name} name='first_name' size={window.innerWidth < 1500 ? 'small' : 'normal'} className='auth-input-field my-3  ' id="outlined-basic" label="First Name" variant="outlined" />
                     <TextField required onChange={handleChange} value={user.last_name} name='last_name' size={window.innerWidth < 1500 ? 'small' : 'normal'} className='auth-input-field my-2' id="outlined-basic" label="Last Name" variant="outlined" />
-                    <TextField required onChange={handleChange} value={user.username} name='username' size={window.innerWidth < 1500 ? 'small' : 'normal'} className='auth-input-field my-3' id="outlined-basic" label="User Name" variant="outlined" />
                 </div>
             </div>
             <div>

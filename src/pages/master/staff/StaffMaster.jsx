@@ -73,7 +73,7 @@ const StaffMaster = () => {
               >
                 Staff List
               </div>
-              <div
+             {!permissions.includes(1317)&&<div
                 onClick={() => {
                   navigate("/staff-master");
                 }}
@@ -82,7 +82,7 @@ const StaffMaster = () => {
                 }`}
               >
                 General
-              </div>
+              </div>}
               <div
                 onClick={() => {
                   navigate("/staff-pay-scale");
@@ -97,7 +97,7 @@ const StaffMaster = () => {
           </div>
           {location.pathname !== "/staff-master" && (
             <div className="h-100 d-flex align-items-center">
-              {permissions.includes(1317)&&<div
+              {!permissions.includes(1317)&&<div
                 className="add-btn btn h-auto d-flex w-100"
                 onClick={() => navigate("/staff-master")}
               >
@@ -107,7 +107,7 @@ const StaffMaster = () => {
           )}
         </div>
       </div>
-      {location.pathname == "/staff-list" && (
+      {location.pathname == "/staff-list" && !permissions.includes(1315)&& (
         <div className="px-4">
           <StaffTable
             {...{
@@ -126,7 +126,7 @@ const StaffMaster = () => {
           />
         </div>
       )}
-      {location.pathname == "/staff-master" && (
+      {location.pathname == "/staff-master" && !permissions.includes(1317)&& (
         <AddStaff getMasetData={getData} {...{ edit, setEdit,setShowCodeConf }} />
       )}
       {location.pathname == "/staff-pay-scale" && (

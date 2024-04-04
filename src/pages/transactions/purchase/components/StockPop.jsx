@@ -4,11 +4,9 @@ import { useNavigate } from "react-router";
 
 export const StockPop = (props) => {
   const {
-    handleKeyDown,
     itemSelected,
+    handleChange,
     setShowStock,
-    handleChangeTableItem,
-    setDropdownOpen,
   } = props;
 
   const [selectedId, setSelectedId] = useState(0);
@@ -37,38 +35,13 @@ export const StockPop = (props) => {
   const navigate = useNavigate();
 
   const handleSelect = (data) => {
-    // let tempItem = {...tableItem}
-    // tempItem = tempItem.map(x=>{
-    //   let a = {}
-    //   if(x == null ){
-    //     a[x] = 0
-    //   }else{
-    //     a[x] = x
-    //   }
-
-    // })
-
-    // if (data) {
-    //   console.log(data)
-    //   // let data = data.options.filter((x) => x?.value === data?.value)[0];
-    //   tempItem = {
-    //     ...tempItem,...data,
-    //     sales_rate:data.retail_rate,
-    //     item_name: data?.text,
-    //     code: data?.description,
-    //     fk_items: data?.value,
-    //     unit: data?.unit,
-    //   };
-    //   setTableItem({ ...tempItem });
-    // }
-    handleChangeTableItem(
+    handleChange(
       itemSelected.e,
       data,
       itemSelected.state,
       itemSelected.toTableItem,
       true
     );
-    setDropdownOpen(false);
     setShowStock(false);
   };
 

@@ -79,7 +79,7 @@ const SupplierMaster = () => {
               location === "/supplier-add" && "d-none"
             }`}
           >
-            {permissions.includes(1145)&&<div
+            {!permissions.includes(1145)&&<div
               onClick={() => {
                 setToEdit(false);
                 navigate("/supplier-add");

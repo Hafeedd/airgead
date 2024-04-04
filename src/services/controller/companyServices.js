@@ -8,14 +8,14 @@ export const useCompanyServices = () => {
 
   // register company
   const companyRegister = async (data) => {
-    try{
+    // try{
       const resp = await axiosPrivate.post("controller/company_register/", data,
       {headers:{'Content-Type': 'multipart/form-data'}});
       return resp.data;
-    }catch(err){
-      console.log(err)
-      handleNetworkError(err)
-    }
+    // }catch(err){
+    //   console.log(err)
+    //   handleNetworkError(err)
+    // }
   };
   // get company List
   const getCompanyList = async () => {

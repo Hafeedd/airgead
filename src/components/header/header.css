@@ -16,7 +16,7 @@
   
   .header {
     z-index: 1000;
-    height: 6.5vh;
+    height: 3.5rem;
     top: 0;
     position: sticky;
   }

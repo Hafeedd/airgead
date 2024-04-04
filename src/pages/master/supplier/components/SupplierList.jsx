@@ -191,8 +191,8 @@ const SupplierList = (props) => {
                       <div
                         className="button d-flex gap-4 pe-3"                        
                       >
-                        {permissions.includes(1147)&&<img src={deleteBtn} alt="deletebtn" onClick={(e) => handleDelete(data.id, e)}/>}
-                        {permissions.includes(1146)&&<img src={editBtn} alt="edit button" onClick={(e) => handleEdit(data && data)}/>}
+                        {!permissions.includes(1147)&&<img src={deleteBtn} alt="deletebtn" onClick={(e) => handleDelete(data.id, e)}/>}
+                        {!permissions.includes(1146)&&<img src={editBtn} alt="edit button" onClick={(e) => handleEdit(data && data)}/>}
                       </div>
                     </td>
                   </tr>

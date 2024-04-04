@@ -67,7 +67,7 @@ const CustomerList = () => {
               location === "/customer-add" && "d-none"
             }`}
           >
-            {permissions.includes(1096)&&<div
+            {!permissions.includes(1096)&&<div
               onClick={() => {
                 navigate("/customer-add");
                 setEdit(false);

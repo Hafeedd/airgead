@@ -9,7 +9,7 @@ import Swal from "sweetalert2";
 import { companyModules } from "../data/initialData";
 import { useNavigate } from "react-router";
 
-export const CompanyPayment = (props) => {
+export const CompanyPlan = (props) => {
   const { setActive, companyId, moduleCodeList, setModuleCodeList,companyPlan,setCompanyPlan } = props;
   const [showModules, setShowModules] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -28,7 +28,6 @@ export const CompanyPayment = (props) => {
         renewal_time: dayjs(e).format("hh:mm"),
       }));
     } else if (date_name) {
-      console.log(dayjs(e).format("YYYY-MM-DD"));
       setCompanyPlan((data) => ({
         ...data,
         [date_name]: dayjs(e).format("YYYY-MM-DD"),
@@ -84,6 +83,8 @@ export const CompanyPayment = (props) => {
         })),
       };
       setLoading(true);
+      // console.log(tempCompanyPlan)
+      // return 0
       const response = await postCompanyPlan(companyId, tempCompanyPlan);
       if (response.success) {
         Swal.fire("Success", "", "success");
@@ -102,10 +103,10 @@ export const CompanyPayment = (props) => {
   };
 
   const handleModuleSelectAll = () => {
-    if (companyModules.length == moduleCodeList.length) {
+    if (companyModules?.length == moduleCodeList?.length) {
       setModuleCodeList([]);
     } else {
-      let tempList = companyModules.map((data) => ({
+      let tempList = companyModules?.map((data) => ({
         code: data.code,
         parent: data.parent,
       }));
@@ -137,8 +138,8 @@ export const CompanyPayment = (props) => {
           slotProps={{ textField: { size: "small" } }}
           name="renewal_time"
           value={
-            companyPlan.renewal_time
-              ? dayjs(companyPlan.renewal_time, "HH:mm")
+            companyPlan?.renewal_time
+              ? dayjs(companyPlan?.renewal_time, "HH:mm")
               : null
           }
           format="HH:mm"
@@ -151,8 +152,8 @@ export const CompanyPayment = (props) => {
           slotProps={{ textField: { size: "small" } }}
           name="extended_date"
           value={
-            companyPlan.extended_date
-              ? dayjs(companyPlan.extended_date)/* ?.format("DD-MM-YYYY") */
+            companyPlan?.extended_date
+              ? dayjs(companyPlan?.extended_date)/* ?.format("DD-MM-YYYY") */
               : null
           }
           format="DD/MM/YYYY"
@@ -162,15 +163,25 @@ export const CompanyPayment = (props) => {
           variant="outlined"
         />
         <TextField
-          // required
           slotProps={{ textField: { size: "small" } }}
           type="number"
           name="staff_limit"
-          value={companyPlan.staff_limit}
+          value={companyPlan?.staff_limit}
           onChange={handleChange}
           className="company-input-field my-3"
           size="small"
           label="Staff Limit"
+          variant="outlined"
+        />
+        <TextField
+          slotProps={{ textField: { size: "small" } }}
+          type="number"
+          name="device_limit"
+          value={companyPlan?.device_limit}
+          onChange={handleChange}
+          className="company-input-field my-3"
+          size="small"
+          label="Device Limit"
           variant="outlined"
         />
       </div>
@@ -185,9 +196,9 @@ export const CompanyPayment = (props) => {
           </div>{" "}
         </div>
         <div className="module-cont w-100">
-          {companyModules.map((data) => {
+          {companyModules?.map((data) => {
             return (
-              moduleCodeList.findIndex((item) => item.code === data.code) >
+              moduleCodeList?.findIndex((item) => item.code === data.code) >
                 -1 && (
                 <div
                   onClick={() => handleModuleSelection(data)}
@@ -225,16 +236,16 @@ export const CompanyPayment = (props) => {
         <div className="comp-plan-module-modal pt-4 px-5">
           <div
             onClick={handleModuleSelectAll}
-            className={`module-select-all btn ${companyModules.length==moduleCodeList.length&&'clear'}`}
+            className={`module-select-all btn ${companyModules?.length==moduleCodeList?.length&&'clear'}`}
           >
-           {companyModules.length==moduleCodeList.length?"Clear All":"Select All"}
+           {companyModules?.length==moduleCodeList?.length?"Clear All":"Select All"}
           </div>
           <div className="module-items">
-            {companyModules.map((data) => (
+            {companyModules?.map((data) => (
               <div
                 onClick={() => handleModuleSelection(data)}
                 className={`comp-module-item ${
-                  moduleCodeList.findIndex((item) => item.code === data.code) >
+                  moduleCodeList?.findIndex((item) => item.code === data.code) >
                     -1 && "active"
                 }`}
               >

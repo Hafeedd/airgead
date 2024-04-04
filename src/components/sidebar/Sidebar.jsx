@@ -99,7 +99,7 @@ const Sidebar = ({ perm, setPage }) => {
 
         {("Company Agency".includes(auth?.userDetails?.fk_group) || perm) && <>
         <div
-            onClick={() =>{navigate('/')}}
+            onClick={() =>{if(!perm)navigate('/')}}
             className={`SidebarItem mb-1 ${location.pathname==='/' && "active"}`}
           >
             <img src={Dashboard} className="sidebar_icon" width={"19px"} />
@@ -114,7 +114,7 @@ const Sidebar = ({ perm, setPage }) => {
           </div>
             <div className={`sidebar_span_cont ${!masterActive && "d-none"}`}>
               {navigationList.map(data =>
-              (auth?.permissions?.findIndex(x => x === data.code) > -1 && data.main === "master") && <span className="SidebarSpan d-flex ms-5 ps-3">
+              (auth?.permissions?.findIndex(x => x === data.code||perm) > -1 && data.main === "master") && <span className="SidebarSpan d-flex ms-5 ps-3">
                 <div
                   className="SidebarItemText"
                   onClick={() => { if (!perm) navigate(data.navigate); else setPage({ main: data.main, sub: data.sub }) }}
@@ -133,7 +133,7 @@ const Sidebar = ({ perm, setPage }) => {
           </div>
           <div className={`sidebar_span_cont ${!ReportsActive && "d-none"}`}>
             {navigationList.map(data =>
-            (auth?.permissions?.findIndex(x => x === data.code) > -1 && data.main === "transaction" && <span className="SidebarSpan d-flex ms-5 ps-3">
+            (auth?.permissions?.findIndex(x => x === data.code||perm) > -1 && data.main === "transaction" && <span className="SidebarSpan d-flex ms-5 ps-3">
               <div
                 className="SidebarItemText"
                 onClick={() => { if (!perm) navigate(data.navigate); else setPage({ main: data.main, sub: data.sub }) }}
@@ -152,7 +152,7 @@ const Sidebar = ({ perm, setPage }) => {
           </div>
           <div className={`sidebar_span_cont ${!ArrowActive && "d-none"}`}>
             {navigationList.map(data =>
-            (auth?.permissions?.findIndex(x=>x===data.code)>-1&& data.main === "report" && <span className="SidebarSpan d-flex ms-5 ps-3">
+            (auth?.permissions?.findIndex(x=>x===data.code||perm)>-1&& data.main === "report" && <span className="SidebarSpan d-flex ms-5 ps-3">
               <div
                 className="SidebarItemText"
                 onClick={() => { if (!perm) navigate(data.navigate); else setPage({ main: data.main, sub: data.sub }) }}

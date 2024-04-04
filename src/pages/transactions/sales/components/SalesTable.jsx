@@ -35,7 +35,6 @@ const SalesTable = (props) => {
   const [itemNameList, setItemNameList] = useState([]);
   const [itemSelected, setItemSelected] = useState(false);
   const [showStock, setShowStock] = useState(false);
-  const [dropdownOpen, setDropdownOpen] = useState(false);
 
   const { getProperty } = useItemServices();
   const { getSalesItem } = useSalesServices();
@@ -185,7 +184,6 @@ const SalesTable = (props) => {
   };
 
   const handleDropOpen = (e,item,state,toTableItem) =>{
-    // console.log(item.options,state.fk_item)
     let data = item?.options[0]
     if(state.fk_items){
       data = item?.options?.filter(x=>x.value==state.fk_items)[0]
@@ -220,6 +218,10 @@ const SalesTable = (props) => {
       handleTableItemReset()
     }
   };
+
+  const handlebatchChange = (data)=>{
+
+  }
 
   const handleChangeTableItem = (e, data, state, toTableItem, batch) => {
     // toTableItem is used to check if the state to be set to tableItem or tableItemList
@@ -931,12 +933,10 @@ const SalesTable = (props) => {
         onHide={() =>setShowStock(false)}
       >
         <StockPop
+        handleChange={handleChangeTableItem}
           {...{
             itemSelected,
             setShowStock,
-            handleChangeTableItem,
-            handleKeyDown,
-            setDropdownOpen
           }}
         />
       </Modal>
