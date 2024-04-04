@@ -6,7 +6,7 @@ import useItemServices from "../../../../services/master/itemServices";
 import Swal from "sweetalert2";
 import useSalesServices from "../../../../services/transactions/salesServices";
 import { Modal } from "react-bootstrap";
-import { StockPop } from "../../purchase/components/StockPop";
+import { StockPop } from "../../components/StockPop";
 
 const SalesTable = (props) => {
   const {

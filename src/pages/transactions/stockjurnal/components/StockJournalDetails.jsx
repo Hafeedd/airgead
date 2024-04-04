@@ -9,7 +9,7 @@ import { useState } from "react";
 import Swal from "sweetalert2";
 import useOnKey from "../../../../hooks/onKeyFunct/onKeyFunct";
 import delteIcon from "../../../../assets/icons/delete.svg";
-import { StockPop } from "../../purchase/components/StockPop";
+import { StockPop } from "../../components/StockPop";
 
 export const StockJournalDetails = (props) => {
   const {

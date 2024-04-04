@@ -13,7 +13,7 @@ import { PurchaseItemBatchAdd } from "./components/PurchaseItemSerielAdd";
 import Swal from "sweetalert2";
 import usePurchaseServices from "../../../services/transactions/purchcaseServices";
 import useItemServices from "../../../services/master/itemServices";
-import { StockPop } from "./components/StockPop";
+import { StockPop } from "../components/StockPop";
 import useCustomerServices from "../../../services/master/customerServices";
 import useAccountServices from "../../../services/master/accountServices";
 import {
