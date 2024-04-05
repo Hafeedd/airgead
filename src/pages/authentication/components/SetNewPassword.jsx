@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import userProfileIcon from '../../../assets/images/iconamoon_lock-circle-fill.png';
+import userProfileIcon from '../../../assets/images/lock-circle.png';
 import { TextField } from "@mui/material";
 import vitezLogo from '../../../assets/images/VITEZ LOGO-01 1.svg'
 import { useAuthServices } from '../../../services/controller/authServices';

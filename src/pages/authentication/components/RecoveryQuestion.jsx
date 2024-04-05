@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import userProfileIcon from '../../../assets/images/iconamoon_questionmark-circle-fill.png'
+import userProfileIcon from '../../../assets/images/security-circle.png'
 import { TextField } from "@mui/material";
 import vitezLogo from '../../../assets/images/VITEZ LOGO-01 1.svg'
 import { IoMdArrowRoundForward } from "react-icons/io";

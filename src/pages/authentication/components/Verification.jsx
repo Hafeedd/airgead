@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import msgIcon from '../../../assets/images/msg-icon.png'
+import msgIcon from '../../../assets/images/verify-circle.png'
 import OTPInput from 'react-otp-input'
 import Countdown from 'react-countdown'
 

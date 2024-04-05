@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import userProfileIcon from '../../../assets/images/iconamoon_profile-circle-fill.png'
+import userProfileIcon from '../../../assets/images/profile-circle.png'
 import TextField from '@mui/material/TextField';
-import emailIcon from '../../../assets/images/mdi_email-open-outline.svg'
-import mobileIcon from '../../../assets/images/icomoon-free_mobile.svg'
+import emailIcon from '../../../assets/images/email-open.png'
+import mobileIcon from '../../../assets/images/free_mobile.png'
 import PasswordField from './PasswordField'
 import { useAuthServices } from '../../../services/controller/authServices';
 import ForgotPwEmail from './ForgotPwEmail';

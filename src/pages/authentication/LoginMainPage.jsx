@@ -138,7 +138,7 @@ const LoginMainPage = () => {
         <div className="d-flex justify-content-center flex-column align-items-center">
           <img className="" src={vitezLogo} alt="" />
           <img src={loginAnime} alt="" width="360" height="380" />
-          <p className="main-image-under-text railway-font">
+          <p className="main-image-under-text railway-font text-light">
             Lorem, ipsum um! In labore minus ipsa reiciendis aperiam n labore
             minus ipsa reicien velit dolores!
           </p>
