@@ -71,18 +71,18 @@ const SalesTable = (props) => {
 
   const handleDataNameList = (data) => {
     let tempList = [];
-    data?.map((x) => {
+    data?.map((x) => {      
       const { id, code, name, ...others } = x;
       tempList.push({
         ...others,
         text: x.item_name,
         description: x.item_code,
-        value: x.item_id,
         content: (
           <Dropdown.Item onClick={() => setShowStock(true)}>
             {x.item_name}
           </Dropdown.Item>
         ),
+        value: x.item_id,
       });
     });
     setItemNameList([...tempList]);
@@ -278,7 +278,7 @@ const SalesTable = (props) => {
         ...others,
         item_name: newObj?.text,
         code: newObj?.description,
-        fk_items: batch ? newObj?.parentId : newObj?.value,
+        fk_items: batch ? newObj?.fk_items : newObj?.fk_items,
         // fk_item: batch ? newObj?.code : newObj?.value,
         sales_rate: sales_rate || 0,
         rate: sales_rate || 0,
@@ -498,10 +498,8 @@ const SalesTable = (props) => {
     });
   };
 
-  const handleKeyDownOnDrop = (e) => {
-    console.log("fdsfdsf");
-    console.log(e);
-  };
+  // const handleKeyDownOnDrop = (e) => {
+  // };
 
   const handlePrev = () => {
     if (salesList?.length > 0) {
@@ -621,11 +619,6 @@ const SalesTable = (props) => {
                             index === 0 ? (
                               <td className="text-start ps-3 pe-3" colSpan={1}>
                                 <Dropdown
-                                  // onClick={()=>setShowStock(data=>!data)}
-                                  // onChange={(e, a) =>
-                                  //   handleChangeTableItem(e, a, data, i)
-                                  // }
-                                  // onKeyDown={handleKeyDown2}
                                   onChange={(e, a) =>
                                     handleSelectItemFromDrop(e, a, data, i)
                                   }
@@ -643,7 +636,7 @@ const SalesTable = (props) => {
                                   placeholder="SELECT"
                                   className="purchase_search_drop border-0 w-100 ps-2"
                                   name={"name"}
-                                  value={data.fk_items || data.name}
+                                  value={data.fk_items || ''}
                                   options={itemNameList}
                                 />
                               </td>
@@ -684,7 +677,7 @@ const SalesTable = (props) => {
                                   type="number"
                                   placeholder="0"
                                   disabled={item?.readOnly}
-                                  className="purchase-table-items-input"
+                                  className="sales-table-items-input"
                                   value={
                                     item.state === "vat"
                                       ? data.tax_gst || ""

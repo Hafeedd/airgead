@@ -31,13 +31,22 @@ export const StockJournalDetails = (props) => {
     setTableEdit,
     stockJList,
     setEdit,
+    showStock,
+    setShowStock,
   } = props;
 
   const [ref, setRef] = useState(null);
+  const [ref2, setRef2] = useState(null);
   const [itemSelected, setItemSelected] = useState(null);
-  const [showStock, setShowStock] = useState(false);
 
   const [handleKeyDown, formRef] = useOnKey(ref, setRef);
+  const [handleListKeyDown, formRef2] = useOnKey(
+    ref2,
+    setRef2,
+    ref,
+    "false",
+    stockTableItemList
+  );
 
   const AdjustTableHeight = () => {
     let a = [];
@@ -63,20 +72,26 @@ export const StockJournalDetails = (props) => {
   // const handleTrashButton = async () => {
   //   handleResetStockTabe();
   // };
+  const handleChangeStock = (data) =>{
+    console.log(data)
+    handleChangeTableItem(itemSelected.e,data)
+  }
 
   const handleChangeTableItem = (e, data) => {
-    if (data && data?.name == "code") {
-      let item_data = data.options.filter((x) => x.value === data.value)[0];
+    if (data) {
+      let item_data = data 
+      console.log(item_data)
+      // data?.options?.filter((x) => x.value === data.value)[0];
       setStockTableItem((data) => ({
         ...data,
-        ["code"]: item_data?.value,
+        ["code"]: item_data?.fk_items,
         unit: item_data?.unit,
         name: item_data?.name,
         cost: item_data?.cost,
         value: item_data?.retail_rate,
       }));
-    } else if (e.target.value === "")
-      setStockTableItem((data) => ({ ...data, [e.target.name]: null }));
+    } else if (e?.target?.value === "")
+      setStockTableItem((data) => ({ ...data, [e?.target?.name]: null }));
     else
       setStockTableItem((data) => ({
         ...data,
@@ -96,27 +111,45 @@ export const StockJournalDetails = (props) => {
       }));
     } else if (value === "") setStockJAdd({ ...stockJAdd, [name]: null });
     else {
-      if (name === "date") value = new Date(e.target.value).toISOString()
-        setStockJAdd((data) => ({ ...data, [name]: value }));
+      if (name === "date") value = new Date(e.target.value).toISOString();
+      setStockJAdd((data) => ({ ...data, [name]: value }));
     }
   };
 
-  const handleDropOpen = (e,item,state,toTableItem) =>{
-    let data = item?.options[0]
-    if(state.fk_items){
-      data = item?.options?.filter(x=>x.value==state.fk_items)[0]
+  const handleDropOpen = (e, item, state, toTableItem) => {
+    let data = item?.options[0];
+    if (state.code) {
+      data = item?.options?.filter((x) => x.value == state.code)[0];
     }
-    if(data){
-      setItemSelected({data, e, state, toTableItem } )
+    if (data) {
+      setItemSelected({ data, e, state, toTableItem });
     }
-  }
+  };
 
-
-  const handleKeyDownStockPopup = (e,fromList) =>{
-    if(e?.type === 'keydown' && e?.code === 'Enter'){      
-      setShowStock(true)
+  const handleSelectItemFromDrop = (e, data, state, toTableItem) => {
+    if (data.value) {
+      var item_data =
+        data?.options?.filter((x) => x?.value === data?.value)[0] || {};
+      var newObj = Object.fromEntries(
+        Object.entries(item_data)?.filter(([key, value]) => value !== null)
+      );
+      if (newObj) {
+        newObj.code = itemSelected.item_code;
+        setItemSelected({ data: newObj, ...{ e, state, toTableItem } });
+      }
+      if (e?.type == "click") handleKeyDown(e);
+    } else {
+      handleResetStockTabe();
     }
-  }
+  };
+
+  const handleKeyDownStockPopup = (e, fromList) => {
+    if (e?.type === "keydown" && e?.code === "Enter") {
+      setShowStock(true);
+      if (fromList) handleListKeyDown(e);
+      else handleKeyDown(e);
+    }
+  };
 
   const search = (options, searchValue) => {
     searchValue = searchValue.toUpperCase();
@@ -318,7 +351,7 @@ export const StockJournalDetails = (props) => {
                 };
 
                 return (
-                  <tr key={i}>
+                  <tr ref={(el) => (formRef2.current[i] = el)} key={i}>
                     <td colSpan={2}>
                       <div className="item-search-drop">
                         <Dropdown
@@ -326,7 +359,7 @@ export const StockJournalDetails = (props) => {
                           selection
                           required
                           search={search}
-                          onKeyDown={handleKeyDown}
+                          onKeyDown={handleListKeyDown}
                           onChange={handleEdit}
                           className="purchase-input-text table-drop d-flex align-items-center py-0 form-control"
                           name="code"
@@ -338,6 +371,7 @@ export const StockJournalDetails = (props) => {
                     </td>
                     <td className="align-middle">
                       <input
+                        onKeyDown={handleListKeyDown}
                         onChange={handleEdit}
                         value={Math.abs(data.qty) || ""}
                         className="col-7 py-2 rounded-2 border-0 text-center "
@@ -374,6 +408,7 @@ export const StockJournalDetails = (props) => {
                     <td className="align-middle">
                       <select
                         onChange={handleEdit}
+                        onKeyDown={handleListKeyDown}
                         className="add-less-btn"
                         value={data.qty_type || "add"}
                         name="qty_type"
@@ -403,9 +438,12 @@ export const StockJournalDetails = (props) => {
                     clearable
                     selection
                     required
+                    onOpen={(e, a) => handleDropOpen(e, a, stockTableItem, false)}
+                    onKeyDown={(e) => handleKeyDownStockPopup(e, false)}
                     search={search}
-                    onKeyDown={handleKeyDown}
-                    onChange={handleChangeTableItem}
+                    onChange={(e, a) =>
+                      handleSelectItemFromDrop(e, a, stockTableItem, true)
+                    }
                     className="purchase-input-text table-drop d-flex align-items-center py-0 form-control"
                     name="code"
                     placeholder="select"
@@ -551,10 +589,10 @@ export const StockJournalDetails = (props) => {
         show={showStock}
         size="lg"
         centered
-        onHide={() =>setShowStock(false)}
+        onHide={() => setShowStock(false)}
       >
         <StockPop
-        handleChange={handleChangeTableItem}
+          handleChange={handleChangeStock}
           {...{
             itemSelected,
             setShowStock,

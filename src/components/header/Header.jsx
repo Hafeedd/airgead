@@ -16,7 +16,6 @@ const Header = (props) => {
   const [user,setUser] =useState({})
   const userData = useSelector(state => state.auth.userDetails)
   const location = useLocation();
-  console.log("HAFEED :",userData)
   const {getUserProfile}=useUserServices()
   const getData = async () =>{
     try{

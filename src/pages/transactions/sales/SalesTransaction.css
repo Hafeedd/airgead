@@ -128,6 +128,19 @@
   border-radius: 0.2rem;
 }
 
+.sales-table.table-secondary .sales-table-items-input{
+  background: transparent;
+  text-align: center;
+  width: 100% !important;
+  border: 0;
+  font-size: 12px !important;
+}
+
+.sales-table tbody tr td .sales-table-items-input:focus {
+  border: 0 !important;
+  outline: 1px solid black;
+}
+
 .sales-batch-table-cont-cont {
   background: #242424;
 }

@@ -1,11 +1,12 @@
 import { useEffect, useState } from "react";
 import { StockJournalDetails } from "./components/StockJournalDetails";
 import "./StockJournal.css";
-import { Modal } from "react-bootstrap";
+import { Dropdown, Modal } from "react-bootstrap";
 import { StockJournalEdit } from "./components/StockJournalEdit";
 import useItemServices from "../../../services/master/itemServices";
 import useStockJournalServices from "../../../services/transactions/stockJournal";
 import Swal from "sweetalert2";
+import useSalesServices from "../../../services/transactions/salesServices";
 
 export const StockJournal = () => {
   const [showJournalFilter, setShowJournalFilter] = useState(false);
@@ -15,6 +16,7 @@ export const StockJournal = () => {
   const [stockJList, setstockJList] = useState([]);
   const [edit, setEdit] = useState();
   const [tableEdit, setTableEdit] = useState();
+  const [showStock, setShowStock] = useState(false);
   const [stockJAdd, setStockJAdd] = useState({
     id: null,
     code: null,
@@ -39,11 +41,12 @@ export const StockJournal = () => {
   const { postStockJ, getStockJ, putStockJ, deleteStockJ } =
     useStockJournalServices();
   const { getCode, getItemNameList, getProperty } = useItemServices();
+  const { getSalesItem } = useSalesServices();
 
   useEffect(() => {
     getData();
     handleGetCode();
-  },[]);
+  }, []);
 
   useEffect(() => {
     if (edit) {
@@ -66,8 +69,8 @@ export const StockJournal = () => {
     });
     handleResetStockTabe();
     setStockTableItemList([]);
-    setEdit(false)
-    handleGetCode()
+    setEdit(false);
+    handleGetCode();
   };
 
   const handleResetStockTabe = () => {
@@ -123,15 +126,14 @@ export const StockJournal = () => {
     const values = Object.values(stockTableItem).filter((x) => x !== null);
     if (values?.length > 1) {
       const tempList = stockTableItemList;
-      tempList.unshift(stockTableItem);
+      tempList.push(stockTableItem);
       setStockTableItemList(tempList);
       handleResetStockTabe();
     }
   };
 
   const calcTotalVal = (data) => {
-    if(edit)
-      return data
+    if (edit) return data;
     data.map((item) => {
       let totalValue = 0;
       if (item.items?.length > 0) {
@@ -154,32 +156,38 @@ export const StockJournal = () => {
     setUnitList(list);
   };
 
-  const handleGetCode = async () =>{
-    try{
+  const handleGetCode = async () => {
+    try {
       let response = await getCode();
       if (response.success && !edit) {
-        let code = response.data.filter((x) => x.types === "STOCK_JOURNAL_CODE")[0];
-        setStockJAdd(data=>({ ...data, code: code?.next_code }));
+        let code = response.data.filter(
+          (x) => x.types === "STOCK_JOURNAL_CODE"
+        )[0];
+        setStockJAdd((data) => ({ ...data, code: code?.next_code }));
       }
-    }catch(err){}
-  }
+    } catch (err) {}
+  };
 
   const getData = async () => {
     try {
-      let response2 = await getItemNameList();
+      let response2 = await getSalesItem();
       let response3 = await getProperty();
       let response4 = await getStockJ();
 
       if (response2.success) {
         let tempList = [];
-        response2.data.map((item) => {
+        response2.data.items.map((x) => {
+          const { id, code, name, ...others } = x;
           let a = {
-            ...item,
-            value: item?.code,
-            text: item?.name,
-            name: item?.name,
-            description: item?.code,
-            unit: item?.fk_unit,
+            ...others,
+            text: x.item_name,
+            description: x.item_code,
+            content: (
+              <Dropdown.Item onClick={() => setShowStock(true)}>
+                {x.item_name}
+              </Dropdown.Item>
+            ),
+            value: x.item_id,
           };
           tempList.push(a);
         });
@@ -272,8 +280,8 @@ export const StockJournal = () => {
     e.preventDefault();
     try {
       let response,
-      submitData = { ...stockJAdd, item: stockTableItemList };
-      console.log(submitData)
+        submitData = { ...stockJAdd, item: stockTableItemList };
+      console.log(submitData);
       // return 0
       if (!edit) {
         response = await postStockJ(submitData);
@@ -312,53 +320,55 @@ export const StockJournal = () => {
             </div>
           </div>
         </div>
-        </div>
-        <div className="px-4">
-          <StockJournalDetails
+      </div>
+      <div className="px-4">
+        <StockJournalDetails
+          {...{
+            showStock,
+            setShowStock,
+            setShowJournalFilter,
+            stockJAdd,
+            setStockJAdd,
+            setStockTableItemList,
+            edit,
+            stockTableItem,
+            setStockTableItem,
+            handleAddToTableList,
+            itemNameList,
+            unitList,
+            stockTableItemList,
+            handleClearAll,
+            setStockTableItemList,
+            handleResetStockTabe,
+            handleSubmit,
+            tableEdit,
+            setTableEdit,
+            deleteStockJ,
+            stockJList,
+            setEdit,
+          }}
+        />
+      </div>
+      <Modal
+        show={showJournalFilter}
+        centered
+        size="lg"
+        onHide={() => setShowJournalFilter(false)}
+      >
+        <Modal.Body className="p-0 rounded-3">
+          <StockJournalEdit
+            list={stockJList}
+            title={"Stock Journal List"}
+            setShow={setShowJournalFilter}
             {...{
-              setShowJournalFilter,
-              stockJAdd,
-              setStockJAdd,
-              setStockTableItemList,
               edit,
-              stockTableItem,
-              setStockTableItem,
-              handleAddToTableList,
-              itemNameList,
-              unitList,
-              stockTableItemList,
-              handleClearAll,
-              setStockTableItemList,
-              handleResetStockTabe,
-              handleSubmit,
-              tableEdit,
-              setTableEdit,
-              deleteStockJ,
-              stockJList,
+              getData,
               setEdit,
+              handleClearAll,
             }}
           />
-        </div>
-        <Modal
-          show={showJournalFilter}
-          centered
-          size="lg"
-          onHide={() => setShowJournalFilter(false)}
-        >
-          <Modal.Body className="p-0 rounded-3">
-            <StockJournalEdit
-            list = {stockJList}
-            title={"Stock Journal List"}
-            setShow = {setShowJournalFilter}
-              {...{
-                edit,
-                getData,
-                setEdit,
-                handleClearAll,
-              }}
-            />
-          </Modal.Body>
-        </Modal>
+        </Modal.Body>
+      </Modal>
       {/* </div> */}
     </div>
   );
