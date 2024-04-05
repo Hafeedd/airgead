@@ -1,18 +1,10 @@
-import React, { useEffect, useState } from "react";
-import msgIcon from "../../../assets/images/msg-icon.png";
-import OTPInput from "react-otp-input";
-import Countdown from "react-countdown";
-import Swal from "sweetalert2";
+import React, { useEffect, useState } from 'react'
+import msgIcon from '../../../assets/images/verify-circle.png'
+import OTPInput from 'react-otp-input'
+import Countdown from 'react-countdown'
 
 export const Verification = (props) => {
-  const {
-    handleResendOtp,
-    setOtpWait,
-    otp,
-    handleOtpChange,
-    handleSubmit,
-    otpWait,
-  } = props;
+    const { handleResendOtp,setOtpWait, otp, handleOtpChange, handleSubmit, otpWait,verpass } = props
 
   const renderer = ({ hours, minutes, seconds, completed }) => {
     if (!completed) {
@@ -88,27 +80,13 @@ export const Verification = (props) => {
         />
       </div>
 
-      <div
-        className="d-flex justify-content-end mt-2"
-        style={{ width: "100%" }}
-      >
-        {otpWait ? (
-          <Countdown date={Date.now() + 180000} renderer={renderer} />
-        ) : (
-          <p className="railway-font">
-            Didn’t Received SMS?{" "}
-            <span className="span-text-color cursor" onClick={handleResendOtp}>
-              Resend Code
-            </span>
-          </p>
-        )}
-      </div>
-      <button
-        onClick={handleSubmit}
-        className="btn-login rounded py-3 mt-3 railway-font"
-      >
-        Login
-      </button>
-    </div>
-  );
-};
+            <div className='d-flex justify-content-end mt-2' style={{ width: "100%" }}>
+                {otpWait ? <Countdown
+                    date={Date.now() + 180000}
+                    renderer={renderer}
+                /> : <p className='railway-font'>Didn’t Received SMS? <span className='span-text-color cursor' onClick={handleResendOtp}>Resend Code</span></p>}
+            </div>
+            <button onClick={handleSubmit} className='btn-login rounded py-3 mt-3 railway-font' >{verpass==true?'Verify':'Login'}</button>
+        </div>
+    )
+}

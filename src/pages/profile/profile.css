@@ -148,7 +148,7 @@
     color: white;
 }
 
-.image-upload-btn {
+.image-upload-btn.profile {
     font-weight: 600;
     border-radius: 0.3rem;
     background: #37007E;

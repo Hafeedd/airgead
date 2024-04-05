@@ -1,17 +1,50 @@
-import React from 'react'
-import userProfileIcon from '../../../assets/images/iconamoon_lock-circle-fill.png';
+import React, { useState } from 'react'
+import userProfileIcon from '../../../assets/images/lock-circle.png';
 import { TextField } from "@mui/material";
 import vitezLogo from '../../../assets/images/VITEZ LOGO-01 1.svg'
+import { useAuthServices } from '../../../services/controller/authServices';
+import Swal from 'sweetalert2';
+import { useNavigate } from 'react-router';
 
 function SetNewPassword(props) {
-    const {setShow}=props
-    const handleShow =(e)=>{
-        e.preventDefault()
-        setShow(false)
+    const {setShow,token,setToken}=props
+    // const handleShow =(e)=>{
+    //     e.preventDefault()
+    //     setShow(false)
+    // }
+    const[password,setPassword]=useState()
+    const[confirmPassword,setConfirmPassword]=useState()
+    const{resetAccount}=useAuthServices()
+    const navigate = useNavigate();
+    const handleSubmit = async(e)=>{
+      e.preventDefault()
+      try{
+        if (password==confirmPassword){
+        const resp = await resetAccount({password:password},{t:token})
+        if (resp.success){
+          console.log(resp?.data)
+          setPassword('')
+          setConfirmPassword('')
+          setToken('')
+          navigate("/");
+        }
+        } else{
+          Swal.fire({
+            title: "Password Mismatch",
+            text: "please try again",
+            icon: "info",
+            timer: 1000,
+            showConfirmButton: false,
+        });
+        }
+      }catch(err){
+
+      }
     }
+
   return (
     <form
-        // onSubmit={handleSubmit}
+        onSubmit={handleSubmit}
         className="d-flex flex-column align-items-center railway-font"
         style={{ width: "70%", height: "fit-content" }}
       >
@@ -32,8 +65,8 @@ function SetNewPassword(props) {
 
         <div className="w-100">
             <TextField
-            // onChange={handleChange}
-            // value={user.username}
+            onChange={(e)=>setPassword(e.target.value)}
+            value={password}
             name="newPassword"
             className="auth-input-field my-4"
             id="outlined-basic"
@@ -42,8 +75,8 @@ function SetNewPassword(props) {
             type='password'
           />
            <TextField
-            // onChange={handleChange}
-            // value={user.username}
+            onChange={(e)=>setConfirmPassword(e.target.value)}
+            value={confirmPassword}
             name="confirmPassword"
             className="auth-input-field my-4"
             id="outlined-basic"
@@ -59,7 +92,7 @@ function SetNewPassword(props) {
           <button
             type="submit"
             // disabled={loading}
-            onClick={handleShow}
+            // onClick={handleShow}
             className="btn-login rounded py-3 mb-5 fs-5 d-flex px-0 align-items-center justify-content-center"
           > Submit
             {/* {loading ? "Loading" : "Login"} &nbsp;&nbsp; */}

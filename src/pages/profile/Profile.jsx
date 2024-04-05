@@ -30,18 +30,64 @@ export const Profile = () => {
     const initialQAPairs = [{ question: '', answer: '' }, { question: '', answer: '' }, { question: '', answer: '' }];
     const [qaPairs, setQAPairs] = useState(initialQAPairs);
 
-    const {getUserProfile,postSetPassword,postSecurityQuestions,getSecurityQuestions}=useUserServices()
+    const {getUserProfile,postSetPassword,postSecurityQuestions,getSecurityQuestions,putUserProfile,putCompanyDetails}=useUserServices()
 
     const getData = async () =>{
         try{
             const resp = await getUserProfile ()
             if (resp.success === true) {
-                setUser(resp.data)
-                setUserProfile(resp.data.user_profile)
-                setCompanyDetails(resp.data.company_details)
+                // console.log("Look",resp.data)
+                const userData = resp?.data
+                let tempUser = {
+                    first_name: userData.first_name,
+                    last_name: userData.last_name,
+                    mobile: userData.mobile,
+                    email: userData.email,
+                    image: userData.image,
+                    fk_role: userData.fk_role,
+                    full_name: userData.full_name,
+                    username: userData.username,
+                }
+                setUser(tempUser)
+
+                const profileData = resp?.data?.user_profile
+                let tempProfile = {
+                    address_line_1: profileData.address_line_1,
+                    address_line_2: profileData.address_line_2,
+                    country: profileData.country,
+                    state: profileData.state,
+                    district: profileData.district,
+                    city: profileData.city,
+                    pincode: profileData.pincode,
+                }
+                setUserProfile(tempProfile);
+                
+                const compData = resp?.data?.company_details
+                let tempComp = {
+                    address_line_1: compData.address_line_1,
+                    address_line_2: compData.address_line_2,
+                    country: compData.country,
+                    state: compData.state,
+                    district: compData.district,
+                    city: compData.city,
+                    pincode: compData.pincode,
+                    logo: compData.logo,
+                    location: compData.location,
+                    group_name: compData.group_name,
+                    renewal_date:compData?.plan_details?.renewal_date,
+                    renewal_time:compData?.plan_details?.renewal_time,
+                    staff_limit: compData?.plan_details?.staff_limit,
+                };   
+                setCompanyDetails(tempComp);
+                
             }
         }catch(err){ console.log(err) }
     }
+
+    // console.log('user',user)
+    // console.log('user_profile',userProfile)
+    // console.log('company_details',companyDetails)
+
     const [isVisible, setIsVisible] = useState(true);
 
     const toggleVisibility = () => {
@@ -56,24 +102,32 @@ export const Profile = () => {
         try{
             const resp=await getSecurityQuestions()
             if (resp.success === true) {
-                let tempList=[]
-                resp.data.map(item=>{
-                    let a
-                    if (item.question && item.answer){
-                        a={'id':item.id,'question':item.question, 'answer':item.answer}
-                        tempList.push(a)
-                    } 
-                })
-                setQAPairs(tempList)
+                
+                // console.log(resp.data,'security')
+                if (resp.data.length<1){
+                    setQAPairs(initialQAPairs)
+                }else{
+                    let tempList=[]
+                    resp.data.map(item=>{
+                        let a
+                        if (item.question && item.answer){
+                            a={'id':item.id,'question':item.question, 'answer':item.answer}
+                            tempList.push(a)
+                        } 
+                    })
+                    setQAPairs(tempList)
+                }
                 }
         }catch(err){ console.log(err) }
     }
+
+    // console.log(qaPairs,'questions')
     useEffect (()=>{
         getData()
         getSecurity()
     },[])
 
-    console.log("data loaded",user)
+    // console.log("data loaded",user)
 
     useEffect(()=>{
         if(activeProfTab){
@@ -139,6 +193,7 @@ export const Profile = () => {
                     timer: 1000,
                     showConfirmButton: false,
                 });
+                getSecurity()
             }
         }catch(e){
             Swal.fire({
@@ -158,33 +213,135 @@ export const Profile = () => {
         setQAPairs(newQAPairs);
     };
 
-    const handleChange = (e) => {
-        const name = e.target.name;
-        const value = e.target.value;
-        if (value === " ") setUser((data) => ({ ...data, [name]: null }));
-        else setUser((data) => ({ ...data, [name]: value }));
-    };
+    const handleCompanyDetailSubmit = async(e)=>{
+        e.preventDefault()
+        try{
+            let tempCompanyDetails = {...companyDetails}
+            for (const [key, value] of Object.entries(companyDetails)) {
+              if (value === 0 || value === null || value === undefined) {
+                delete tempCompanyDetails[key];
+              }
+            }
+            const CompanyData = new FormData();
+            // Object.keys(tempUserProfile).map((data) =>
+            // CompanyData.append(data, companyDetails[data])
+            // );
+            Object.keys(tempCompanyDetails).forEach((data) => {
+                if (data !== 'logo') {
+                    CompanyData.append(data, companyDetails[data]);
+                }
+            });
+    
+            // Check if logo has been changed
+            if (companyDetails.logo && companyDetails.logo_url) {
+                CompanyData.append('logo', companyDetails.logo);
+                CompanyData.append('logo_url', companyDetails.logo_url);
+            }
+            const resp= await putCompanyDetails(CompanyData)
+            if (resp?.success){
+                Swal.fire({
+                    title: "Success",
+                    text: resp?.message,
+                    icon: "success",
+                    timer: 1000,
+                    showConfirmButton: false,
+                });
+                getData() 
+            }
+        }catch(e){
+            Swal.fire({
+                title: 'Error',
+                text: e.error,
+                icon: "error",
+                timer: 1000,
+                showConfirmButton: false,
+            });
+        }
+       
 
-    const handleCDchange = (e) => {
-        const name = e.target.name;
-        const value = e.target.value;
-        const files = e.target?.files || null;
-        if (name === 'logo' && files?.length > 0) {
-          const imageUrl = URL.createObjectURL(files[0]);
-          setCompanyDetails((data) => ({ ...data, logo: files[0], logo_url: imageUrl }))
-        }else if (value === " ") setCompanyDetails((data) => ({ ...data, [name]: null }));
-        else setCompanyDetails((data) => ({ ...data, [name]: value }));
-      };
+    }
+    const handleMyDetailsSubmit = async(e) =>{
+        e.preventDefault()
+        try{
+            let tempUserProfile = {...user}
+            for (const [key, value] of Object.entries(user)) {
+              if (value === 0 || value === null || value === undefined) {
+                delete tempUserProfile[key];
+              }
+            }
+            const UserProfileData = new FormData();
+            // Object.keys(tempUserProfile).map((data) =>
+            // UserProfileData.append(data, user[data])
+            // );
+            Object.keys(tempUserProfile).forEach((data) => {
+                if (data !== 'image') {
+                    UserProfileData.append(data, user[data]);
+                }
+            });
     
+            // Check if logo has been changed
+            if (user.image && user.image_url) {
+                UserProfileData.append('image', user.image);
+                UserProfileData.append('image_url', user.image_url);
+            }
+            UserProfileData.append('address_line_1',userProfile.address_line_1)
+            UserProfileData.append('address_line_2',userProfile?.address_line_2)
+            UserProfileData.append('country',userProfile?.country)
+            UserProfileData.append('state',userProfile?.state)
+            UserProfileData.append('district',userProfile?.district)
+            UserProfileData.append('city',userProfile?.city)
+            UserProfileData.append('pincode',userProfile?.pincode)
     
-    const handleUPchange =(e) =>{
+            const resp = await putUserProfile(UserProfileData)
+            if (resp?.success){
+                Swal.fire({
+                    title: "Success",
+                    text: resp?.message,
+                    icon: "success",
+                    timer: 1000,
+                    showConfirmButton: false,
+                });
+                getData() 
+            } 
+        }catch(e){
+            Swal.fire({
+                title: 'Error',
+                text: e.error,
+                icon: "error",
+                timer: 1000,
+                showConfirmButton: false,
+            });
+        }
+    }
+
+    const handleUserChange = (e) => {
         const name = e.target.name;
         const value = e.target.value;
         const files = e.target?.files || null;
         if (name === 'image' && files?.length > 0) {
             const imageUrl = URL.createObjectURL(files[0]);
-            setUserProfile((data) => ({ ...data, image: files[0], image_url: imageUrl }))
-        }else if (value === " ") setUserProfile((data) => ({ ...data, [name]: null }));
+            console.log("hoi",imageUrl,files[0])
+            setUser((data) => ({ ...data, image: files[0], image_url: imageUrl }))
+        }else if (value === " ") setUser((data) => ({ ...data, [name]: null }));
+        else setUser((data) => ({ ...data, [name]: value }));
+    };
+
+    const handleCompDchange = (e) => {
+        const name = e.target.name;
+        const value = e.target.value;
+        const files = e.target?.files || null;
+        if (name === 'logo' && files?.length > 0) {
+          const imageUrl = URL.createObjectURL(files[0]);
+        //   console.log("hoi",imageUrl,files[0])
+          setCompanyDetails((data) => ({ ...data, logo: files[0], logo_url: imageUrl }))
+        }else if (value === " ") setCompanyDetails((data) => ({ ...data, [name]: null }));
+        else setCompanyDetails((data) => ({ ...data, [name]: value }));
+    };
+        
+    const handleUserPchange =(e) =>{
+        const name = e.target.name;
+        const value = e.target.value;
+        if (value === " ") setUserProfile((data) => ({ ...data, [name]: null }));
         else setUserProfile((data) => ({ ...data, [name]: value }));
     };
 
@@ -195,12 +352,12 @@ export const Profile = () => {
                 </div>
                 <div className='prof-cont1 rounded-3'>
                     <div className='prof-cont1-top'></div>
-                    <img className='rounded-3 prof-user-icon' src={user?.image != null?user?.image:User} alt='prof' />
+                    <img className='rounded-3 prof-user-icon' src={user?.image?MEDIA_URL+user?.image:User} alt='prof' />
                     <h4 className='my-1'>{user?.full_name}</h4>
-                    <div>Admin</div>
+                    <div>{"Admin"||user.fk_role.role}</div>
                     <div className='d-flex gap-3 mt-4 flex-column mb-4'>
                         <div className='d-flex gap-3'><FaUser size='1.5rem' />@{user?.username}</div>
-                        <div className='d-flex gap-3'><BsBuildings size='1.5rem' />{user?.company_details?.group_name}</div>
+                        <div className='d-flex gap-3'><BsBuildings size='1.5rem' />{companyDetails?.group_name}</div>
                         <div className='d-flex gap-3'><MdPhone size='1.5rem' />+{user?.mobile}</div>
                         <div className='d-flex gap-3'><GrMail size='1.5rem' />{user?.email}</div>
                     </div>
@@ -224,15 +381,15 @@ export const Profile = () => {
                         <div className='d-flex gap-3'>
                             <div className='prof-pill-buttons'>
                                 <div>Renewal Date</div>
-                                <div>{new Date(user?.company_details?.plan_details?.renewal_date) && new Date(user?.company_details?.plan_details?.renewal_date).getDate() +'-'+ (new Date(user?.company_details?.plan_details?.renewal_date).getMonth()+1) +'-'+ new Date(user?.company_details?.plan_details?.renewal_date).getFullYear()}</div>
+                                <div>{new Date(companyDetails?.renewal_date) && new Date(companyDetails?.renewal_date).getDate() +'-'+ (new Date(companyDetails?.renewal_date).getMonth()+1) +'-'+ new Date(companyDetails?.renewal_date).getFullYear()}</div>
                             </div>
                             <div className='prof-pill-buttons'>
                                 <div>Renewal Time</div>
-                                <div>{user?.company_details?.plan_details?.renewal_time}</div>
+                                <div>{companyDetails?.renewal_time||''}</div>
                             </div>
                             <div className='prof-pill-buttons'>
                                 <div>Staff Limit</div>
-                                <div>{user?.company_details?.plan_details?.staff_limit}</div>
+                                <div>{companyDetails?.staff_limit||''}</div>
                             </div>
                         </div>
                         <div className='pt-4 w-100 d-flex align-items-end'>
@@ -241,6 +398,7 @@ export const Profile = () => {
                             <div className='prof-edit-btn' onClick={toggleVisibility}><GrEdit size='1.4rem' /> Edit</div>
                         </div>
                         <div className='w-100'>
+                        <form onSubmit={handleMyDetailsSubmit}>
                         {isVisible==false && <>
                         <div className='d-flex'>
                                 <div className='d-flex w-50 justify-content-start align-items-center ps-5'>
@@ -248,17 +406,19 @@ export const Profile = () => {
                                         <img
                                             className="company-details-company-logo"
                                             src={user?.image ? MEDIA_URL+user.image:uploadImage}
-                                            alt="upload-image"
+                                            // alt="upload-image"
+                                            width='100'
+                                            height='100'
                                         />
                                     </div>
                                     <input
-                                        onChange=''
+                                        onChange={handleUserChange}
                                         name="image"
                                         type="file"
                                         className='d-none'
                                         id="company-logo"
                                     />
-                                    <label htmlFor="company-logo" className="image-upload-btn border-2">
+                                    <label htmlFor="company-logo" className="image-upload-btn profile border-2">
                                     <MdOutlineFileUpload className="me-2 p-0" size={"1.5rem"} />
                                     Upload Image
                                     </label>
@@ -269,7 +429,9 @@ export const Profile = () => {
                                         <Form.Control
                                             className='purchase-select code-conf'
                                             type='text'
-                                            value={user?.first_name}
+                                            value={user?.first_name||''}
+                                            name='first_name'
+                                            onChange={handleUserChange}
                                         />
                                     </Form.Group>
                                     <Form.Group className='code-conf-input-cont w-100 ps-4'>
@@ -277,7 +439,9 @@ export const Profile = () => {
                                         <Form.Control
                                             className='purchase-select code-conf'
                                             type='text'
-                                            value={user?.last_name}
+                                            value={user?.last_name||''}
+                                            name='last_name'
+                                            onChange={handleUserChange}
                                         />
                                     </Form.Group>
                                 </div>
@@ -289,7 +453,10 @@ export const Profile = () => {
                                     <Form.Control
                                         className='purchase-select code-conf'
                                         type='text'
-                                        value={user?.mobile}
+                                        value={user?.mobile||''}
+                                        name='mobile'
+                                        onChange={handleUserChange}
+                                        required
                                     />
                                 </Form.Group>
                                 <Form.Group className='code-conf-input-cont w-100'>
@@ -297,7 +464,10 @@ export const Profile = () => {
                                     <Form.Control
                                         className='purchase-select code-conf'
                                         type='text'
-                                        value={user?.email}
+                                        value={user?.email||''}
+                                        name='email'
+                                        onChange={handleUserChange}
+                                        required
                                     />
                                 </Form.Group>
                             </div> </>}
@@ -307,7 +477,9 @@ export const Profile = () => {
                                     <Form.Control
                                         className='purchase-select code-conf'
                                         as="textarea" rows={3}
-                                        value={userProfile?.address_line_1}
+                                        value={userProfile?.address_line_1||''}
+                                        name='address_line_1'
+                                        onChange={handleUserPchange}
                                     />
                                 </Form.Group>
                                 <Form.Group className='code-conf-input-cont w-100'>
@@ -315,7 +487,9 @@ export const Profile = () => {
                                     <Form.Control
                                         className='purchase-select code-conf'
                                         as="textarea" rows={3}
-                                        value={userProfile?.address_line_2}
+                                        value={userProfile?.address_line_2||''}
+                                        name='address_line_2'
+                                        onChange={handleUserPchange}
                                     />
                                 </Form.Group>
                             </div>
@@ -325,7 +499,9 @@ export const Profile = () => {
                                     <Form.Control
                                         className='purchase-select code-conf'
                                         type='text'
-                                        value={userProfile?.country}
+                                        value={userProfile?.country||''}
+                                        name='country'
+                                        onChange={handleUserPchange}
                                     />
                                 </Form.Group>
                                 <Form.Group className='code-conf-input-cont w-100'>
@@ -333,7 +509,9 @@ export const Profile = () => {
                                     <Form.Control
                                         className='purchase-select code-conf'
                                         type='text'
-                                        value={userProfile?.state}
+                                        value={userProfile?.state||''}
+                                        name='state'
+                                        onChange={handleUserPchange}
                                     />
                                 </Form.Group>
                                 <Form.Group className='code-conf-input-cont w-100'>
@@ -341,7 +519,9 @@ export const Profile = () => {
                                     <Form.Control
                                         className='purchase-select code-conf'
                                         type='text'
-                                        value={userProfile?.district}
+                                        value={userProfile?.district||''}
+                                        name='district'
+                                        onChange={handleUserPchange}
                                     />
                                 </Form.Group>
                             </div>
@@ -351,7 +531,9 @@ export const Profile = () => {
                                     <Form.Control
                                         className='purchase-select code-conf'
                                         type='text'
-                                        value={userProfile?.city}
+                                        value={userProfile?.city||''}
+                                        name='city'
+                                        onChange={handleUserPchange}
                                     />
                                 </Form.Group>
                                 <Form.Group className='code-conf-input-cont w-100'>
@@ -359,7 +541,9 @@ export const Profile = () => {
                                     <Form.Control
                                         className='purchase-select code-conf'
                                         type='text'
-                                        value={userProfile?.pincode}
+                                        value={userProfile?.pincode||''}
+                                        name='pincode'
+                                        onChange={handleUserPchange}
                                         
                                     />
                                 </Form.Group>
@@ -368,31 +552,36 @@ export const Profile = () => {
                             </div>
                             {isVisible==false && <div className="prof-det-field1 pt-0 d-flex justify-content-end align-items-center">
                                 <div className='can-btn'>Cancel</div>
-                                <div className='save-btn'>Save</div>                            
+                                <button className='save-btn border-0' type='submit'>Save</button>                            
                             </div>}
+                            </form>
+
                             <div className='pt-4 w-100 d-flex align-items-end'>
                                 <h3 id='companydetails' className='m-0'>Company Details</h3>
                                 <hr className='w-100 m-0 mb-1 mx-2' />
                                 <div className='prof-edit-btn' onClick={toggleVisibility2}><GrEdit size='1.4rem' /> Edit</div>
                             </div>
+                            <form onSubmit={handleCompanyDetailSubmit}>
                             {isVisible2==false && <>
                             <div className='d-flex'>
                                 <div className='d-flex w-50 justify-content-start align-items-center ps-5'>
                                     <div className="image-cont">
                                         <img
                                             className="company-details-company-logo"
-                                            src={companyDetails?.logo ? MEDIA_URL+user.company_details.logo: uploadImage}
-                                            alt="upload-image"
+                                            src={companyDetails?.logo ? MEDIA_URL+companyDetails.logo: uploadImage}
+                                            // alt="upload-image"
+                                            width='100'
+                                            height='100'
                                         />
                                     </div>
                                     <input
-                                        onChange=''
+                                        onChange={handleCompDchange}
                                         name="logo"
                                         type="file"
                                         className='d-none'
                                         id="company-logo"
                                     />
-                                    <label htmlFor="company-logo" className="image-upload-btn border-2">
+                                    <label htmlFor="company-logo" className="image-upload-btn profile border-2">
                                     <MdOutlineFileUpload className="me-2 p-0" size={"1.5rem"} />
                                     Upload Image
                                     </label>
@@ -403,7 +592,9 @@ export const Profile = () => {
                                         <Form.Control
                                             className='purchase-select code-conf'
                                             type='text'
-                                            value={companyDetails?.group_name}
+                                            value={companyDetails?.group_name||''}
+                                            name='group_name'
+                                            onChange={handleCompDchange}
                                         />
                                     </Form.Group>
                                     <Form.Group className='code-conf-input-cont w-100 ps-4'>
@@ -411,7 +602,9 @@ export const Profile = () => {
                                         <Form.Control
                                             className='purchase-select code-conf'
                                             type='text'
-                                            value={companyDetails?.location}
+                                            value={companyDetails?.location||''}
+                                            name ='location'
+                                            onChange={handleCompDchange}
                                         />
                                     </Form.Group>
                                 </div>
@@ -425,7 +618,9 @@ export const Profile = () => {
                                     <Form.Control
                                         className='purchase-select code-conf'
                                         as="textarea" rows={3}
-                                        value={companyDetails?.address_line_1}
+                                        value={companyDetails?.address_line_1||''}
+                                        name='address_line_1'
+                                        onChange={handleCompDchange}
                                     />
                                 </Form.Group>
                                 <Form.Group className='code-conf-input-cont w-100'>
@@ -433,7 +628,9 @@ export const Profile = () => {
                                     <Form.Control
                                         className='purchase-select code-conf'
                                         as="textarea" rows={3}
-                                        value={companyDetails?.address_line_2}
+                                        value={companyDetails?.address_line_2||''}
+                                        name='address_line_2'
+                                        onChange={handleCompDchange}
                                     />
                                 </Form.Group>
                             </div>
@@ -443,7 +640,9 @@ export const Profile = () => {
                                     <Form.Control
                                         className='purchase-select code-conf'
                                         type='text'
-                                        value={companyDetails?.country}
+                                        value={companyDetails?.country||''}
+                                        name='country'
+                                        onChange={handleCompDchange}
                                     />
                                 </Form.Group>
                                 <Form.Group className='code-conf-input-cont w-100'>
@@ -451,7 +650,9 @@ export const Profile = () => {
                                     <Form.Control
                                         className='purchase-select code-conf'
                                         type='text'
-                                        value={companyDetails?.state}
+                                        value={companyDetails?.state||''}
+                                        name='state'
+                                        onChange={handleCompDchange}
                                     />
                                 </Form.Group>
                                 <Form.Group className='code-conf-input-cont w-100'>
@@ -459,7 +660,9 @@ export const Profile = () => {
                                     <Form.Control
                                         className='purchase-select code-conf'
                                         type='text'
-                                        value={companyDetails?.district}
+                                        value={companyDetails?.district||''}
+                                        name='district'
+                                        onChange={handleCompDchange}
                                     />
                                 </Form.Group>
                             </div>
@@ -469,7 +672,9 @@ export const Profile = () => {
                                     <Form.Control
                                         className='purchase-select code-conf'
                                         type='text'
-                                        value={companyDetails?.city}
+                                        value={companyDetails?.city||''}
+                                        name='city'
+                                        onChange={handleCompDchange}
                                     />
                                 </Form.Group>
                                 <Form.Group className='code-conf-input-cont w-100'>
@@ -477,7 +682,9 @@ export const Profile = () => {
                                     <Form.Control
                                         className='purchase-select code-conf'
                                         type='text'
-                                        value={companyDetails?.pincode}
+                                        value={companyDetails?.pincode||''}
+                                        name='pincode'
+                                        onChange={handleCompDchange}
                                         
                                     />
                                 </Form.Group>
@@ -487,8 +694,9 @@ export const Profile = () => {
                             {isVisible2==false && 
                             <div className="prof-det-field1 pt-0 d-flex justify-content-end align-items-center">
                                 <div className='can-btn'>Cancel</div>
-                                <div className='save-btn'>Save</div>                            
+                                <button className='save-btn border-0' type='submit'>Save</button>                            
                             </div>}
+                            </form>
                             <div className='pt-4 w-100 d-flex align-items-end'>
                                 <h3 id='security' className='m-0'>Security</h3>
                                 <hr className='w-100 m-0 mb-1 mx-2' />

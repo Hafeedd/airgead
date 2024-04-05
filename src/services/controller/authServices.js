@@ -46,12 +46,30 @@ export const useAuthServices = () => {
     return resp.data;
   };
 
+    const getAccount = async (data,params) =>{
+        const resp = await axios.post('password/reset/get_account/',data,{params:params})
+        return resp.data
+    }
+
+    const verifyAccount = async (data,params) =>{
+        const resp = await axios.post('password/reset/verify_account/',data,{params:params})
+        return resp.data
+    }
+
+    const resetAccount = async (data,params) =>{
+        const resp = await axios.post('password/reset/',data,{params:params})
+        return resp.data
+    }
+
   return {
     register,
     loginAuth,
     verifyUser,
     logoutAuth,
     checkController,
+        getAccount,
+        verifyAccount,
+        resetAccount,
     postEmailConfig,
     getEmailConfig,
   };

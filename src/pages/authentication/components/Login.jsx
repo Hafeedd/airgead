@@ -1,15 +1,15 @@
 import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import userProfileIcon from '../../../assets/images/iconamoon_profile-circle-fill.png'
+import userProfileIcon from '../../../assets/images/profile-circle.png'
 import TextField from '@mui/material/TextField';
-import emailIcon from '../../../assets/images/mdi_email-open-outline.svg'
-import mobileIcon from '../../../assets/images/icomoon-free_mobile.svg'
+import emailIcon from '../../../assets/images/email-open.png'
+import mobileIcon from '../../../assets/images/free_mobile.png'
 import PasswordField from './PasswordField'
 import { useAuthServices } from '../../../services/controller/authServices';
 import ForgotPwEmail from './ForgotPwEmail';
 
 export const Login = (props) => {
-    const { user, handleChange, handleSubmit, loading ,forgot,setForgot} = props
+    const { user, handleChange, handleSubmit, loading ,setForpass} = props
 
     const [controllerExist, setControllerExist] = useState(true)
 
@@ -23,7 +23,7 @@ export const Login = (props) => {
         try {
             let resp = await checkController()
             if (resp.success) {
-                console.log(resp.data.exist)
+                // console.log(resp.data.exist)
                 setControllerExist(resp.data.exist)
             }
         } catch (err) { }
@@ -32,7 +32,7 @@ export const Login = (props) => {
     const navigate = useNavigate()
 
     const handleForgot =()=>{
-        setForgot(true)
+        setForpass(true)
     }
     return (
         <form onSubmit={handleSubmit} className='d-flex flex-column align-items-center railway-font' style={{ width: "70%", height: "fit-content" }}>

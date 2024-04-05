@@ -946,7 +946,7 @@ const SalesTable = (props) => {
         onHide={() => setShowStock(false)}
       >
         <StockPop
-          handleChange={handleChangeTableItem}
+          handleChange={handlebatchChange}
           {...{
             itemSelected,
             setShowStock,

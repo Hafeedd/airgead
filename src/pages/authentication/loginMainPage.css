@@ -1,7 +1,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Raleway:ital,wght@0,100..900;1,100..900&display=swap');
 
 .login-main-page-lh {
-    background-image: linear-gradient(#F9D4FF, #EE7777);
+    background-image: linear-gradient(#47019F, #27005B);
 }
 
 .main-image-under-text {
@@ -16,13 +16,13 @@
 
 .btn-login,
 .btn-login:hover {
-    background-color: #EE7777;
+    background-color: #47019F;
     color: white;
     width: 100%;
 }
 
 .login-btm-border {
-    border: solid #EE7777 3px;
+    border: solid #47019F 3px;
 }
 
 .otp-container {
@@ -53,7 +53,7 @@
 }
 
 .span-text-color {
-    color: #EE7777;
+    color: #47019F;
     font-weight: 600;
 }
 

@@ -1,17 +1,39 @@
-import React from "react";
-import userProfileIcon from '../../../assets/images/iconamoon_profile-circle-fill.png';
+import React, { useState } from "react";
+import userProfileIcon from '../../../assets/images/profile-circle.png';
 import { TextField } from "@mui/material";
 import vitezLogo from '../../../assets/images/VITEZ LOGO-01 1.svg'
+import { useAuthServices } from "../../../services/controller/authServices";
+import Swal from "sweetalert2";
 function ForgotPwEmail(props) {
-    const {setShow}=props
-    const handleShow =(e)=>{
-        e.preventDefault()
-        setShow(true)
+    const {setShow,loading,token, setToken,otp,setOtp,username,setUsername,setVerpass}=props
+    // const handleShow =(e)=>{
+    //     e.preventDefault()
+    //     setShow(true)
+    // }
+    const{getAccount}=useAuthServices()
+   
+    const handleSubmit= async(e)=>{
+      e.preventDefault()
+      try{
+        const resp = await getAccount({'username':username},null)
+        if (resp?.success) {
+          setToken(resp?.data?.verification_token)
+          setVerpass(true)
+      }
+      }catch(err){
+        Swal.fire({
+            title: "Failed",
+            text: err?.response?.data?.error,
+            icon: "error",
+            timer: 1000,
+            showConfirmButton: false,
+        });
+      }
     }
   return (
    
       <form
-        // onSubmit={handleSubmit}
+        onSubmit={handleSubmit}
         className="d-flex flex-column align-items-center railway-font"
         style={{ width: "70%", height: "fit-content" }}
       >
@@ -22,7 +44,7 @@ function ForgotPwEmail(props) {
           </div>
           <div className="p-2">
             <h1 className="p-0 m-0" style={{ font: "27px" }}>
-            Enter Phone number or Email
+            Enter Your Username
             </h1>
             <p>
             simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard
@@ -32,13 +54,14 @@ function ForgotPwEmail(props) {
 
         <div className="w-100">
           <TextField
-            // onChange={handleChange}
-            // value={user.username}
-            name="email"
+            onChange={(e)=>setUsername(e.target.value)}
+            value={username}
+            name="username"
             className="auth-input-field my-4"
             id="outlined-basic"
-            label="Enter Details"
+            label="Enter Username"
             variant="outlined"
+            required
           />
         </div>
 
@@ -46,11 +69,11 @@ function ForgotPwEmail(props) {
           <button
             type="submit"
             // disabled={loading}
-            onClick={handleShow}
-            className="btn-login rounded py-3 fs-5 d-flex px-0 align-items-center justify-content-center"
-          > GET OTP
-            {/* {loading ? "Loading" : "Login"} &nbsp;&nbsp; */}
-            {/* {loading && <div className="login-loader" />} */}
+            // onClick={handleShow}
+            className="btn-login rounded py-3 fs-6 d-flex px-0 align-items-center justify-content-center"
+          >GET OTP
+             {/* {loading ? "Loading" : "GET OTP"} &nbsp;&nbsp;
+            {loading && <div className="login-loader" />} */}
           </button>
         </div>
 

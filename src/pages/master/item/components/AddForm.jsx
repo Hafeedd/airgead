@@ -224,8 +224,9 @@ export const ItemAddForm = ({ edit, refresh, setToEdit }) => {
     } catch (err) {
       console.log(err);
       setSubmitLoading(false);
-      let a = Object.keys(err?.response?.data?.data || {});
-      Swal.fire(a[0] + ` ${err?.response?.data?.data[a[0]][0]}`, "", "error");
+      let message = err?.response?.data?.message || "Something went wrong .Please try again."
+      // let a = Object.keys(err?.response?.data?. || {});
+      Swal.fire(message, "", "error");
     }
   };
 

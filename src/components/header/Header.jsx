@@ -7,14 +7,39 @@ import bell from "../../assets/icons/bell.png";
 import { useLocation, useNavigate } from "react-router";
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
+import { MEDIA_URL } from "../../api/axios";
+import { useUserServices } from "../../services/controller/userServices";
 // import e from "express";
 
 const Header = (props) => {
   const {activeSetting , setActiveSetting} = props
-
+  const [user,setUser] =useState({})
   const userData = useSelector(state => state.auth.userDetails)
   const location = useLocation();
-
+  console.log("HAFEED :",userData)
+  const {getUserProfile}=useUserServices()
+  const getData = async () =>{
+    try{
+        const resp = await getUserProfile ()
+        if (resp.success === true) {
+            const userData = resp?.data
+            let tempUser = {
+                first_name: userData.first_name,
+                last_name: userData.last_name,
+                mobile: userData.mobile,
+                email: userData.email,
+                image: userData.image,
+                fk_role: userData.fk_role,
+                full_name: userData.full_name,
+                username: userData.username,
+            }
+            setUser(tempUser)
+          }
+        }catch(err){ console.log(err) }
+    }
+  useEffect(()=>{
+    getData()
+  },[])
   useEffect(() => {
     const element = document.getElementsByClassName("page_head")[0];
     const element2 = document.getElementsByClassName("main header")[0]
@@ -49,10 +74,10 @@ const Header = (props) => {
           </div>
             {userData?.fk_group!=="Controller"&&
           <div className="heaader-user-cont rounded-1 px-2" onClick={()=>navigate('/profile')}>
-            <img src={userProf} alt="user-prof" className="header-user-prof-img" />
+            <img src={user.image?MEDIA_URL+user.image:userProf} alt="user-prof" className="header-user-prof-img" />
             <div>
               <div>{`${userData?.username?.slice(0, 10)} ${userData?.username?.length > 9 ? "..." : ""}`}</div>
-              <div className="header-role-text">{userData?.fk_group}</div>
+              <div className="header-role-text">{userData?.fk_group||user.fk_role.role}</div>
             </div>
           </div>
             }

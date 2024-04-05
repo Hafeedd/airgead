@@ -55,6 +55,16 @@ export const useUserServices = () => {
     const resp = await axiosPrivate.get('/security_questions/');
     return resp.data;
   }
+
+  const putUserProfile = async(data)=>{
+    const resp = await axiosPrivate.put('company/user/profile/',data,{headers:{'Content-Type': 'multipart/form-data'}});
+    return resp.data;
+  }
+
+  const putCompanyDetails = async(data)=>{
+    const resp = await axiosPrivate.put('company/update/',data,{headers:{'Content-Type': 'multipart/form-data'}});
+    return resp.data;
+  }
   return {
     getUserList,
     postUserAdd,
@@ -66,5 +76,7 @@ export const useUserServices = () => {
     postSetPassword,
     postSecurityQuestions,
     getSecurityQuestions,
+    putUserProfile,
+    putCompanyDetails,
   };
 }
