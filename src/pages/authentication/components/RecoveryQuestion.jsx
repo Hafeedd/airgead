@@ -1,18 +1,56 @@
-import React from 'react'
+import React, { useState } from 'react'
 import userProfileIcon from '../../../assets/images/iconamoon_questionmark-circle-fill.png'
 import { TextField } from "@mui/material";
 import vitezLogo from '../../../assets/images/VITEZ LOGO-01 1.svg'
-
-
-function RecoveryQuestion() {
+import { IoMdArrowRoundForward } from "react-icons/io";
+import { useAuthServices } from '../../../services/controller/authServices';
+import Swal from 'sweetalert2';
+function RecoveryQuestion(props) {
+  const{questions,token,setQuestions,setNewpass,setToken}=props
+  const{verifyAccount}=useAuthServices()
+  const [count,setcount] =useState(0)
+  let limit=questions.length-1
+  const [answer,setAnswer] = useState()
+  const handleQASubmit = async(e)=>{
+    e.preventDefault()
+    try{
+      if (count == limit) {
+      let temp=questions
+      temp[count].answer = answer
+      setQuestions(temp)
+      setAnswer('')
+      const resp = await verifyAccount({questions:temp},{t:token})
+      if (resp.success) { 
+          console.log(resp?.data)
+          setNewpass(true)
+          setToken(resp?.data?.verification_token)
+          setQuestions('')
+      }
+    }else if (count<limit){
+      setcount(count+1)
+      let temp =questions
+      temp[count].answer = answer
+      setQuestions(temp)
+      setAnswer('')
+    }}catch (err) {
+      Swal.fire({
+        title: "Oops! Something went wrong",
+        text: err?.response?.data?.message,
+        icon: "info",
+        timer: 1000,
+        showConfirmButton: false,
+    });
+    }
+  }
+  console.log('Questions', questions)
   return (
     <form
-    // onSubmit={handleSubmit}
+    onSubmit={handleQASubmit}
     className="d-flex flex-column align-items-center railway-font"
     style={{ width: "70%", height: "fit-content" }}
   >
     <div><img className='' src={vitezLogo} alt="" /></div>
-    <div className="d-flex mt-5">
+    <div className="d-flex mt-5 align-items-start w-100">
       <div className="d-flex flex-column justify-content-center mt-2">
         <img src={userProfileIcon} alt="" />
       </div>
@@ -26,15 +64,18 @@ function RecoveryQuestion() {
     </div>
 
     <div className="w-100">
-        <label className='fw-bold text-dark fs-5 mt-3' >What is the capital city of Australia?</label>
+        <label className='fw-bold text-dark fs-5 mt-3 ms-2' >
+        <IoMdArrowRoundForward /> {questions[count].question}
+        </label>
         <TextField
-        // onChange={handleChange}
-        // value={user.username}
+        onChange={(e)=>setAnswer(e.target.value)}
+        value={answer}
         name="email"
         className="auth-input-field my-3 "
         id="outlined-basic"
-        // label="Enter Details"
+        label="Enter Answer"
         variant="outlined"
+        required
       />
     </div>
 
@@ -43,7 +84,7 @@ function RecoveryQuestion() {
         type="submit"
         // disabled={loading}
         className="btn-login rounded py-3 fs-5 d-flex px-0 align-items-center justify-content-center"
-      > Next | Set New Password        {/* {loading ? "Loading" : "Login"} &nbsp;&nbsp; */}
+      > {count<limit? 'Next' :'Set New Password'}        {/* {loading ? "Loading" : "Login"} &nbsp;&nbsp; */}
         {/* {loading && <div className="login-loader" />} */}
       </button>
     </div>

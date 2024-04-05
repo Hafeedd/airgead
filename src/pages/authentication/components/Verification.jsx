@@ -4,7 +4,7 @@ import OTPInput from 'react-otp-input'
 import Countdown from 'react-countdown'
 
 export const Verification = (props) => {
-    const { handleResendOtp,setOtpWait, otp, handleOtpChange, handleSubmit, otpWait } = props
+    const { handleResendOtp,setOtpWait, otp, handleOtpChange, handleSubmit, otpWait,verpass } = props
 
     const renderer = ({ hours, minutes, seconds, completed }) => {
         if (!completed) {
@@ -57,7 +57,7 @@ export const Verification = (props) => {
                     renderer={renderer}
                 /> : <p className='railway-font'>Didn’t Received SMS? <span className='span-text-color cursor' onClick={handleResendOtp}>Resend Code</span></p>}
             </div>
-            <button onClick={handleSubmit} className='btn-login rounded py-3 mt-3 railway-font' >Login</button>
+            <button onClick={handleSubmit} className='btn-login rounded py-3 mt-3 railway-font' >{verpass==true?'Verify':'Login'}</button>
         </div>
     )
 }

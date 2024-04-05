@@ -36,7 +36,7 @@ export const Profile = () => {
         try{
             const resp = await getUserProfile ()
             if (resp.success === true) {
-                console.log("Look",resp.data)
+                // console.log("Look",resp.data)
                 const userData = resp?.data
                 let tempUser = {
                     first_name: userData.first_name,
@@ -84,9 +84,9 @@ export const Profile = () => {
         }catch(err){ console.log(err) }
     }
 
-    console.log('user',user)
-    console.log('user_profile',userProfile)
-    console.log('company_details',companyDetails)
+    // console.log('user',user)
+    // console.log('user_profile',userProfile)
+    // console.log('company_details',companyDetails)
 
     const [isVisible, setIsVisible] = useState(true);
 
@@ -193,6 +193,7 @@ export const Profile = () => {
                     timer: 1000,
                     showConfirmButton: false,
                 });
+                getSecurity()
             }
         }catch(e){
             Swal.fire({
@@ -245,6 +246,7 @@ export const Profile = () => {
                     timer: 1000,
                     showConfirmButton: false,
                 });
+                getData() 
             }
         }catch(e){
             Swal.fire({
@@ -299,7 +301,8 @@ export const Profile = () => {
                     timer: 1000,
                     showConfirmButton: false,
                 });
-            }  
+                getData() 
+            } 
         }catch(e){
             Swal.fire({
                 title: 'Error',
