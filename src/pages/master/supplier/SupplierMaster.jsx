@@ -9,7 +9,7 @@ import { useSelector } from "react-redux";
 
 const SupplierMaster = () => {
   const [pageHeadItem, setPageHeadItem] = useState(1);
-  const permissions = useSelector((state) => state.auth.permissions);
+  const permissions = useSelector((state) => state.auth.activityPermissions);
   const [toEdit, setToEdit] = useState(false);
   const [loading, setLoading] = useState(false);
   const [listItem, setListItem] = useState();

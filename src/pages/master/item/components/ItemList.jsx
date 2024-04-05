@@ -8,7 +8,7 @@ import { useSelector } from "react-redux";
 
 const ItemList = (props) => {
   const { list, handleEdit, handleDelete, getData, loading } = props;
-  const permissions = useSelector(state=>state.auth.permissions)
+  const permissions = useSelector(state=>state.auth.activityPermissions)
   const [searchedList, setSearchedList] = useState([]);
 
   const { deleteItemList } = useItemServices();

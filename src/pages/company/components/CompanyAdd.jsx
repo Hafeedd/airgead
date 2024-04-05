@@ -11,6 +11,7 @@ export const CompanyAdd = () => {
   const [companyId, setCompanyId] = useState(null);
   const [edit, setEdit] = useState(false);
   const [moduleCodeList, setModuleCodeList] = useState([]);
+  const [activityCodes, setActivityCodes] = useState({});
   const [company, setCompany] = useState({
     first_name: null,
     last_name: null,
@@ -42,7 +43,7 @@ export const CompanyAdd = () => {
   });
 
   const location = useLocation();
-  const {getCompanyWithId} = useCompanyServices()
+  const { getCompanyWithId } = useCompanyServices();
 
   useEffect(() => {
     if (edit.id) {
@@ -64,8 +65,8 @@ export const CompanyAdd = () => {
         ...admin_det_others
       } = admin_details;
       setCompany({
-        logo_url:MEDIA_URL+logo,
-        image_url:MEDIA_URL+image,
+        logo_url: MEDIA_URL + logo,
+        image_url: MEDIA_URL + image,
         ...others,
         ...admin_det_others,
       });
@@ -77,17 +78,17 @@ export const CompanyAdd = () => {
     if (location?.state?.company) handleCompanyGet(location?.state?.company.id);
   }, [location.state]);
 
-  const handleCompanyGet = async (id) =>{
-    try{
-      let resp 
-      resp = await getCompanyWithId(id)
-      if(resp.success){
-        setEdit(resp.data)
+  const handleCompanyGet = async (id) => {
+    try {
+      let resp;
+      resp = await getCompanyWithId(id);
+      if (resp.success) {
+        setEdit(resp.data);
       }
-    }catch(err){
-      console.log(err)
+    } catch (err) {
+      console.log(err);
     }
-  }
+  };
 
   return (
     <div className="company-add-cont pb-1">
@@ -147,7 +148,7 @@ export const CompanyAdd = () => {
         {active === 2 ? (
           <CompanyPlan
             {...{
-              companyPlan, 
+              companyPlan,
               setCompanyPlan,
               moduleCodeList,
               setModuleCodeList,
@@ -164,10 +165,12 @@ export const CompanyAdd = () => {
               moduleCodeList,
               setModuleCodeList,
               companyId,
-              edit,
+              company,
               setEdit,
               setCompanyId,
               setActive,
+              activityCodes,
+              setActivityCodes,
             }}
           />
         ) : (

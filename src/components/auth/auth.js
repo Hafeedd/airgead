@@ -38,7 +38,7 @@ export const CheckAuth = ({ userType, authType }) => {
             // authType === "token"
           ) {
             setVerify(resp.data.fk_group);
-            dispatch(handlePermissions(resp.data.module_permissions))
+            dispatch(handlePermissions({module:resp.data.module_permissions,activity:resp.data.activity_permissions}))
         } else {
               setVerify(false);
               navigate(path, { replace: true });

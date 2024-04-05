@@ -24,7 +24,8 @@ const authSlice = createSlice({
             state.permissions = null
         },
         handlePermissions: (state,action)=>{
-            state.permissions = action.payload
+            state.modulePermissions = action.payload.module
+            state.activityPermissions = action.payload.activity
         },
     }
 })

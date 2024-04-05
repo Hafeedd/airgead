@@ -13,7 +13,7 @@ export const StockLedger = () => {
       item_code:null,
     })
   
-    const {getStockLedger,batchWiseStockReport} = useReportsServices()
+    const {getStockLedger, batchWiseStockReport} = useReportsServices()
   
     useEffect(()=>{
       getData()
@@ -22,7 +22,7 @@ export const StockLedger = () => {
     const getData = async () =>{
       try{
         const response = await getStockLedger(paramsToReport)
-        const response2 = await batchWiseStockReport()
+        const response2 = await batchWiseStockReport(paramsToReport)
         console.log(response2)
         if(response.success){
           setStockList(response.data)

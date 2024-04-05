@@ -23,7 +23,7 @@ const PurchaseEditList = (props) => {
     getData,
     title,
   } = props;
-  const permissions = useSelector(state=>state.auth.permissions)
+  const permissions = useSelector(state=>state.auth.activityPermissions)
   const [searchedList, setSearchedList] = useState([]);
   const [date, setDate] = useState({
     from: new Date().toISOString(),
@@ -259,14 +259,14 @@ const PurchaseEditList = (props) => {
                     <td className=""></td>
                     <td className="">
                       {show !== "order" && <div className="d-flex gap-3 pe-3 justify-content-end">
-                        {(from==="purch"&&permissions.includes(1166)||(from==="purch Order"&&permissions.includes(1242))||
-                        (from==='purch Return'&&permissions.includes(1209)))&&<img
+                        {(from==="purch"&&!permissions.includes(1166)||(from==="purch Order"&&!permissions.includes(1242))||
+                        (from==='purch Return'&&!permissions.includes(1209)))&&<img
                           src={deleteBtn}
                           alt="deleteBtn"
                           onClick={() => handleDelete()}
                         />}
-                        {((from==="purch"&&permissions.includes(1165))||(from==="purch Order"&&permissions.includes(1241))||
-                        (from==="purch Return"&&permissions.includes(1208)))&&<img
+                        {((from==="purch"&&!permissions.includes(1165))||(from==="purch Order"&&!permissions.includes(1241))||
+                        (from==="purch Return"&&!permissions.includes(1208)))&&<img
                           src={editBtn}
                           alt="editBtn"
                           onClick={() => handleEditClick(data)}

@@ -604,7 +604,7 @@ const PurchaseTable = (props) => {
                         onClick={() => confirmDelete()}
                         className="text-center w-100"
                       >
-                       {(from==="purch"&&permissions.includes(1171))||(from==="purch Return"&&permissions.includes(1247))&&<BsTrashFill className="mb-1 btn p-0" size={"16px"} />}
+                       {(from==="purch"&&!permissions.includes(1171))||(from==="purch Return"&&!permissions.includes(1247))&&<BsTrashFill className="mb-1 btn p-0" size={"16px"} />}
                       </div>
                     </td>
                   </tr>
@@ -713,7 +713,7 @@ const PurchaseTable = (props) => {
                   else return null;
                 })}
               <td className="align-top">
-              {permissions.includes(1169)&&<input
+              {!permissions.includes(1169)&&<input
                   onKeyDown={handleAddOpenBatch}
                   onClick={handleAddOpenBatch}
                   type="button"

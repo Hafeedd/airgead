@@ -79,7 +79,9 @@ const SalesTable = (props) => {
         description: x.item_code,
         value: x.item_id,
         content: (
-          <Dropdown.Item onClick={()=>setShowStock(true)}>{x.item_name}</Dropdown.Item>
+          <Dropdown.Item onClick={() => setShowStock(true)}>
+            {x.item_name}
+          </Dropdown.Item>
         ),
       });
     });
@@ -183,24 +185,23 @@ const SalesTable = (props) => {
     handleTableItemReset();
   };
 
-  const handleDropOpen = (e,item,state,toTableItem) =>{
-    let data = item?.options[0]
-    if(state.fk_items){
-      data = item?.options?.filter(x=>x.value==state.fk_items)[0]
+  const handleDropOpen = (e, item, state, toTableItem) => {
+    let data = item?.options[0];
+    if (state.fk_items) {
+      data = item?.options?.filter((x) => x.value == state.fk_items)[0];
     }
-    if(data){
-      setItemSelected({data, e, state, toTableItem } )
+    if (data) {
+      setItemSelected({ data, e, state, toTableItem });
     }
-  }
+  };
 
-
-  const handleKeyDownStockPopup = (e,fromList) =>{
-    if(e?.type === 'keydown' && e?.code === 'Enter'){      
-      setShowStock(true)
-      if(fromList) handleKeyDown2(e)
-      else handleKeyDown(e)
+  const handleKeyDownStockPopup = (e, fromList) => {
+    if (e?.type === "keydown" && e?.code === "Enter") {
+      setShowStock(true);
+      if (fromList) handleKeyDown2(e);
+      else handleKeyDown(e);
     }
-  }
+  };
 
   const handleSelectItemFromDrop = (e, data, state, toTableItem) => {
     if (data.value) {
@@ -214,14 +215,20 @@ const SalesTable = (props) => {
         setItemSelected({ data: newObj, ...{ e, state, toTableItem } });
       }
       if (e?.type == "click") handleKeyDown(e);
-    }else{
-      handleTableItemReset()
+    } else {
+      handleTableItemReset();
     }
   };
 
-  const handlebatchChange = (data)=>{
-
-  }
+  const handlebatchChange = (data) => {
+    handleChangeTableItem(
+      itemSelected.e,
+      data,
+      itemSelected.state,
+      itemSelected.toTableItem,
+      true
+    );
+  };
 
   const handleChangeTableItem = (e, data, state, toTableItem, batch) => {
     // toTableItem is used to check if the state to be set to tableItem or tableItemList
@@ -491,10 +498,10 @@ const SalesTable = (props) => {
     });
   };
 
-  const handleKeyDownOnDrop = (e) =>{
-    console.log("fdsfdsf")
-    console.log(e)
-  } 
+  const handleKeyDownOnDrop = (e) => {
+    console.log("fdsfdsf");
+    console.log(e);
+  };
 
   const handlePrev = () => {
     if (salesList?.length > 0) {
@@ -622,8 +629,12 @@ const SalesTable = (props) => {
                                   onChange={(e, a) =>
                                     handleSelectItemFromDrop(e, a, data, i)
                                   }
-                                  onOpen={(e,a)=>handleDropOpen(e,a,data,false)}
-                                  onKeyDown={(e)=>handleKeyDownStockPopup(e,true)}
+                                  onOpen={(e, a) =>
+                                    handleDropOpen(e, a, data, false)
+                                  }
+                                  onKeyDown={(e) =>
+                                    handleKeyDownStockPopup(e, true)
+                                  }
                                   selection
                                   upward={
                                     salesAdd.total_items > 4 ? true : false
@@ -715,12 +726,14 @@ const SalesTable = (props) => {
                           onChange={(e, data) =>
                             handleSelectItemFromDrop(e, data, tableItem, true)
                           }
-                          onOpen={(e,data)=>handleDropOpen(e,data,tableItem,true)}
-                          onKeyDown={(e)=>handleKeyDownStockPopup(e)}
+                          onOpen={(e, data) =>
+                            handleDropOpen(e, data, tableItem, true)
+                          }
+                          onKeyDown={(e) => handleKeyDownStockPopup(e)}
                           selection
                           required
                           upward={salesAdd.total_items > 4 ? true : false}
-                          search={search} 
+                          search={search}
                           placeholder="SELECT"
                           className="purchase_search_drop border-0 w-100 ps-2"
                           id="tableItemFkItem"
@@ -930,10 +943,10 @@ const SalesTable = (props) => {
         show={showStock}
         size="lg"
         centered
-        onHide={() =>setShowStock(false)}
+        onHide={() => setShowStock(false)}
       >
         <StockPop
-        handleChange={handleChangeTableItem}
+          handleChange={handleChangeTableItem}
           {...{
             itemSelected,
             setShowStock,

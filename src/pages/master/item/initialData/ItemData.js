@@ -46,18 +46,37 @@ export const initialItemData = {
   barcode: null,
 };
 
-export const initialBarcode = {
-  B_id: null,
-  B_code: null,
-  B_expiry: null,
-  B_rate: null,
-  B_mrp: null,
-};
-
-export const initalUnitConv = {
-  U_id: null,
-  U_unit: null,
-  U_qty: null,
-  U_rate: null,
-  U_mrp: null,
+export const initTableHeadList = {
+  unit: [
+    { title: "Qty", state: "u_qty" },
+    { title: "Unit", state: "q_unit" },
+    { title: "Rate", state: "u_rate" },
+    { title: "Expiry", state: "u_expiry", type:"date" },
+  ],
+  barcode: [
+    { title: "C.Barcode", state: "b_code" },
+    { title: "MRP", state: "b_mrp" },
+    { title: "S.Rate", state: "b_rate" },
+    { title: "Expiry", state: "b_expiry" , type:"date"},
+  ],
+  batch: [
+    {
+      title: "Batch No",
+      state: "batch_no",
+    },
+    {
+      title: "Expiry Date",
+      state: "expiry_date",
+      type: "date"
+    },
+    {
+      title: "Opening Stock",
+      state: "opening_stock_batch",
+    },
+    {
+      title: "MFG Date",
+      state: "mfg_date",
+      type: "date"
+    },
+  ],
 };

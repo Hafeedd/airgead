@@ -257,7 +257,9 @@ input[type="number"] {
 
 .checkbox {
   display: flex;
-  justify-content: space-between;
+  width: 100%;
+  gap: 3rem;
+  flex-wrap: wrap;
 }
 
 .unit_modal {

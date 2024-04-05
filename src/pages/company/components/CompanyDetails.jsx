@@ -56,8 +56,8 @@ export const CompanyDetails = (props) => {
   };
 
   useEffect(() => {
-    fullRoles();
-  }, []);
+    if (location.pathname == "/user-add") fullRoles();
+  }, [location.pathname]);
 
   const handleDropdownChangeRole = (event, data) => {
     setSelectedRole(data.value);
@@ -152,7 +152,6 @@ export const CompanyDetails = (props) => {
         if (resp.success) {
           setActive(2);
           setCompanyId(resp?.data?.company_profile?.id);
-          console.log(company);
           setCompanyPlan(company.active_plan_details);
           if (company?.active_plan_details?.activated_modules?.length > 0)
             setModuleCodeList(

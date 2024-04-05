@@ -12,7 +12,7 @@ import {FiPlus} from 'react-icons/fi'
 import { useSelector } from "react-redux";
 
 const StaffMaster = () => {
-  const permissions = useSelector((state) => state.auth.permissions);
+  const permissions = useSelector((state) => state.auth.activityPermissions);
   const [search, setSearch] = useState();
   const [edit, setEdit] = useState();
   const [loading, setLoading] = useState(false);

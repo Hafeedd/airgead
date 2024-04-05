@@ -35,13 +35,7 @@ export const StockPop = (props) => {
   const navigate = useNavigate();
 
   const handleSelect = (data) => {
-    handleChange(
-      itemSelected.e,
-      data,
-      itemSelected.state,
-      itemSelected.toTableItem,
-      true
-    );
+    handleChange(data);
     setShowStock(false);
   };
 

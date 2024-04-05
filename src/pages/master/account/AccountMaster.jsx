@@ -11,8 +11,10 @@ const AccountMaster = () => {
   const [toEdit, setToEdit] = useState(false);
   const [listItem, setListItem] = useState([]);
   const [loading, setLoading] = useState(false);
-  const permissions = useSelector((state) => state.auth.permissions);
+  const permissions = useSelector((state) => state.auth.activityPermissions);
   const navigate = useNavigate();
+
+  console.log(permissions)
 
   const location = useLocation()
 

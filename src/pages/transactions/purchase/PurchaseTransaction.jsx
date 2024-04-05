@@ -32,7 +32,7 @@ export const initialPurchaseTableStatePositionLocal = JSON.parse(
 );
 
 const PurchaseTransaction = ({ returnPage, orderPage }) => {
-  const permissions = useSelector((state) => state.auth.permissions);
+  const permissions = useSelector((state) => state.auth.activityPermissions);
   const [purchaseItemModal, setPurchaseItemModal] = useState(false);
   const [showPurchaseReturn, setShowPurchaseReturn] = useState(false);
   const [supplierList, setSupplierList] = useState(null);
@@ -896,7 +896,7 @@ const PurchaseTransaction = ({ returnPage, orderPage }) => {
               <div className="btn btn-sm purch-table-btn1 px-3">Other</div>
             </div>
             <div className="ps-1 col-2 col-3">
-              {((returnPage && permissions.includes(1200))||(orderPage && permissions.includes(1238))||(permissions.includes(1062))) && (
+              {((returnPage && !permissions.includes(1200))||(orderPage && !permissions.includes(1238))||(!permissions.includes(1062))) && (
                 <div
                   onClick={handleEdit}
                   className="btn btn-sm btn-dark px-1 justify-content-center d-flex align-items-center gap-1"

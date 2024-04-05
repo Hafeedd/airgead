@@ -10,32 +10,57 @@ export const CompanyPermission = (props) => {
     moduleCodeList,
     setModuleCodeList,
     companyId,
-    edit,
     setEdit,
     setCompanyId,
     setActive,
+    activityCodes,
+    company,
+    setActivityCodes
   } = props;
   const [page, setPage] = useState({ main: "transaction", sub: "Sales" });
-  const [permCodes, setpermCodes] = useState({});
 
   const { postCompanyPermission } = useCompanyServices();
   const navigate = useNavigate();
+
+  useEffect(()=>{
+    let tempActivityCode = {}
+    let tempList = company?.activity_permissions || []
+    if(tempList.length>0){
+      Object.keys(permissions).forEach((title)=>{
+       Object.keys(permissions[title]).forEach(sub_title=>{
+          permissions[title][sub_title].forEach(x=>{
+            if(tempList?.includes(x.code)){
+              tempActivityCode[title+sub_title] = tempActivityCode[title+sub_title] || []
+              tempActivityCode[title+sub_title].push(x.code)
+
+            //   if(tempActivityCode[title+sub_title]?.length>-1){
+            //     tempActivityCode[title+sub_title].push({code:x.code,is_active:false})
+            //   }
+            //   else tempActivityCode = {[title+sub_title]:[{code:x.code,is_active:false}]}
+            }
+          })
+        })
+      })
+      setActivityCodes({...tempActivityCode})
+    }
+  },[company,])
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       let resp;
       var companyPermissions = [];
-      Object.keys(permCodes).forEach((x) =>
-        permCodes[x].forEach((y) =>
-          companyPermissions.push({ code: y, is_active: "false" })
+      Object.keys(activityCodes).forEach((x) =>
+        activityCodes[x].forEach((y) =>
+          companyPermissions.push({ code: y, is_active: false })
         )
       );
       let tempCompanyModuleList = moduleCodeList.map((data) => ({
         code: data.code,
         is_active: true,
       }));
-      console.log({activity_permissions:companyPermissions,module_permissions:tempCompanyModuleList})
+      // console.log(activityCodes)
+      // console.log({activity_permissions:companyPermissions,module_permissions:tempCompanyModuleList})
       // return 0
         resp = await postCompanyPermission(companyId, {
           activity_permissions: companyPermissions,
@@ -46,7 +71,7 @@ export const CompanyPermission = (props) => {
         setCompanyId(false);
         setEdit(false);
         setModuleCodeList([]);
-        setpermCodes([]);
+        setActivityCodes([]);
         setActive(1);
         navigate("/");
       }
@@ -76,7 +101,7 @@ export const CompanyPermission = (props) => {
           <div className="permission-list2">
             {Object.keys(permissions[page.sub] || {})?.map((data, key1) => {
               let checkedAll =
-                permCodes[data]?.filter(
+                activityCodes[page.sub+data]?.filter(
                   (x) =>
                     permissions[page.sub][data].filter((y) => y.code == x)
                       .length > 0
@@ -88,7 +113,7 @@ export const CompanyPermission = (props) => {
                 if (checkedAll) {
                   listToAdd = permissions[page.sub][data]?.map((x) => x.code);
                 }
-                setpermCodes({ ...permCodes, [data]: listToAdd });
+                setActivityCodes({ ...activityCodes, [page.sub+data]: listToAdd });
               };
               return (
                 <div className="permission-list3">
@@ -108,17 +133,17 @@ export const CompanyPermission = (props) => {
                     {permissions[page.sub][data].map((items, key) => {
                       const handleCheckPerm = () => {
                         let tempPermCodes = [];
-                        if (permCodes[data]?.length > 0)
-                          tempPermCodes = [...permCodes[data]];
+                        if (activityCodes[page.sub+data]?.length > 0)
+                          tempPermCodes = [...activityCodes[page.sub+data]];
                         let ind = tempPermCodes.findIndex(
                           (x) => x === items.code
                         );
                         if (ind > -1) {
                           tempPermCodes.splice(ind, 1);
                         } else tempPermCodes.push(items.code);
-                        setpermCodes({
-                          ...permCodes,
-                          [data]: [...tempPermCodes],
+                        setActivityCodes({
+                          ...activityCodes,
+                          [page.sub+data]: [...tempPermCodes],
                         });
                       };
                       return (
@@ -129,11 +154,11 @@ export const CompanyPermission = (props) => {
                           >
                             <input
                               checked={
-                                permCodes[data]?.findIndex(
+                                activityCodes[page.sub+data]?.findIndex(
                                   (x) => x === items.code
                                 ) < 0
                                   ? true
-                                  : !permCodes[data] && true
+                                  : !activityCodes[page.sub+data] && true
                               }
                               onClick={handleCheckPerm}
                               id={"perm-check" + key1 + key}

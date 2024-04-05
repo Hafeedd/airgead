@@ -16,7 +16,7 @@ const MaterialComposition = () => {
   const [bankAccList,setBankAccList]=useState([]);
   const [materialList,setMaterialList]=useState()
   const [editComposition,setEditComposition] = useState(false);
-  const permissions = useSelector(state=>state.auth.permissions)
+  const permissions = useSelector(state=>state.auth.activityPermissions)
 
   const navigate = useNavigate();
   const location = useLocation();

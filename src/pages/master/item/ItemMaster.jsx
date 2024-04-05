@@ -14,7 +14,7 @@ const ItemMaster = () => {
   const [search, setSearch] = useState();
   // const [showAddItem, setShowAddItem] = useState(false)
   const { getItemList } = useItemServices();
-  const permissions = useSelector((state) => state.auth.permissions);
+  const permissions = useSelector((state) => state.auth.activityPermissions);
   const navigate = useNavigate();
 
   useEffect(() => {

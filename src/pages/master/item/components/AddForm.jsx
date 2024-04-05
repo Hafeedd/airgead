@@ -1,22 +1,25 @@
 import { useEffect, useRef, useState } from "react";
 import Swal from "sweetalert2";
-import deleteBtn from "../../../../assets/icons/delete-white.svg";
 import { Modal } from "react-bootstrap";
 import SearchDropDown from "../../../../components/searchDropDown/SearchDropDown";
 import useItemServices from "../../../../services/master/itemServices";
 import useOnKey from "../../../../hooks/onKeyFunct/onKeyFunct";
 import { useLocation, useNavigate } from "react-router";
-import {
-  initalUnitConv,
-  initialBarcode,
-  initialItemData,
-} from "../initialData/ItemData";
+import { initialItemData } from "../initialData/ItemData";
 import { useSelector } from "react-redux";
+import { ItemPopup } from "./ItemPopup";
 
 export const ItemAddForm = ({ edit, refresh, setToEdit }) => {
+  const permissions = useSelector((state) => state.auth.activityPermissions);
   const [submitLoading, setSubmitLoading] = useState(false);
-  const permissions = useSelector((state) => state.auth.permissions);
   const [showDropdown, setShowDropdown] = useState("");
+  const [ref, setRef] = useState();
+  
+  // popup states
+  const [popup, setPopup] = useState(false);
+  const [popupInput, setPopupInput] = useState({});
+  const [popupList, setPopupList] = useState([]);
+  
   const typesOptions = [
     { text: "PRODUCT", value: "PRODUCT" },
     { text: "RAW MATERIAL", value: "RAW_MATERIAL" },
@@ -27,15 +30,6 @@ export const ItemAddForm = ({ edit, refresh, setToEdit }) => {
     { text: "HOUR", value: "HOUR" },
     { text: "MONTH", value: "MONTH" },
   ];
-  const [unitConvShow, setUnitConvShow] = useState(false);
-  const [unitEdit, setUnitEdit] = useState(false);
-  const [barcodeShow, setBarcodeShow] = useState(false);
-  const [unitConvTempList, setUnitConvTempList] = useState([]);
-  const [ref, setRef] = useState();
-
-  const [unitConv, setUnitConv] = useState(initalUnitConv);
-  const [barcode, setBarcode] = useState(initialBarcode);
-
   const [listItem, setListItem] = useState({
     second_name: [],
     types: typesOptions,
@@ -62,14 +56,8 @@ export const ItemAddForm = ({ edit, refresh, setToEdit }) => {
     postProperty,
     putProperty,
     getCode,
-    postBarcode,
-    putBarcode,
-    putUnitConvertion,
     putItemAdd,
-    deleteItem,
-    deleteUnitConvertion,
     postItemAdd,
-    postUnitConvertion,
   } = useItemServices();
 
   const location = useLocation();
@@ -83,43 +71,8 @@ export const ItemAddForm = ({ edit, refresh, setToEdit }) => {
   useEffect(() => {
     let items = { ...itemadd };
     if (edit) {
+      console.log(edit)
       let keys = Object.keys(itemadd || {});
-      let keysUnit = Object.keys(unitConv || {});
-      let keysBarc = Object.keys(barcode || {});
-      if (edit.units.length > 0) {
-        let b = [];
-        edit.units.map((data) => {
-          let c,
-            a,
-            r = {};
-          keysUnit.map((key) => {
-            c = key;
-            a = key.slice(key.indexOf("_") + 1);
-            r[c] = data[a];
-          });
-          b.push(r);
-        });
-        setUnitConvTempList(b);
-      }
-      if (edit.barcode.length > 0) {
-        let b = [];
-        edit.barcode.map((data) => {
-          let c,
-            a,
-            r = {};
-          keysBarc.map((key) => {
-            c = key;
-            if (c !== "B_rate") {
-              a = key.slice(key.indexOf("_") + 1);
-            } else {
-              a = "retail_rate";
-            }
-            r[c] = data[a];
-          });
-          b.push(r);
-        });
-        setBarcode(...b);
-      }
       keys.map((key) => {
         if (key === "types")
           setItemAdd((data) => ({ ...data, ["types"]: edit.type }));
@@ -133,12 +86,8 @@ export const ItemAddForm = ({ edit, refresh, setToEdit }) => {
             items = { ...items, [key]: edit[a] };
           }
         } else items = { ...items, [key]: edit[key] };
-        // setItemAdd(data=>({...data,[key]:edit[key]}))
       });
     }
-    // else {
-    //   handleReset();
-    // }
     setItemAdd(items);
   }, [edit]);
 
@@ -212,79 +161,6 @@ export const ItemAddForm = ({ edit, refresh, setToEdit }) => {
     }
   };
 
-  const handleUnitClear = () => {
-    let x = Object.keys(unitConv);
-    x.map((key) => {
-      setUnitConv((data) => ({ ...data, [key]: null }));
-    });
-  };
-
-  const handleDeleteUnit = async (data) => {
-    try {
-      console.log("dsfdfsdf");
-      let res = await deleteUnitConvertion(data?.U_id);
-      if (res.success) {
-        refresh();
-      } else if (!res.success) Swal.fire(res.message, "", "error");
-    } catch (err) {
-      console.log(err);
-      // Swal.fire("Something went wrong pls try again",'',"error")
-    }
-  };
-
-  const addToList = async () => {
-    let x = Object.values(unitConv);
-    if (unitEdit && x.length > 3) {
-      try {
-        const data = {
-          qty: unitConv.U_qty,
-          unit: unitConv.U_unit,
-          rate: unitConv.U_rate,
-          mrp: unitConv.U_mrp,
-        };
-        let res = await putUnitConvertion(unitEdit, data);
-        if (res.success) {
-          refresh();
-          handleUnitClear();
-          unitConvShow(false);
-          setUnitEdit(false);
-        } else {
-        }
-      } catch (err) {}
-    } else if (edit && x.length > 3 && !barcodeShow) {
-      try {
-        const data = {
-          qty: unitConv.U_qty,
-          unit: unitConv.U_unit,
-          rate: unitConv.U_rate,
-          mrp: unitConv.U_mrp,
-        };
-        let res = await postUnitConvertion(edit.id, data);
-        if (res.success) {
-          handleUnitClear();
-          refresh();
-        } else {
-          Swal.fire(res.message, "", "error");
-        }
-      } catch (err) {}
-    } else if (
-      unitConvShow &&
-      unitConv.U_unit &&
-      unitConv.U_mrp &&
-      unitConv.U_rate
-    ) {
-      let g = unitConvTempList;
-      g.push(unitConv);
-      setUnitConvTempList(g);
-      let x = Object.keys(unitConv);
-      let r = {};
-      x.map((data) => (r = { ...r, [data]: "" }));
-      setUnitConv(r);
-    } else if (barcodeShow || unitConvShow) {
-      setBarcodeShow(false);
-      setUnitConvShow(false);
-    }
-  };
 
   const addOption = async (e, data, state, editid) => {
     e.preventDefault();
@@ -314,10 +190,8 @@ export const ItemAddForm = ({ edit, refresh, setToEdit }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      var submitData = { ...itemadd };
-      let res,
-        res2 = 1,
-        res3 = 1;
+      var submitData = { ...itemadd,items:popupList };
+      let res;
       const names = [
         "second_name",
         "category",
@@ -339,46 +213,6 @@ export const ItemAddForm = ({ edit, refresh, setToEdit }) => {
         res = await postItemAdd(data);
       }
       if (res?.success) {
-        let barcodeCheck = Object.values(barcode || {});
-        barcodeCheck = barcodeCheck.filter((x) => x !== null);
-        if (
-          barcodeCheck?.length > 3 &&
-          res.data.id &&
-          ((edit && !barcode.B_id) || !edit)
-        ) {
-          const data = {
-            code: barcode.B_code,
-            mrp: barcode.B_mrp,
-            retail_rate: barcode.B_rate,
-            expiry: barcode.B_expiry,
-          };
-          res3 = await postBarcode(res.data.id, data);
-        } else if (res?.success && edit && barcode.B_id) {
-          const data = {
-            code: barcode.B_code,
-            mrp: barcode.B_mrp,
-            retail_rate: barcode.B_rate,
-            expiry: barcode.B_expiry,
-          };
-          res3 = await putBarcode(barcode.B_id, data);
-        }
-        if (unitConvTempList.length > 0 && !edit) {
-          unitConvTempList.map(async (x) => {
-            const data = {
-              qty: x.U_qty,
-              unit: x.U_unit,
-              rate: x.U_rate,
-              mrp: x.U_mrp,
-            };
-            res2 = await postUnitConvertion(res.data.id, data);
-          });
-        }
-
-        // if (!res2?.success) Swal.fire(res2?.message, "", "error");
-        // if (!res3?.success) Swal.fire(res3?.message, "", "error");
-        if ((res3 !== 1 && !res3?.success) || (res2 !== 1 && !res2?.success)) {
-          await deleteItem(res?.data?.id);
-        }
         if (location?.state?.fromPurchase) {
           navigate("/purchase-transaction", {
             state: { fromItemAdd: true, item: res?.data },
@@ -406,17 +240,10 @@ export const ItemAddForm = ({ edit, refresh, setToEdit }) => {
   };
 
   const handleChange = (e) => {
-    if (typeof e.target.value === "string" && !e.target.name.match(/^U_|^B_/))
-      e.target.value = e.target.value.toUpperCase();
-    if (e.target.name.match(/^B_/))
-      setBarcode((data) => ({ ...data, [e.target.name]: e.target.value }));
-    if (e.target.name.match(/^U_/)) {
-      setUnitConv((data) => ({ ...data, [e.target.name]: e.target.value }));
-    } else if (e.target.name === "unit_conv")
-      setUnitConv((data) => ({ ...data, ["unit"]: e.target.value }));
-    else if (e.target.value === "") {
-      setItemAdd((data) => ({ ...data, [e.target.name]: null }));
-    } else setItemAdd((data) => ({ ...data, [e.target.name]: e.target.value }));
+    let name = e.target.name;
+    let value = e.target.value || null;
+    if (!popup) setItemAdd((data) => ({ ...data, [name]: value }));
+    else setPopupInput((data) => ({ ...data, [name]: value }));
   };
 
   const handleCheck = (e) => {
@@ -426,21 +253,11 @@ export const ItemAddForm = ({ edit, refresh, setToEdit }) => {
   const handleReset = () => {
     setItemAdd(initialItemData);
     setToEdit(false);
-    setBarcode(initialBarcode);
-    setUnitConv(initalUnitConv);
+    setPopup(false);
+    setPopupList([])
     refresh();
     getData();
     handleGetCode();
-  };
-
-  const handleUnitHide = () => {
-    setUnitConvShow(false);
-    setBarcodeShow(false);
-  };
-
-  const handleEditUnit = (e, data) => {
-    setUnitConv(data);
-    setUnitEdit(data.U_id);
   };
 
   return (
@@ -495,19 +312,19 @@ export const ItemAddForm = ({ edit, refresh, setToEdit }) => {
             </div>
           </div>
           {/* {permissions.includes(1005) && ( */}
-            <div className="item_inputs d-flex pt-2 px-0">
-              <div className="col-6">Second Name</div>
-              <SearchDropDown
-                id="second_name"
-                // noAdd={!permissions.includes(1006)}
-                // isEditable={permissions.includes(1007)}
-                setNew={addOption}
-                options={listItem}
-                {...{ showDropdown, setShowDropdown, handleKeyDown }}
-                setDataValue={setItemAdd}
-                selectedValue={itemadd}
-              />
-            </div>
+          <div className="item_inputs d-flex pt-2 px-0">
+            <div className="col-6">Second Name</div>
+            <SearchDropDown
+              id="second_name"
+              // noAdd={!permissions.includes(1006)}
+              // isEditable={permissions.includes(1007)}
+              setNew={addOption}
+              options={listItem}
+              {...{ showDropdown, setShowDropdown, handleKeyDown }}
+              setDataValue={setItemAdd}
+              selectedValue={itemadd}
+            />
+          </div>
           {/* )} */}
           <div className="item_inputs d-flex pt-2 px-0">
             <div className="col-6">Type</div>
@@ -521,30 +338,67 @@ export const ItemAddForm = ({ edit, refresh, setToEdit }) => {
             />
           </div>
           {/* {permissions.includes(1008) && ( */}
-            <div className="item_inputs d-flex pt-2 px-0">
-              <div className="col-6">Category</div>
-              <div className="col-6 px-0">
-                <SearchDropDown
-                  id="category"
-                  // noAdd={!permissions.includes(1009)}
-                  // isEditable={!permissions.includes(1010)}
-                  setNew={addOption}
-                  options={listItem}
-                  {...{ showDropdown, setShowDropdown, handleKeyDown }}
-                  setDataValue={setItemAdd}
-                  selectedValue={itemadd}
-                />
-              </div>
+          <div className="item_inputs d-flex pt-2 px-0">
+            <div className="col-6">Category</div>
+            <div className="col-6 px-0">
+              <SearchDropDown
+                id="category"
+                // noAdd={!permissions.includes(1009)}
+                // isEditable={!permissions.includes(1010)}
+                setNew={addOption}
+                options={listItem}
+                {...{ showDropdown, setShowDropdown, handleKeyDown }}
+                setDataValue={setItemAdd}
+                selectedValue={itemadd}
+              />
             </div>
+          </div>
           {/* )} */}
           {/* {permissions.includes(1011) && ( */}
-            <div className="item_inputs d-flex pt-2 px-0">
-              <div className="col-6">Sub Category</div>
-              <div className="col-6 px-0">
+          <div className="item_inputs d-flex pt-2 px-0">
+            <div className="col-6">Sub Category</div>
+            <div className="col-6 px-0">
+              <SearchDropDown
+                id="sub_category"
+                // noAdd={!permissions.includes(1012)}
+                // isEditable={!permissions.includes(1013)}
+                setNew={addOption}
+                options={listItem}
+                {...{ showDropdown, setShowDropdown, handleKeyDown }}
+                setDataValue={setItemAdd}
+                selectedValue={itemadd}
+              />
+            </div>
+          </div>
+          {/* )} */}
+          {/* {permissions.includes(1014) && ( */}
+          <div className="item_inputs d-flex pt-2 px-0">
+            <div className="col-6">Company*</div>
+            <div className="col-6 px-0">
+              <SearchDropDown
+                id="company"
+                // noAdd={!permissions.includes(1015)}
+                // isEditable={!permissions.includes(1016)}
+                addNew={true}
+                setNew={addOption}
+                options={listItem}
+                {...{ showDropdown, setShowDropdown, handleKeyDown }}
+                setDataValue={setItemAdd}
+                selectedValue={itemadd}
+              />
+            </div>
+          </div>
+          {/* )} */}
+
+          <div className="item_inputs row mx-0 px-0 col-12 pt-2">
+            {/* {permissions.includes(1017) && ( */}
+            <>
+              <div className="col-2 col-3 px-0">Size</div>
+              <div className="col-3 col-4 px-0">
                 <SearchDropDown
-                  id="sub_category"
-                  // noAdd={!permissions.includes(1012)}
-                  // isEditable={!permissions.includes(1013)}
+                  id="size"
+                  // noAdd={!permissions.includes(1018)}
+                  // isEditable={!permissions.includes(1019)}
                   setNew={addOption}
                   options={listItem}
                   {...{ showDropdown, setShowDropdown, handleKeyDown }}
@@ -552,16 +406,16 @@ export const ItemAddForm = ({ edit, refresh, setToEdit }) => {
                   selectedValue={itemadd}
                 />
               </div>
-            </div>
-          {/* )} */}
-          {/* {permissions.includes(1014) && ( */}
-            <div className="item_inputs d-flex pt-2 px-0">
-              <div className="col-6">Company*</div>
-              <div className="col-6 px-0">
+            </>
+            {/* )} */}
+            {/* {permissions.includes(1020) && ( */}
+            <>
+              <div className="col-2 col-3 px-0 ps-3">Color</div>
+              <div className="col-3 col-4 px-0">
                 <SearchDropDown
-                  id="company"
-                  // noAdd={!permissions.includes(1015)}
-                  // isEditable={!permissions.includes(1016)}
+                  // noAdd={!permissions.includes(1021)}
+                  // isEditable={!permissions.includes(1022)}
+                  id="color"
                   addNew={true}
                   setNew={addOption}
                   options={listItem}
@@ -570,66 +424,29 @@ export const ItemAddForm = ({ edit, refresh, setToEdit }) => {
                   selectedValue={itemadd}
                 />
               </div>
-            </div>
-          {/* )} */}
-
-          <div className="item_inputs row mx-0 px-0 col-12 pt-2">
-            {/* {permissions.includes(1017) && ( */}
-              <>
-                <div className="col-2 col-3 px-0">Size</div>
-                <div className="col-3 col-4 px-0">
-                  <SearchDropDown
-                    id="size"
-                    // noAdd={!permissions.includes(1018)}
-                    // isEditable={!permissions.includes(1019)}
-                    setNew={addOption}
-                    options={listItem}
-                    {...{ showDropdown, setShowDropdown, handleKeyDown }}
-                    setDataValue={setItemAdd}
-                    selectedValue={itemadd}
-                  />
-                </div>
-              </>
-            {/* )} */}
-            {/* {permissions.includes(1020) && ( */}
-              <>
-                <div className="col-2 col-3 px-0 ps-3">Color</div>
-                <div className="col-3 col-4 px-0">
-                  <SearchDropDown
-                    // noAdd={!permissions.includes(1021)}
-                    // isEditable={!permissions.includes(1022)}
-                    id="color"
-                    addNew={true}
-                    setNew={addOption}
-                    options={listItem}
-                    {...{ showDropdown, setShowDropdown, handleKeyDown }}
-                    setDataValue={setItemAdd}
-                    selectedValue={itemadd}
-                  />
-                </div>
-              </>
+            </>
             {/* )} */}
           </div>
           {/* </div> */}
 
           <div className="item_inputs row mx-0 px-0 col-12 pt-2">
             {/* {permissions.includes(1023) && ( */}
-              <>
-                <div className="col-2 col-3 px-0">Group</div>
-                <div className="col-3 col-4 px-0">
-                  <SearchDropDown
-                    // noAdd={!permissions.includes(1024)}
-                    // isEditable={!permissions.includes(1025)}
-                    id="group"
-                    addNew={true}
-                    setNew={addOption}
-                    options={listItem}
-                    {...{ showDropdown, setShowDropdown, handleKeyDown }}
-                    setDataValue={setItemAdd}
-                    selectedValue={itemadd}
-                  />
-                </div>
-              </>
+            <>
+              <div className="col-2 col-3 px-0">Group</div>
+              <div className="col-3 col-4 px-0">
+                <SearchDropDown
+                  // noAdd={!permissions.includes(1024)}
+                  // isEditable={!permissions.includes(1025)}
+                  id="group"
+                  addNew={true}
+                  setNew={addOption}
+                  options={listItem}
+                  {...{ showDropdown, setShowDropdown, handleKeyDown }}
+                  setDataValue={setItemAdd}
+                  selectedValue={itemadd}
+                />
+              </div>
+            </>
             {/* )} */}
             {/* {permissions.includes(1026)&&<> */}
             <div className="col-2 col-3 px-0 ps-3">Tax Group</div>
@@ -1007,10 +824,10 @@ export const ItemAddForm = ({ edit, refresh, setToEdit }) => {
         </div>
       </div>
       <div className="pt-3 d-flex justify-content-between w-100">
-        <div className="w-100">
+        <div className="col-6">
           {/* {permissions.includes(1035)&& */}
           <div
-            onClick={() => setUnitConvShow(true)}
+            onClick={() => setPopup("unit")}
             className="btn bg-secondary text-light col-5 text-start px-3 py-1 me-4 ms-0"
           >
             Unit Conversion
@@ -1018,269 +835,134 @@ export const ItemAddForm = ({ edit, refresh, setToEdit }) => {
           {/* } */}
           {/* {permissions.includes(1039)&& */}
           <div
-            onClick={() => setBarcodeShow(true)}
+            onClick={() => setPopup("barcode")}
             className="btn bg-secondary text-light col-5 text-start px-3 py-1"
           >
             BarCode
           </div>
+          <div
+            onClick={() => setPopup("batch")}
+            className="btn bg-secondary text-light col-5 text-start mt-2 px-3 py-1"
+          >
+            Add Batch
+          </div>
           {/* } */}
         </div>
-        <div className="checkbox col-6">
-          <div className="checkbox_container">
-            <div className="item_add_check  d-flex align-item-center">
-              <input
-                onKeyDown={handleKeyDown}
-                onChange={handleCheck}
-                type="checkbox"
-                checked={itemadd.blocked}
-                name="blocked"
-                value={itemadd.blocked ? itemadd.blocked : ""}
-              />
-              <label>Blocked</label>
+        <div className="d-flex flex-column align-items-end">
+          <div className="checkbox col-6">
+            <div className="checkbox_container">
+              <div className="item_add_check  d-flex align-item-center">
+                <input
+                  onKeyDown={handleKeyDown}
+                  onChange={handleCheck}
+                  type="checkbox"
+                  checked={itemadd.blocked}
+                  name="blocked"
+                  value={itemadd.blocked ? itemadd.blocked : ""}
+                />
+                <label>Blocked</label>
+              </div>
+              <div className="item_add_check  d-flex align-item-center">
+                <input
+                  onKeyDown={handleKeyDown}
+                  onChange={handleCheck}
+                  type="checkbox"
+                  checked={itemadd.manuel_qty_in_bc}
+                  name="manuel_qty_in_bc"
+                  value={
+                    itemadd.manuel_qty_in_bc ? itemadd.manuel_qty_in_bc : ""
+                  }
+                />
+                <label>Manual Qty in Box</label>
+              </div>
             </div>
-            <div className="item_add_check  d-flex align-item-center">
-              <input
-                onKeyDown={handleKeyDown}
-                onChange={handleCheck}
-                type="checkbox"
-                checked={itemadd.manuel_qty_in_bc}
-                name="manuel_qty_in_bc"
-                value={itemadd.manuel_qty_in_bc ? itemadd.manuel_qty_in_bc : ""}
-              />
-              <label>Manual Qty in Box</label>
+            <div className="checkbox_container">
+              <div className="item_add_check  d-flex align-item-center">
+                <input
+                  onKeyDown={handleKeyDown}
+                  onChange={handleCheck}
+                  type="checkbox"
+                  checked={itemadd.gate_pass}
+                  name="gate_pass"
+                  value={itemadd.gate_pass ? itemadd.gate_pass : ""}
+                />
+                <label>Gate Pass</label>
+              </div>
+              <div className="item_add_check  d-flex align-item-center">
+                <input
+                  onKeyDown={handleKeyDown}
+                  onChange={handleCheck}
+                  type="checkbox"
+                  checked={itemadd.tax_inclusive}
+                  name="tax_inclusive"
+                  value={itemadd.tax_inclusive ? itemadd.tax_inclusive : ""}
+                />
+                <label>Tax Inclusive</label>
+              </div>
+            </div>
+            <div className="checkbox_container">
+              <div className="item_add_check  d-flex align-item-center">
+                <input
+                  onKeyDown={handleKeyDown}
+                  onChange={handleCheck}
+                  type="checkbox"
+                  checked={itemadd.rent_item}
+                  name="rent_item"
+                  value={itemadd.rent_item ? itemadd.rent_item : ""}
+                />
+                <label>Rent Item</label>
+              </div>
+              <div className="item_add_check  d-flex align-item-center">
+                <input
+                  onKeyDown={handleKeyDown}
+                  onChange={handleCheck}
+                  type="checkbox"
+                  checked={itemadd.blocked}
+                  name="blocked"
+                  value={itemadd.blocked ? itemadd.blocked : ""}
+                />
+                <label>Repeat</label>
+              </div>
             </div>
           </div>
-          <div className="checkbox_container">
-            <div className="item_add_check  d-flex align-item-center">
-              <input
-                onKeyDown={handleKeyDown}
-                onChange={handleCheck}
-                type="checkbox"
-                checked={itemadd.gate_pass}
-                name="gate_pass"
-                value={itemadd.gate_pass ? itemadd.gate_pass : ""}
-              />
-              <label>Gate Pass</label>
+          <div className="d-flex w-100 gap-3 justify-content-end mt-2">
+            <div className="col-5 px-0">
+              <div onClick={handleReset} className="clear-btn btn">
+                Clear
+              </div>
             </div>
-            <div className="item_add_check  d-flex align-item-center">
-              <input
-                onKeyDown={handleKeyDown}
-                onChange={handleCheck}
-                type="checkbox"
-                checked={itemadd.tax_inclusive}
-                name="tax_inclusive"
-                value={itemadd.tax_inclusive ? itemadd.tax_inclusive : ""}
-              />
-              <label>Tax Inclusive</label>
+            <div className="col-5 px-0">
+              <button
+                disabled={submitLoading}
+                type="submit"
+                className="add-btn btn"
+              >
+                {edit ? "Update" : "Submit"}
+              </button>
             </div>
           </div>
-          <div className="checkbox_container">
-            <div className="item_add_check  d-flex align-item-center">
-              <input
-                onKeyDown={handleKeyDown}
-                onChange={handleCheck}
-                type="checkbox"
-                checked={itemadd.rent_item}
-                name="rent_item"
-                value={itemadd.rent_item ? itemadd.rent_item : ""}
-              />
-              <label>Rent Item</label>
-            </div>
-            <div className="item_add_check  d-flex align-item-center">
-              <input
-                onKeyDown={handleKeyDown}
-                onChange={handleCheck}
-                type="checkbox"
-                checked={itemadd.blocked}
-                name="blocked"
-                value={itemadd.blocked ? itemadd.blocked : ""}
-              />
-              <label>Repeat</label>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div className="row gap-2 mx-0 justify-content-end pt-2">
-        <div className="col-2 px-0">
-          <div onClick={handleReset} className="clear-btn btn">
-            Clear
-          </div>
-        </div>
-        <div className="col-2 px-0">
-          <button
-            disabled={submitLoading}
-            type="submit"
-            className="add-btn btn"
-          >
-            {edit ? "Update" : "Submit"}
-          </button>
         </div>
       </div>
       <Modal
         contentClassName="unit_modal px-0 bg-dark"
         dialogClassName="d-flex justify-content-center"
-        show={unitConvShow || barcodeShow}
-        size="lg"
+        show={popup}
+        size={popup ? "xl" : "lg"}
         centered
-        onHide={handleUnitHide}
+        onHide={() => setPopup(false)}
       >
         <Modal.Body>
-          <div className="text-light pb-2">
-            {barcodeShow ? "Barcode" : "Unit Conversion"}
-            <div className="unit_modal_body mt-2 px-3 pb-2 px-0">
-              <table className="custom-table-2 position-relative">
-                <thead className="tabel-head">
-                  <tr>
-                    <th>{barcodeShow ? "C.Barcode" : "Qty"}</th>
-                    <th>{barcodeShow ? "MRP" : "Unit"}</th>
-                    <th>{barcodeShow ? "S.Rate" : "Rate"}</th>
-                    <th>{barcodeShow ? "Expiry" : "Mrp"}</th>
-                    {/* {permissions.some(x=>[1035,1036,1037,1038,1039,1040,1041,1042].includes(x))&& */}
-                    <th></th>
-                    {/* } */}
-                  </tr>
-                </thead>
-                <tbody className="rounded-2 ">
-                  <tr className="table-head-input">
-                    <td>
-                      <input
-                        onKeyDown={handleKeyDown}
-                        onChange={handleChange}
-                        name={barcodeShow ? "B_code" : "U_qty"}
-                        value={
-                          barcodeShow ? barcode.B_code : unitConv.U_qty || ""
-                        }
-                        type="text"
-                        className="w-100 text-light"
-                      />
-                    </td>
-                    {/* <td><input onKeyDown={handleKeyDown} onChange={handleChange} name='unit' value={unitConv.unit} type='text' className='w-100'/></td> */}
-                    <td>
-                      {!barcodeShow ? (
-                        <select
-                          type="select"
-                          onChange={handleChange}
-                          value={unitConv?.U_unit || ""}
-                          className="unit_select py-2 text-light w-100"
-                          name="U_unit"
-                        >
-                          <option value={null}>Select</option>
-                          {listItem?.unit?.length > 0 &&
-                            listItem?.unit?.map((data, index) => (
-                              <option key={index} value={data.text}>
-                                {data.text}
-                              </option>
-                            ))}
-                        </select>
-                      ) : (
-                        <input
-                          onKeyDown={handleKeyDown}
-                          onChange={handleChange}
-                          name="B_mrp"
-                          value={barcode.B_mrp}
-                          type="number"
-                          className="w-100 text-light"
-                        />
-                      )}
-                    </td>
-                    <td>
-                      <input
-                        onKeyDown={handleKeyDown}
-                        onChange={handleChange}
-                        name={barcodeShow ? "B_rate" : "U_rate"}
-                        value={
-                          barcodeShow ? barcode.B_rate : unitConv.U_rate || ""
-                        }
-                        type="number"
-                        className="w-100 text-light"
-                      />
-                    </td>
-                    <td>
-                      <input
-                        onKeyDown={handleKeyDown}
-                        onChange={handleChange}
-                        name={barcodeShow ? "B_expiry" : "U_mrp"}
-                        value={
-                          barcodeShow ? barcode.B_expiry : unitConv.U_mrp || ""
-                        }
-                        type={barcodeShow ? "date" : "number"}
-                        className="w-100 text-light"
-                      />
-                    </td>
-                    <th className="col col-1 cursor text-center">
-                      {/* {permissions.some(x=>[1038,1042].includes(x))&& */}
-                      <img src={deleteBtn} alt="deletebtn" />
-                      {/* } */}
-                    </th>
-                    <th className="btn-td text-center">
-                      {/* {permissions.some(x=>[1036,1039].includes(x))&& */}
-                      <div onClick={addToList} className="add_unit_btn btn">
-                        {barcodeShow /* && permissions.includes(1039) */
-                          ? "+ Add"
-                          : unitEdit 
-                          ? "Edit Unit"
-                          : /* permissions.includes(1036) && */ "Add Unit"}
-                      </div>
-                      {/* } */}
-                    </th>
-                  </tr>
-                  {unitConvShow &&
-                    unitConvTempList.length > 0 &&
-                    unitConvTempList.map((data) => (
-                      <tr>
-                        <td>
-                          <input
-                            value={data.U_qty}
-                            type="text"
-                            className="w-100 text-light"
-                          />
-                        </td>
-                        <td>
-                          <input
-                            value={data.U_unit}
-                            type="text"
-                            className="w-100 text-light"
-                          />
-                        </td>
-                        <td>
-                          <input
-                            value={data.U_rate}
-                            type="number"
-                            className="w-100 text-light"
-                          />
-                        </td>
-                        <td>
-                          <input
-                            value={data.U_mrp}
-                            type="number"
-                            className="w-100 text-light"
-                          />
-                        </td>
-                        <td style={{ background: "#464646" }}>
-                          <div
-                            onClick={(e) => handleDeleteUnit(data)}
-                            className="text-center"
-                          >
-                            <img src={deleteBtn} alt="delete btn" />
-                          </div>
-                        </td>
-                        <td
-                          style={{ background: "#464646" }}
-                          className="btn-td text-center"
-                        >
-                          <div
-                            onClick={(e) => handleEditUnit(e, data)}
-                            className="add_unit_btn btn"
-                          >
-                            {"Edit"}
-                          </div>
-                        </td>
-                      </tr>
-                    ))}
-                </tbody>
-              </table>
-            </div>
-          </div>
+          <ItemPopup
+            {...{
+              popup,
+              handleChange,
+              popupInput,
+              popupList,
+              setPopupInput,
+              setPopupList,
+              setPopup,
+            }}
+          />
         </Modal.Body>
       </Modal>
     </form>

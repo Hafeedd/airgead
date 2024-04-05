@@ -13,7 +13,7 @@ const CustomerList = () => {
   const [loading, setLoading] = useState(false);
   const [listCustomer, setListCustomer] = useState([]);
   const [search, setSearch] = useState();
-  const permissions = useSelector((state) => state.auth.permissions);
+  const permissions = useSelector((state) => state.auth.activityPermissions);
   // const [showCustomerAdd,setShowCustomerAdd] = useState(false)
   const { getCustomer } = useCustomerServices();
 

@@ -215,7 +215,7 @@ export const useReportsServices = () => {
 
   const batchWiseStockReport = async (params) => {
     const response = await axios.get(
-      "/reports/batch_items/report/?activity_code=1472",
+      "/reports/batch/stock_ledger/?activity_code=1472",
       { params: params }
     );
     return response?.data;

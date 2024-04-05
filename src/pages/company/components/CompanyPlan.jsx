@@ -8,6 +8,7 @@ import { useCompanyServices } from "../../../services/controller/companyServices
 import Swal from "sweetalert2";
 import { companyModules } from "../data/initialData";
 import { useNavigate } from "react-router";
+import { permissions } from "../data/initialData";
 
 export const CompanyPlan = (props) => {
   const { setActive, companyId, moduleCodeList, setModuleCodeList,companyPlan,setCompanyPlan } = props;
@@ -90,6 +91,7 @@ export const CompanyPlan = (props) => {
         Swal.fire("Success", "", "success");
         // navigate("/");
         setActive(3)
+        
       }
       setLoading(false);
     } catch (err) {
