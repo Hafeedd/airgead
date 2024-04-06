@@ -9,6 +9,7 @@ import usePaymentRecieptServices from "../../../services/transactions/paymentRec
 import useAccountServices from "../../../services/master/accountServices";
 import useItemServices from "../../../services/master/itemServices";
 import { formValidation } from "../../../hooks/formValidation/formValidation";
+import { useSelector } from "react-redux";
 
 const PaymentTransaction = ({ method }) => {
   const initialPaymentState = {
@@ -51,7 +52,7 @@ const PaymentTransaction = ({ method }) => {
   const [accountPayList, setAccountPayList] = useState([]); // account chash and bank payment filtered list
   const location = useLocation();
   const [paymentAdd, setPaymentAdd] = useState(initialPaymentState);
-
+  const permissions = useSelector((state) => state.auth.activityPermissions);
   const { getCode } = useItemServices();
 
   useEffect(() => {
@@ -436,6 +437,7 @@ const PaymentTransaction = ({ method }) => {
         <div className="item_add_cont">
           <PaymentDetail
             {...{
+              permissions,
               method,
               edit,
               accountList,
@@ -452,6 +454,7 @@ const PaymentTransaction = ({ method }) => {
           />
           <PaymentListSection
             {...{
+              permissions,
               confirmDelete,
               payReciptList,
               paymentAdd,
