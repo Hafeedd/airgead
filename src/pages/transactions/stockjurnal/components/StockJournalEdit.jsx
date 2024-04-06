@@ -285,7 +285,7 @@ export const StockJournalEdit = (props) => {
                         <td className="text-center">{data?.narration}</td>
                         <td className="ps-2">
                           <div className="d-flex gap-4 p-0 pe-3">
-                            {(from==='acc' && !permissions.include(1300)) && 
+                            {((from==='acc' && !permissions.include(1301)) || (from==='production' && !permissions.include(1393))) &&
                             <img
                               src={deleteBtn}
                               className="cursor"
@@ -293,7 +293,7 @@ export const StockJournalEdit = (props) => {
                               alt="editBtn"
                             />
                             }
-                            {(from==='acc' && !permissions.include(1301)) && 
+                            {((from==='acc' && !permissions.include(1300)) || (from==='production' && !permissions.include(1391))) &&
                             <img
                               src={editBtn}
                               className="cursor"

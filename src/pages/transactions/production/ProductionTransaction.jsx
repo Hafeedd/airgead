@@ -15,6 +15,7 @@ import Swal from "sweetalert2";
 import { Modal } from "react-bootstrap";
 import useProductionTransactionServices from "../../../services/transactions/productionTransaction";
 import { StockJournalEdit } from "../stockjurnal/components/StockJournalEdit";
+import { useSelector } from "react-redux";
 const Initial_data = {
   qty: null,
   fk_item: null,
@@ -84,7 +85,7 @@ const ProductionTransaction = () => {
   const [labourDetails, setLabourDetails] = useState([]);
   const [byProductItems, setByProductItems] = useState([]);
 
-
+  const permissions = useSelector((state) => state.auth.activityPermissions);
   const [show, setShow] = useState(false);
   const [listProduction, setListProduction] = useState([]);
   const [selectedStaffAccount, setSelectedStaffAccount] = useState("");
@@ -615,7 +616,7 @@ const ProductionTransaction = () => {
               </button>
               <button
                 className="col-4  col-5 rounded border border-dark bg-dark text-light py-1"
-                onClick={handleFinalSubmit}
+                onClick={handleFinalSubmit} disabled={permissions.includes(1390)}
               >
                 {edit?"Update":"Save"}
               </button>
