@@ -331,7 +331,7 @@ const PaymentDetail = ({
           </button>
         </div>
         <div className="mx-0 ps-1 pe-0 col-1 col-2">
-          <button type="submit" className="btn btn-sm btn-dark w-100" disabled={(method=="Payment" && permissions.includes(1278))||(method =="Receipt" && permissions.includes(1283))}>
+          <button type="submit" className="btn btn-sm btn-dark w-100" disabled={(method=="Payment"|| method =="Receipt") && (permissions.includes(1458))}>
             {edit ? "Update" : "Save"}
           </button>
         </div>
