@@ -21,6 +21,7 @@ const PayrollTransactionEdit = (props) => {
     setPayrollCode,
     setPayrollData,
     setFullPayroll,
+    permissions
   } = props;
   const navigate = useNavigate();
   useEffect(() => {
@@ -210,17 +211,21 @@ const PayrollTransactionEdit = (props) => {
                     <td>{data.account_name}</td>
                     <td>{data.amount || 0}</td>
                     <td>
-                      <GrEdit
-                        size={18}
-                        onClick={() => handleEdit(data.daybook_part_ref)}
-                      />
+                      {(permissions.includes(1423)) && 
+                        <GrEdit
+                          size={18}
+                          onClick={() => handleEdit(data.daybook_part_ref)}
+                        />
+                      }
                     </td>
                     <td>
-                      <RiDeleteBin6Line
-                        size={18}
-                        className="text-danger"
-                        onClick={() => handleDelete(data.daybook_part_ref)}
-                      />
+                      {(permissions.includes(1424)) && 
+                        <RiDeleteBin6Line
+                          size={18}
+                          className="text-danger"
+                          onClick={() => handleDelete(data.daybook_part_ref)}
+                        />
+                      }
                     </td>
                   </tr>
                   // <tr>hoi</tr>

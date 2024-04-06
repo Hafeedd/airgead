@@ -4,6 +4,8 @@ import "./PayrollTransaction.css";
 import PayrollTransactionEdit from "./components/PayrollTransactionEdit";
 import { useLocation } from "react-router";
 import { usePayrollTransactionServices } from "../../../services/transactions/payrollTransactionServices";
+import { useSelector } from "react-redux";
+
 const PayrollTransaction = () => {
   const location = useLocation().pathname;
   const year = new Date().getFullYear();
@@ -25,7 +27,7 @@ const PayrollTransaction = () => {
   //     : `${year}-${previousMonth<10?previousMonth+'0'+1:previousMonth+1}-${endDate}`
   // );
   
-
+  const permissions = useSelector((state) => state.auth.activityPermissions);
   const pad = (value) => value < 10 ? `0${value}` : value;
   const firstDate = `${month_based_year}-${pad(previousMonth + 1)}-01`;
   const lastDay = new Date(month_based_year, previousMonth + 1, 0).getDate();
@@ -114,6 +116,7 @@ const PayrollTransaction = () => {
                 handleResetAll,
                 edit,
                 setEdit,
+                permissions
               }}
             />
           ) : (
@@ -130,6 +133,7 @@ const PayrollTransaction = () => {
                 edit,
                 setEdit,
                 setFullPayroll,
+                permissions
               }}
             />
           )}

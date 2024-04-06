@@ -9,6 +9,7 @@ import useOnKey from "../../../../hooks/onKeyFunct/onKeyFunct";
 import { all } from "axios";
 const PayrollTransactionDetails = (props) => {
   const {
+    permissions,
     date,
     setDate,
     fromDate,
@@ -519,7 +520,7 @@ const PayrollTransactionDetails = (props) => {
         </table>
       </div>
 
-      <div className="mt-2">
+      {/* <div className="mt-2">
         <div
           className="col-1 btn me-3 text-light"
           style={{ backgroundColor: "#4A00A8" }}
@@ -532,16 +533,17 @@ const PayrollTransactionDetails = (props) => {
         >
           Next{">"}
         </div>
-      </div>
-      <div className="d-flex justify-content-end align-items-center">
-        <div className="btn col-1 me-3 text-light bg-dark py-0 px-1"
+      </div> */}
+      <div className="d-flex justify-content-end align-items-center mb-2">
+        <div className="btn col-1 me-3 text-light bg-dark py-0 px-1 py-1"
         onClick={()=>handleResetAll()}>Reset</div>
-        <div
-          className="btn col-1 me-3 text-light bg-dark py-0 px-1"
-          onClick={handleSave}
-        >
-          {edit?"Update":"Save"}
-        </div>
+        {(permissions.includes(1422)) && 
+          <div
+            className="btn col-1 me-3 text-light bg-dark py-0 px-1 py-1"
+            onClick={handleSave}
+          >
+            {edit?"Update":"Save"}
+          </div> }
       </div>
     </div>
   );
