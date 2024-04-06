@@ -9,6 +9,7 @@ import useStaffAttendanceServices from "../../../../services/transactions/staffA
 import Swal from "sweetalert2";
 import { MarkStaffAttendance } from "./MarkStaffAttendance";
 import FilterStaffAttendance from "./FilterStaffAttendance";
+import { useSelector } from "react-redux";
 
 const StaffAttendanceDetails = (props) => {
   const {
@@ -39,7 +40,7 @@ const StaffAttendanceDetails = (props) => {
   const [selectedProperty, setSelectedProperty] = useState("all");
   const [tempStaffList, setTempStaffList] = useState([]);
   const [searchedList, setSearchedList] = useState([]);
-
+  const permissions = useSelector((state) => state.auth.activityPermissions);
   useEffect(() => {
     const thElement = tableRef?.current?.querySelector(
       `th:nth-child(${today + 1})`
@@ -282,14 +283,16 @@ const StaffAttendanceDetails = (props) => {
           >
             Exit
           </div>
-          <div
-            onClick={() =>
-              handlePresentAllAttendance(`${year}-${month + 1}-${dateShow}`)
-            }
-            className="col-3 btn btn-dark"
-          >
-            Save
-          </div>
+          {(!permissions.includes(1419)) &&
+            <div
+              onClick={() =>
+                handlePresentAllAttendance(`${year}-${month + 1}-${dateShow}`)
+              }
+              className="col-3 btn btn-dark"
+            >
+              Save
+            </div>
+          }
         </div>
       </div>
     );
@@ -430,7 +433,7 @@ const StaffAttendanceDetails = (props) => {
             selectedDate,
             show,
             leaveType,
-
+            permissions,
           }}
         />
       </Modal>
