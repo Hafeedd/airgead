@@ -21,12 +21,14 @@ import { StockJournalEdit } from "../stockjurnal/components/StockJournalEdit";
 import { useSalesReturnServices } from "../../../services/transactions/salesReturnService";
 import { initialSalesState, initialTableItemState } from "./initialData/data";
 import { useSalesOrderServices } from "../../../services/transactions/salesOrderServices";
+import { useSelector } from "react-redux";
 
 export const initialSalesTableStatePositionLocal = JSON.parse(
   localStorage.getItem("initialSalesTableStatePositionLocal")
 );
 
 const SalesTransaction = ({ returnPage, orderPage }) => {
+  const permissions = useSelector((state) => state.auth.activityPermissions);
   const [showSalesReturn, setShowSalesReturn] = useState(false);
   const [salesItemModal, setSalesItemModal] = useState(false);
   const [salesEditModal, setSalesEditModal] = useState(false);

@@ -71,7 +71,7 @@ export const initTableHeadList = {
     },
     {
       title: "Opening Stock",
-      state: "opening_stock_batch",
+      state: "quantity",
     },
     {
       title: "MFG Date",
