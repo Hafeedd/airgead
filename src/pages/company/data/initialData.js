@@ -37,7 +37,7 @@ export const companyModules = [
   {name:'Cheque Register',code:130,icon:'https://icons.foxa.in/media/icons/cost-per-lead_11336391.png',primary:'YES'},
   {name:'Cheque Register Report',code:131,parent:130,primary:'YES'},
   {name:'Tax Report',code:132,primary:'YES'},
-  {name:'Item',code:133,primary:'YES'},
+  // {name:'Item',code:133,primary:'YES'},
   {name:'Item Wise Profit Report',code:136,parent:133,primary:'YES'},
   {name:'Item History Report',code:137,parent:133,primary:'YES'},
   {name:'Stock Value Report',code:138,parent:133,primary:'YES'},

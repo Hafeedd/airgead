@@ -71,7 +71,8 @@ const SalesTable = (props) => {
 
   const handleDataNameList = (data) => {
     let tempList = [];
-    data?.map((x) => {      
+    data?.map((x) => {
+      // console.log(x)
       const { id, code, name, ...others } = x;
       tempList.push({
         ...others,
@@ -221,6 +222,7 @@ const SalesTable = (props) => {
   };
 
   const handlebatchChange = (data) => {
+    // console.log(data)
     handleChangeTableItem(
       itemSelected.e,
       data,
@@ -244,6 +246,7 @@ const SalesTable = (props) => {
           Object.entries(item_data)?.filter(([key, value]) => value !== null)
         );
       } else newObj = data;
+      console.log(newObj)
       let {
         id,
         code,
@@ -500,6 +503,8 @@ const SalesTable = (props) => {
 
   // const handleKeyDownOnDrop = (e) => {
   // };
+
+  console.log(tableItem.fk_items,itemNameList)
 
   const handlePrev = () => {
     if (salesList?.length > 0) {

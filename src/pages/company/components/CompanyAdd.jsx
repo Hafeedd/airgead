@@ -75,7 +75,7 @@ export const CompanyAdd = () => {
   }, [edit]);
 
   useEffect(() => {
-    if (location?.state?.company) handleCompanyGet(location?.state?.company.id);
+    if (location?.state?.company) handleCompanyGet(location?.state?.company);
   }, [location.state]);
 
   const handleCompanyGet = async (id) => {
@@ -108,21 +108,20 @@ export const CompanyAdd = () => {
         >
           1. Basic Details
         </div>
-        {location.pathname != "/user-add" ? (
+        {location.pathname != "/user-add" && (
           <div
             className={`col-3 col-4 bar-text ${active > 1 && "active"}`}
             style={{ zIndex: "3" }}
           >
             2. Plan Details
           </div>
-        ) : (
+        )}
           <div
             className={`col-3 col-4 bar-text ${active > 1 && "active"}`}
             style={{ zIndex: "3" }}
           >
-            2. Modules
+            {location.pathname ==='/user-add'?'2':'3'}. Modules
           </div>
-        )}
         {/* <div
           className={`col-4 bar-text ${active > 2 && "active"}`}
           style={{ zIndex: "3" }}

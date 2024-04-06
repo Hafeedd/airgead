@@ -28,12 +28,12 @@ export const useAuthServices = () => {
   };
 
   const verifyUser = async () => {
-    // try{
+    try{
     const resp = await axiosPrivate.get("auth/verify/?permissions=yes");
     return resp.data;
-    // }catch(err){
-    //     handleNetworkError(err)
-    // }
+    }catch(err){
+      return {data:null,code:err?.code,error:err?.response?.error||err?.response?.errors}
+    }
   };
 
   const postEmailConfig = async (data) => {
@@ -41,25 +41,29 @@ export const useAuthServices = () => {
     return resp.data;
   };
 
-  const getEmailConfig = async () => {    
+  const getEmailConfig = async () => {
     const resp = await axiosPrivate.get("email_config/");
     return resp.data;
   };
 
-    const getAccount = async (data,params) =>{
-        const resp = await axios.post('password/reset/get_account/',data,{params:params})
-        return resp.data
-    }
+  const getAccount = async (data, params) => {
+    const resp = await axios.post("password/reset/get_account/", data, {
+      params: params,
+    });
+    return resp.data;
+  };
 
-    const verifyAccount = async (data,params) =>{
-        const resp = await axios.post('password/reset/verify_account/',data,{params:params})
-        return resp.data
-    }
+  const verifyAccount = async (data, params) => {
+    const resp = await axios.post("password/reset/verify_account/", data, {
+      params: params,
+    });
+    return resp.data;
+  };
 
-    const resetAccount = async (data,params) =>{
-        const resp = await axios.post('password/reset/',data,{params:params})
-        return resp.data
-    }
+  const resetAccount = async (data, params) => {
+    const resp = await axios.post("password/reset/", data, { params: params });
+    return resp.data;
+  };
 
   return {
     register,
@@ -67,9 +71,9 @@ export const useAuthServices = () => {
     verifyUser,
     logoutAuth,
     checkController,
-        getAccount,
-        verifyAccount,
-        resetAccount,
+    getAccount,
+    verifyAccount,
+    resetAccount,
     postEmailConfig,
     getEmailConfig,
   };

@@ -174,8 +174,8 @@ export const CompanyDetails = (props) => {
       } catch (err) {
         let message =
           err?.response?.data?.message || "Company Registration Failed.";
-        if (err?.response?.data?.errors.length > 0) {
-          if (typeof err?.response?.data?.errors !== "string") {
+        if (err?.response?.data?.errors?.length > 0) {
+          if (typeof err?.response?.data?.errors === "string") {
             message = err.response.data?.errors;
           } else message = Object.values(err.response.data?.errors);
         }
@@ -184,7 +184,6 @@ export const CompanyDetails = (props) => {
           text: message,
           icon: "error",
           showConfirmButton: true,
-          timer: 3500,
         });
       }
     }

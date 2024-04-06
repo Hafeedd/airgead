@@ -45,6 +45,11 @@ export const useCompanyServices = () => {
     const resp = await axiosPrivate.post(`controller/company/${id}/permissions/`, data);
     return resp.data;
   };
+  // delete company
+  const deleteCompanyForController = async (id,data) => {
+    const resp = await axiosPrivate.post(`controller/company/delete/${id}/`,data);
+    return resp.data;
+  };
   
   // set company permission
   const companyActiveDeactive = async (id) => {
@@ -60,5 +65,6 @@ export const useCompanyServices = () => {
     companyUpdate,
     postCompanyPermission,
     companyActiveDeactive,
+    deleteCompanyForController,
   };
 };

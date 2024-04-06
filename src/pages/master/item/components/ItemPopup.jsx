@@ -95,7 +95,7 @@ export const ItemPopup = (props) => {
                           onKeyDown={handleTableKeyDown}
                           onChange={handleChangeTable}
                           name={item.state}
-                          value={data[item.state] || ""}
+                          value={item.state=="date"?new Date(data[item.state]).slice(0,10):data[item.state] || ""}
                           type={item.type ? item.type : "number"}
                           className="w-100 text-light px-2 py-2"
                         />
