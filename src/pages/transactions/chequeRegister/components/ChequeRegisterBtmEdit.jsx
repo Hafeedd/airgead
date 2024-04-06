@@ -5,7 +5,7 @@ import { MdDeleteForever } from 'react-icons/md'
 import useChequeRegister from '../../../../services/transactions/chequeRegister'
 
 const ChequeRegisterBtmEdit = (props) => {
-    const {handleEdit,confirmDelete,getData1, chequeRegisterList} = props
+    const {handleEdit,confirmDelete,getData1, chequeRegisterList,permissions} = props
 
     // const [chequeRegisterList, setChequeRegisterList] = useState([])
 
@@ -75,14 +75,17 @@ const ChequeRegisterBtmEdit = (props) => {
                                             <td>{data?.account}</td>
                                             <td></td>
                                             <td>
+                                                {!permissions.includes(1311) &&
                                                 <div className='button text-end pe-3' onClick={e => handleEdit(data)}>
                                                 {editBtn}
-                                            </div>
+                                                </div>}
                                             </td>
                                             <td>
+                                                {!permissions.includes(1312) &&
                                                 <div className='button' onClick={e => confirmDelete(data.id)}>
                                                     {<MdDeleteForever size={26} className='p-0' />}
                                                 </div>
+                                                }
                                             </td>
                                         </tr>
                                     </>

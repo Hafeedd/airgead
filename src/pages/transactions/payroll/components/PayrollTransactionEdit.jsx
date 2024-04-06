@@ -211,7 +211,7 @@ const PayrollTransactionEdit = (props) => {
                     <td>{data.account_name}</td>
                     <td>{data.amount || 0}</td>
                     <td>
-                      {(permissions.includes(1423)) && 
+                      {(!permissions.includes(1423)) && 
                         <GrEdit
                           size={18}
                           onClick={() => handleEdit(data.daybook_part_ref)}
@@ -219,7 +219,7 @@ const PayrollTransactionEdit = (props) => {
                       }
                     </td>
                     <td>
-                      {(permissions.includes(1424)) && 
+                      {(!permissions.includes(1424)) && 
                         <RiDeleteBin6Line
                           size={18}
                           className="text-danger"
