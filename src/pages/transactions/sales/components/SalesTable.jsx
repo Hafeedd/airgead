@@ -83,7 +83,7 @@ const SalesTable = (props) => {
             {x.item_name}
           </Dropdown.Item>
         ),
-        value: x.item_id,
+        value: x.batch_list[0]?.fk_items,
       });
     });
     setItemNameList([...tempList]);

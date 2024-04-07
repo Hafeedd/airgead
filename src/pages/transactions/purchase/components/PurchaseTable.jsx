@@ -565,6 +565,7 @@ const PurchaseTable = (props) => {
                           (
                             <td colSpan={1}>
                               <input
+                              onFocus={(e)=>console.log(e)}
                               onKeyDown={handleKeyDown}
                               name={item.state}
                               onChange={(e)=>handleChangeTableItem(e,null,tableItem,i)}
@@ -679,6 +680,7 @@ const PurchaseTable = (props) => {
                     (
                       <td colSpan={1}>
                         <input
+                        // onFocus={(e)=>console.log(e.target)}
                         onKeyDown={handleKeyDown}
                         name={item.state}
                         onChange={(e)=>handleChangeTableItem(e,null,tableItem,true)}
