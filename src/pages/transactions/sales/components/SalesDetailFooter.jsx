@@ -6,6 +6,9 @@ import useOnKey from "../../../../hooks/onKeyFunct/onKeyFunct";
 
 const SalesDetailFooter = (props) => {
   const {
+    returnPage,
+    orderPage,
+    permissions,
     bankSelect,
     salesAdd,
     handleChange,
@@ -17,7 +20,7 @@ const SalesDetailFooter = (props) => {
   const [bankList, setBankList] = useState([]);
 
   const [ref, setRef] = useState(null);
-  const [ handleKeyDown, formRef ] = useOnKey(ref, setRef);
+  const [handleKeyDown, formRef] = useOnKey(ref, setRef);
 
   useEffect(() => {
     getListOfBank();
@@ -47,10 +50,10 @@ const SalesDetailFooter = (props) => {
     }
   };
 
-  const handleReset = () =>{
-    handleSalesAllReset()
-    handleGetSalesReturnCode()
-  }
+  const handleReset = () => {
+    handleSalesAllReset();
+    handleGetSalesReturnCode();
+  };
 
   return (
     <div className="row mx-0 my-1 me-1 justify-content-between" ref={formRef}>
@@ -85,7 +88,7 @@ const SalesDetailFooter = (props) => {
                 This field is required
               </div>
             )}
-          </Form.Group> 
+          </Form.Group>
           <Form.Group className="col-2 mx-0 px-0 col-10 mx-0 d-flex align-items-center mt-1 ms-2">
             <Form.Label className="col-4 col-5 purchase-input-label">
               Amount
@@ -254,7 +257,12 @@ const SalesDetailFooter = (props) => {
           </div>
           <div className="mx-0 px-1 pe-0 col-6">
             <button
-              disabled={!bankSelect}
+              disabled={
+                !bankSelect &&
+                ((returnPage && !permissions.includes(1220)) ||
+                  (orderPage && !permissions.includes(1258)) ||
+                  !permissions.includes(1184))
+              }
               type="submit"
               className="btn footer-button-save btn-sm w-100"
             >

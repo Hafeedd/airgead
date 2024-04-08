@@ -86,7 +86,7 @@ const PurchaseTable = (props) => {
         margin: item?.margin,
         sales_rate: item?.retail_rate,
       };
-      setTableItem((data)=>({...data,...tempItem}));
+      setTableItem((data) => ({ ...data, ...tempItem }));
       navigate(null, { state: null });
       document
         .getElementById("tableItemFkItem")
@@ -115,9 +115,21 @@ const PurchaseTable = (props) => {
     const handleDataNameList = (data) => {
       let tempList = [];
       data?.forEach((x) => {
-        const {discount_1_percentage,tax_gst,purchase_rate,retail_rate,margin} = x
+        const {
+          discount_1_percentage,
+          tax_gst,
+          purchase_rate,
+          retail_rate,
+          margin,
+        } = x;
         tempList.push({
-          ...{discount_1_percentage,tax_gst,purchase_rate,retail_rate,margin},
+          ...{
+            discount_1_percentage,
+            tax_gst,
+            purchase_rate,
+            retail_rate,
+            margin,
+          },
           text: x.name,
           description: x.code,
           value: x.id,
@@ -157,7 +169,7 @@ const PurchaseTable = (props) => {
       let itemData = data.options.filter((x) => x?.value === data?.value)[0];
       const { purchase_rate, discount_1_percentage, tax_gst, fk_unit } =
         itemData || {};
-        console.log(itemData)
+      console.log(itemData);
       tempItem = {
         ...tempItem,
         rate: purchase_rate || 0,
@@ -182,8 +194,8 @@ const PurchaseTable = (props) => {
     }
     // let calculatedData = tempItem
     // if(!data)
-    let name = e.target.name
-    if(data) name = data.name
+    let name = e.target.name;
+    if (data) name = data.name;
     let calculatedData = handleAmountCalculation(tempItem, name, state);
     if (toTableItem === true) setTableItem(calculatedData);
     else {
@@ -238,17 +250,17 @@ const PurchaseTable = (props) => {
       tempItem = { ...tempItem, ...value };
       if (tempItem.value && tempItem.discount_1_amount) {
         tempItem.discount_1_amount = parseFloat(tempItem.discount_1_amount);
-        let total = parseFloat(tempItem.quantity * tempItem.rate) -
-        parseFloat(tempItem.discount_1_amount),
-        value = {
-          ...tempItem,
-          value:
+        let total =
             parseFloat(tempItem.quantity * tempItem.rate) -
             parseFloat(tempItem.discount_1_amount),
-          total:
-            total,
-          cost: total/tempItem.quantity||1
-        };
+          value = {
+            ...tempItem,
+            value:
+              parseFloat(tempItem.quantity * tempItem.rate) -
+              parseFloat(tempItem.discount_1_amount),
+            total: total,
+            cost: total / tempItem.quantity || 1,
+          };
       } else if (name !== "margin" && name !== "sales_rate") {
         value = {
           ...value,
@@ -262,15 +274,14 @@ const PurchaseTable = (props) => {
       if (tempItem.tax_gst) {
         let totalTaxAmnt = +tempItem.tax_gst * (+tempItem.value / 100);
         let sgst = (totalTaxAmnt / 2)?.toFixed(2);
-        let isVat = tableHeadList?.filter((x) => x.state == "vat")[0]
-          ?.visible;
-          let total = +tempItem.value + sgst * 2
+        let isVat = tableHeadList?.filter((x) => x.state == "vat")[0]?.visible;
+        let total = +tempItem.value + sgst * 2;
         value = {
           ...value,
           total: total,
-          cost:total/tempItem.quantity||1
+          cost: total / tempItem.quantity || 1,
         };
-        
+
         if (isVat) {
           value = {
             ...value,
@@ -289,27 +300,27 @@ const PurchaseTable = (props) => {
 
       tempItem = { ...tempItem, ...value };
       if (name !== "sales_rate" && name !== "name") {
-        if (tempItem.margin>0 && tempItem.cost>0) {
+        if (tempItem.margin > 0 && tempItem.cost > 0) {
           value = {
             ...tempItem,
             sales_rate:
               +tempItem.cost?.toFixed(2) +
               +tempItem.cost?.toFixed(2) * (+tempItem.margin / 100),
           };
-        } else{
+        } else {
           value = { ...value, sales_rate: 0 };
         }
       }
       tempItem = { ...tempItem, ...value };
       if (name !== "margin" && name !== "name") {
-        if (tempItem.sales_rate>0 && tempItem.cost>0) {
+        if (tempItem.sales_rate > 0 && tempItem.cost > 0) {
           value = {
             ...value,
             margin: parseFloat(
               ((tempItem.sales_rate - tempItem.cost) / tempItem.cost) * 100
             ),
           };
-        } else if(name == "sales_rate"){
+        } else if (name == "sales_rate") {
           value = { ...value, margin: 0 };
         }
       }
@@ -321,7 +332,7 @@ const PurchaseTable = (props) => {
         cgst_or_igst: 0,
         total: 0,
         cost: 0,
-        sales_rate:0,
+        sales_rate: 0,
       };
     }
     tempItem = { ...tempItem, ...value };
@@ -419,7 +430,7 @@ const PurchaseTable = (props) => {
     );
     for (let i = 0; i < 8 - purchaseAdd.total_items || 0; i++) {
       tableTr.push(
-        <tr key={i+1}>
+        <tr key={i + 1}>
           <td className="border-0" colSpan={tableHeadList.length + 2}></td>
         </tr>
       );
@@ -528,7 +539,15 @@ const PurchaseTable = (props) => {
                                 }
                                 search={search}
                                 onKeyDown={handleKeyDown2}
-                                disabled={((from==='purch'&&!permissions.includes(1170))||(from==="purch Order"&&!permissions.includes(1246))||(from==="purch Return"&&!permissions.includes(1208)) )|| item.readOnly }
+                                disabled={
+                                  (from === "purch" &&
+                                    !permissions.includes(1170)) ||
+                                  (from === "purch Order" &&
+                                    !permissions.includes(1246)) ||
+                                  (from === "purch Return" &&
+                                    !permissions.includes(1208)) ||
+                                  item.readOnly
+                                }
                                 placeholder="SELECT"
                                 className="purchase_search_drop border-0 w-100 ps-2"
                                 name={"name"}
@@ -545,7 +564,15 @@ const PurchaseTable = (props) => {
                                 onKeyDown={handleKeyDown2}
                                 name="fk_unit"
                                 value={data.fk_unit}
-                                disabled={((from==='purch'&&!permissions.includes(1170))||(from==="purch Order"&&!permissions.includes(1246))||(from==="purch Return"&&!permissions.includes(1208)) )|| item.readOnly }
+                                disabled={
+                                  (from === "purch" &&
+                                    !permissions.includes(1170)) ||
+                                  (from === "purch Order" &&
+                                    !permissions.includes(1246)) ||
+                                  (from === "purch Return" &&
+                                    !permissions.includes(1208)) ||
+                                  item.readOnly
+                                }
                                 style={{
                                   WebkitAppearance: "none",
                                   fontSize: "10px",
@@ -561,22 +588,30 @@ const PurchaseTable = (props) => {
                                   ))}
                               </select>
                             </td>
-                          ) :item.state === 'expiry_date'?
-                          (
+                          ) : item.state === "expiry_date" ? (
                             <td colSpan={1}>
                               <input
-                              onFocus={(e)=>console.log(e)}
-                              onKeyDown={handleKeyDown}
-                              name={item.state}
-                              onChange={(e)=>handleChangeTableItem(e,null,tableItem,i)}
-                              disabled={((from==='purch'&&!permissions.includes(1170))||(from==="purch Order"&&!permissions.includes(1246))||(from==="purch Return"&&!permissions.includes(1208)) )|| item.readOnly }
-                              value={data[item.state]||''}
-                              type="date"
-                              className="purchase_input border-0 w-100 text-center"
+                                onFocus={(e) => console.log(e)}
+                                onKeyDown={handleKeyDown}
+                                name={item.state}
+                                onChange={(e) =>
+                                  handleChangeTableItem(e, null, tableItem, i)
+                                }
+                                disabled={
+                                  (from === "purch" &&
+                                    !permissions.includes(1170)) ||
+                                  (from === "purch Order" &&
+                                    !permissions.includes(1246)) ||
+                                  (from === "purch Return" &&
+                                    !permissions.includes(1208)) ||
+                                  item.readOnly
+                                }
+                                value={data[item.state] || ""}
+                                type="date"
+                                className="purchase_input border-0 w-100 text-center"
                               />
                             </td>
-                          ):                          
-                          (
+                          ) : (
                             <td>
                               <input
                                 onChange={(e) =>
@@ -587,7 +622,15 @@ const PurchaseTable = (props) => {
                                   item.state == "vat" ? "tax_gst" : item.state
                                 }
                                 type="number"
-                                disabled={((from==='purch'&&!permissions.includes(1170))||(from==="purch Order"&&!permissions.includes(1246))||(from==="purch Return"&&!permissions.includes(1208)) )|| item.readOnly }
+                                disabled={
+                                  (from === "purch" &&
+                                    !permissions.includes(1170)) ||
+                                  (from === "purch Order" &&
+                                    !permissions.includes(1246)) ||
+                                  (from === "purch Return" &&
+                                    !permissions.includes(1208)) ||
+                                  item.readOnly
+                                }
                                 placeholder="0"
                                 className="purchase-table-items-input"
                                 value={
@@ -605,7 +648,14 @@ const PurchaseTable = (props) => {
                         onClick={() => confirmDelete()}
                         className="text-center w-100"
                       >
-                       {(from==="purch"&&!permissions.includes(1171))||(from==="purch Return"&&!permissions.includes(1247))&&<BsTrashFill className="mb-1 btn p-0" size={"16px"} />}
+                        {(from === "purch" && !permissions.includes(1171)) ||
+                          (from === "purch Return" &&
+                            !permissions.includes(1247) && (
+                              <BsTrashFill
+                                className="mb-1 btn p-0"
+                                size={"16px"}
+                              />
+                            ))}
                       </div>
                     </td>
                   </tr>
@@ -649,7 +699,7 @@ const PurchaseTable = (props) => {
                       </td>
                     ) : item.state === "fk_unit" ? (
                       <td colSpan={1}>
-                        <select 
+                        <select
                           onKeyDown={handleKeyDown}
                           name={"fk_unit"}
                           onChange={(e) =>
@@ -676,22 +726,22 @@ const PurchaseTable = (props) => {
                             ))}
                         </select>
                       </td>
-                    ) :item.state === 'expiry_date'?
-                    (
+                    ) : item.state === "expiry_date" ? (
                       <td colSpan={1}>
                         <input
-                        // onFocus={(e)=>console.log(e.target)}
-                        onKeyDown={handleKeyDown}
-                        name={item.state}
-                        onChange={(e)=>handleChangeTableItem(e,null,tableItem,true)}
-                        disabled={item.readOnly}
-                        value={tableItem[item.state]||''}
-                        type="date"
-                        className="purchase_input border-0 w-100 text-center"
+                          // onFocus={(e)=>console.log(e.target)}
+                          onKeyDown={handleKeyDown}
+                          name={item.state}
+                          onChange={(e) =>
+                            handleChangeTableItem(e, null, tableItem, true)
+                          }
+                          disabled={item.readOnly}
+                          value={tableItem[item.state] || ""}
+                          type="date"
+                          className="purchase_input border-0 w-100 text-center"
                         />
                       </td>
-                    ):
-                     (
+                    ) : (
                       <td colSpan={1}>
                         <input
                           onKeyDown={handleKeyDown}
@@ -700,11 +750,19 @@ const PurchaseTable = (props) => {
                             handleChangeTableItem(e, null, tableItem, true)
                           }
                           disabled={item.readOnly}
-                          value={                            
-                            tableItem[item.state === 'vat'?'tax_gst':item.state] === "" ||
-                            tableItem[item.state === 'vat'?'tax_gst':item.state] ||
-                            tableItem[item.state === 'vat'?'tax_gst':item.state] === 0
-                              ? tableItem[item.state === 'vat'?'tax_gst':item.state]
+                          value={
+                            tableItem[
+                              item.state === "vat" ? "tax_gst" : item.state
+                            ] === "" ||
+                            tableItem[
+                              item.state === "vat" ? "tax_gst" : item.state
+                            ] ||
+                            tableItem[
+                              item.state === "vat" ? "tax_gst" : item.state
+                            ] === 0
+                              ? tableItem[
+                                  item.state === "vat" ? "tax_gst" : item.state
+                                ]
                               : "0"
                           }
                           type="number"
@@ -715,13 +773,15 @@ const PurchaseTable = (props) => {
                   else return null;
                 })}
               <td className="align-top">
-              {!permissions.includes(1169)&&<input
-                  onKeyDown={handleAddOpenBatch}
-                  onClick={handleAddOpenBatch}
-                  type="button"
-                  className="table-item-add-btn rounded-1 btn-sm align-middle"
-                  value={"+"}
-                />}
+                {!permissions.includes(1169) && (
+                  <input
+                    onKeyDown={handleAddOpenBatch}
+                    onClick={handleAddOpenBatch}
+                    type="button"
+                    className="table-item-add-btn rounded-1 btn-sm align-middle"
+                    value={"+"}
+                  />
+                )}
               </td>
             </tr>
 
@@ -764,7 +824,8 @@ const PurchaseTable = (props) => {
                         </div>
                       </td>
                     ) : item.state === "cgst_or_igst" ||
-                      (item.state === "sgst"|| item.state === "vat_perc" && item.visible) ? (
+                      item.state === "sgst" ||
+                      (item.state === "vat_perc" && item.visible) ? (
                       <td className="item">
                         <div className="purch-green-table-item">
                           {purchaseAdd.total_scGst || 0}

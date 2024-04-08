@@ -4,6 +4,7 @@ import IdConf from "../../assets/icons/Id_conf.png";
 import CodeIcon from "../../assets/icons/code-conf-icon.png";
 import accessPerm from "../../assets/icons/accessPerm.png";
 import userProf from "../../assets/icons/prof.jpeg";
+import RoleIcon from "../../assets/icons/roleConfiguration.png";
 import { useDispatch, useSelector } from "react-redux";
 import { useAuthServices } from "../../services/controller/authServices";
 import { useNavigate } from "react-router";
@@ -88,6 +89,13 @@ export const Settings = (props) => {
           >
             <img src={CodeIcon} alt="access perm" />
             Code Configuration
+          </div>
+          <div
+            onClick={() => navigate("/role-configuratoin-list")}
+            className="settings-item mt-5"
+          >
+            <img src={RoleIcon} alt="access perm" />
+            Role Configurations
           </div>
           <div
             onClick={() => navigate("/user-list")}

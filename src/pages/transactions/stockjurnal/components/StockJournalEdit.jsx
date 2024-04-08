@@ -182,7 +182,6 @@ export const StockJournalEdit = (props) => {
             onChange={(e) => setDate({ ...date, start: e.target.value })}
             name="fk_supplier"
             className="purchase-input-text me-2"
-            placeholder="Document number"
             type="date"
             value={date.start}
           />
@@ -198,7 +197,6 @@ export const StockJournalEdit = (props) => {
             onChange={(e) => setDate({ ...date, end: e.target.value })}
             name="fk_supplier"
             className="purchase-input-text me-2"
-            placeholder="Document number"
             type="date"
             value={date.end}
           />

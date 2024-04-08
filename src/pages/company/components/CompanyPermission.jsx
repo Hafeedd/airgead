@@ -51,7 +51,7 @@ export const CompanyPermission = (props) => {
       let resp;
       var companyPermissions = [];
       Object.keys(activityCodes).forEach((x) =>
-        activityCodes[x].forEach((y) =>
+        activityCodes[x]?.forEach((y) =>
           companyPermissions.push({ code: y, is_active: false })
         )
       );
@@ -90,9 +90,8 @@ export const CompanyPermission = (props) => {
   return (
     <div className="h-100">
       <div className="action-bar">
-        <div className="action-bar-item active">View</div>
-        {/* <div className="action-bar-item">Action</div> */}
-        <div className="action-bar-item">Rules</div>
+        {/* <div className="action-bar-item active">View</div>
+        <div className="action-bar-item">Rules</div> */}
       </div>
       <div className="permission-cont rounded-start">
         <Sidebar perm="true" setPage={setPage} />

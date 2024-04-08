@@ -13,17 +13,9 @@ import { useSalesReturnServices } from "../../../../services/transactions/salesR
 import { useSelector } from "react-redux";
 
 const PurchaseEditList = (props) => {
-  const {
-    handleSetEdit,
-    list,
-    show,
-    from,
-    setShow,
-    setEdit,
-    getData,
-    title,
-  } = props;
-  const permissions = useSelector(state=>state.auth.activityPermissions)
+  const { handleSetEdit, list, show, from, setShow, setEdit, getData, title } =
+    props;
+  const permissions = useSelector((state) => state.auth.activityPermissions);
   const [searchedList, setSearchedList] = useState([]);
   const [date, setDate] = useState({
     from: new Date().toISOString(),
@@ -51,12 +43,15 @@ const PurchaseEditList = (props) => {
         tempList = tempList.filter((x) => {
           let dateOfItem = new Date(x.date).toLocaleDateString();
           // console.log(dateOfItem , endDate ,startDate.toLocaleDateString())
-          if ((dateOfItem >= startDate && dateOfItem <= endDate)|| dateOfItem == startDate)  {
+          if (
+            (dateOfItem >= startDate && dateOfItem <= endDate) ||
+            dateOfItem == startDate
+          ) {
             return true;
           } else return false;
         });
         setSearchedList([...tempList]);
-      } else setSearchedList([])
+      } else setSearchedList([]);
     }
   };
 
@@ -69,20 +64,21 @@ const PurchaseEditList = (props) => {
       const tmepList = [...list];
       if (tmepList?.length > 0) {
         tempData = tmepList?.filter((x) => {
-          let searchInString = `${x.documents_no +
+          let searchInString = `${
+            x.documents_no +
             " " +
             x.bill_date +
             " " +
             x.supplier_name +
             " " +
             x.total_amount
-            }`;
+          }`;
           let search = searchInString?.includes(value);
           if (search) {
-            return true
+            return true;
           }
         });
-        handleDateFilter(tempData)
+        handleDateFilter(tempData);
       }
     } else {
       handleDateFilter(list);
@@ -92,10 +88,8 @@ const PurchaseEditList = (props) => {
 
   const handleEditClick = (data) => {
     setEdit(data);
-    if (show === "order")
-      handleSetEdit(data, true);
-    else
-      handleSetEdit(data);
+    if (show === "order") handleSetEdit(data, true);
+    else handleSetEdit(data);
     setShow(false);
   };
 
@@ -103,15 +97,22 @@ const PurchaseEditList = (props) => {
     try {
       let response;
       if (from == "sales") response = await deleteSales(id);
-      else if(from == "purch") response = await deletePurchase(id);
-      else if(from == "purch Order") response = await deletePurchaseOrder(id);
-      else if(from == "purch Return") response = await deletePurchaseReturn(id);
-      else if(from == "sales Order") response = await deleteSalesOrder(id);
-      else if(from == "sales Return") response = await deleteSalesReturn(id);
+      else if (from == "purch") response = await deletePurchase(id);
+      else if (from == "purch Order") response = await deletePurchaseOrder(id);
+      else if (from == "purch Return")
+        response = await deletePurchaseReturn(id);
+      else if (from == "sales Order") response = await deleteSalesOrder(id);
+      else if (from == "sales Return") response = await deleteSalesReturn(id);
       if (response?.success) {
         Swal.fire({
           title: "Success",
-          text: `${from.match(/sales/)? "Sales" : from.match(/purch/) ? "Purchase" : "Account"} deleted successfully`,
+          text: `${
+            from.match(/sales/)
+              ? "Sales"
+              : from.match(/purch/)
+              ? "Purchase"
+              : "Account"
+          } deleted successfully`,
           icon: "success",
           timer: 1000,
           showConfirmButton: false,
@@ -122,7 +123,13 @@ const PurchaseEditList = (props) => {
           title: "Warning",
           text:
             response?.message ||
-            `Failed to delete ${from.match(/sales/)? "sale" : from.match(/purch/) ? "purchase" : "account"}. There may be transaction done with this account.`,
+            `Failed to delete ${
+              from.match(/sales/)
+                ? "sale"
+                : from.match(/purch/)
+                ? "purchase"
+                : "account"
+            }. There may be transaction done with this account.`,
           icon: "info",
           // timer: 1000,
           // showConfirmButton: false,
@@ -134,7 +141,13 @@ const PurchaseEditList = (props) => {
         title: "Warning",
         text:
           err?.response?.data?.message ||
-          `Failed to delete ${from.match(/sales/)? "sale" : from.match(/purch/) ? "purchase": "account"}. There may be transaction done with this account.`,
+          `Failed to delete ${
+            from.match(/sales/)
+              ? "sale"
+              : from.match(/purch/)
+              ? "purchase"
+              : "account"
+          }. There may be transaction done with this account.`,
         icon: "info",
       });
     }
@@ -217,8 +230,13 @@ const PurchaseEditList = (props) => {
                 const handleDelete = async (e) => {
                   Swal.fire({
                     title: "Delete",
-                    text: `Are you sure, you want to delete ${from.match(/sales/) ? "sale" :from.match(/purchase/)? "purchase": "account"
-                      } ${data.documents_no}?`,
+                    text: `Are you sure, you want to delete ${
+                      from.match(/sales/)
+                        ? "sale"
+                        : from.match(/purchase/)
+                        ? "purchase"
+                        : "account"
+                    } ${data.documents_no}?`,
                     icon: "question",
                     showDenyButton: true,
                     showCancelButton: false,
@@ -240,7 +258,12 @@ const PurchaseEditList = (props) => {
                 };
 
                 return (
-                  <tr key={i} onClick={() => { if (show === "order") handleEditClick(data) }}>
+                  <tr
+                    key={i}
+                    onClick={() => {
+                      if (show === "order") handleEditClick(data);
+                    }}
+                  >
                     <td className="text-start ps-3">{data?.documents_no}</td>
                     <td className="">
                       {new Date(data?.date)
@@ -258,20 +281,42 @@ const PurchaseEditList = (props) => {
                     <td className="">{data?.total_amount}</td>
                     <td className=""></td>
                     <td className="">
-                      {show !== "order" && <div className="d-flex gap-3 pe-3 justify-content-end">
-                        {(from==="purch"&&!permissions.includes(1166)||(from==="purch Order"&&!permissions.includes(1242))||
-                        (from==='purch Return'&&!permissions.includes(1209)))&&<img
-                          src={deleteBtn}
-                          alt="deleteBtn"
-                          onClick={() => handleDelete()}
-                        />}
-                        {((from==="purch"&&!permissions.includes(1165))||(from==="purch Order"&&!permissions.includes(1241))||
-                        (from==="purch Return"&&!permissions.includes(1208)))&&<img
-                          src={editBtn}
-                          alt="editBtn"
-                          onClick={() => handleEditClick(data)}
-                        />}
-                      </div>}
+                      {show !== "order" && (
+                        <div className="d-flex gap-3 pe-3 justify-content-end">
+                          {((from === "purch" && !permissions.includes(1166)) ||
+                            (from === "purch Order" &&
+                              !permissions.includes(1242)) ||
+                            (from === "purch Return" &&
+                              !permissions.includes(1209)) ||
+                            (from === "sales" && !permissions.includes(1185)) ||
+                            (from === "sales Order" &&
+                              !permissions.includes(1261)) ||
+                            (from === "sales Return" &&
+                              !permissions.includes(1223))) && (
+                            <img
+                              src={deleteBtn}
+                              alt="deleteBtn"
+                              onClick={() => handleDelete()}
+                            />
+                          )}
+                          {((from === "purch" && !permissions.includes(1165)) ||
+                            (from === "purch Order" &&
+                              !permissions.includes(1241)) ||
+                            (from === "purch Return" &&
+                              !permissions.includes(1208)) ||
+                            (from === "sales" && !permissions.includes(1184)) ||
+                            (from === "sales Order" &&
+                              !permissions.includes(1260)) ||
+                            (from === "sales Return" &&
+                              !permissions.includes(1222))) && (
+                            <img
+                              src={editBtn}
+                              alt="editBtn"
+                              onClick={() => handleEditClick(data)}
+                            />
+                          )}
+                        </div>
+                      )}
                     </td>
                   </tr>
                 );
@@ -289,7 +334,7 @@ const PurchaseEditList = (props) => {
       <div
         className="col-12 row pe-3 my-0 mt-3 w-100 justify-content-end pb-2 mx-0 align-items-end position-sticky"
         style={{ bottom: "5px", MinHeight: "inherit" }}
-      // style={{ MinHeight: "inherit" }}
+        // style={{ MinHeight: "inherit" }}
       >
         <div className="mx-0 px-1 pe-0 col-1 col-2 pb-0 ">
           <button

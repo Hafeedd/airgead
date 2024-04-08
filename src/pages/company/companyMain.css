@@ -555,7 +555,12 @@
   border: none;
 }
 
+/* .comp-view.table thead.main-head tr{
+  background: linear-gradient(90deg, #5B13B7 0%, #32046C 100%) !important;
+  border-radius: 0.2rem 0 !important;
+} */
 .comp-view.table thead.main-head tr th{
+  /* background: transparent; */
   background: #3D0881;
   text-align: center;
   color: white;
@@ -588,6 +593,7 @@
   padding: 0.6rem 0;
   vertical-align: middle;
   background: #FFFFFF;
+  height: 2.5rem;
 }
 
 .comp-view.table .comp-view-arrow{

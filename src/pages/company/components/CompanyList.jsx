@@ -15,7 +15,7 @@ export const CompanyList = (props) => {
   const [companyList, setCompanyList] = useState([]);
   const [listShow, setListShow] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [searchedList, setSearchedList] = useState([])
+  const [searchedList, setSearchedList] = useState([]);
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -41,7 +41,9 @@ export const CompanyList = (props) => {
           if (companyList.length > 0) {
             tempData = tempList?.filter((x) => {
               let searchInString = `${
-                x.group_id?.toLocaleLowerCase() + " " + x.group_name?.toLocaleLowerCase()
+                x.group_id?.toLocaleLowerCase() +
+                " " +
+                x.group_name?.toLocaleLowerCase()
               }`;
               let search = searchInString?.includes(value);
               if (search) {
@@ -119,9 +121,11 @@ export const CompanyList = (props) => {
     }
   };
 
-  const deleteCompany = async (id,password) => {
+  const deleteCompany = async (id, password) => {
     try {
-      const response = await deleteCompanyForController(id,{password:password});
+      const response = await deleteCompanyForController(id, {
+        password: password,
+      });
       if (response?.success) {
         Swal.fire({
           title: "Success",
@@ -306,29 +310,21 @@ export const CompanyList = (props) => {
                       />
                       {listShow === key && (
                         <div className="company-menue-dropdown">
-                          {location.pathname === "/user-list" ? (
-                            <div
-                              onClick={() =>
-                                navigate("/user-add", {
+                          <div
+                            onClick={() =>
+                              navigate(
+                                location.pathname === "/user-list"
+                                  ? "/user-add"
+                                  : "company-add",
+                                {
                                   state: { company: data },
-                                })
-                              }
-                              className="d-flex cursor gap-3"
-                            >
-                              <img src={pencilIcon} alt="edit" /> Edit
-                            </div>
-                          ) : (
-                            <div
-                              onClick={() =>
-                                navigate("/company-add", {
-                                  state: { company: data },
-                                })
-                              }
-                              className="d-flex cursor gap-3"
-                            >
-                              <img src={pencilIcon} alt="edit" /> Edit
-                            </div>
-                          )}
+                                }
+                              )
+                            }
+                            className="d-flex cursor gap-3"
+                          >
+                            <img src={pencilIcon} alt="edit" /> Edit
+                          </div>
                           <div
                             onClick={(e) => handleCheck(e, "delete")}
                             className="d-flex cursor gap-3"
@@ -347,7 +343,7 @@ export const CompanyList = (props) => {
                 //   Swal.fire({
                 //     title: "Delete",
                 //     input: "text",
-                //     text: `Are you sure, you want to 
+                //     text: `Are you sure, you want to
                 //     ${data.is_active ? "activated" : "deactivated"} ${
                 //       data.group_name
                 //     }?`,
@@ -377,7 +373,7 @@ export const CompanyList = (props) => {
                     text: `To delete company ${data.group_name}, Please enter Your password.`,
                     input: "password",
                     inputLabel: "Password",
-                    icon:"warning",
+                    icon: "warning",
                     inputPlaceholder: "Enter your password",
                     inputAttributes: {
                       maxlength: "10",
@@ -386,7 +382,7 @@ export const CompanyList = (props) => {
                     },
                   });
                   if (password) {
-                    deleteCompany(data.id,password)
+                    deleteCompany(data.id, password);
                   } else {
                     Swal.fire({
                       title: "Cancelled",
@@ -457,10 +453,16 @@ export const CompanyList = (props) => {
                         toggle
                         checked={data.is_active}
                       />
-                      <HiDotsVertical
-                        onClick={() => handleDropDownList(key)}
-                        size={"1.5rem"}
-                      />
+                      <button
+                        className="border-0 btn p-0 m-0"
+                        onClick={() => handleDropDownList(1)}
+                        onBlur={() => handleDropDownList(false)}
+                      >
+                        <HiDotsVertical
+                          onClick={() => handleDropDownList(key)}
+                          size={"1.5rem"}
+                        />
+                      </button>
                       {listShow === key && (
                         <div className="company-menue-dropdown">
                           <div

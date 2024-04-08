@@ -56,6 +56,7 @@ import { Profile } from "./pages/profile/Profile";
 import { CompanyList } from "./pages/company/components/CompanyList";
 import { CompanyAdd } from "./pages/company/components/CompanyAdd";
 import { EmailConfig } from "./pages/emailConfig/EmailConfig";
+import { RoleConfig } from "./pages/roleConfig/RoleConfig";
 
 function App() {
   const userDetails = useSelector(state => state.auth.userDetails)
@@ -91,6 +92,8 @@ function App() {
                 </Route>
                 <Route element={<CheckAuth userType="Company" />}>
 
+                  <Route path='/role-configuratoin-list' element={<RoleConfig/>} />
+                  <Route path='/role-configuratoin-add' element={<RoleConfig/>} />
                   <Route path='/user-add' element={<CompanyAdd/>} />
                   <Route path='/user-list' element={<CompanyList />} />
                   {/* <Route index element={<ItemMaster />} /> */}
