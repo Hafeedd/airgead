@@ -65,10 +65,11 @@ export const CompanyAdd = () => {
         ...admin_det_others
       } = admin_details;
       setCompany({
-        logo_url: MEDIA_URL + logo,
-        image_url: MEDIA_URL + image,
         ...others,
         ...admin_det_others,
+        image:null,
+        logo_url: MEDIA_URL + logo,
+        image_url: MEDIA_URL + image,
       });
       // setSelectedRole(edit.fk_role)
     }
