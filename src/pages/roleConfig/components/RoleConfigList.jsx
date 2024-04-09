@@ -6,19 +6,35 @@ import { HiDotsVertical } from "react-icons/hi";
 import pencilIcon from "../../../assets/icons/blue_pencil.png";
 import deleteBtn from "../../../assets/icons/delete.svg";
 import searchIcon from "../../../assets/icons/search.png";
+import { useCompanyServices } from "../../../services/controller/companyServices";
+import Swal from 'sweetalert2'
 
 export const RoleConfigList = (props) => {
-  const {roleList} = props
+  const {roleList,refresh} = props
   const [listShow, setListShow] = useState(false);
 
   const navigate = useNavigate();
   const location = useLocation();
+
+  const {putCompanyRole} = useCompanyServices()
 
   const handleDropDownList = (key) => {
     if (listShow === key) {
       setListShow(false);
     } else setListShow(key);
   };
+  
+  const handleActivation = async (data) =>{
+    try{
+      let resp = await putCompanyRole(data.id,{is_active:!data.is_active})
+      if(resp.success){
+        Swal.fire("","","success")
+        refresh()
+      }
+    }catch(err){
+      Swal.fire("","","error")
+    }
+  }
 
   return (
     <>
@@ -35,8 +51,8 @@ export const RoleConfigList = (props) => {
           </div>
         </div>
         <div
-          onClick={() => navigate("/role-configuratoin-add")}
-          className="company-add-btn btn  col-1 gap-2"
+          onClick={() => navigate("/role-configuration-add")}
+          className="company-add-btn btn  col-1 col-2 gap-2"
         >
           <FaPlus size={"1.5rem"} />
           Add Role
@@ -69,11 +85,11 @@ export const RoleConfigList = (props) => {
                   <td>
                     {/* <td className="d-flex align-items-center justify-content-between ps-2 pe-1"> */}
                     <div className="comp-view-td position-relative rounded-end-2 d-flex align-items-center justify-content-between ps-2 pe-1">
-                      <Checkbox toggle />
+                      <Checkbox checked={data.is_active} onChange={()=>handleActivation(data)} toggle />
                       <button
                         className="border-0 btn p-0 m-0"
                         onClick={() => handleDropDownList(key)}
-                        onBlur={() => handleDropDownList(false)}
+                        // onBlur={() => handleDropDownList(false)}
                       >
                         <HiDotsVertical size={"1.5rem"} className="cursor" />
                       </button>
@@ -82,11 +98,9 @@ export const RoleConfigList = (props) => {
                           <div
                             onClick={() =>
                               navigate(
-                                location.pathname === "/user-list"
-                                  ? "/user-add"
-                                  : "company-add",
+                                '/role-configuration-add',
                                 {
-                                  state: { company: "data" },
+                                  state: { role: data.id },
                                 }
                               )
                             }

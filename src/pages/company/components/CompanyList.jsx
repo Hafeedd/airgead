@@ -317,7 +317,7 @@ export const CompanyList = (props) => {
                                   ? "/user-add"
                                   : "company-add",
                                 {
-                                  state: { company: data },
+                                  state: { company: data.id },
                                 }
                               )
                             }
@@ -456,7 +456,7 @@ export const CompanyList = (props) => {
                       <button
                         className="border-0 btn p-0 m-0"
                         onClick={() => handleDropDownList(1)}
-                        onBlur={() => handleDropDownList(false)}
+                        // onBlur={() => handleDropDownList(false)}
                       >
                         <HiDotsVertical
                           onClick={() => handleDropDownList(key)}
@@ -490,7 +490,7 @@ export const CompanyList = (props) => {
             ) : location.pathname === "/user-list" ? (
               <tr>
                 <td className="fs-3 text-center py-4" colSpan={9}>
-                  No User Added Yet !
+                {loading ? "Loading..." : "No User Added Yet !"}
                 </td>
               </tr>
             ) : (

@@ -92,8 +92,8 @@ function App() {
                 </Route>
                 <Route element={<CheckAuth userType="Company" />}>
 
-                  <Route path='/role-configuratoin-list' element={<RoleConfig/>} />
-                  <Route path='/role-configuratoin-add' element={<RoleConfig/>} />
+                  <Route path='/role-configuration-list' element={<RoleConfig/>} />
+                  <Route path='/role-configuration-add' element={<RoleConfig/>} />
                   <Route path='/user-add' element={<CompanyAdd/>} />
                   <Route path='/user-list' element={<CompanyList />} />
                   {/* <Route index element={<ItemMaster />} /> */}

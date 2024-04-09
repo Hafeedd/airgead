@@ -6,6 +6,7 @@ import { useLocation, useNavigate } from "react-router";
 import { MEDIA_URL } from "../../../api/axios";
 import {Swal} from 'sweetalert2'
 import { useCompanyServices } from "../../../services/controller/companyServices";
+import { useUserServices } from "../../../services/controller/userServices";
 
 export const CompanyAdd = () => {
   const [active, setActive] = useState(1);
@@ -45,7 +46,9 @@ export const CompanyAdd = () => {
 
   const navigate = useNavigate();
   const location = useLocation();
+
   const { getCompanyWithId, postCompanyPermission } = useCompanyServices();
+  const {getUserWithId } = useUserServices();
 
   useEffect(() => {
     if (edit.id) {
@@ -107,11 +110,10 @@ export const CompanyAdd = () => {
         navigate("/");
       }
     } catch (err) {
-      console.log(err);
       var message =
         err?.response?.data?.message ||
         "Something went wrong pls try again later !";
-      if (err?.response?.data?.errors) {
+      if (typeof err?.response?.data?.errors !== "string") {
         message = Object.values(err.response.data?.errors)[0];
       }
       Swal.fire("Error", message, "error");
@@ -125,6 +127,9 @@ export const CompanyAdd = () => {
   const handleCompanyGet = async (id) => {
     try {
       let resp;
+      if(location.pathname==="/user-add"){
+        resp = await getUserWithId(id)
+      }else
       resp = await getCompanyWithId(id);
       if (resp.success) {
         setEdit(resp.data);

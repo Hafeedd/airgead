@@ -21,7 +21,6 @@ export const CompanyDetails = (props) => {
     setCompany,
   } = props;
   const [allRoles, setAllRoles] = useState([]);
-  const [selectedRole, setSelectedRole] = useState();
   const [additionalFiled, setAdditionalFields] = useState(false);
   const [loginField, setLoginFiled] = useState(false);
 
@@ -42,10 +41,10 @@ export const CompanyDetails = (props) => {
   const fullRoles = async () => {
     try {
       const response = await getUserRoles();
-      // let data=response.data.filter(property => property.types === 'PRODUCT')
       let tempList = [];
       response.data.map((item) => {
-        let a = {
+        let a = {     
+          ...item,     
           text: item.role,
           value: item.id,
         };
@@ -59,9 +58,13 @@ export const CompanyDetails = (props) => {
     if (location.pathname == "/user-add") fullRoles();
   }, [location.pathname]);
 
-  const handleDropdownChangeRole = (event, data) => {
-    setSelectedRole(data.value);
+  const handleDropdownChangeRole = (event, data) => {  
     setCompany((c) => ({ ...c, fk_role: data.value }));
+    let item_data = allRoles.filter(x=>x.value===data.value)[0]
+    if(!edit){
+      setModuleCodeList(data=>item_data.module_permissions.map(x=>({code:x.code,parent:null,is_acitve:true})))
+      setCompany(data=>({...data,activity_permissions:item_data.activity_permissions}))
+    }
   };
 
   const handleChange = (e) => {
@@ -470,7 +473,7 @@ export const CompanyDetails = (props) => {
               className="purchase-input-text table-drop d-flex align-items-center py-2 my-2 custom-drop-wid text-secondary col-9"
               name="role"
               placeholder="Select Role *"
-              value={selectedRole}
+              value={company.fk_role}
               options={allRoles}
             />
             <div className="company-add-btn next btn col-1 col-2">Add</div>

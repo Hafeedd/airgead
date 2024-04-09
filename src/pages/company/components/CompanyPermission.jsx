@@ -22,7 +22,6 @@ export const CompanyPermission = (props) => {
     if(moduleCodeList?.length>0){
       let ind = navigationList.findIndex(x=>x.code==moduleCodeList[0]?.code)
       if(ind>-1){
-        console.log(navigationList[ind])
         setPage({main:navigationList[ind].main,sub:navigationList[ind].sub})
       }
     }
@@ -148,7 +147,7 @@ export const CompanyPermission = (props) => {
       <div className="w-100 d-flex justify-content-end mt-1">
         {from !== "roleConfig" && (
           <div
-            onClick={() => setActive(2)}
+            onClick={() =>setActive(location.pathname.includes('user')?1:2)}
             className="btn comp-module-btn previous px-5 m-1 fs-5 py-1"
           >
             Previous

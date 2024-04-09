@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router";
+import { useLocation, useNavigate } from "react-router";
 import { Form, Modal } from "react-bootstrap";
 import { CompanyPermission } from "../../company/components/CompanyPermission";
 import { useCompanyServices } from "../../../services/controller/companyServices";
@@ -8,7 +8,7 @@ import { companyModules } from "../../company/data/initialData.js";
 import Swal from "sweetalert2";
 
 export const RoleConfigAdd = (props) => {
-  const {roleList} = props
+  const {roleList,refresh} = props
   const [moduleCodeList, setModuleCodeList] = useState([]);
   const [activityCodes, setActivityCodes] = useState({});
   const [roleDropList, setRoleDropList] = useState([]);
@@ -19,14 +19,35 @@ export const RoleConfigAdd = (props) => {
   });
 
   const navigate = useNavigate();
+  const location = useLocation();
 
-  const { postCompanyRole } = useCompanyServices();
+  const { postCompanyRole, putCompanyRole } = useCompanyServices();
 
   useEffect(()=>{
     if(roleList?.length>0){
       setRoleDropList(data=>roleList.map(x=>({text:x.role,value:x.id})))
     }
   },[roleList])
+
+  useEffect(()=>{
+    if(location?.state?.role){
+      handleRoleEdit(location.state.role)
+    }
+  },[location.pathname])
+
+  const { getCompanyRoleWithId } = useCompanyServices();
+
+  const handleRoleEdit = async (id) =>{
+    try{
+      let res = await getCompanyRoleWithId(id)
+      if(res.success){
+        let {is_active,...others} = res.data
+        setRoleConfig(others)
+        setModuleCodeList(data=>res.data.module_permissions?.map(item=>({code:item,parent:null})))
+      }
+    }catch(err){}
+  }
+
 
   const handleModuleSelection = (data) => {
     let tempList = [...moduleCodeList];
@@ -91,8 +112,12 @@ export const RoleConfigAdd = (props) => {
         module_permissions: tempCompanyModuleList,
       };
       //   return 0
+      if(roleConfig.id)
+      resp = await putCompanyRole(roleConfig.id,submitData);
+      else
       resp = await postCompanyRole(submitData);
       if (resp?.success) {
+        refresh()
         Swal.fire("Success", "", "success");
         setRoleConfig({ fk_parent: null, role: null });
         setModuleCodeList([]);
@@ -180,6 +205,7 @@ export const RoleConfigAdd = (props) => {
         )}
         <h4 className="pb-3">Access Permission</h4>
         <CompanyPermission
+        company={roleConfig}
           activityCodes={{}}
           from="roleConfig"
           {...{

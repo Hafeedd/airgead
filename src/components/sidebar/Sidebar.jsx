@@ -427,7 +427,7 @@ const Sidebar = ({ perm, setPage, moduleCodeList, setModuleCodeList }) => {
                       data.main === "master" && (
                         <span className="SidebarSpan d-flex ms-5 ps-3">
                           <div className="SidebarItemText">
-                            {perm && location.pathname !== "company-add" && (
+                            {perm && location.pathname !== "/company-add" && (
                               <input
                                 type="checkbox"
                                 onChange={() => handleCheck(data)}
@@ -440,7 +440,7 @@ const Sidebar = ({ perm, setPage, moduleCodeList, setModuleCodeList }) => {
                               />
                             )}
                             <button                            
-                            disabled={moduleCodeList?.findIndex(x=>x.code===data.code)==-1}
+                            disabled={location.pathname !== '/company-add'&&moduleCodeList?.findIndex(x=>x.code===data.code)==-1}
                               onClick={(e) => {
                                 if (!perm) navigate(data.navigate);
                                 else{

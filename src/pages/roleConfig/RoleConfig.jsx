@@ -10,11 +10,11 @@ export const RoleConfig = (props) => {
 
     const location = useLocation()
 
+    const {getCompanyRole} = useCompanyServices()
+
     useEffect(()=>{
       getData()
     },[])
-
-    const { getCompanyRole } = useCompanyServices();
 
     const getData = async () =>{
       try{
@@ -29,8 +29,8 @@ export const RoleConfig = (props) => {
     <div className="p-4">
       <div className="role-config-cont">
         {
-            location.pathname === '/role-configuratoin-list'?
-            <RoleConfigList {...{roleList}}/>:<RoleConfigAdd {...{roleList,setRoleList}}/>
+          location.pathname === '/role-configuration-list'?
+          <RoleConfigList refresh={getData} {...{roleList}}/>:<RoleConfigAdd refresh={getData} {...{roleList,setRoleList}}/>
         }
       </div>
     </div>

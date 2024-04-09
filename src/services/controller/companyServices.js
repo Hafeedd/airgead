@@ -13,7 +13,6 @@ export const useCompanyServices = () => {
       {headers:{'Content-Type': 'multipart/form-data'}});
       return resp.data;
     // }catch(err){
-    //   console.log(err)
     //   handleNetworkError(err)
     // }
   };
@@ -69,9 +68,20 @@ export const useCompanyServices = () => {
   };
   // update company role creation
   const putCompanyRole = async (id,data) => {
-    const resp = await axiosPrivate.get(`company/role/${id}/`,data);
+    const resp = await axiosPrivate.put(`company/role/${id}/`,data);
     return resp.data;
   };
+
+  // get company role with id
+  const getCompanyRoleWithId = async (id) => {
+    const resp = await axiosPrivate.get(`company/role/${id}/`);
+    return resp.data;
+  };
+  // // update company role acitvation
+  // const putCompanyRoleActivate = async (id,data) => {
+  //   const resp = await axiosPrivate.get(`company/role/${id}/`,data);
+  //   return resp.data;
+  // };
 
   return {
     postCompanyPlan,
@@ -85,5 +95,6 @@ export const useCompanyServices = () => {
     deleteCompanyForController,
     getCompanyRole,
     putCompanyRole,
+    getCompanyRoleWithId,
   };
 };
