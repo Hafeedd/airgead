@@ -6,17 +6,15 @@ import React, { useState } from "react";
 import { Modal } from "react-bootstrap";
 import { useCompanyServices } from "../../../services/controller/companyServices";
 import Swal from "sweetalert2";
-import { companyModules } from "../data/initialData";
-import { useNavigate } from "react-router";
-import { permissions } from "../data/initialData";
+import { companyModules,permissions } from "../data/initialData";
+// import { useNavigate } from "react-router";
 
 export const CompanyPlan = (props) => {
   const { setActive, companyId, moduleCodeList, setModuleCodeList,companyPlan,setCompanyPlan } = props;
   const [showModules, setShowModules] = useState(false);
   const [loading, setLoading] = useState(false);
   
-
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
 
   const { postCompanyPlan } = useCompanyServices();
 

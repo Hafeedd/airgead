@@ -24,7 +24,7 @@ export const StockLedger = () => {
         const response = await getStockLedger(paramsToReport)
         const response2 = await batchWiseStockReport(paramsToReport)        
         if(response2.success || true){
-          setStockList(response.data)
+          setStockList(response2.data)
         }
       }catch(err){
         console.log(err)

@@ -56,6 +56,22 @@ export const useCompanyServices = () => {
     const resp = await axiosPrivate.post(`controller/company/${id}/activation_status/`);
     return resp.data;
   };
+ 
+  // set company role creation
+  const postCompanyRole = async (data) => {
+    const resp = await axiosPrivate.post(`company/roles/`,data);
+    return resp.data;
+  };
+  // get company role creation
+  const getCompanyRole = async () => {
+    const resp = await axiosPrivate.get(`company/roles/`);
+    return resp.data;
+  };
+  // update company role creation
+  const putCompanyRole = async (id,data) => {
+    const resp = await axiosPrivate.get(`company/role/${id}/`,data);
+    return resp.data;
+  };
 
   return {
     postCompanyPlan,
@@ -63,8 +79,11 @@ export const useCompanyServices = () => {
     getCompanyList,
     getCompanyWithId,
     companyUpdate,
+    postCompanyRole,
     postCompanyPermission,
     companyActiveDeactive,
     deleteCompanyForController,
+    getCompanyRole,
+    putCompanyRole,
   };
 };

@@ -2,8 +2,9 @@ import React, { useEffect, useState } from "react";
 import { CompanyDetails } from "./CompanyDetails";
 import { CompanyPlan } from "./CompanyPlan";
 import { CompanyPermission } from "./CompanyPermission";
-import { useLocation } from "react-router";
+import { useLocation, useNavigate } from "react-router";
 import { MEDIA_URL } from "../../../api/axios";
+import {Swal} from 'sweetalert2'
 import { useCompanyServices } from "../../../services/controller/companyServices";
 
 export const CompanyAdd = () => {
@@ -42,8 +43,9 @@ export const CompanyAdd = () => {
     modules: [],
   });
 
+  const navigate = useNavigate();
   const location = useLocation();
-  const { getCompanyWithId } = useCompanyServices();
+  const { getCompanyWithId, postCompanyPermission } = useCompanyServices();
 
   useEffect(() => {
     if (edit.id) {
@@ -73,6 +75,48 @@ export const CompanyAdd = () => {
       // setSelectedRole(edit.fk_role)
     }
   }, [edit]);
+
+  const handleSubmitPermission = async (e) => {
+    e.preventDefault();
+    try {
+      let resp;
+      var companyPermissions = [];
+      Object.keys(activityCodes).forEach((x) =>
+        activityCodes[x]?.forEach((y) =>
+          companyPermissions.push({ code: y, is_active: false })
+        )
+      );
+      let tempCompanyModuleList = moduleCodeList.map((data) => ({
+        code: data.code,
+        is_active: true,
+      }));
+      // console.log(activityCodes)
+      // console.log({activity_permissions:companyPermissions,module_permissions:tempCompanyModuleList})
+      // return 0
+      resp = await postCompanyPermission(companyId, {
+        activity_permissions: companyPermissions,
+        module_permissions: tempCompanyModuleList,
+      });
+      if (resp?.success) {
+        Swal.fire("Success", "", "success");
+        setCompanyId(false);
+        setEdit(false);
+        setModuleCodeList([]);
+        setActivityCodes([]);
+        setActive(1);
+        navigate("/");
+      }
+    } catch (err) {
+      console.log(err);
+      var message =
+        err?.response?.data?.message ||
+        "Something went wrong pls try again later !";
+      if (err?.response?.data?.errors) {
+        message = Object.values(err.response.data?.errors)[0];
+      }
+      Swal.fire("Error", message, "error");
+    }
+  };
 
   useEffect(() => {
     if (location?.state?.company) handleCompanyGet(location?.state?.company);
@@ -161,13 +205,11 @@ export const CompanyAdd = () => {
         ) : active === 3 ? (
           <CompanyPermission
             {...{
-              moduleCodeList,
+              moduleCodeList, 
               setModuleCodeList,
-              companyId,
-              company,
-              setEdit,
-              setCompanyId,
+              handleSubmitPermission,
               setActive,
+              company,
               activityCodes,
               setActivityCodes,
             }}
