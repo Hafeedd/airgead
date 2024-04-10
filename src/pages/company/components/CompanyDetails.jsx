@@ -62,8 +62,8 @@ export const CompanyDetails = (props) => {
     setCompany((c) => ({ ...c, fk_role: data.value }));
     let item_data = allRoles.filter(x=>x.value===data.value)[0]
     if(!edit){
-      setModuleCodeList(data=>item_data.module_permissions.map(x=>({code:x.code,parent:null,is_acitve:true})))
-      setCompany(data=>({...data,activity_permissions:item_data.activity_permissions}))
+      setModuleCodeList(data=>item_data?.module_permissions.map(x=>({code:x.code,parent:null,is_acitve:true})))
+      setCompany(data=>({...data,activity_permissions:item_data?.activity_permissions}))
     }
   };
 
@@ -462,7 +462,7 @@ export const CompanyDetails = (props) => {
           variant="outlined"
         />
         {location.pathname === "/user-add" && (
-          <div className="w-100 d-flex justify-content-between align-items-center row">
+          <div className="w-100 d-flex gap-3 align-items-center mx-0">
             <Dropdown
               clearable
               selection
@@ -470,13 +470,13 @@ export const CompanyDetails = (props) => {
               search={search}
               // onKeyDown={handleKeyDown1}
               onChange={handleDropdownChangeRole}
-              className="purchase-input-text table-drop d-flex align-items-center py-2 my-2 custom-drop-wid text-secondary col-9"
+              className="company-input-field dropdown text-uppercase mx-0 my-2 table-drop d-flex align-items-center py-2 my-2 custom-drop-wid text-secondary"
               name="role"
               placeholder="Select Role *"
               value={company.fk_role}
               options={allRoles}
             />
-            <div className="company-add-btn next btn col-1 col-2">Add</div>
+            <div className="company-add-btn next btn w-auto">Add</div>
           </div>
         )}
       </div>

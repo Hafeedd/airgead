@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router";
 import { FaPlus } from "react-icons/fa6";
 import { Checkbox } from "semantic-ui-react";
@@ -12,11 +12,44 @@ import Swal from 'sweetalert2'
 export const RoleConfigList = (props) => {
   const {roleList,refresh} = props
   const [listShow, setListShow] = useState(false);
+  const [searchedList, setSearchedList] = useState([]);
 
   const navigate = useNavigate();
   const location = useLocation();
 
   const {putCompanyRole} = useCompanyServices()
+
+  useEffect(() => {
+    setSearchedList(roleList);
+  }, [roleList]);
+
+  const handleSearch = async (e) => {
+    try {
+      let tempData,
+        tempList = roleList;
+      if (roleList) {
+        let value = e.target.value.toLocaleLowerCase();
+        if (value != "") {
+          if (roleList.length > 0) {
+            tempData = tempList?.filter((x) => {
+              let searchInString = `${
+                x.role?.toLocaleLowerCase() 
+                // + " " +
+                // x.group_name?.toLocaleLowerCase()
+              }`;
+              let search = searchInString?.includes(value);
+              if (search) {
+                return true;
+              }
+            });
+            setSearchedList(tempData);
+          }
+        } else {
+          setSearchedList(roleList);
+        }
+      }
+    } catch {}
+  };
 
   const handleDropDownList = (key) => {
     if (listShow === key) {
@@ -43,7 +76,7 @@ export const RoleConfigList = (props) => {
           <div className="item_seach_bar_cont admin rounded-2">
             <img src={searchIcon} className="search_img me-3 ms-2 py-2" />
             <input
-              //   onChange={handleSearch}
+                onChange={handleSearch}
               className="item_search_bar text-capitalize rounded-2 border-0 py-1"
               placeholder="Search..."
               type="text"
@@ -69,8 +102,8 @@ export const RoleConfigList = (props) => {
           </tr>
         </thead>
         <tbody>
-          {roleList?.length > 0 ?
-            roleList?.map((data,key) => {
+          {searchedList?.length > 0 ?
+            searchedList?.map((data,key) => {
               return (
                 <tr className={`main-tr`}>
                   <td>

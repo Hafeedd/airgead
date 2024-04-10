@@ -283,7 +283,19 @@
   }
 }
 
-.company-input-field {
+.company-input-field.dropdown {
+  border: 1px solid #adadad !important;
+  border-bottom: 1.5px solid rgb(150, 150, 150) !important;
+  background-color: #f5f5f5 !important;
+  font-family: "Roboto","Helvetica","Arial",sans-serif;
+  font-weight: 400 !important;
+  font-size: 1rem !important;
+  line-height: 1.4375em;
+  letter-spacing: 0.00938em;
+  color: #616161 !important;
+  cursor: text;
+}
+  .company-input-field {
   width: 100%;
 }
 
