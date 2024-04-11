@@ -113,13 +113,12 @@ export const CompanyDetails = (props) => {
         } else {
           Swal.fire({
             title: "Error",
-            text: resp?.message || "User Registration Failed.",
+            text: resp?.data?.errors || "User Registration Failed.",
             icon: "error",
           });
         }
       } catch (err) {
-        let message =
-          err?.response?.data?.message || "User Registration Failed.";
+        let message = err?.response?.data?.errors || "User Registration Failed.";
         if (err?.response?.data?.errors?.length > 0) {
           message = Object.values(err.response?.data?.errors)[0];
         }

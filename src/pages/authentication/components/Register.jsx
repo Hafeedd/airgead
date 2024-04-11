@@ -48,6 +48,23 @@ const Register = () => {
         setUser({ ...tempUser })
     }
 
+    // const validatePassword = (password) => {
+    //     // at least 8 characters
+    //     if (password.length < 8) return false;
+    
+    //     // at least one numeric character
+    //     if (!/\d/.test(password)) return false;
+    
+    //     // at least one alphabetical character
+    //     if (!/[a-zA-Z]/.test(password)) return false;
+    
+    //     // at least one punctuation character
+    //     if (!/[!@#$%^&*(),.?":{}|<>]/.test(password)) return false;
+    
+    //     return true;
+    //   };
+
+    // validatePassword()
     const handleSubmit = async (e) => {
         e.preventDefault()
         // if(!user.image){
