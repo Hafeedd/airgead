@@ -112,11 +112,12 @@ export const CompanyDetails = (props) => {
         else resp = await postUserAdd(CompanyData);
         if (resp.success) {
           setActive(3);
-          setCompanyId(resp?.data?.user_profile?.id);
+          setCompanyId(resp?.data?.user?.user_profile?.id);
         } else {
+          console.log(resp)
           Swal.fire({
             title: "Error",
-            text: resp?.data?.errors || "User Registration Failed.",
+            text: resp?.errors || "User Registration Failed.",
             icon: "error",
           });
         }

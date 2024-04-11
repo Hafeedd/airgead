@@ -48,7 +48,7 @@ export const CompanyAdd = () => {
   const location = useLocation();
 
   const { getCompanyWithId, postCompanyPermission } = useCompanyServices();
-  const {getUserWithId } = useUserServices();
+  const {getUserWithId ,postUserPermissions} = useUserServices();
 
   useEffect(() => {
     if (edit.id) {
@@ -80,7 +80,7 @@ export const CompanyAdd = () => {
     }
   }, [edit]);
 
-  const handleSubmitPermission = async (e) => {
+  const handleSubmitPermission = async (e,action) => {
     e.preventDefault();
     try {
       let resp;
@@ -97,10 +97,20 @@ export const CompanyAdd = () => {
       // console.log(activityCodes)
       // console.log({activity_permissions:companyPermissions,module_permissions:tempCompanyModuleList})
       // return 0
-      resp = await postCompanyPermission(companyId, {
-        activity_permissions: companyPermissions,
-        module_permissions: tempCompanyModuleList,
-      });
+      if (action==='company'){
+        resp = await postCompanyPermission(companyId, {
+          activity_permissions: companyPermissions,
+          module_permissions: tempCompanyModuleList,
+        });
+      }
+      else if (action==='user'){
+        console.log(companyId,'hooooi')
+        resp = await postUserPermissions(companyId, {
+          activity_permissions: companyPermissions,
+          module_permissions: tempCompanyModuleList,
+        });
+      }
+      
       if (resp?.success) {
         Swal.fire("Success", "", "success");
         setCompanyId(false);
