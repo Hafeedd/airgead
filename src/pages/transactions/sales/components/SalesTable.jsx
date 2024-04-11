@@ -10,6 +10,9 @@ import { StockPop } from "../../components/StockPop";
 
 const SalesTable = (props) => {
   const {
+    returnPage,
+    orderPage,
+    permissions,
     handleGetSalesReturnCode,
     tableItemRef,
     setTableItemRef,
@@ -71,7 +74,8 @@ const SalesTable = (props) => {
 
   const handleDataNameList = (data) => {
     let tempList = [];
-    data?.map((x) => {      
+    data?.map((x) => {
+      // console.log(x)
       const { id, code, name, ...others } = x;
       tempList.push({
         ...others,
@@ -82,7 +86,7 @@ const SalesTable = (props) => {
             {x.item_name}
           </Dropdown.Item>
         ),
-        value: x.item_id,
+        value: x.batch_list[0]?.fk_items,
       });
     });
     setItemNameList([...tempList]);
@@ -221,6 +225,7 @@ const SalesTable = (props) => {
   };
 
   const handlebatchChange = (data) => {
+    // console.log(data)
     handleChangeTableItem(
       itemSelected.e,
       data,
@@ -244,6 +249,7 @@ const SalesTable = (props) => {
           Object.entries(item_data)?.filter(([key, value]) => value !== null)
         );
       } else newObj = data;
+      console.log(newObj);
       let {
         id,
         code,
@@ -501,6 +507,8 @@ const SalesTable = (props) => {
   // const handleKeyDownOnDrop = (e) => {
   // };
 
+  console.log(tableItem.fk_items, itemNameList);
+
   const handlePrev = () => {
     if (salesList?.length > 0) {
       if (!edit) {
@@ -619,6 +627,14 @@ const SalesTable = (props) => {
                             index === 0 ? (
                               <td className="text-start ps-3 pe-3" colSpan={1}>
                                 <Dropdown
+                                  disabled={
+                                    (item?.readOnly &&
+                                      returnPage &&
+                                      !permissions.includes(1227)) ||
+                                    (orderPage &&
+                                      !permissions.includes(1265)) ||
+                                    !permissions.includes(1189)
+                                  }
                                   onChange={(e, a) =>
                                     handleSelectItemFromDrop(e, a, data, i)
                                   }
@@ -636,7 +652,7 @@ const SalesTable = (props) => {
                                   placeholder="SELECT"
                                   className="purchase_search_drop border-0 w-100 ps-2"
                                   name={"name"}
-                                  value={data.fk_items || ''}
+                                  value={data.fk_items || ""}
                                   options={itemNameList}
                                 />
                               </td>
@@ -649,6 +665,14 @@ const SalesTable = (props) => {
                                   onKeyDown={handleKeyDown2}
                                   name="fk_unit"
                                   value={data.fk_unit}
+                                  disabled={
+                                    (item?.readOnly &&
+                                      returnPage &&
+                                      !permissions.includes(1227)) ||
+                                    (orderPage &&
+                                      !permissions.includes(1265)) ||
+                                    !permissions.includes(1189)
+                                  }
                                   style={{
                                     WebkitAppearance: "none",
                                     fontSize: "10px",
@@ -675,8 +699,15 @@ const SalesTable = (props) => {
                                     item.state == "vat" ? "tax_gst" : item.state
                                   }
                                   type="number"
+                                  disabled={
+                                    (item?.readOnly &&
+                                      returnPage &&
+                                      !permissions.includes(1227)) ||
+                                    (orderPage &&
+                                      !permissions.includes(1265)) ||
+                                    !permissions.includes(1189)
+                                  }
                                   placeholder="0"
-                                  disabled={item?.readOnly}
                                   className="sales-table-items-input"
                                   value={
                                     item.state === "vat"
@@ -694,7 +725,11 @@ const SalesTable = (props) => {
                         onClick={confirmDelete}
                         className="text-center w-100"
                       >
-                        <BsTrashFill className="mb-1 btn p-0" size={"16px"} />
+                        {((returnPage && !permissions.includes(1228)) ||
+                          (orderPage && !permissions.includes(1266)) ||
+                          !permissions.includes(1190)) && (
+                          <BsTrashFill className="mb-1 btn p-0" size={"16px"} />
+                        )}
                       </div>
                     </td>
                   </tr>
@@ -824,13 +859,17 @@ const SalesTable = (props) => {
                   else return null;
                 })}
               <td>
-                <input
-                  type="button"
-                  onKeyDown={handleAddSalesItem}
-                  onClick={handleAddSalesItem}
-                  className="table-item-add-btn rounded-1 btn-sm"
-                  value={"+"}
-                />
+                {((returnPage && !permissions.includes(1226)) ||
+                  (orderPage && !permissions.includes(1260)) ||
+                  !permissions.includes(1184)) && (
+                  <input
+                    type="button"
+                    onKeyDown={handleAddSalesItem}
+                    onClick={handleAddSalesItem}
+                    className="table-item-add-btn rounded-1 btn-sm"
+                    value={"+"}
+                  />
+                )}
               </td>
             </tr>
             <AdjustHeightOfTable />

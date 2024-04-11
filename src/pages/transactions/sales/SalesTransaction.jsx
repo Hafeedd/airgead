@@ -21,12 +21,14 @@ import { StockJournalEdit } from "../stockjurnal/components/StockJournalEdit";
 import { useSalesReturnServices } from "../../../services/transactions/salesReturnService";
 import { initialSalesState, initialTableItemState } from "./initialData/data";
 import { useSalesOrderServices } from "../../../services/transactions/salesOrderServices";
+import { useSelector } from "react-redux";
 
 export const initialSalesTableStatePositionLocal = JSON.parse(
   localStorage.getItem("initialSalesTableStatePositionLocal")
 );
 
 const SalesTransaction = ({ returnPage, orderPage }) => {
+  const permissions = useSelector((state) => state.auth.activityPermissions);
   const [showSalesReturn, setShowSalesReturn] = useState(false);
   const [salesItemModal, setSalesItemModal] = useState(false);
   const [salesEditModal, setSalesEditModal] = useState(false);
@@ -828,13 +830,13 @@ const SalesTransaction = ({ returnPage, orderPage }) => {
                 </div>
               </div>
               <div className=" col-3">
-                <div
+                {((returnPage && !permissions.includes(1219))||(orderPage && !permissions.includes(1257))||(!permissions.includes(1181))) &&<div
                   onClick={handleEdit}
                   className="btn btn-sm btn-dark px-1 rounded-bottom-0 justify-content-center d-flex align-items-center gap-1"
                 >
                   <FiEdit size={"1rem"} />
                   Edit
-                </div>
+                </div>}
               </div>
             </div>
             {/* <div className="col-3"> */}
@@ -898,6 +900,9 @@ const SalesTransaction = ({ returnPage, orderPage }) => {
         </div>
         <SalesTable
           {...{
+            returnPage,
+            orderPage,
+            permissions,
             handleGetSalesReturnCode,
             tableItemRef,
             setTableItemRef,
@@ -919,6 +924,9 @@ const SalesTransaction = ({ returnPage, orderPage }) => {
         />
         <SalesDetailFooter
           {...{
+            permissions,
+            returnPage,
+            orderPage,
             handleGetSalesReturnCode,
             bankSelect,
             salesAdd,

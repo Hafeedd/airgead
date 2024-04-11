@@ -5,6 +5,7 @@ import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import { handlePermissions } from "../../redux/authSlice";
 import { navigationList } from "../sidebar/Sidebar";
 import Layout from "../layout/Layout";
+import Swal from "sweetalert2";
 
 export const CheckAuth = ({ userType, authType }) => {
   const auth = useSelector((state) => state.auth);
@@ -44,12 +45,21 @@ export const CheckAuth = ({ userType, authType }) => {
               navigate(path, { replace: true });
             }
         } else {
+          if(resp.code=="ERR_NETWORK"){
+            Swal.fire({
+              position:'top-end',
+              title:"Please Check your Network and try again !",
+              text:"Please reload after connecting to network.",
+              timer:5000,
+              showConfirmButton:false
+            })
+          }else{
           setVerify(false);
-          navigate(path, { replace: true });
+          navigate(path, { replace: true });}
         }
     } catch (err) {
       setVerify(false);
-      navigate(path, { replace: true });
+      navigate('/bad-gateway', { replace: true });
     }
   };
 

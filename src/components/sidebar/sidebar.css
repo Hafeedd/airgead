@@ -12,7 +12,7 @@
   mix-blend-mode: multiply;
 }
 
-.sidebar.company.permission {
+.sidebar.permission {
   background: #233547;
 }
 
@@ -72,8 +72,17 @@
   } */
 
 .SidebarItemText {
+  /* border: none;
+  background: transparent;
   cursor: pointer;
+  margin: none;
+  width: fit-content;
+  text-align: start; */
+  display: flex;
+  justify-content: start;
+  align-items: start;
   padding-top: 0.4rem;
+  color: white;
 }
 
 .SidebarItem {
@@ -105,4 +114,21 @@
 .active .sidebar_icon {
   -webkit-filter: invert(100%);
   filter: invert(100%);
+}
+
+.sidebar-checkbox{
+  accent-color: #607be8;
+  margin-right: 0.5rem;
+  cursor: pointer;
+  margin-top: 0.2rem !important;
+}
+
+.sidebar-items-button{
+  text-align: start;
+  margin: 0;
+  padding: 0;
+  vertical-align: top;
+  background-color: transparent;
+  border: none;
+  color: white;
 }

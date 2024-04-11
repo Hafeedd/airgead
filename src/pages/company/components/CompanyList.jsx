@@ -14,40 +14,74 @@ import { useUserServices } from "../../../services/controller/userServices";
 export const CompanyList = (props) => {
   const [companyList, setCompanyList] = useState([]);
   const [listShow, setListShow] = useState(false);
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(false);
+  const [searchedList, setSearchedList] = useState([]);
   const location = useLocation();
   const navigate = useNavigate();
 
-  const { getCompanyList, companyActiveDeactive } = useCompanyServices();
-  const { getUserList, userActiveDeactive,delUserAdd} = useUserServices();
+  const { getCompanyList, companyActiveDeactive, deleteCompanyForController } =
+    useCompanyServices();
+  const { getUserList, userActiveDeactive, delUserAdd } = useUserServices();
 
   useEffect(() => {
     getData();
   }, []);
 
+  useEffect(() => {
+    setSearchedList(companyList);
+  }, [companyList]);
+
+  const handleSearch = async (e) => {
+    try {
+      let tempData,
+        tempList = companyList;
+      if (companyList) {
+        let value = e.target.value.toLocaleLowerCase();
+        if (value != "") {
+          if (companyList.length > 0) {
+            tempData = tempList?.filter((x) => {
+              let searchInString = `${
+                x.group_id?.toLocaleLowerCase() +
+                " " +
+                x.group_name?.toLocaleLowerCase()
+              }`;
+              let search = searchInString?.includes(value);
+              if (search) {
+                return true;
+              }
+            });
+            setSearchedList(tempData);
+          }
+        } else {
+          setSearchedList(companyList);
+        }
+      }
+    } catch {}
+  };
+
   const getData = async () => {
     if (location.pathname === "/user-list") {
       try {
-        setLoading(true)
+        setLoading(true);
         const resp = await getUserList();
         if (resp.success) {
           setCompanyList([...resp.data]);
         }
-        setLoading(false)
+        setLoading(false);
       } catch (err) {
-        setLoading(false)
+        setLoading(false);
         console.log(err);
       }
     } else {
       try {
-        setLoading(true)
+        setLoading(true);
         const resp = await getCompanyList();
         if (resp.success) {
           setCompanyList(resp.data);
         }
-        setLoading(false)
+        setLoading(false);
       } catch (err) {
-        setLoading(false)
+        setLoading(false);
         console.log(err);
       }
     }
@@ -59,9 +93,9 @@ export const CompanyList = (props) => {
     } else setListShow(key);
   };
 
-  const handleDeleteUser = async (id) =>{
+  const handleDeleteUser = async (id) => {
     try {
-      const res =await delUserAdd(id);
+      const res = await delUserAdd(id);
       if (res.success) {
         Swal.fire({
           title: "Success",
@@ -71,7 +105,7 @@ export const CompanyList = (props) => {
           showConfirmButton: false,
         });
         getData();
-      }else {
+      } else {
         Swal.fire({
           title: "Warning",
           text:
@@ -81,14 +115,17 @@ export const CompanyList = (props) => {
           // timer: 1000,
           // showConfirmButton: false,
         });
-    }}catch(err){
-      console.log(err?.response?.data?.error)
+      }
+    } catch (err) {
+      console.log(err?.response?.data?.error);
     }
-  }
+  };
 
-  const deleteCompany = async (id) => {
+  const deleteCompany = async (id, password) => {
     try {
-      const response = await deleteCompany(id);
+      const response = await deleteCompanyForController(id, {
+        password: password,
+      });
       if (response?.success) {
         Swal.fire({
           title: "Success",
@@ -121,6 +158,7 @@ export const CompanyList = (props) => {
           <div className="item_seach_bar_cont admin rounded-2">
             <img src={searchIcon} className="search_img me-3 ms-2 py-2" />
             <input
+              onChange={handleSearch}
               className="item_search_bar text-capitalize rounded-2 border-0 py-1"
               placeholder="Search..."
               type="text"
@@ -184,8 +222,8 @@ export const CompanyList = (props) => {
             )}
           </thead>
           <tbody>
-            {location.pathname == "/user-list" && companyList?.length > 0 ? (
-              companyList.map((data, key) => {
+            {location.pathname == "/user-list" && searchedList?.length > 0 ? (
+              searchedList.map((data, key) => {
                 const handleCheck = async (e, type) => {
                   Swal.fire({
                     title: "Delete",
@@ -205,7 +243,7 @@ export const CompanyList = (props) => {
                     showLoaderOnConfirm: true,
                     preConfirm: async () => {
                       if (type == "delete") {
-                        handleDeleteUser(data.id)
+                        handleDeleteUser(data.id);
                       } else handleActive();
                     },
                     preDeny: () => {
@@ -248,17 +286,11 @@ export const CompanyList = (props) => {
                   <tr>
                     <td>{key + 1}</td>
                     <td>{data.full_name}</td>
-                    <td>
-                      {data?.username}
-                    </td>
+                    <td>{data?.username}</td>
                     <td>{data.id}</td>
-                    <td>
-                      {data.mobile}
-                    </td>
+                    <td>{data.mobile}</td>
                     <td>{data.fk_role}</td>
-                    <td>
-                      {dayjs(data.created_at).format("DD/MM/YYYY")}
-                    </td>
+                    <td>{dayjs(data.created_at).format("DD/MM/YYYY")}</td>
                     <td>
                       {data.last_login
                         ? dayjs(data.admin_details?.last_login)?.format(
@@ -278,29 +310,23 @@ export const CompanyList = (props) => {
                       />
                       {listShow === key && (
                         <div className="company-menue-dropdown">
-                          {location.pathname==='/user-list'?
                           <div
                             onClick={() =>
-                              navigate("/user-add", {
-                                state: { company: data },
-                              })
+                              navigate(
+                                location.pathname === "/user-list"
+                                  ? "/user-add"
+                                  : "company-add",
+                                {
+                                  state: { company: data.id },
+                                }
+                              )
                             }
                             className="d-flex cursor gap-3"
                           >
                             <img src={pencilIcon} alt="edit" /> Edit
-                          </div>:
+                          </div>
                           <div
-                          onClick={() =>
-                            navigate("/company-add", {
-                              state: { company: data },
-                            })
-                          }
-                          className="d-flex cursor gap-3"
-                        >
-                          <img src={pencilIcon} alt="edit" /> Edit
-                        </div>}
-                          <div
-                            onClick={(e) => handleCheck(e,"delete")}
+                            onClick={(e) => handleCheck(e, "delete")}
                             className="d-flex cursor gap-3"
                           >
                             <img src={deleteBtn} alt="del" /> Delete
@@ -311,39 +337,60 @@ export const CompanyList = (props) => {
                   </tr>
                 );
               })
-            ) : companyList?.length > 0 ? (
-              companyList.map((data, key) => {
-                const handleCheck = async (e, type) => {
-                  Swal.fire({
-                    title: "Delete",
-                    text: `Are you sure, you want to 
-                    ${
-                      type == "delete"
-                        ? "delete"
-                        : data.is_active
-                        ? "activated"
-                        : "deactivated"
-                    } ${data.username}?`,
-                    icon: "question",
-                    showDenyButton: true,
-                    showCancelButton: false,
-                    confirmButtonText: "Yes",
-                    denyButtonText: "Cancel",
-                    showLoaderOnConfirm: true,
-                    preConfirm: async () => {
-                      if (type == "delete") {
-                        // await deleteGroup(data?.id);
-                      } else handleActive();
-                    },
-                    preDeny: () => {
-                      Swal.fire({
-                        title: "Cancelled",
-                        icon: "info",
-                        timer: 1000,
-                        showConfirmButton: false,
-                      });
+            ) : searchedList?.length > 0 ? (
+              searchedList.map((data, key) => {
+                // const handleCheck = async () => {
+                //   Swal.fire({
+                //     title: "Delete",
+                //     input: "text",
+                //     text: `Are you sure, you want to
+                //     ${data.is_active ? "activated" : "deactivated"} ${
+                //       data.group_name
+                //     }?`,
+                //     icon: "question",
+                //     showDenyButton: true,
+                //     showCancelButton: false,
+                //     confirmButtonText: "Yes",
+                //     denyButtonText: "Cancel",
+                //     showLoaderOnConfirm: true,
+                //     preConfirm: async () => {
+                //       handleActive();
+                //     },
+                //     preDeny: () => {
+                //       Swal.fire({
+                //         title: "Cancelled",
+                //         icon: "info",
+                //         timer: 1000,
+                //         showConfirmButton: false,
+                //       });
+                //     },
+                //   });
+                // };
+
+                const handleDeleteConfirm = async () => {
+                  const { value: password } = await Swal.fire({
+                    title: "Are you sure",
+                    text: `To delete company ${data.group_name}, Please enter Your password.`,
+                    input: "password",
+                    inputLabel: "Password",
+                    icon: "warning",
+                    inputPlaceholder: "Enter your password",
+                    inputAttributes: {
+                      maxlength: "10",
+                      autocapitalize: "off",
+                      autocorrect: "off",
                     },
                   });
+                  if (password) {
+                    deleteCompany(data.id, password);
+                  } else {
+                    Swal.fire({
+                      title: "Cancelled",
+                      icon: "info",
+                      timer: 1000,
+                      showConfirmButton: false,
+                    });
+                  }
                 };
 
                 const handleNavigate = () => {
@@ -406,16 +453,22 @@ export const CompanyList = (props) => {
                         toggle
                         checked={data.is_active}
                       />
-                      <HiDotsVertical
-                        onClick={() => handleDropDownList(key)}
-                        size={"1.5rem"}
-                      />
+                      <button
+                        className="border-0 btn p-0 m-0"
+                        onClick={() => handleDropDownList(1)}
+                        // onBlur={() => handleDropDownList(false)}
+                      >
+                        <HiDotsVertical
+                          onClick={() => handleDropDownList(key)}
+                          size={"1.5rem"}
+                        />
+                      </button>
                       {listShow === key && (
                         <div className="company-menue-dropdown">
                           <div
                             onClick={() =>
                               navigate("/company-add", {
-                                state: { company: data },
+                                state: { company: data.id },
                               })
                             }
                             className="d-flex cursor gap-3"
@@ -423,7 +476,7 @@ export const CompanyList = (props) => {
                             <img src={pencilIcon} alt="edit" /> Edit
                           </div>
                           <div
-                            onClick={() => handleCheck("delete")}
+                            onClick={(e) => handleDeleteConfirm()}
                             className="d-flex cursor gap-3"
                           >
                             <img src={deleteBtn} alt="edit" /> Delete
@@ -434,10 +487,19 @@ export const CompanyList = (props) => {
                   </tr>
                 );
               })
-            ) : location.pathname==='/user-list'?
-              <tr><td className="fs-3 text-center py-4" colSpan={9}>No User Added Yet !</td></tr>
-              :<tr><td className="fs-3 text-center py-4" colSpan={10}>{loading?"Loading...":"No Company Added Yet !"}</td></tr>
-            }
+            ) : location.pathname === "/user-list" ? (
+              <tr>
+                <td className="fs-3 text-center py-4" colSpan={9}>
+                {loading ? "Loading..." : "No User Added Yet !"}
+                </td>
+              </tr>
+            ) : (
+              <tr>
+                <td className="fs-3 text-center py-4" colSpan={10}>
+                  {loading ? "Loading..." : "No Company Added Yet !"}
+                </td>
+              </tr>
+            )}
           </tbody>
         </table>
       </div>

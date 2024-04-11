@@ -4,18 +4,20 @@ import deleteBtn from "../../../assets/icons/delete.svg";
 import companyProf from "../../../assets/icons/company-view-prof.jpg";
 import { companyModules } from '../data/initialData';
 import { VscTriangleDown } from "react-icons/vsc";
-import { useLocation } from 'react-router';
+import { Navigate, useLocation, useNavigate } from 'react-router';
 import { useCompanyServices } from '../../../services/controller/companyServices';
 import dayjs from 'dayjs';
 import { MEDIA_URL } from '../../../api/axios';
+import Swal from 'sweetalert2';
 
 export const CompanyView = () => {
     const [active, setActive] = useState(false)
     const [company, setCompany] = useState(null)
 
     const location = useLocation()
+    const navigate = useNavigate()
 
-    const { getCompanyWithId } = useCompanyServices()
+    const { getCompanyWithId,deleteCompanyForController } = useCompanyServices()
 
     useEffect(() => {
         if (location?.state?.id)
@@ -33,24 +35,74 @@ export const CompanyView = () => {
         }
     }
 
-    console.log(active)
+    const deleteCompany = async (id,password) => {
+        try {
+          const response = await deleteCompanyForController(id,{password:password});
+          if (response?.success) {
+            Swal.fire({
+              title: "Success",
+              text: "Company deleted successfully",
+              icon: "success",
+              timer: 1000,
+              showConfirmButton: false,
+            });
+            getData();
+          } else {
+            Swal.fire({
+              title: "Warning",
+              text:
+                response?.message ||
+                "Failed to delete Company. Something went wrong Pls try again.",
+              icon: "info",
+            });
+          }
+        } catch (err) {
+          console.log(err?.response?.data?.error);
+        }
+      };
+
+      const handleDeleteConfirm = async () => {
+        const { value: password } = await Swal.fire({
+          title: "Are you sure",
+          text: `To delete company ${company.group_name}, Please enter Your password.`,
+          input: "password",
+          inputLabel: "Password",
+          icon:"warning",
+          inputPlaceholder: "Enter your password",
+          inputAttributes: {
+            maxlength: "10",
+            autocapitalize: "off",
+            autocorrect: "off",
+          },
+        });
+        if (password) {
+          deleteCompany(company.id,password)
+        } else {
+          Swal.fire({
+            title: "Cancelled",
+            icon: "info",
+            timer: 1000,
+            showConfirmButton: false,
+          });
+        }
+      };
 
     return (
         <div>
             <div className='company-edit-bar row mx-0 justify-content-between px-4 position-relative'>
-                <div className='bar-text px-0 col-4 col-5'>Company Name</div>
+                <div className='bar-text px-0 col-4 col-5'>{company?.group_name}</div>
                 <div style={{ fontSize: '13px' }} className='col-3 col-4 text-end'>
-                    Renewal Date & Time ; 15/12/2020 12:00 PM
+                    Renewal Date & Time ; {dayjs(company?.active_plan_details?.renewal_date)?.format("DD/MM/YYYY")+"  "+company?.active_plan_details?.renewal_time}
                 </div>
                 <div style={{ fontSize: '13px' }} className='col-2 text-end'>
-                    Created By: &nbsp;&nbsp; Admin 1122
+                    Created By: &nbsp;&nbsp; {company?.created_by_details?.full_name}
                 </div>
                 <div className='col-1 col-2 d-flex align-items-center justify-content-end'>
-                    <div className='bar-button'>
+                    <div onClick={()=>navigate('/company-add',{state:{company:company?.id}})} className='bar-button'>
                         <MdEdit size='1.3rem' className="p-0 m-0" />
                         Edit
                     </div>
-                    <img className='' src={deleteBtn} width={'4rem'} height={'20rem'} alt="delete" />
+                    <img className='cursor' onClick={handleDeleteConfirm} src={deleteBtn} width={'4rem'} height={'20rem'} alt="delete" />
                 </div>
                 <div style={{ width: 'fit-content' }} className='px-0 d-flex justify-content-end'>
                     <div className="circle"></div>
@@ -61,7 +113,7 @@ export const CompanyView = () => {
             <div className='company-view-cont px-5 py-4'>
                 <div className='p-2 px-3 px-0 company-view row mx-0 pt-4'>
                     <div className='col-4 company-view1'>
-                        <div className='col-10 text-center mb-3'><img src={!company?.logo ? companyProf : MEDIA_URL + company.logo} alt="comp_prof" /></div>
+                        <div className='col-10 text-center mb-3'><img src={!company?.logo ? companyProf : MEDIA_URL + company?.logo} alt="comp_prof" /></div>
                         <div className='row mx-0 col-12 px-0 comp-det'>
                             <div className='col-6 px-0 text-secondary'>Company Name</div>
                             <div className='col-6 px-0'>{company?.group_name}</div>
@@ -115,7 +167,7 @@ export const CompanyView = () => {
                                 </tr>
                             </thead>
                             <tbody>
-                                {company?.subscription_history.map((data, key) => (
+                                {company?.subscription_history?.map((data, key) => (
                                 <><tr className={`main-tr ${active===key && "active"}`} onClick={() => setActive(item=>item===key?false:key)}>
                                     <td><div className='comp-view-td rounded-start-2'>{data.extended_date&&dayjs(data?.extended_date).format('DD/MM/YYYY')}</div></td>
                                     <td><div className='comp-view-td'>{data.renewal_date&&dayjs(data?.renewal_date).format('DD/MM/YYYY')}</div></td>
@@ -144,7 +196,7 @@ export const CompanyView = () => {
                                                     </thead>
                                                     <tbody className='inner-tbody'>
                                                         {data?.extension_histories?.length>0?
-                                                        data?.extension_histories.map((item,key2)=>(
+                                                        data?.extension_histories?.map((item,key2)=>(
                                                         <tr>
                                                             <td><div className='comp-view-td rounded-start-2'>{key+1}</div></td>
                                                             <td><div className='comp-view-td'>{item?.renewal_date&&dayjs(item.renewal_date).format('DD/MM/YYYY')}</div></td>

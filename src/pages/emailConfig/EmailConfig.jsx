@@ -41,7 +41,7 @@ export const EmailConfig = (props) => {
         try{
             let resp = await postEmailConfig(email)
             if(resp.success){
-                Swal.fire('','','success')
+                Swal.fire('Email configuration added.','','success')
             }
         }catch(err){
             let message = err?.response?.message || "Something went wrong"

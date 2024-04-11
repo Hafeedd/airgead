@@ -283,7 +283,19 @@
   }
 }
 
-.company-input-field {
+.company-input-field.dropdown {
+  border: 1px solid #adadad !important;
+  border-bottom: 1.5px solid rgb(150, 150, 150) !important;
+  background-color: #f5f5f5 !important;
+  font-family: "Roboto","Helvetica","Arial",sans-serif;
+  font-weight: 400 !important;
+  font-size: 1rem !important;
+  line-height: 1.4375em;
+  letter-spacing: 0.00938em;
+  color: #616161 !important;
+  cursor: text;
+}
+  .company-input-field {
   width: 100%;
 }
 
@@ -555,7 +567,12 @@
   border: none;
 }
 
+/* .comp-view.table thead.main-head tr{
+  background: linear-gradient(90deg, #5B13B7 0%, #32046C 100%) !important;
+  border-radius: 0.2rem 0 !important;
+} */
 .comp-view.table thead.main-head tr th{
+  /* background: transparent; */
   background: #3D0881;
   text-align: center;
   color: white;
@@ -588,6 +605,7 @@
   padding: 0.6rem 0;
   vertical-align: middle;
   background: #FFFFFF;
+  height: 2.5rem;
 }
 
 .comp-view.table .comp-view-arrow{

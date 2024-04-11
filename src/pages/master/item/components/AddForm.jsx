@@ -71,7 +71,6 @@ export const ItemAddForm = ({ edit, refresh, setToEdit }) => {
   useEffect(() => {
     let items = { ...itemadd };
     if (edit) {
-      console.log(edit)
       let keys = Object.keys(itemadd || {});
       keys.map((key) => {
         if (key === "types")
@@ -87,6 +86,10 @@ export const ItemAddForm = ({ edit, refresh, setToEdit }) => {
           }
         } else items = { ...items, [key]: edit[key] };
       });
+      if(edit?.batch){
+        console.log(edit.batch)
+        setPopupList(edit.batch)
+      }
     }
     setItemAdd(items);
   }, [edit]);

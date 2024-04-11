@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { initTableHeadList } from "../initialData/ItemData";
 import deleteBtn from "../../../../assets/icons/delete-white.svg";
 import useOnKey from "../../../../hooks/onKeyFunct/onKeyFunct";
+import dayjs from "dayjs";
 
 export const ItemPopup = (props) => {
   const {
@@ -13,17 +14,19 @@ export const ItemPopup = (props) => {
     setPopupList,
     setPopup,
   } = props;
+  const [ref, setRef] = useState();
   const [ref2, setRef2] = useState();
 
-  const [handleTableKeyDown, tableFormRef] = useOnKey(ref2, setRef2);
+  const [handleTableKeyDown, tableFormRef] = useOnKey(ref, setRef);
+  const [handleTableKeyDown2, tableFormRef2] = useOnKey(ref2, setRef2);
 
   const handleaddToList = (e) => {
     if (e.key === "Enter") {
       let tempList = [...popupList];
       tempList.unshift(popupInput);
-      setPopupInput({});
       setPopupList([...tempList]);
       handleTableKeyDown(e);
+      setPopupInput({});
     }
   };
 
@@ -90,12 +93,22 @@ export const ItemPopup = (props) => {
                 <tr key={i}>
                   {initTableHeadList[popup]?.map((item, key) => {
                     return (
-                      <td key={key}>
+                      <td
+                        ref={(el) => (tableFormRef2.current[key] = el)}
+                        key={key}
+                      >
                         <input
                           onKeyDown={handleTableKeyDown}
                           onChange={handleChangeTable}
                           name={item.state}
-                          value={data[item.state] || ""}
+                          value={
+                            item.type == "date" && data[item.state]
+                              ? dayjs(data[item.state])?.format('YYYY-MM-DD')
+                              // new Date(data[item.state])
+                              //     ?.toISOString()
+                              //     ?.slice(0, 10)
+                              : data[item.state] || ""
+                          }
                           type={item.type ? item.type : "number"}
                           className="w-100 text-light px-2 py-2"
                         />
@@ -117,7 +130,7 @@ export const ItemPopup = (props) => {
       </div>
       <div className="mt-3 text-end">
         <button
-          onClick={()=>setPopup(false)}
+          onClick={() => setPopup(false)}
           style={{ background: "#464646" }}
           className="btn text-light fs-6 px-3 btn-sm"
         >
