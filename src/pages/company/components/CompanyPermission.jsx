@@ -1,91 +1,50 @@
 import React, { useEffect, useState } from "react";
-import Sidebar from "../../../components/sidebar/Sidebar";
-import { useCompanyServices } from "../../../services/controller/companyServices";
-import Swal from "sweetalert2";
+import {useLocation} from 'react-router'
+import Sidebar,{navigationList} from "../../../components/sidebar/Sidebar";
 import { permissions } from "../data/initialData";
-import { useNavigate } from "react-router";
-
 export const CompanyPermission = (props) => {
   const {
     moduleCodeList,
     setModuleCodeList,
-    companyId,
-    setEdit,
-    setCompanyId,
+    from,
+    handleSubmitPermission,
     setActive,
-    activityCodes,
     company,
-    setActivityCodes
+    activityCodes,
+    setActivityCodes,
   } = props;
-  const [page, setPage] = useState({ main: "transaction", sub: "Sales" });
+  const [page, setPage] = useState({ main: "master", sub: "Account" });
 
-  const { postCompanyPermission } = useCompanyServices();
-  const navigate = useNavigate();
+  const location = useLocation()
 
   useEffect(()=>{
-    let tempActivityCode = {}
-    let tempList = company?.activity_permissions || []
-    if(tempList.length>0){
-      Object.keys(permissions).forEach((title)=>{
-       Object.keys(permissions[title]).forEach(sub_title=>{
-          permissions[title][sub_title].forEach(x=>{
-            if(tempList?.includes(x.code)){
-              tempActivityCode[title+sub_title] = tempActivityCode[title+sub_title] || []
-              tempActivityCode[title+sub_title].push(x.code)
+    // console.log(moduleCodeList)
+    if(moduleCodeList?.length>0){
+      let ind = navigationList.findIndex(x=>x.code==moduleCodeList[0]?.code)
+      if(ind>-1){
+        setPage({main:navigationList[ind].main,sub:navigationList[ind].sub})
+      }
+    }
+  },[moduleCodeList])
 
-            //   if(tempActivityCode[title+sub_title]?.length>-1){
-            //     tempActivityCode[title+sub_title].push({code:x.code,is_active:false})
-            //   }
-            //   else tempActivityCode = {[title+sub_title]:[{code:x.code,is_active:false}]}
+  useEffect(() => {
+    let tempActivityCode = {};
+    let tempList = company?.activity_permissions || [];
+    if (tempList.length > 0) {
+      Object.keys(permissions).forEach((title) => {
+        Object.keys(permissions[title]).forEach((sub_title) => {
+          permissions[title][sub_title].forEach((x) => {
+            if (tempList?.includes(x.code)) {
+              tempActivityCode[title + sub_title] =
+                tempActivityCode[title + sub_title] || [];
+              tempActivityCode[title + sub_title].push(x.code);
             }
-          })
-        })
-      })
-      setActivityCodes({...tempActivityCode})
-    }
-  },[company,])
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    try {
-      let resp;
-      var companyPermissions = [];
-      Object.keys(activityCodes).forEach((x) =>
-        activityCodes[x]?.forEach((y) =>
-          companyPermissions.push({ code: y, is_active: false })
-        )
-      );
-      let tempCompanyModuleList = moduleCodeList.map((data) => ({
-        code: data.code,
-        is_active: true,
-      }));
-      // console.log(activityCodes)
-      // console.log({activity_permissions:companyPermissions,module_permissions:tempCompanyModuleList})
-      // return 0
-        resp = await postCompanyPermission(companyId, {
-          activity_permissions: companyPermissions,
-          module_permissions: tempCompanyModuleList,
+          });
         });
-      if (resp?.success) {
-        Swal.fire("Success", "", "success");
-        setCompanyId(false);
-        setEdit(false);
-        setModuleCodeList([]);
-        setActivityCodes([]);
-        setActive(1);
-        navigate("/");
-      }
-    } catch (err) {
-      console.log(err);
-      var message =
-        err?.response?.data?.message ||
-        "Something went wrong pls try again later !";
-      if (err?.response?.data?.errors) {
-        message = Object.values(err.response.data?.errors)[0];
-      }
-      Swal.fire("Error", message, "error");
+      });
+      setActivityCodes({ ...tempActivityCode });
     }
-  };
+  }, [company]);
 
   return (
     <div className="h-100">
@@ -94,13 +53,17 @@ export const CompanyPermission = (props) => {
         <div className="action-bar-item">Rules</div> */}
       </div>
       <div className="permission-cont rounded-start">
-        <Sidebar perm="true" setPage={setPage} />
+        <Sidebar
+          perm="true"
+          setPage={setPage}
+          {...{ moduleCodeList, setModuleCodeList }}
+        />
         <div className="w-100 ps-4 pt-2 permission-list1">
           <h3>{page?.sub && page?.sub?.split("-").join(" ")}</h3>
           <div className="permission-list2">
             {Object.keys(permissions[page.sub] || {})?.map((data, key1) => {
               let checkedAll =
-                activityCodes[page.sub+data]?.filter(
+                activityCodes[page.sub + data]?.filter(
                   (x) =>
                     permissions[page.sub][data].filter((y) => y.code == x)
                       .length > 0
@@ -112,7 +75,10 @@ export const CompanyPermission = (props) => {
                 if (checkedAll) {
                   listToAdd = permissions[page.sub][data]?.map((x) => x.code);
                 }
-                setActivityCodes({ ...activityCodes, [page.sub+data]: listToAdd });
+                setActivityCodes({
+                  ...activityCodes,
+                  [page.sub + data]: listToAdd,
+                });
               };
               return (
                 <div className="permission-list3">
@@ -132,8 +98,8 @@ export const CompanyPermission = (props) => {
                     {permissions[page.sub][data].map((items, key) => {
                       const handleCheckPerm = () => {
                         let tempPermCodes = [];
-                        if (activityCodes[page.sub+data]?.length > 0)
-                          tempPermCodes = [...activityCodes[page.sub+data]];
+                        if (activityCodes[page.sub + data]?.length > 0)
+                          tempPermCodes = [...activityCodes[page.sub + data]];
                         let ind = tempPermCodes.findIndex(
                           (x) => x === items.code
                         );
@@ -142,7 +108,7 @@ export const CompanyPermission = (props) => {
                         } else tempPermCodes.push(items.code);
                         setActivityCodes({
                           ...activityCodes,
-                          [page.sub+data]: [...tempPermCodes],
+                          [page.sub + data]: [...tempPermCodes],
                         });
                       };
                       return (
@@ -153,11 +119,11 @@ export const CompanyPermission = (props) => {
                           >
                             <input
                               checked={
-                                activityCodes[page.sub+data]?.findIndex(
+                                activityCodes[page.sub + data]?.findIndex(
                                   (x) => x === items.code
                                 ) < 0
                                   ? true
-                                  : !activityCodes[page.sub+data] && true
+                                  : !activityCodes[page.sub + data] && true
                               }
                               onClick={handleCheckPerm}
                               id={"perm-check" + key1 + key}
@@ -179,18 +145,21 @@ export const CompanyPermission = (props) => {
         </div>
       </div>
       <div className="w-100 d-flex justify-content-end mt-1">
-        <div
-          onClick={() => setActive(2)}
-          className="btn comp-module-btn previous px-5 m-1 fs-5 py-1"
-        >
-          Previous
-        </div>
-        <div
-          onClick={handleSubmit}
+        {from !== "roleConfig" && (
+          <div
+            onClick={() =>setActive(location.pathname.includes('user')?1:2)}
+            className="btn comp-module-btn previous px-5 m-1 fs-5 py-1"
+          >
+            Previous
+          </div>
+        )}
+        <button
+          onClick={(e)=>{if(location.pathname==="/company-add")handleSubmitPermission(e)}}
+          type="submit"
           className="btn comp-module-btn px-5 m-1 fs-5 py-1"
         >
           Done
-        </div>
+        </button>
       </div>
     </div>
   );

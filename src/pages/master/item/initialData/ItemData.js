@@ -63,6 +63,7 @@ export const initTableHeadList = {
     {
       title: "Batch No",
       state: "batch_no",
+      type:"text"
     },
     {
       title: "Expiry Date",
@@ -72,6 +73,7 @@ export const initTableHeadList = {
     {
       title: "Opening Stock",
       state: "quantity",
+      type:"number"
     },
     {
       title: "MFG Date",

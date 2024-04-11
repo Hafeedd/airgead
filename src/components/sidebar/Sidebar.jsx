@@ -328,7 +328,7 @@ export const navigationList = [
   },
 ];
 
-const Sidebar = ({ perm, setPage }) => {
+const Sidebar = ({ perm, setPage, moduleCodeList, setModuleCodeList }) => {
   const [masterActive, setMasterActive] = useState(false);
   const [ArrowActive, setArrowActive] = useState(false);
   const [ReportsActive, setReportsActive] = useState(false);
@@ -337,6 +337,14 @@ const Sidebar = ({ perm, setPage }) => {
 
   const location = useLocation();
   const navigate = useNavigate();
+
+  const handleCheck = (data) => {
+    let tempModule = [...moduleCodeList];
+    let ind = tempModule.findIndex(x=>x.code==data.code);
+    if(ind>-1) tempModule.splice(ind,1)
+    else tempModule.push({code:data.code,parent:null})
+  setModuleCodeList([...tempModule])
+  };
 
   return (
     <div
@@ -381,17 +389,19 @@ const Sidebar = ({ perm, setPage }) => {
 
         {("Company Agency".includes(auth?.userDetails?.fk_group) || perm) && (
           <>
-            {!perm&&<div
-              onClick={() => {
-                if (!perm) navigate("/");
-              }}
-              className={`SidebarItem mb-1 ${
-                location.pathname === "/" && "active"
-              }`}
-            >
-              <img src={Dashboard} className="sidebar_icon" width={"19px"} />
-              Dashboard
-            </div>}
+            {!perm && (
+              <div
+                onClick={() => {
+                  if (!perm) navigate("/");
+                }}
+                className={`SidebarItem mb-1 ${
+                  location.pathname === "/" && "active"
+                }`}
+              >
+                <img src={Dashboard} className="sidebar_icon" width={"19px"} />
+                Dashboard
+              </div>
+            )}
             {navigationList.filter(
               (data) =>
                 data.main === "master" &&
@@ -417,14 +427,33 @@ const Sidebar = ({ perm, setPage }) => {
                       ) > -1 &&
                       data.main === "master" && (
                         <span className="SidebarSpan d-flex ms-5 ps-3">
-                          <div
-                            className="SidebarItemText"
-                            onClick={() => {
-                              if (!perm) navigate(data.navigate);
-                              else setPage({ main: data.main, sub: data.sub });
-                            }}
-                          >
-                            {data.text}
+                          <div className="SidebarItemText">
+                            {perm && location.pathname !== "/company-add" && (
+                              <input
+                                type="checkbox"
+                                onChange={() => handleCheck(data)}
+                                checked={
+                                  moduleCodeList?.findIndex(x=>x.code===data.code) > -1
+                                    ? true
+                                    : false
+                                }
+                                className="sidebar-checkbox"
+                              />
+                            )}
+                            <button                            
+                            disabled={location.pathname !== '/company-add'&&moduleCodeList?.findIndex(x=>x.code===data.code)==-1}
+                              onClick={(e) => {
+                                if (!perm) navigate(data.navigate);
+                                else{
+                                  e.preventDefault()
+                                  setPage({ main: data.main, sub: data.sub });
+                                }
+                              }}
+                              className="sidebar-items-button"
+                            >
+                              {" "}
+                              {data.text}
+                            </button>
                           </div>
                         </span>
                       )
@@ -436,11 +465,11 @@ const Sidebar = ({ perm, setPage }) => {
             {navigationList.filter(
               (data) =>
                 data.main === "transaction" &&
-                auth?.modulePermissions?.findIndex((x) => x == data.code) > -1
+                auth?.modulePermissions?.findIndex((x) => x === data.code) > -1
             ).length > 0 && (
               <>
                 <div
-                  onClick={() => setReportsActive(!ReportsActive)}
+                  onClick={(e) => setReportsActive(!ReportsActive)}
                   className={`SidebarItem mt-3 mb-1 ${
                     ReportsActive && "active"
                   }`}
@@ -462,14 +491,33 @@ const Sidebar = ({ perm, setPage }) => {
                       ) > -1 &&
                       data.main === "transaction" && (
                         <span className="SidebarSpan d-flex ms-5 ps-3">
-                          <div
-                            className="SidebarItemText"
-                            onClick={() => {
-                              if (!perm) navigate(data.navigate);
-                              else setPage({ main: data.main, sub: data.sub });
-                            }}
-                          >
-                            {data.text}
+                          <div className="SidebarItemText">
+                            {perm && (
+                              <input
+                                onChange={() => handleCheck(data)}
+                                checked={
+                                  moduleCodeList?.findIndex(x=>x.code===data.code) > -1
+                                    ? true
+                                    : false
+                                }
+                                type="checkbox"
+                                className="sidebar-checkbox"
+                              />
+                            )}
+                            <button                            
+                            disabled={moduleCodeList?.findIndex(x=>x.code===data.code)==-1}
+                              onClick={(e) => {
+                                if (!perm) navigate(data.navigate);
+                                else{
+                                  e.preventDefault()
+                                  setPage({ main: data.main, sub: data.sub });
+                                }
+                              }}
+                              className="sidebar-items-button"
+                            >
+                              {" "}
+                              {data.text}
+                            </button>
                           </div>
                         </span>
                       )
@@ -493,14 +541,32 @@ const Sidebar = ({ perm, setPage }) => {
                   ) > -1 &&
                   data.main === "report" && (
                     <span className="SidebarSpan d-flex ms-5 ps-3">
-                      <div
-                        className="SidebarItemText"
-                        onClick={() => {
-                          if (!perm) navigate(data.navigate);
-                          else setPage({ main: data.main, sub: data.sub });
-                        }}
-                      >
-                        {data.text}
+                      <div className="SidebarItemText">
+                        {perm && (
+                          <input
+                            onChange={() => handleCheck(data)}
+                            checked={
+                              moduleCodeList?.findIndex(x=>x.code===data.code) > -1
+                                ? true
+                                : false
+                            }
+                            type="checkbox"
+                            className="sidebar-checkbox"
+                          />
+                        )}
+                        <button                        
+                        disabled={moduleCodeList?.findIndex(x=>x.code===data.code)==-1}
+                          onClick={(e) => {
+                            if (!perm) navigate(data.navigate);
+                            else{
+                              e.preventDefault()
+                              setPage({ main: data.main, sub: data.sub })};
+                          }}
+                          className="sidebar-items-button"
+                        >
+                          {" "}
+                          {data.text}
+                        </button>
                       </div>
                     </span>
                   )

@@ -21,7 +21,6 @@ export const CompanyDetails = (props) => {
     setCompany,
   } = props;
   const [allRoles, setAllRoles] = useState([]);
-  const [selectedRole, setSelectedRole] = useState();
   const [additionalFiled, setAdditionalFields] = useState(false);
   const [loginField, setLoginFiled] = useState(false);
 
@@ -42,10 +41,10 @@ export const CompanyDetails = (props) => {
   const fullRoles = async () => {
     try {
       const response = await getUserRoles();
-      // let data=response.data.filter(property => property.types === 'PRODUCT')
       let tempList = [];
       response.data.map((item) => {
-        let a = {
+        let a = {     
+          ...item,     
           text: item.role,
           value: item.id,
         };
@@ -59,9 +58,13 @@ export const CompanyDetails = (props) => {
     if (location.pathname == "/user-add") fullRoles();
   }, [location.pathname]);
 
-  const handleDropdownChangeRole = (event, data) => {
-    setSelectedRole(data.value);
+  const handleDropdownChangeRole = (event, data) => {  
     setCompany((c) => ({ ...c, fk_role: data.value }));
+    let item_data = allRoles.filter(x=>x.value===data.value)[0]
+    if(!edit){
+      setModuleCodeList(data=>item_data?.module_permissions.map(x=>({code:x.code,parent:null,is_acitve:true})))
+      setCompany(data=>({...data,activity_permissions:item_data?.activity_permissions}))
+    }
   };
 
   const handleChange = (e) => {
@@ -113,13 +116,12 @@ export const CompanyDetails = (props) => {
         } else {
           Swal.fire({
             title: "Error",
-            text: resp?.message || "User Registration Failed.",
+            text: resp?.data?.errors || "User Registration Failed.",
             icon: "error",
           });
         }
       } catch (err) {
-        let message =
-          err?.response?.data?.message || "User Registration Failed.";
+        let message = err?.response?.data?.errors || "User Registration Failed.";
         if (err?.response?.data?.errors?.length > 0) {
           message = Object.values(err.response?.data?.errors)[0];
         }
@@ -459,7 +461,7 @@ export const CompanyDetails = (props) => {
           variant="outlined"
         />
         {location.pathname === "/user-add" && (
-          <div className="w-100 d-flex justify-content-between align-items-center row">
+          <div className="w-100 d-flex gap-3 align-items-center mx-0">
             <Dropdown
               clearable
               selection
@@ -467,13 +469,13 @@ export const CompanyDetails = (props) => {
               search={search}
               // onKeyDown={handleKeyDown1}
               onChange={handleDropdownChangeRole}
-              className="purchase-input-text table-drop d-flex align-items-center py-2 my-2 custom-drop-wid text-secondary col-9"
+              className="company-input-field dropdown text-uppercase mx-0 my-2 table-drop d-flex align-items-center py-2 my-2 custom-drop-wid text-secondary"
               name="role"
               placeholder="Select Role *"
-              value={selectedRole}
+              value={company.fk_role}
               options={allRoles}
             />
-            <div className="company-add-btn next btn col-1 col-2">Add</div>
+            <div className="company-add-btn next btn w-auto">Add</div>
           </div>
         )}
       </div>

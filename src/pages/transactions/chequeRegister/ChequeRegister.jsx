@@ -9,7 +9,7 @@ import { formValidation } from '../../../hooks/formValidation/formValidation'
 import Swal from 'sweetalert2'
 import useAccountServices from '../../../services/master/accountServices'
 import useItemServices from '../../../services/master/itemServices'
-
+import { useSelector } from "react-redux";
 const ChequeRegister = () => {
 
 	const [edit, setEdit] = useState(false)
@@ -34,7 +34,7 @@ const ChequeRegister = () => {
 		status: 'PENDING',
 		day: null,
 	})
-
+	const permissions = useSelector((state) => state.auth.activityPermissions);
 	const { getChequeRegister } = useChequeRegister()
 
 	const { getAccountList } = useAccountServices()
@@ -333,6 +333,7 @@ const ChequeRegister = () => {
 							handleReset,
 							getCodeData,
 							search,
+							permissions,
 						}
 						}
 
@@ -343,7 +344,8 @@ const ChequeRegister = () => {
 							handleEdit,
 							confirmDelete,
 							getData1,
-							chequeRegisterList
+							chequeRegisterList,
+							permissions,
 						}
 						}
 

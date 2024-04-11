@@ -3,4 +3,22 @@
     background: #FFFFFF8A;
     padding: 1rem;
     border-radius: 0.3rem;
+    min-height: 44rem;
+}
+
+.role-perm-cover{
+    padding: 0;
+    margin: 0;
+    z-index: 3;
+    position: absolute;
+    top:0;
+    left: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    background: #ffffffd2;
+    border: 1px solid #721BE1;
+    border-radius: 8px;
 }

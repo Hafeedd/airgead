@@ -17,6 +17,7 @@ export const MarkStaffAttendance = (props) => {
         selectedDate,
         show,
         leaveType,
+        permissions,
     }=props;
     useEffect(()=>{
       getData()
@@ -168,7 +169,7 @@ export const MarkStaffAttendance = (props) => {
             <button
               className="col-3 col-4 btn btn-dark"
               onClick={() => handleSingleAttendance(selectedDate, show)}
-              disabled={!leaveType && !workType ?true:false}
+              disabled={!leaveType && !workType && permissions.includes(1420) ?true:false }
             >
               Save
             </button>

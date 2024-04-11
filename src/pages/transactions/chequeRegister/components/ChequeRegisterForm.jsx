@@ -13,6 +13,7 @@ const ChequeRegisterForm = ({
     handleReset,
     getCodeData,
     search,
+    permissions,
 }) => {
 
     return (
@@ -159,7 +160,7 @@ const ChequeRegisterForm = ({
                         <div className='cheque-exit p-1 px-5 m-0 me-4'>
                             <div onClick={handleReset} className='m-0  px-4 rounded'>Exit</div>
                         </div>
-                        <button className='bg-black border border-black text-white px-5   me-4' type='submit'>
+                        <button className='bg-black border border-black text-white px-5   me-4' type='submit' disabled={(permissions.includes(1310))}>
                             <div  className='cheque-save px-4 bg-black text-white'>Save</div>
                         </button>
                     </div>

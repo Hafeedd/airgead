@@ -17,6 +17,7 @@ const PaymentListSection = (props) => {
     method,
     getPaymentReciept,
     formatList,
+    permissions,
   } = props;
 
   const handleSearch = async (e) => {
@@ -105,20 +106,24 @@ const PaymentListSection = (props) => {
                     <td>{data?.narration}</td>
                     <td></td>
                     <td>
+                    {(method==='Payment'||method==='Receipt')&& (!permissions.includes(1459)) &&
                       <div
                         className="button text-end pe-3"
                         onClick={(e) => handleEdit(data)}
                       >
                         <img src={editBtn} alt="edit_btn" />
                       </div>
+                    }
                     </td>
                     <td>
+                      {(method==='Payment'||method==='Receipt')&& (!permissions.includes(1460)) &&
                       <div
                         className="button"
                         onClick={(e) => confirmDelete(data.id)}
                       >
                         {<MdDeleteForever size={26} className="p-0" />}
                       </div>
+                      }
                     </td>
                   </tr>
                 );

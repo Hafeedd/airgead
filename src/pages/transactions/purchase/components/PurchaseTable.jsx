@@ -540,12 +540,12 @@ const PurchaseTable = (props) => {
                                 search={search}
                                 onKeyDown={handleKeyDown2}
                                 disabled={
-                                  (from === "purch" &&
+                                  ((from === "purch" &&
                                     !permissions.includes(1170)) ||
                                   (from === "purch Order" &&
                                     !permissions.includes(1246)) ||
                                   (from === "purch Return" &&
-                                    !permissions.includes(1208)) ||
+                                    !permissions.includes(1208)) )&&
                                   item.readOnly
                                 }
                                 placeholder="SELECT"
@@ -565,12 +565,12 @@ const PurchaseTable = (props) => {
                                 name="fk_unit"
                                 value={data.fk_unit}
                                 disabled={
-                                  (from === "purch" &&
+                                  ((from === "purch" &&
                                     !permissions.includes(1170)) ||
                                   (from === "purch Order" &&
                                     !permissions.includes(1246)) ||
                                   (from === "purch Return" &&
-                                    !permissions.includes(1208)) ||
+                                    !permissions.includes(1208)) )&&
                                   item.readOnly
                                 }
                                 style={{
@@ -598,12 +598,12 @@ const PurchaseTable = (props) => {
                                   handleChangeTableItem(e, null, tableItem, i)
                                 }
                                 disabled={
-                                  (from === "purch" &&
+                                  ((from === "purch" &&
                                     !permissions.includes(1170)) ||
                                   (from === "purch Order" &&
                                     !permissions.includes(1246)) ||
                                   (from === "purch Return" &&
-                                    !permissions.includes(1208)) ||
+                                    !permissions.includes(1208)) )&&
                                   item.readOnly
                                 }
                                 value={data[item.state] || ""}
@@ -621,14 +621,14 @@ const PurchaseTable = (props) => {
                                 name={
                                   item.state == "vat" ? "tax_gst" : item.state
                                 }
-                                type="number"
+                                type={item.state=="batch_no"?"text":"number"}
                                 disabled={
-                                  (from === "purch" &&
+                                  ((from === "purch" &&
                                     !permissions.includes(1170)) ||
                                   (from === "purch Order" &&
                                     !permissions.includes(1246)) ||
                                   (from === "purch Return" &&
-                                    !permissions.includes(1208)) ||
+                                    !permissions.includes(1208)) )&&
                                   item.readOnly
                                 }
                                 placeholder="0"
@@ -765,7 +765,7 @@ const PurchaseTable = (props) => {
                                 ]
                               : "0"
                           }
-                          type="number"
+                          type={item.state=="batch_no"?"text":"number"}
                           className="purchase_input border-0 w-100 text-center"
                         />
                       </td>

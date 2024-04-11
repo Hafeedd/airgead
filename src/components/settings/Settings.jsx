@@ -91,7 +91,7 @@ export const Settings = (props) => {
             Code Configuration
           </div>
           <div
-            onClick={() => navigate("/role-configuratoin-list")}
+            onClick={() => navigate("/role-configuration-list")}
             className="settings-item mt-5"
           >
             <img src={RoleIcon} alt="access perm" />

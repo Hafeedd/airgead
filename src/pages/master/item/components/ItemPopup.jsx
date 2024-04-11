@@ -24,9 +24,9 @@ export const ItemPopup = (props) => {
     if (e.key === "Enter") {
       let tempList = [...popupList];
       tempList.unshift(popupInput);
-      setPopupInput({});
       setPopupList([...tempList]);
       handleTableKeyDown(e);
+      setPopupInput({});
     }
   };
 

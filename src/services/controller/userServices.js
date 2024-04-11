@@ -20,6 +20,11 @@ export const useUserServices = () => {
     return resp.data;
   };
 
+  const getUserWithId = async (id) => {
+    const resp = await axiosPrivate.get(`company/user/${id}/`);
+    return resp.data;
+  };
+
 
   const delUserAdd = async(id)=>{
     const resp = await axiosPrivate.delete(`company/user/${id}/`);
@@ -78,5 +83,6 @@ export const useUserServices = () => {
     getSecurityQuestions,
     putUserProfile,
     putCompanyDetails,
+    getUserWithId
   };
 }

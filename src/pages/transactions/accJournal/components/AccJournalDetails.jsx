@@ -8,6 +8,7 @@ import Swal from "sweetalert2";
 import { MdMovieEdit } from "react-icons/md";
 import useAccJournalServices from "../../../../services/transactions/accJournalServices";
 import { StockJournalEdit } from "../../stockjurnal/components/StockJournalEdit";
+import { useSelector } from "react-redux";
 
 export const AccJournalDetails = () => {
   const [ref, setRef] = useState(null);
@@ -17,7 +18,7 @@ export const AccJournalDetails = () => {
   const [tableEdit, setTableEdit] = useState(false);
   const [showAccJnl, setShowAccJnl] = useState(false);
   const [edit, setEdit] = useState(false);
-
+  const permissions = useSelector((state) => state.auth.activityPermissions);
   const [accJnlAdd, setAccJnlAdd] = useState({
     voucher_number: null,
     date: null,
@@ -366,7 +367,7 @@ export const AccJournalDetails = () => {
           >
             Clear
           </div>
-          <div onClick={handleSubmit} className="btn col-4 py-1 btn-dark">
+          <div onClick={handleSubmit} className="btn col-4 py-1 btn-dark" disabled={(permissions.includes(1299))}>
             {edit ? "Update" : "Save"}
           </div>
         </div>
@@ -388,6 +389,7 @@ export const AccJournalDetails = () => {
               setEdit,
               getData,
               handleClearAll,
+              permissions
             }}
           />
         </Modal.Body>

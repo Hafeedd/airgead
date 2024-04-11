@@ -68,6 +68,15 @@
     height: inherit;
 }
 
+.stock-ledger tbody tr.stock-ledger-item-tr td{
+    text-align: start;
+    vertical-align: middle;
+    text-transform: uppercase;
+    font-size: 22px;
+    background: rgb(184, 184, 184);
+    height: 3rem !important;
+}
+
 .stock-ledger tbody .grey_td{
     background: rgba(132, 143, 146,0.2);
     height: 1.4rem !important;
