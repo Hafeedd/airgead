@@ -70,6 +70,11 @@ export const useUserServices = () => {
     const resp = await axiosPrivate.put('company/update/',data,{headers:{'Content-Type': 'multipart/form-data'}});
     return resp.data;
   }
+
+  const postUserPermissions = async(id,data)=>{
+    const resp = await axiosPrivate.post(`company/user/user_permission/${id}/`,data);
+    return resp.data;
+  }
   return {
     getUserList,
     postUserAdd,
@@ -83,6 +88,7 @@ export const useUserServices = () => {
     getSecurityQuestions,
     putUserProfile,
     putCompanyDetails,
-    getUserWithId
+    getUserWithId,
+    postUserPermissions
   };
 }
