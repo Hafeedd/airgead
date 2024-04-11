@@ -154,7 +154,7 @@ export const CompanyPermission = (props) => {
           </div>
         )}
         <button
-          onClick={()=>{if(location.pathname==="/company-add")handleSubmitPermission()}}
+          onClick={(e)=>{if(location.pathname==="/company-add")handleSubmitPermission(e)}}
           type="submit"
           className="btn comp-module-btn px-5 m-1 fs-5 py-1"
         >

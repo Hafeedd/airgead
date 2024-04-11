@@ -4,7 +4,7 @@ import { CompanyPlan } from "./CompanyPlan";
 import { CompanyPermission } from "./CompanyPermission";
 import { useLocation, useNavigate } from "react-router";
 import { MEDIA_URL } from "../../../api/axios";
-import {Swal} from 'sweetalert2'
+import Swal from 'sweetalert2'
 import { useCompanyServices } from "../../../services/controller/companyServices";
 import { useUserServices } from "../../../services/controller/userServices";
 
@@ -110,11 +110,10 @@ export const CompanyAdd = () => {
         navigate("/");
       }
     } catch (err) {
-      var message =
-        err?.response?.data?.message ||
-        "Something went wrong pls try again later !";
-      if (typeof err?.response?.data?.errors !== "string") {
-        message = Object.values(err.response.data?.errors)[0];
+      console.log(err)
+      var message = err?.response?.data?.message || "Something went wrong pls try again later !";
+      if (err?.response?.data && typeof err?.response?.data?.errors !== "string") {
+        message = Object.values(err?.response?.data?.errors)[0];
       }
       Swal.fire("Error", message, "error");
     }
