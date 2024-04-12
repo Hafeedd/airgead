@@ -23,10 +23,11 @@ export const CompanyDetails = (props) => {
   const [allRoles, setAllRoles] = useState([]);
   const [additionalFiled, setAdditionalFields] = useState(false);
   const [loginField, setLoginFiled] = useState(false);
-
+  const [passwordValid, setPasswordValid] = useState(true); 
   const { postUserAdd, getUserRoles, putUserAdd } = useUserServices();
   const { companyRegister, companyUpdate } = useCompanyServices();
   const navigate = useNavigate();
+
 
   const search = (options, searchValue) => {
     searchValue = searchValue.toUpperCase();
@@ -67,12 +68,23 @@ export const CompanyDetails = (props) => {
     }
   };
 
+
+  const validatePassword = (password) => {
+    return true;
+    // return password.length >= 8 && /\d/.test(password) && /[a-zA-Z]/.test(password) && /[!@#$%^&*(),.?":{}|<>]/.test(password);
+    };
+
   const handleChange = (e) => {
     const name = e.target.name;
     const value = e.target.value;
     const logoImage = location.pathname === "/user-add" ? "image" : "logo";
     const files = e.target?.files || null;
-    if (name === logoImage && files?.length > 0) {
+    if (name === 'password'){
+      const isValidPassword = validatePassword(value);
+      setPasswordValid(isValidPassword);
+      setCompany((data) => ({ ...data, [name]: value }))  
+    }
+    else if (name === logoImage && files?.length > 0) {
       const imageUrl = URL.createObjectURL(files[0]);
       location.pathname === "/user-add"
         ? setCompany((data) => ({
@@ -86,7 +98,8 @@ export const CompanyDetails = (props) => {
             logo_url: imageUrl,
           }));
       // setEdit(data=>({...data,logo:null}))
-    } else if (value === "") setCompany((data) => ({ ...data, [name]: null }));
+    }
+    else if (value === "") setCompany((data) => ({ ...data, [name]: null }));
     else setCompany((data) => ({ ...data, [name]: value }));
   };
 
@@ -114,7 +127,7 @@ export const CompanyDetails = (props) => {
           setActive(3);
           setCompanyId(resp?.data?.user?.user_profile?.id);
         } else {
-          console.log(resp)
+          // console.log(resp,'padachonne.......')
           Swal.fire({
             title: "Error",
             text: resp?.errors || "User Registration Failed.",
@@ -123,9 +136,10 @@ export const CompanyDetails = (props) => {
         }
       } catch (err) {
         let message = err?.response?.data?.errors || "User Registration Failed.";
-        if (err?.response?.data?.errors?.length > 0) {
-          message = Object.values(err.response?.data?.errors)[0];
-        }
+        // if (err?.response?.data?.errors?.length > 0) {
+        //   message = Object.values(err.response?.data?.errors)[0];
+        // }
+        // console.error(message,'HOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOI');
         Swal.fire({
           title: "Failed",
           text: message,
@@ -396,6 +410,8 @@ export const CompanyDetails = (props) => {
               label="Password"
               variant="outlined"
             />
+            {!passwordValid && <p> *Password must be at least 8 characters long and contain at least one numeric, alphabetical, and punctuation character.</p>}
+      
           </div>
         </div>
       </div>

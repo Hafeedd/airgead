@@ -24,10 +24,14 @@ const initalUser = {
 const Register = () => {
     const [user, setUser] = useState(initalUser)
     const [passwordNotEqual, setPasswordNotEqual] = useState(false)
-
+    // const [passwordValid, setPasswordValid] = useState(true); 
     const { register } = useAuthServices()
     const navigate = useNavigate()
 
+    // const validatePassword = (password) => {
+    //     return password.length >= 8 && /\d/.test(password) && /[a-zA-Z]/.test(password) && /[!@#$%^&*(),.?":{}|<>]/.test(password);
+    //     };
+    
     const handleChange = (e) => {
         let name = e.target.name
         let value = e.target.value
@@ -44,27 +48,12 @@ const Register = () => {
             if (tempUser.password_conf !== tempUser.password) {
                 setPasswordNotEqual(true)
             } else setPasswordNotEqual(false)
+            // const isValidPassword = validatePassword(tempUser.password);
+            // setPasswordValid(isValidPassword);
         } else setPasswordNotEqual(false)
         setUser({ ...tempUser })
     }
 
-    // const validatePassword = (password) => {
-    //     // at least 8 characters
-    //     if (password.length < 8) return false;
-    
-    //     // at least one numeric character
-    //     if (!/\d/.test(password)) return false;
-    
-    //     // at least one alphabetical character
-    //     if (!/[a-zA-Z]/.test(password)) return false;
-    
-    //     // at least one punctuation character
-    //     if (!/[!@#$%^&*(),.?":{}|<>]/.test(password)) return false;
-    
-    //     return true;
-    //   };
-
-    // validatePassword()
     const handleSubmit = async (e) => {
         e.preventDefault()
         // if(!user.image){
@@ -146,6 +135,7 @@ const Register = () => {
                 <TextField required onChange={handleChange} value={user.email} name='email' size={window.innerWidth < 1500 ? 'small' : 'normal'} className='auth-input-field my-2' id="outlined-basic" label="Email" variant="outlined" />
                 <TextField required onChange={handleChange} value={user.mobile} name='mobile' size={window.innerWidth < 1500 ? 'small' : 'normal'} className='auth-input-field my-3' id="outlined-basic" label="Phone" variant="outlined" />
                 <PasswordField name={"password"} state={user} {...{ handleChange }} />
+                {/* {passwordValid ? (<p>Password is valid</p> ) : (<p>Password is invalid</p>)} */}
                 <TextField required type="password" onChange={handleChange} value={user.password_conf} name='password_conf' size={window.innerWidth < 1500 ? 'small' : 'normal'} className='auth-input-field my-3' id="outlined-basic" label="Confirm Password" variant="outlined" />
                 {passwordNotEqual && <span className="danger fs-6">Password not matching</span>}
             </div>

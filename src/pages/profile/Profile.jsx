@@ -198,7 +198,7 @@ export const Profile = () => {
         }catch(e){
             Swal.fire({
                 title: 'Error',
-                text: e.error,
+                text: e.response.data.message,
                 icon: "error",
                 timer: 1000,
                 showConfirmButton: false,

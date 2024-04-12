@@ -58,13 +58,13 @@ export const CompanyList = (props) => {
       }
     } catch {}
   };
-
   const getData = async () => {
     if (location.pathname === "/user-list") {
       try {
         setLoading(true);
         const resp = await getUserList();
         if (resp.success) {
+          console.log(resp)
           setCompanyList([...resp.data]);
         }
         setLoading(false);
@@ -231,10 +231,10 @@ export const CompanyList = (props) => {
                     ${
                       type == "delete"
                         ? "delete"
-                        : data.is_active
+                        : data?.is_active
                         ? "activated"
                         : "deactivated"
-                    } ${data.username}?`,
+                    } ${data?.username}?`,
                     icon: "question",
                     showDenyButton: true,
                     showCancelButton: false,
@@ -267,8 +267,8 @@ export const CompanyList = (props) => {
                     if (resp.success) {
                       Swal.fire(
                         "Success",
-                        `${data.full_name} has been ${
-                          data.is_active ? "activated" : "deactivated"
+                        `${data?.full_name} has been ${
+                          resp?.message
                         } successfully`,
                         "success"
                       );
@@ -285,15 +285,15 @@ export const CompanyList = (props) => {
                 return (
                   <tr>
                     <td>{key + 1}</td>
-                    <td>{data.full_name}</td>
+                    <td>{data?.full_name}</td>
                     <td>{data?.username}</td>
-                    <td>{data.id}</td>
-                    <td>{data.mobile}</td>
-                    <td>{data.fk_role}</td>
+                    <td>{data?.id}</td>
+                    <td>{data?.mobile}</td>
+                    <td>{data?.fk_role}</td>
                     <td>{dayjs(data.created_at).format("DD/MM/YYYY")}</td>
                     <td>
                       {data.last_login
-                        ? dayjs(data.admin_details?.last_login)?.format(
+                        ? dayjs(data.last_login)?.format(
                             "DD/MM/YYYY"
                           )
                         : "Not Logged in yet !"}
@@ -302,7 +302,7 @@ export const CompanyList = (props) => {
                       <Checkbox
                         onChange={handleActive}
                         toggle
-                        checked={data.is_active}
+                        checked={data?.is_active}
                       />
                       <HiDotsVertical
                         onClick={() => handleDropDownList(key)}
