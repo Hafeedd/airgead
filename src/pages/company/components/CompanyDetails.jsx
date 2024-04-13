@@ -161,7 +161,7 @@ export const CompanyDetails = (props) => {
         Object.keys(tempCompany).map((data) =>
           CompanyData.append(data, company[data])
         );
-        // console.log(CompanyData);
+        console.log(CompanyData);
         // return 0;
         let resp;
         if (edit.id) resp = await companyUpdate(edit.id, CompanyData);

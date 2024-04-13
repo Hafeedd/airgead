@@ -313,9 +313,7 @@ export const CompanyList = (props) => {
                           <div
                             onClick={() =>
                               navigate(
-                                location.pathname === "/user-list"
-                                  ? "/user-add"
-                                  : "company-add",
+                                location.pathname === "/user-list" && "/user-add",
                                 {
                                   state: { company: data.id },
                                 }
@@ -339,6 +337,7 @@ export const CompanyList = (props) => {
               })
             ) : searchedList?.length > 0 ? (
               searchedList.map((data, key) => {
+                console.log(data,"hoooi")
                 // const handleCheck = async () => {
                 //   Swal.fire({
                 //     title: "Delete",
@@ -455,7 +454,7 @@ export const CompanyList = (props) => {
                       />
                       <button
                         className="border-0 btn p-0 m-0"
-                        onClick={() => handleDropDownList(1)}
+                        // onClick={() => handleDropDownList(1)}
                         // onBlur={() => handleDropDownList(false)}
                       >
                         <HiDotsVertical
@@ -465,11 +464,10 @@ export const CompanyList = (props) => {
                       </button>
                       {listShow === key && (
                         <div className="company-menue-dropdown">
+                          {console.log(data.id,'check')}
                           <div
                             onClick={() =>
-                              navigate("/company-add", {
-                                state: { company: data.id },
-                              })
+                              navigate("/company-add", {state: { company: data.id }})
                             }
                             className="d-flex cursor gap-3"
                           >
