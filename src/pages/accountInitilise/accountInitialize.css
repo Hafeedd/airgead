@@ -1,0 +1,33 @@
+.main-page{
+    box-shadow: 0px 0px 5px black;
+    margin: 20px;
+    border-radius: 10px;
+}
+
+.radio-box{
+    border: solid rgb(191, 160, 160);
+    border-radius: 10px;
+    padding: 5px;
+}
+input[type="radio"] {
+    /* Hide the default radio button */
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    /* Define the size of the custom radio button */
+    width: 17px;
+    height: 17px;
+    /* Add a border and border color */
+    border: 2px solid rgba(74, 0, 168, 1); /* Change the color code to your desired border color */
+    /* Define the border radius to make it round */
+    border-radius: 50%;
+    /* Add padding to adjust the position of the radio button */
+    padding: 2px;
+}
+input[type="radio"]:checked {
+    /* Change the background color or add a different style when checked */
+    background-color: rgba(74, 0, 168, 1); /* Change the color code to your desired background color */
+}
+input[type="radio"]:hover {
+    cursor: pointer;
+}
