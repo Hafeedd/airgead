@@ -3,8 +3,6 @@
     box-shadow: 0px 0px 6px 0px #00000040;
     background: #FFFFFF8A;
     border-radius: 10px;
-    /* padding: 0.8rem; */
-    opacity: 0px;
 }
 
 .code-conf-input-cont {
@@ -14,7 +12,6 @@
     font-weight: 500;
     text-align: left;
     margin-bottom: 1rem;
-
 }
 
 .purchase-select.code-conf {

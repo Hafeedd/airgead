@@ -134,7 +134,7 @@ export const StockJournalDetails = (props) => {
         Object.entries(item_data)?.filter(([key, value]) => value !== null)
       );
       if (newObj) {
-        newObj.code = itemSelected.item_code;
+        newObj.code = itemSelected?.item_code;
         setItemSelected({ data: newObj, ...{ e, state, toTableItem } });
       }
       if (e?.type == "click") handleKeyDown(e);

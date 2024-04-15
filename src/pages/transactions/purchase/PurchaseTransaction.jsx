@@ -882,7 +882,7 @@ const PurchaseTransaction = ({ returnPage, orderPage }) => {
           )}
           <div
             className="col-3 pe-0 d-flex align-items-end justify-content-start ps-1 position-absolute "
-            style={{ bottom: "0rem" }}
+            style={{ bottom: "-2px" }}
           >
             <div className="ps-1">
               <div className="btn btn-sm purch-table-btn1 px-3">

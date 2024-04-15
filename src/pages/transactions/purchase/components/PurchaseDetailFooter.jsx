@@ -24,6 +24,8 @@ const PurchaseDetailFooter = (props) => {
     handleGetCode(true);
   };
 
+  console.log(from==="purch Order"&& !permissions.includes(1239))
+
   const { getAccOpClBalance } = useBaseServices();
 
   useEffect(() => {
@@ -241,7 +243,9 @@ const PurchaseDetailFooter = (props) => {
             </div>
             <div className="mx-0 px-1 pe-0 col-6">
               <button
-                disabled={!bankSelect && (from==='purch' && !permissions.includes(1163))||(from==='purch Return' && !permissions.includes(1201)||(from==="purch Order"&& !permissions.includes(1239)))}
+                disabled={!bankSelect
+                  && (from==='purch' && permissions.includes(1163))||(from==='purch Return' && permissions.includes(1201)||(from==="purch Order"&& permissions.includes(1239)))
+                }
                 type="submit"
                 className="btn btn-sm footer-button-save w-100"
               >

@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import searchIcon from "../../../../assets/icons/search.png";
 import { GrRefresh } from "react-icons/gr";
 import { useNavigate } from "react-router";
+import dayjs from "dayjs";
 
 export const StockTable = (props) => {
   const { stockList } = props;
@@ -203,7 +204,7 @@ export const StockTable = (props) => {
                           width="110"
                           className="text-start d-flex align-items-center"
                         >
-                          {item?.exp || "..."}
+                          {item?.exp && dayjs(item?.exp).format('DD/MM/YYYY') || "..."}
                         </div>
                       </td>
                       <td>
