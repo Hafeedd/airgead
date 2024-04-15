@@ -11,6 +11,7 @@ import { useNavigate } from "react-router";
 import { logout } from "../../redux/authSlice";
 import { MdLogout } from "react-icons/md";
 import { MEDIA_URL } from "../../api/axios";
+import { BiUserX } from "react-icons/bi";
 import userImg from "../../assets/icons/lucide_user.png";
 
 export const Settings = (props) => {
@@ -103,6 +104,13 @@ export const Settings = (props) => {
           >
             <img src={userImg} alt="access perm" />
             User Register
+          </div>
+          <div
+            onClick={() => navigate("/account-initialize")}
+            className="settings-item mt-5"
+          >
+            <BiUserX size={34} className="p-0 m-0"/>
+            Account Initializes
           </div>
         </>
       )}

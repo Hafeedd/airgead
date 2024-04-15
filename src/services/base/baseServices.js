@@ -20,10 +20,16 @@ export const useBaseServices = () => {
         return response.data
     }
 
+    const postAccountInitialize = async (data)=>{
+        const response = await axios.post('account/initialise//')
+        return response.data
+    }
+
     return{
         getDashBoard,
         postIdConfiguration,
-        getIdConfiguration
+        getIdConfiguration,
+        postAccountInitialize
     };
 
 
